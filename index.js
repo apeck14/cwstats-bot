@@ -30,9 +30,9 @@ bot.on('message', async message => {
     const db = await mongoUtil.db("General");
     const guilds = db.collection("Guilds");
     const prefix = (await guilds.findOne({ guildID: message.channel.guild.id })).prefix;
+    const channelPermissions = message.channel.permissionsFor(bot.user);
 
     if (message.author.bot || !message.content.startsWith(prefix)) return;
-    if (!message.channel.permissionsFor(bot.user).has('SEND_MESSAGES')) return; //bot doesn't have permission to send messages
 
     let args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
@@ -40,6 +40,11 @@ bot.on('message', async message => {
     args = args.join(" ");
 
     if (!bot.commands.has(command)) return;
+
+    //CHECK PERMISSIONS
+    if (!channelPermissions.has('SEND_MESSAGES')) return;
+    if(!channelPermissions.has(['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS', 'VIEW_CHANNEL']))
+        return message.channel.send({embed: {color: red, description: '**__Missing Permissions__**\n\nPlease make sure I am able to **View Channel**, **Add Reactions**, **Attach Files**, **Embed Links**, and **Use External Emojis**.'}});
 
     try {
         //increment commands used in statistics
