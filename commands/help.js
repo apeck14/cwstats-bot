@@ -10,7 +10,7 @@ module.exports = {
       { name: 'stats #TAG', desc: 'View war stats of a member', main: true },
       { name: 'delete #TAG', desc: 'Delete most recent fame score from a specific member', main: false },
       { name: 'add', desc: 'Add all weekly fame scores for current week', main: false },
-      { name: 'setColor HEXCODE', desc: 'Set the clan color (ex: #F1F1F1)', main: false, setup: true },
+      { name: 'setColor #HEXCODE', desc: 'Set the clan color (ex: #F1F1F1)', main: false, setup: true },
       { name: 'setAdminRole @ROLE', desc: 'Set the role that can use admin commands (only the server owner can set this role)', main: false, setup: true },
       { name: 'setClanTag #TAG', desc: 'Set the clan tag for this server', main: false, setup: true },
       { name: 'setApplyChannel', desc: 'Set the channel where new server members should be applying (use command in the channel to set). `Default: Any Channel`', main: false, setup: true },
