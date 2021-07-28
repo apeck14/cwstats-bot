@@ -1,6 +1,6 @@
 const { getMembers } = require("../util/clanUtil");
 const mongoUtil = require("../util/mongoUtil");
-const { average } = require("../util/otherUtil");
+const { average, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'lb',
@@ -32,8 +32,10 @@ module.exports = {
             return b.avgFame - a.avgFame;
         });
 
+        if (memberStats.length === 0) return message.channel.send({ embed: { color: orange, description: `No data available! Add player data using \`${prefix}add\`.` } }); //if no members on lb
+
         const desc = () => {
-            const indeces = (memberStats.length < 5) ? memberStats.length : 5;
+            const indeces = (memberStats.length < 10) ? memberStats.length : 10;
             let str = '';
 
             //above 4k
