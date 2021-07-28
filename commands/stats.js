@@ -2,7 +2,7 @@ const { getMembers } = require("../util/clanUtil");
 const mongoUtil = require("../util/mongoUtil");
 const { CanvasRenderService } = require('chartjs-node-canvas');
 const ChartDataLabels = require('chartjs-plugin-datalabels');
-const { red, hexToRgbA, average } = require("../util/otherUtil");
+const { red, hexToRgbA, average, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'stats',
@@ -30,6 +30,7 @@ module.exports = {
 
         const player = await players.findOne({ tag: arg });
         if (!player) return message.channel.send({ embed: { color: red, description: '**Player not found.**' } });
+        if(player.fameTotals.length === 0) return message.channel.send({ embed: { color: orange, description: '**Player has no data.**' } });
 
         player.fameTotals = player.fameTotals.filter(w => w.clanTag === clanTag); //remove all weeks from different clans
 
