@@ -1,6 +1,5 @@
 const { Client, Collection } = require('discord.js');
 const fs = require('fs');
-const { token } = require('./config.json');
 const mongoUtil = require('./util/mongoUtil');
 
 const bot = new Client();
@@ -14,7 +13,7 @@ for (const file of commandFiles) {
 }
 
 bot.once('ready', async () => {
-    console.log('CRWarBot is online!');
+    console.log('CW2Stats is online!');
 
     bot.user.setActivity(`Use help command :)`);
 });
