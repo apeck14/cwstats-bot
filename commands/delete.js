@@ -1,3 +1,4 @@
+const { verifyClanBio } = require("../util/clanUtil");
 const mongoUtil = require("../util/mongoUtil");
 const { red, orange, green } = require("../util/otherUtil");
 
@@ -18,7 +19,7 @@ module.exports = {
 
         //tag must be linked and verified
         if (!clanTag) return message.channel.send({ embed: { color: red, description: `You must **link** a clan before using this command!\n\n__Usage:__\n\`${prefix}setClanTag #ABC123\`` } });
-        else if (!await verifyClanBio(clanTag)) return message.channel.send({ embed: { color: orange, description: `__**Clan not verified!**__\n\nTo verify your clan, add '**top.gg/CW2Stats**' to your clan bio!` } });
+        //else if (!await verifyClanBio(clanTag)) return message.channel.send({ embed: { color: orange, description: `__**Clan not verified!**__\n\nTo verify your clan, add '**top.gg/CW2Stats**' to your clan bio!` } });
 
         if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!**\n\n__Usage:__\n\`${prefix}delete #ABC123\`` } });
 
