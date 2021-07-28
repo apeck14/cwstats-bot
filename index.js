@@ -65,7 +65,7 @@ bot.on('guildCreate', async guild => {
             clanTag: null,
             prefix: '?',
             adminRoleID: null,
-            color: '#000000', //black
+            color: '#ff237a', //pink
             channels: {
                 applyChannelID: null,
                 applicationsChannelID: null,
