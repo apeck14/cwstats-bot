@@ -32,6 +32,7 @@ bot.on('message', async message => {
     const prefix = (await guilds.findOne({ guildID: message.channel.guild.id })).prefix;
 
     if (message.author.bot || !message.content.startsWith(prefix)) return;
+    if (!message.channel.permissionsFor(bot.user).has('SEND_MESSAGES')) return; //bot doesn't have permission to send messages
 
     let args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
@@ -49,6 +50,7 @@ bot.on('message', async message => {
         await bot.commands.get(command).execute(message, args, bot, prefix);
         message.channel.stopTyping();
     } catch (err) {
+        message.channel.send({embed: {color: red, description: 'Unexpected error.'}});
         console.error(err);
     }
 });
