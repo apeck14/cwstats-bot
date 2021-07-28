@@ -9,7 +9,7 @@ module.exports = {
       { name: 'race', desc: 'View current river race stats', main: true },
       { name: 'stats #TAG', desc: 'View war stats of a member', main: true },
       { name: 'delete #TAG', desc: 'Delete most recent fame score from a specific member', main: false },
-      { name: 'add', desc: 'Add all weekly fame scores for current week', main: false },
+      { name: 'add', desc: 'Add fame scores from recent weeks', main: false },
       { name: 'setColor #HEXCODE', desc: 'Set the clan color (ex: #F1F1F1)', main: false, setup: true },
       { name: 'setAdminRole @ROLE', desc: 'Set the role that can use admin commands (only the server owner can set this role)', main: false, setup: true },
       { name: 'setClanTag #TAG', desc: 'Set the clan tag for this server', main: false, setup: true },
