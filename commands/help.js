@@ -31,6 +31,7 @@ module.exports = {
 
     const helpEmbed = {
       title: '__Commands__',
+      color: '#ff237a',
       description: `${mainCommands}\n__**Admin**__\n${adminCommands}\n**__Setup__**\n${setupCommands}`
     }
 
