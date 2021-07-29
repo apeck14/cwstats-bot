@@ -45,7 +45,7 @@ bot.on('message', async message => {
     //CHECK PERMISSIONS
     if (!channelPermissions.has('SEND_MESSAGES')) return;
     if(!channelPermissions.has(['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS', 'VIEW_CHANNEL']))
-        return message.channel.send({embed: {color: red, description: '**__Missing Permissions__**\n\nPlease make sure I am able to **View Channel**, **Add Reactions**, **Attach Files**, **Embed Links**, and **Use External Emojis**.'}});
+        return message.channel.send({embed: {color: red, description: '**__Missing Permissions__**\n\nPlease make sure I am able to **View Channel**, **Add Reactions**, **Attach Files**, **Embed Links**, and **Use External Emojis** in this channel.'}});
 
     try {
         //increment commands used in statistics
