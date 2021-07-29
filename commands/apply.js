@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const { getPlayerData, hex } = require("../util/clanUtil");
 const { CanvasRenderService } = require('chartjs-node-canvas');
-const { red, orange, hexToRgbA } = require("../util/otherUtil");
+const { red, orange, hexToRgbA, green } = require("../util/otherUtil");
 const mongoUtil = require("../util/mongoUtil");
 
 module.exports = {
@@ -184,7 +184,7 @@ module.exports = {
         };
 
         const confirmationEmbed = {
-            color: hex,
+            color: green,
             description: `✅ Request sent for **${player.name}**! A staff member will contact you shortly.`
         };
 
