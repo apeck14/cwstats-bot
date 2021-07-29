@@ -7,16 +7,17 @@ module.exports = {
         const db = await mongoUtil.db("General");
         const guilds = db.collection("Guilds");
 
-        let { channels, color, clanTag } = await guilds.findOne({ guildID: message.channel.guild.id });
+        let { channels, color, clanTag, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
 
-        if(arg) clanTag = (arg[0] === '#') ? arg.toUpperCase() : '#'+arg.toUpperCase();
+        if (arg) clanTag = (arg[0] === '#') ? arg.toUpperCase() : '#' + arg.toUpperCase();
 
         //must be in command channel if set
         if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
+        if (!clanTag) return message.channel.send({ embed: { color: red, description: `No clan tag linked! Please use ${prefix}setClanTag to link your clan.` } });
 
         const rr = await request(`https://proxy.royaleapi.dev/v1/clans/%23${clanTag.substr(1)}/currentriverrace`);
-        if(!rr) return message.channel.send({ embed: { color: red, description: `**Invalid clan tag!**` } });
+        if (!rr) return message.channel.send({ embed: { color: red, description: `**Invalid clan tag!**` } });
 
         const isCololsseum = rr.periodType === 'colosseum';
         const score = (isCololsseum) ? 'fame' : 'periodPoints';
