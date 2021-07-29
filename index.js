@@ -1,6 +1,7 @@
 const { Client, Collection } = require('discord.js');
 const fs = require('fs');
 const mongoUtil = require('./util/mongoUtil');
+const { red } = require('./util/otherUtil');
 
 const bot = new Client();
 bot.commands = new Collection();
