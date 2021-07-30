@@ -14,7 +14,7 @@ module.exports = {
 
         //must be in command channel if set
         if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
-        if (!clanTag) return message.channel.send({ embed: { color: red, description: `No clan tag linked! Please use ${prefix}setClanTag to link your clan.` } });
+        if (!clanTag) return message.channel.send({ embed: { color: red, description: `**No clan tag linked!** Please use \`${prefix}setClanTag\` to link your clan.` } });
 
         const rr = await request(`https://proxy.royaleapi.dev/v1/clans/%23${clanTag.substr(1)}/currentriverrace`);
         if (!rr) return message.channel.send({ embed: { color: red, description: `**Invalid clan tag!**` } });
