@@ -50,7 +50,6 @@ module.exports = {
 
             for (let i = 0; i < clans.length; i++) {
                 const c = clans[i];
-                console.log(c)
 
                 if (c.tag === clanTag)
                     str += `__**${i + 1}. ${c.name}**__\n<:fame:807475879215104020> **${c.medals}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nAvg. Fame: **${avgFame(c)}**\n\n`;
