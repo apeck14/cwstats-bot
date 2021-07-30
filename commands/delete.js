@@ -6,7 +6,7 @@ module.exports = {
     name: 'delete',
     execute: async (message, arg) => {
         const db = await mongoUtil.db("General");
-        const players = db.collection('Players');
+        const matches = db.collection('Matches');
         const guilds = db.collection("Guilds");
 
         const { channels, adminRoleID, clanTag, prefix, color } = await guilds.findOne({ guildID: message.channel.guild.id });
@@ -24,21 +24,13 @@ module.exports = {
         if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!**\n\n__Usage:__\n\`${prefix}delete #ABC123\`` } });
 
         const tag = (arg[0] === '#') ? arg : '#' + arg;
-        const player = await players.findOne({ tag: tag });
+        const playerWeeks = await matches.find({ tag: tag }).toArray();
 
         //player not in database or doesn't have any weeks counted
-        if (!player) return message.channel.send({ embed: { color: orange, description: 'Player not found.' } });
-        else if (player.fameTotals.length === 0) return message.channel.send({ embed: { color: orange, description: 'Player has no data to delete.' } });
-        else if (!player.fameTotals.find(w => w.clanTag === clanTag)) return message.channel.send({ embed: { color: orange, description: 'Player has no data to delete from this clan.' } });
+        if (playerWeeks.length === 0) return message.channel.send({ embed: { color: orange, description: '**Player has no data to delete.**' } });
+        else if (!playerWeeks.find(w => w.clanTag === clanTag)) return message.channel.send({ embed: { color: orange, description: 'Player has no data to delete from **this clan**.' } });
 
-        const { name, fameTotals } = player;
-        const mostRecentFame = () => {
-            for (let i = fameTotals.length - 1; i >= 0; i--) {
-                if (fameTotals[i].clanTag === clanTag) return fameTotals[i];
-            }
-        }
-
-        const { fame, date } = mostRecentFame();
+        const { name, fame, date } = playerWeeks[playerWeeks.length - 1];
 
         //send confirmatiom embed
         const confirmEmbed = await message.channel.send({
@@ -59,7 +51,7 @@ module.exports = {
 
         //if yes
         if (firstReact._emoji.name === '✅') {
-            await players.updateOne({ tag: tag }, { $pull: { fameTotals: { fame: fame, date: date, clanTag: clanTag } } });
+            await matches.deleteOne(playerWeeks[playerWeeks.length - 1]);
 
             message.channel.send({ embed: { color: green, description: `✅ Deleted **${fame}** from **${name}**! (**${date}**)` } });
         }
