@@ -30,7 +30,7 @@ module.exports = {
         if (arg[0] !== '#') arg = '#' + arg;
 
         const playerMatches = await matches.find({ tag: arg, clanTag: clanTag }).toArray();
-        if(playerMatches.length === 0) return message.channel.send({ embed: { color: orange, description: '**Player has no data available.**' } });
+        if (playerMatches.length === 0) return message.channel.send({ embed: { color: orange, description: '**Player has no data available.**' } });
 
         playerMatches.sort((a, b) => { //sort by date
             a = new Date(a.date);
@@ -137,7 +137,7 @@ module.exports = {
         const clanRank = leaderboard.findIndex(p => p.tag === arg) + 1;
         const { avgFame, name } = leaderboard[clanRank - 1];
 
-        let desc = `Avg. Fame: **${avgFame}**\nClan Rank: **${clanRank}**/${leaderboard.length}`;
+        let desc = `Avg. Fame: **${avgFame.toFixed(0)}**\nClan Rank: **${clanRank}**/${leaderboard.length}`;
 
         message.channel.send({
             embed: {
