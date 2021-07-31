@@ -59,8 +59,6 @@ module.exports = {
 
             r.clan.participants = r.clan.participants.filter(p => p.fame >= 1600 && p.decksUsed >= 16 && p.boatAttacks === 0);
 
-            console.table(r.clan.participants)
-
             for (const p of r.clan.participants) { //loop through particpiants
                 matches.insertOne({
                     name: p.name,
