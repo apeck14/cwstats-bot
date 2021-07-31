@@ -3,13 +3,14 @@ const mongoUtil = require("../util/mongoUtil");
 const { CanvasRenderService } = require('chartjs-node-canvas');
 const ChartDataLabels = require('chartjs-plugin-datalabels');
 const { red, hexToRgbA, average, orange } = require("../util/otherUtil");
+const { groupBy } = require("lodash");
 
 module.exports = {
     name: 'stats',
     execute: async (message, arg) => {
         const db = await mongoUtil.db("General");
         const guilds = db.collection("Guilds");
-        const players = db.collection('Players');
+        const matches = db.collection('Matches');
         const linkedAccounts = db.collection('Linked Accounts');
 
         const { channels, prefix, color, clanTag } = await guilds.findOne({ guildID: message.channel.guild.id });
@@ -28,13 +29,10 @@ module.exports = {
         arg = arg.toUpperCase();
         if (arg[0] !== '#') arg = '#' + arg;
 
-        const player = await players.findOne({ tag: arg });
-        if (!player) return message.channel.send({ embed: { color: red, description: '**Player not found.**' } });
-        if(player.fameTotals.length === 0) return message.channel.send({ embed: { color: orange, description: '**Player has no data.**' } });
+        const playerMatches = await matches.find({ tag: arg, clanTag: clanTag }).toArray();
+        if(playerMatches.length === 0) return message.channel.send({ embed: { color: orange, description: '**Player has no data available.**' } });
 
-        player.fameTotals = player.fameTotals.filter(w => w.clanTag === clanTag); //remove all weeks from different clans
-
-        player.fameTotals.sort((a, b) => { //sort by date
+        playerMatches.sort((a, b) => { //sort by date
             a = new Date(a.date);
             b = new Date(b.date);
 
@@ -44,18 +42,18 @@ module.exports = {
         const chart = {
             type: 'line',
             data: {
-                labels: (player.fameTotals.length === 0) ? '' : player.fameTotals.map(w => w.date),
+                labels: (playerMatches.length === 0) ? '' : playerMatches.map(w => w.date),
                 datasets: [
                     {
                         label: 'Fame',
-                        data: player.fameTotals.map(w => w.fame),
+                        data: playerMatches.map(w => w.fame),
                         borderColor: color,
                         backgroundColor: hexToRgbA(color),
                         fill: true,
                         datalabels: {
                             display: true,
                             formatter: function (fame, chart_obj) {
-                                return `${fame}\n(${player.fameTotals[chart_obj.dataIndex].clanTrophies})`;
+                                return `${fame}\n(${playerMatches[chart_obj.dataIndex].clanTrophies})`;
                             }
                         }
                     }
@@ -112,19 +110,39 @@ module.exports = {
         const image = await canvas.renderToBuffer(chart);
 
         const memberTags = await getMembers(clanTag, true);
-        const memberStats = await players.find({ tag: { $in: memberTags }, 'fameTotals.0': { $exists: true } }).toArray(); //members in clan currently, and have atleast 1 fame score in arr
+        const memberMatches = await matches.find({ tag: { $in: memberTags }, clanTag: clanTag }).toArray(); //members in clan currently
 
-        const leaderboard = memberStats.map(p => ({ name: p.name, tag: p.tag, avgFame: average(p.fameTotals.filter(w => w.clanTag === clanTag).map(w => w.fame)) })).filter(p => p.avgFame !== 'NaN').sort((a, b) => b.avgFame - a.avgFame);
+        const groupedMatches = groupBy(memberMatches, 'tag');
 
-        const clanRank = leaderboard.findIndex(p => p.tag === player.tag) + 1;
-        const avgFame = leaderboard.find(p => p.tag === arg).avgFame;
+        const leaderboard = []; //hold all average fames
+
+        for (const tag in groupedMatches) { //loop through collection
+            const weeks = groupedMatches[tag];
+
+            leaderboard.push(
+                {
+                    name: weeks[weeks.length - 1].name,
+                    tag: weeks[0].tag,
+                    totalWeeks: weeks.length,
+                    avgFame: average(weeks.map(m => m.fame))
+                }
+            )
+        }
+
+        leaderboard.sort((a, b) => { //sort by fame, if tied then total matches
+            if (a.avgFame === b.avgFame) return b.totalWeeks - a.totalWeeks;
+            return b.avgFame - a.avgFame;
+        });
+
+        const clanRank = leaderboard.findIndex(p => p.tag === arg) + 1;
+        const { avgFame, name } = leaderboard[clanRank - 1];
 
         let desc = `Avg. Fame: **${avgFame}**\nClan Rank: **${clanRank}**/${leaderboard.length}`;
 
         message.channel.send({
             embed: {
                 color: color,
-                title: `__${player.name}'s Stats__`,
+                title: `__${name}'s Stats__`,
                 description: desc,
                 image: {
                     url: 'attachment://chart.png'
