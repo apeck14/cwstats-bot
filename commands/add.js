@@ -64,7 +64,7 @@ module.exports = {
             embed: {
                 title: `__How to add stats:__`,
                 color: color,
-                description: `Add scores individually by selecting the week, or add all scores at once using *Smart Add*. Delete any player's most recent score using *${prefix}delete*.\n\n__**1. Select the Week**__\n⏪/⏩ = **Navigate** weeks\n✅ = **Select** week\n✔️ = **Smart Add** entire week (add all players with 16 or more used attacks and 0 boat attacks throughout the week)\n❌ = **Exit**\n\n__**2. Add Player Scores**__\n✅ = **Add** Player's Stats\n❌ = **Skip** Player\n⏭️ = **Skip All** Remaining Players`
+                description: `Add scores individually by selecting the week, or add all scores at once using *Smart Add*. Delete any player's most recent score using *${prefix}delete*.\n\n__**1. Select the Week**__\n⏪/⏩ = **Navigate** weeks\n✅ = **Select** week\n✔️ = **Smart Add** all players\n❌ = **Exit**\n\n__**2. Add Player Scores**__\n✅ = **Add** Player's Stats\n❌ = **Skip** Player\n⏭️ = **Skip All** Remaining Players`
             }
         });
 
@@ -148,7 +148,7 @@ module.exports = {
             else if (firstReact._emoji.name === '✔️') { //smart add entire week (all players with more than 16 attacks and 0 boat attacks)
                 weekSelected = raceLog[index];
 
-                let smartAddParticipants = participants.filter(p => p.decksUsed >= 16 && p.boatAttacks === 0);
+                let smartAddParticipants = participants.filter(p => p.decksUsed >= 16 && p.boatAttacks === 0 && p.fame >= 1600);
                 smartAddParticipants = smartAddParticipants.filter(p => !matchesInDb.find(m => m.tag === p.tag && m.clanTag === clanTag && m.date === createdDateStr && m.fame === p.fame)); //remove all players in matchesInDb
 
                 if (smartAddParticipants.length === 0) {
