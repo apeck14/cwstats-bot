@@ -14,8 +14,8 @@ module.exports = {
         const { commandChannelID } = channels;
         const guildOwnerID = message.guild.owner?.id;
 
-        //if (guildOwnerID !== message.channel.guild.ownerID) return message.channel.send({ embed: { color: red, description: 'Only the **server owner** can set this role!' } });
-        //else if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
+        if (guildOwnerID !== message.author.id && !message.member.hasPermission('ADMINISTRATOR')) return message.channel.send({ embed: { color: red, description: 'Only the **server owner** can set this role!' } });
+        else if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
 
         let roleID = arg.substr(3); //remove first three characters "<@&"
         roleID = roleID.slice(0, -1); //remove last character ">"
