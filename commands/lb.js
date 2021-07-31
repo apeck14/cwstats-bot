@@ -55,10 +55,10 @@ module.exports = {
             for (let i = 0; i < indeces; i++) {
                 const { name, avgFame } = leaderboard[i];
 
-                if (i === 0) str += `🥇 **${name}** (<:fame:807475879215104020>${avgFame})\n`;
-                else if (i === 1) str += `🥈 **${name}** (<:fame:807475879215104020>${avgFame})\n`;
-                else if (i === 2) str += `🥉 **${name}** (<:fame:807475879215104020>${avgFame})\n`;
-                else str += `**${i + 1}.** ${name} (<:fame:807475879215104020>${avgFame})\n`;
+                if (i === 0) str += `🥇 **${name}** (<:fame:807475879215104020>${avgFame.toFixed(0)})\n`;
+                else if (i === 1) str += `🥈 **${name}** (<:fame:807475879215104020>${avgFame.toFixed(0)})\n`;
+                else if (i === 2) str += `🥉 **${name}** (<:fame:807475879215104020>${avgFame.toFixed(0)})\n`;
+                else str += `**${i + 1}.** ${name} (<:fame:807475879215104020>${avgFame.toFixed(0)})\n`;
             }
 
             return str;
