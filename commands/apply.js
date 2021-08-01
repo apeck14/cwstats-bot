@@ -20,7 +20,7 @@ module.exports = {
 
         if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!**\n\n__Usage:__\n\`${prefix}apply #ABC123\`` } });
 
-        arg = arg.toUpperCase();
+        arg = arg.toUpperCase().replace('O', '0');
         arg = arg[0] === "#" ? arg.substr(1) : arg;
 
         const player = await getPlayerData(arg);

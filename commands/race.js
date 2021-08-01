@@ -10,7 +10,7 @@ module.exports = {
         let { channels, color, clanTag, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
 
-        if (arg) clanTag = (arg[0] === '#') ? arg.toUpperCase() : '#' + arg.toUpperCase();
+        if (arg) clanTag = (arg[0] === '#') ? arg.toUpperCase().replace('O', '0') : '#' + arg.toUpperCase().replace('O', '0');
 
         //must be in command channel if set
         if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });

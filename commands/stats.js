@@ -26,7 +26,7 @@ module.exports = {
             else if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!** To use without a tag, you must link your ID.\n\n__Usage:__\n\`${prefix}stats #ABC123\`` } });
         }
 
-        arg = arg.toUpperCase();
+        arg = arg.toUpperCase().replace('O', '0');
         if (arg[0] !== '#') arg = '#' + arg;
 
         const playerMatches = await matches.find({ tag: arg, clanTag: clanTag }).toArray();

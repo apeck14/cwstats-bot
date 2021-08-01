@@ -12,7 +12,7 @@ module.exports = {
         const { commandChannelID } = channels;
         const guildOwnerID = message.guild.owner?.id;
 
-        arg = arg.toUpperCase();
+        arg = arg.toUpperCase().replace('O', '0');
         const tag = (arg[0] === '#') ? arg : '#' + arg;
         const clan = await request(`https://proxy.royaleapi.dev/v1/clans/%23${(arg[0] === '#') ? arg.substr(1) : arg}`);
 

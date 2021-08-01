@@ -16,7 +16,7 @@ module.exports = {
 
         if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!**\n\n__Usage:__\n\`${prefix}link #ABC123\`` } });
 
-        arg = arg.toUpperCase();
+        arg = arg.toUpperCase().replace('O', '0');
         const tag = (arg[0] === '#') ? arg : '#' + arg;
         const player = await request(`https://proxy.royaleapi.dev/v1/players/%23${tag.substr(1)}`);
         if (!player) return message.channel.send({ embed: { color: red, description: `**Player not found.**` } });
