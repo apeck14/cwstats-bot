@@ -1,6 +1,8 @@
+const mongoUtil = require("../util/mongoUtil");
+
 module.exports = {
   name: 'help',
-  execute(message) {
+  async execute(message) {
     const db = await mongoUtil.db("General");
     const guilds = db.collection("Guilds");
 
