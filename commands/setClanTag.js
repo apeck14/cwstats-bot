@@ -16,7 +16,7 @@ module.exports = {
         const tag = (arg[0] === '#') ? arg : '#' + arg;
         const clan = await request(`https://proxy.royaleapi.dev/v1/clans/%23${(arg[0] === '#') ? arg.substr(1) : arg}`);
 
-        if (message.author.id !== guildOwnerID && message.member._roles.indexOf(adminRoleID) === -1) return message.channel.send({ embed: { color: red, description: 'Only **admins** can set this channel!' } });
+        if (message.author.id !== guildOwnerID && message.member._roles.indexOf(adminRoleID) === -1) return message.channel.send({ embed: { color: red, description: `Only the **server owner** or users with the set admin role can set the clan tag!\n\n__Usage:__\n\`${prefix}setClanTag #TAG\`` } });
         else if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
 
         if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!** Try again.\n\n__Usage:__\n\`${prefix}setClanTag #TAG\`` } });
