@@ -19,7 +19,7 @@ module.exports = {
         desc += `\n**__4. Set the Command Channel__** (Optional)\nSet a desginated channel where all bot commands will be used. This will keep your server organized, as commands will not work outside of this channel. \n\`\`\`${prefix}setCommandChannel #CHANNEL\`\`\``;
         desc += `\n**__5. Automated Recruitment through Discord__** (Optional)\nIf your server is open to the public and you'd like to more easily manage join requests, set the apply channel (where all new users will use the ${prefix}apply command) and set the applications channel (where all requests should be posted for leadership to review). \n\`\`\`${prefix}setApplyChannel #CHANNEL\n${prefix}setApplicationsChannel #CHANNEL\`\`\``;
         desc += `\n**__6. Change Prefix and Bot Color__** (Optional)\nIf need be, you can change my prefix (default: ?), or change the color of my messages to match your clan. \n\`\`\`${prefix}prefix PREFIX\n${prefix}setColor #HEXCODE\`\`\``;
-        desc += `\n\n**Finished!** The bot should now be fully functional within your server. To see the full list of commands, use ${prefix}help.`;
+        desc += `\n**Finished!** The bot should now be fully functional within your server. To see the full list of commands, use ${prefix}help.`;
 
         return message.channel.send({embed: {
             title: '__Setup__',
