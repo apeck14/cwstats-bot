@@ -23,7 +23,7 @@ module.exports = {
             const linkedAccount = await linkedAccounts.findOne({ discordID: message.author.id });
 
             if (linkedAccount) arg = linkedAccount.tag;
-            else if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!** To use without a tag, you must link your ID.\n\n__Usage:__\n\`${prefix}stats #ABC123\`` } });
+            else if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!** To use without a tag, you must link your ID.\n\n__Usage:__\n\`${prefix}stats #ABC123\`\n\`${prefix}link #ABC123\`` } });
         }
 
         arg = arg.toUpperCase().replace('O', '0');
