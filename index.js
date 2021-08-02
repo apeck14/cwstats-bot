@@ -28,26 +28,26 @@ bot.on('err', e => {
 });
 
 bot.on('message', async message => {
-    const db = await mongoUtil.db("General");
-    const guilds = db.collection("Guilds");
-    const prefix = (await guilds.findOne({ guildID: message.channel.guild.id })).prefix;
-    const channelPermissions = message.channel.permissionsFor(bot.user);
-
-    if (message.author.bot || !message.content.startsWith(prefix)) return;
-
-    let args = message.content.slice(prefix.length).trim().split(/ +/);
-    const command = args.shift().toLowerCase();
-
-    args = args.join(" ");
-
-    if (!bot.commands.has(command)) return;
-
-    //CHECK PERMISSIONS
-    if (!channelPermissions.has('SEND_MESSAGES')) return;
-    if(!channelPermissions.has(['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS', 'VIEW_CHANNEL']))
-        return message.channel.send({embed: {color: red, description: '**__Missing Permissions__**\n\nPlease make sure I am able to **View Channel**, **Add Reactions**, **Attach Files**, **Embed Links**, and **Use External Emojis** in this channel.'}});
-
     try {
+        const db = await mongoUtil.db("General");
+        const guilds = db.collection("Guilds");
+        const prefix = (await guilds.findOne({ guildID: message.channel.guild.id })).prefix;
+        const channelPermissions = message.channel.permissionsFor(bot.user);
+
+        if (message.author.bot || !message.content.startsWith(prefix)) return;
+
+        let args = message.content.slice(prefix.length).trim().split(/ +/);
+        const command = args.shift().toLowerCase();
+
+        args = args.join(" ");
+
+        if (!bot.commands.has(command)) return;
+
+        //CHECK PERMISSIONS
+        if (!channelPermissions.has('SEND_MESSAGES')) return;
+        if (!channelPermissions.has(['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS', 'VIEW_CHANNEL']))
+            return message.channel.send({ embed: { color: red, description: '**__Missing Permissions__**\n\nPlease make sure I am able to **View Channel**, **Add Reactions**, **Attach Files**, **Embed Links**, and **Use External Emojis** in this channel.' } });
+
         //increment commands used in statistics
         const statistics = db.collection("Statistics");
         statistics.updateOne({}, { $inc: { commandsUsed: 1 } });
@@ -56,7 +56,8 @@ bot.on('message', async message => {
         await bot.commands.get(command).execute(message, args, bot, prefix);
         message.channel.stopTyping();
     } catch (err) {
-        message.channel.send({embed: {color: red, description: 'Unexpected error.'}});
+        message.channel.send({ embed: { color: red, description: 'Unexpected error.' } });
+        message.channel.stopTyping();
         console.error(err);
     }
 });
