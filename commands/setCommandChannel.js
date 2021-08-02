@@ -1,9 +1,9 @@
 const mongoUtil = require("../util/mongoUtil");
-const { red, green } = require("../util/otherUtil");
+const { red, green, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'setcommandchannel',
-    execute: async (message, arg) => {
+    execute: async (message) => {
         const db = await mongoUtil.db("General");
         const guilds = db.collection("Guilds");
 

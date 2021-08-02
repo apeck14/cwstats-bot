@@ -1,7 +1,7 @@
 const { groupBy } = require("lodash");
 const { getMembers } = require("../util/clanUtil");
 const mongoUtil = require("../util/mongoUtil");
-const { average, orange } = require("../util/otherUtil");
+const { average, orange, red } = require("../util/otherUtil");
 
 module.exports = {
     name: 'lb',
