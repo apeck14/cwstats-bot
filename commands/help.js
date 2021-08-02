@@ -26,7 +26,7 @@ module.exports = {
       { name: 'setApplyChannel', desc: 'Set the channel where new server members should be applying (use command in the channel to set). `Default: Any Channel`', main: false, setup: true },
       { name: 'setApplicationsChannel', desc: 'Set the channel where all applications should be posted (use command in the channel to set). `Default: No Channel`', main: false, setup: true },
       { name: 'setCommandChannel', desc: 'Set the channel where all commands should be allowed (use command in the channel to set). `Default: Any Channel`', main: false, setup: true },
-      { name: 'setPrefix PREFIX', desc: 'Set a custom prefix for all bot commands. `Default: ?`', main: false, setup: true }
+      { name: 'prefix PREFIX', desc: 'Set a custom prefix for all bot commands. `Default: ?`', main: false, setup: true }
     ];
 
     commands.sort((a, b) => {

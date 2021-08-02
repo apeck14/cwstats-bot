@@ -13,10 +13,10 @@ for (const file of commandFiles) {
     bot.commands.set(command.name, command);
 }
 
-bot.once('ready', async () => {
-    console.log('CW2Stats is online!');
+bot.once('ready', async () => {console.log('CW2Stats is online!');
+    console.log('CW2 Stats is online!')
 
-    bot.user.setActivity(`Use help command :)`);
+    bot.user.setActivity(`?setup ?help`);
 });
 
 bot.on('disconnect', () => {
@@ -31,7 +31,7 @@ bot.on('message', async message => {
     try {
         const db = await mongoUtil.db("General");
         const guilds = db.collection("Guilds");
-        const prefix = (await guilds.findOne({ guildID: message.channel.guild.id })).prefix;
+        const { prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
         const channelPermissions = message.channel.permissionsFor(bot.user);
 
         if (message.author.bot || !message.content.startsWith(prefix)) return;
