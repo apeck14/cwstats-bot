@@ -14,7 +14,7 @@ for (const file of commandFiles) {
 }
 
 bot.once('ready', async () => {console.log('CW2Stats is online!');
-    console.log('CW2 Stats is online!')
+    console.log('CW2 Stats is online!');
 
     bot.user.setActivity(`?setup ?help`);
 });
