@@ -1,6 +1,6 @@
 module.exports = {
   name: 'help',
-  execute(message, arg, bot, prefix) {
+  execute(message) {
     const db = await mongoUtil.db("General");
     const guilds = db.collection("Guilds");
 
