@@ -58,6 +58,7 @@ bot.on('message', async message => {
     } catch (err) {
         message.channel.send({ embed: { color: red, description: 'Unexpected error.' } });
         message.channel.stopTyping();
+        console.log(`${message.guild.name} (${message.guild.id})`);
         console.error(err);
     }
 });
