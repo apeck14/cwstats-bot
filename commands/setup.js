@@ -1,4 +1,5 @@
 const mongoUtil = require("../util/mongoUtil");
+const { red } = require('../util/clanUtil');
 
 module.exports = {
     name: 'setup',
