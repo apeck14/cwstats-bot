@@ -35,6 +35,7 @@ module.exports = {
             if ((rr.periodIndex - rr.periodLogs[rr.periodLogs.length - 1].periodIndex) <= 4) return 0;
             else return rr.periodIndex - rr.periodLogs[rr.periodLogs.length - 1].periodIndex - 4;
         }
+
         const avgFame = c => {
             if (isCololsseum) {
                 if (c.attacksUsedToday === 0 && battleDaysCompleted() === 0) return '0.0';
@@ -46,16 +47,25 @@ module.exports = {
             }
         }
 
+        //set ranks (in case of ties)
+        for(let i = 0; i < clans.length; i++){
+            const tiedClans = clans.filter(c => c.medals === clans[i].medals);
+
+            for(const c of tiedClans){
+                clans.find(x => x.tag === c.tag).rank = i + 1;
+            }
+
+            i += tiedClans.length - 1;
+        }
+
         const desc = () => {
             let str = ``;
 
-            for (let i = 0; i < clans.length; i++) {
-                const c = clans[i];
-
+            for(const c of clans){
                 if (c.tag === clanTag)
-                    str += `__**${i + 1}. ${c.name}**__\n<:fame:807475879215104020> **${c.medals}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nAvg. Fame: **${avgFame(c)}**\n\n`;
+                    str += `__**${c.rank}. ${c.name}**__\n<:fame:807475879215104020> **${c.medals}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nAvg. Fame: **${avgFame(c)}**\n\n`;
                 else
-                    str += `**${i + 1}. ${c.name}**\n<:fame:807475879215104020> **${c.medals}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nAvg. Fame: **${avgFame(c)}**\n\n`;
+                    str += `**${c.rank}. ${c.name}**\n<:fame:807475879215104020> **${c.medals}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nAvg. Fame: **${avgFame(c)}**\n\n`;
             }
 
             return str;
