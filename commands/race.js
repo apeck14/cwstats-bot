@@ -32,22 +32,33 @@ module.exports = {
             }));
 
         const battleDaysCompleted = () => {
-            if ((rr.periodIndex - rr.periodLogs[rr.periodLogs.length - 1].periodIndex) <= 4) return 0;
+            if (!isCololsseum || (rr.periodIndex - rr.periodLogs[rr.periodLogs.length - 1].periodIndex) <= 4) return 0;
             else return rr.periodIndex - rr.periodLogs[rr.periodLogs.length - 1].periodIndex - 4;
         }
 
         const avgFame = c => {
             if (isCololsseum) {
-                if (c.attacksUsedToday === 0 && battleDaysCompleted() === 0) return '0.0';
-                return (c.medals / (c.attacksUsedToday + (200 * battleDaysCompleted()))).toFixed(1);
+                if (c.attacksUsedToday === 0 && battleDaysCompleted() === 0) return 0;
+                return c.medals / (c.attacksUsedToday + (200 * battleDaysCompleted()));
             }
             else {
-                if (c.attacksUsedToday === 0) return '0.0';
-                return (c.medals / c.attacksUsedToday).toFixed(1);
+                if (c.attacksUsedToday === 0) return 0;
+                return c.medals / c.attacksUsedToday;
             }
         }
 
-        //set ranks (in case of ties)
+        const projectedFame = c => {
+            if(isCololsseum) return c.medals + (c.avgFame * (200 - c.attacksUsedToday + (200 * (3 - battleDaysCompleted())))); //projected weekly fame
+            else return c.medals + ((200 - c.attacksUsedToday) * c.avgFame); //projected daily fame
+        }
+
+        //set average and projected fame
+        for(const c of clans){
+            c.avgFame = avgFame(c);
+            c.projFame = projectedFame(c);
+        }
+
+        //set ranks (in case of ties) and average fame
         for(let i = 0; i < clans.length; i++){
             const tiedClans = clans.filter(c => c.medals === clans[i].medals);
 
@@ -63,10 +74,10 @@ module.exports = {
 
             for(const c of clans){
                 if (c.tag === clanTag)
-                    str += `__**${c.rank}. ${c.name}**__\n<:fame:807475879215104020> **${c.medals}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nAvg. Fame: **${avgFame(c)}**\n\n`;
+                    str += `__**${c.rank}. ${c.name}**__\n<:fame:807475879215104020> **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nAvg. Fame: **${c.avgFame.toFixed(1)}**\n\n`;
                 else
-                    str += `**${c.rank}. ${c.name}**\n<:fame:807475879215104020> **${c.medals}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nAvg. Fame: **${avgFame(c)}**\n\n`;
-            }
+                    str += `**${c.rank}. ${c.name}**\n<:fame:807475879215104020> **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nAvg. Fame: **${c.avgFame.toFixed(1)}**\n\n`;
+                }
 
             return str;
         }
