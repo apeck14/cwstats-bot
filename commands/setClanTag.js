@@ -6,6 +6,7 @@ module.exports = {
     execute: async (message, arg) => {
         const db = await mongoUtil.db("General");
         const guilds = db.collection("Guilds");
+        const statistics = db.collection("Statistics");
 
         //must be server owner or admin role
         const { channels, prefix, adminRoleID, clanTag } = await guilds.findOne({ guildID: message.channel.guild.id });
@@ -28,6 +29,7 @@ module.exports = {
 
         //----------------------------------------------------------------------------------------------------------------------------------------
         try {
+            if(!clanTag) statistics.updateOne({}, { $inc: { linkedClans: 1 } }); //add new linked clan (if clan has not been linked in the past)
             guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { clanTag: tag } });
             message.channel.send({ embed: { color: green, description: `✅ Server successfully linked to **${clan.name}**!` } });
         } catch (e) {
