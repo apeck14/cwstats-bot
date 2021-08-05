@@ -78,9 +78,9 @@ module.exports = {
 
             for(const c of clans){
                 if (c.tag === clanTag)
-                    str += `__**${c.rank}. ${c.name}**__\n<:fame:807475879215104020> **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nAvg. Fame: **${c.avgFame.toFixed(1)}**\n\n`;
+                    str += `__**${c.rank}. ${c.name}**__\n<:fame:807475879215104020> **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nFame/Atk: **${c.avgFame.toFixed(1)}**\n\n`;
                 else
-                    str += `**${c.rank}. ${c.name}**\n<:fame:807475879215104020> **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nAvg. Fame: **${c.avgFame.toFixed(1)}**\n\n`;
+                    str += `**${c.rank}. ${c.name}**\n<:fame:807475879215104020> **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nFame/Atk: **${c.avgFame.toFixed(1)}**\n\n`;
                 }
 
             return str;
