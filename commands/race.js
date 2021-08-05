@@ -48,8 +48,12 @@ module.exports = {
         }
 
         const projectedFame = c => {
-            if(isCololsseum) return c.medals + (c.avgFame * (200 - c.attacksUsedToday + (200 * (3 - battleDaysCompleted())))); //projected weekly fame
-            else return c.medals + ((200 - c.attacksUsedToday) * c.avgFame); //projected daily fame
+            let projFame;
+
+            if(isCololsseum) projFame = c.medals + (c.avgFame * (200 - c.attacksUsedToday + (200 * (3 - battleDaysCompleted())))); //projected weekly fame
+            else projFame = c.medals + ((200 - c.attacksUsedToday) * c.avgFame); //projected daily fame
+
+            return Math.round(projFame / 50) * 50;
         }
 
         //set average and projected fame
