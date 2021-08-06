@@ -69,7 +69,7 @@ module.exports = {
             title: `__Avg. Fame Leaders__`,
             description: desc(),
             footer: {
-                text: `Use ${prefix}stats to see your personal stats`
+                text: `Ranked by avg. fame while in clan | ${prefix}stats`
             }
         }
 
