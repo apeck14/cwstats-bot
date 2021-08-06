@@ -13,8 +13,12 @@ for (const file of commandFiles) {
     bot.commands.set(command.name, command);
 }
 
+let db;
+
 bot.once('ready', async () => {
     console.log('CW2 Stats is online!');
+
+    db = await mongoUtil.db('General');
 
     bot.user.setActivity(`?setup ?help`);
 });
@@ -29,7 +33,6 @@ bot.on('err', e => {
 
 bot.on('message', async message => {
     try {
-        const db = await mongoUtil.db("General");
         const guilds = db.collection("Guilds");
         const { prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
         const channelPermissions = message.channel.permissionsFor(bot.user);
@@ -65,7 +68,6 @@ bot.on('message', async message => {
 
 //when bot joins new guild
 bot.on('guildCreate', async guild => {
-    const db = await mongoUtil.db("General");
     const guilds = db.collection("Guilds");
     const statistics = db.collection("Statistics");
 
@@ -91,7 +93,6 @@ bot.on('guildCreate', async guild => {
 
 //when bot leaves guild
 bot.on('guildDelete', async guild => {
-    const db = await mongoUtil.db("General");
     const guilds = db.collection("Guilds");
     const statistics = db.collection("Statistics");
 
