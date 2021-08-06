@@ -1,9 +1,6 @@
-const mongoUtil = require("../util/mongoUtil");
-
 module.exports = {
   name: 'help',
-  async execute(message) {
-    const db = await mongoUtil.db("General");
+  async execute(message, arg, bot, db) {
     const guilds = db.collection("Guilds");
 
     const { channels, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
@@ -14,7 +11,7 @@ module.exports = {
 
     const commands = [
       { name: 'lb full?', desc: 'View your clan\'s war leaderboard', main: true },
-      { name: 'link #TAG', desc: `Link your CR account to the bot (so you don't have to type in your tag each time you call *${prefix}player* or *${prefix}stats*)`, main: true },
+      { name: 'link #TAG', desc: `Link your CR tag to the bot (so you don't have to type in your tag each time you call *${prefix}player* or *${prefix}stats*)`, main: true },
       { name: "player #TAG?", desc: "View information about any player", main: true },
       { name: 'apply #TAG', desc: 'Apply to join the clan', main: true },
       { name: 'race #TAG?', desc: 'View current river race stats of any clan', main: true },

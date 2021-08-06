@@ -1,12 +1,10 @@
 const { getPlayerData } = require("../util/clanUtil");
-const mongoUtil = require("../util/mongoUtil");
 const { CanvasRenderService } = require('chartjs-node-canvas');
 const { red, hexToRgbA } = require("../util/otherUtil");
 
 module.exports = {
     name: 'player',
-    execute: async (message, arg) => {
-        const db = await mongoUtil.db("General");
+    execute: async (message, arg, bot, db) => {
         const guilds = db.collection("Guilds");
         const linkedAccounts = db.collection('Linked Accounts');
 

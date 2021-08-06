@@ -3,8 +3,7 @@ const { red, green, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'setadminrole',
-    execute: async (message, arg) => {
-        const db = await mongoUtil.db("General");
+    execute: async (message, arg, bot, db) => {
         const guilds = db.collection("Guilds");
 
         //only server owner can set this role

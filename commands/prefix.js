@@ -1,10 +1,8 @@
-const mongoUtil = require("../util/mongoUtil");
 const { red, green, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'prefix',
-    execute: async (message, arg) => {
-        const db = await mongoUtil.db("General");
+    execute: async (message, arg, bot, db) => {
         const guilds = db.collection("Guilds");
 
         //must be server owner or admin role

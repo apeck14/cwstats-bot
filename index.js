@@ -53,7 +53,7 @@ bot.on('message', async message => {
         statistics.updateOne({}, { $inc: { commandsUsed: 1 } });
 
         message.channel.startTyping();
-        await bot.commands.get(command).execute(message, args, bot, prefix);
+        await bot.commands.get(command).execute(message, args, bot, db);
         message.channel.stopTyping();
     } catch (err) {
         message.channel.send({ embed: { color: red, description: 'Unexpected error.' } });

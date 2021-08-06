@@ -1,12 +1,9 @@
-const { patch } = require("request");
 const { verifyClanBio } = require("../util/clanUtil");
-const mongoUtil = require("../util/mongoUtil");
 const { request, red, parseDate, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'sync',
-    execute: async (message) => {
-        const db = await mongoUtil.db("General");
+    execute: async (message, arg, bot, db) => {
         const matches = db.collection('Matches');
         const guilds = db.collection("Guilds");
         const weeksAdded = db.collection('Weeks_Added');
@@ -70,7 +67,7 @@ module.exports = {
                 });
             }
 
-            desc += `\n• **__Week ${r.sectionIndex + 1} (${r.createdDateStr})__**\n`;
+            desc += `• **__Week ${r.sectionIndex + 1} (${r.createdDateStr})__**\n`;
 
             for (let i = 0; i < r.clan.participants.length; i++) {
                 if (i === 0) desc += `${i + 1}. ${r.clan.participants[i].name} <:fame:807475879215104020>${r.clan.participants[i].fame}\n`; //1st
@@ -80,6 +77,8 @@ module.exports = {
                 else if (i === r.clan.participants.length - 2 && i > 2) desc += `${i + 1}. ${r.clan.participants[i].name} <:fame:807475879215104020>${r.clan.participants[i].fame}\n`; //second to last
                 else if (i === r.clan.participants.length - 1 && i > 2) desc += `${i + 1}. ${r.clan.participants[i].name} <:fame:807475879215104020>${r.clan.participants[i].fame}\n`; //last
             }
+
+            desc += `\n`;
         }
 
         return message.channel.send({

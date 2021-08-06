@@ -1,10 +1,8 @@
-const mongoUtil = require("../util/mongoUtil");
 const { red, orange, green, request } = require("../util/otherUtil");
 
 module.exports = {
     name: 'link',
-    execute: async (message, arg) => {
-        const db = await mongoUtil.db("General");
+    execute: async (message, arg, bot, db) => {
         const guilds = db.collection("Guilds");
         const linkedAccounts = db.collection('Linked Accounts');
 

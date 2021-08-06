@@ -1,10 +1,8 @@
 const { request, red } = require("../util/otherUtil");
-const mongoUtil = require("../util/mongoUtil");
 
 module.exports = {
     name: 'race',
-    execute: async (message, arg) => {
-        const db = await mongoUtil.db("General");
+    execute: async (message, arg, bot, db) => {
         const guilds = db.collection("Guilds");
 
         let { channels, color, clanTag, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });

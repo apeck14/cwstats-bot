@@ -1,10 +1,8 @@
-const mongoUtil = require("../util/mongoUtil");
 const { red } = require('../util/clanUtil');
 
 module.exports = {
     name: 'setup',
-    execute: async (message) => {
-        const db = await mongoUtil.db("General");
+    execute: async (message, arg, bot, db) => {
         const guilds = db.collection("Guilds");
 
         const { channels, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });

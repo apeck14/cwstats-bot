@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const mdbClient = new MongoClient(process.env.uri, { useUnifiedTopology: true });
+const mdbClient = new MongoClient(process.env.uri, { useUnifiedTopology: true, useNewUrlParser: true });
 
 module.exports = {
     connect: async () => {

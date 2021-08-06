@@ -2,12 +2,10 @@ const { MessageEmbed } = require("discord.js");
 const { getPlayerData, hex } = require("../util/clanUtil");
 const { CanvasRenderService } = require('chartjs-node-canvas');
 const { red, orange, hexToRgbA, green } = require("../util/otherUtil");
-const mongoUtil = require("../util/mongoUtil");
 
 module.exports = {
     name: 'apply',
-    execute: async (message, arg, bot) => {
-        const db = await mongoUtil.db("General");
+    execute: async (message, arg, bot, db) => {
         const guilds = db.collection("Guilds");
         const { channels, prefix, color } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { applyChannelID, applicationsChannelID } = channels;

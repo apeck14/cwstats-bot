@@ -1,5 +1,4 @@
 const { getMembers } = require("../util/clanUtil");
-const mongoUtil = require("../util/mongoUtil");
 const { CanvasRenderService } = require('chartjs-node-canvas');
 const { red, hexToRgbA, average, orange } = require("../util/otherUtil");
 const { groupBy } = require("lodash");
@@ -8,8 +7,7 @@ const { MessageAttachment } = require("discord.js");
 
 module.exports = {
     name: 'stats',
-    execute: async (message, arg) => {
-        const db = await mongoUtil.db("General");
+    execute: async (message, arg, bot, db) => {
         const guilds = db.collection("Guilds");
         const matches = db.collection('Matches');
         const linkedAccounts = db.collection('Linked Accounts');
