@@ -44,9 +44,11 @@ module.exports = {
             //create clan leaderboard
             for(const t of clanMembers){
                 const playerMatches = allMatchesGrouped[t];
-                
-                const playerFameScores = playerMatches.map(w => w.fame);
-                clanLb.push({tag: t, avgFame: average(playerFameScores), totalWeeks: playerMatches.length});
+
+                if(playerMatches && playerMatches.length > 0){
+                    const playerFameScores = playerMatches.map(w => w.fame);
+                    clanLb.push({tag: t, avgFame: average(playerFameScores), totalWeeks: playerMatches.length});
+                }
             }
         }
 
