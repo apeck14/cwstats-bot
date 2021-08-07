@@ -19,7 +19,6 @@ bot.once('ready', async () => {
     console.log('CW2 Stats is online!');
 
     db = await mongoUtil.db('General');
-    console.log(db)
 
     bot.user.setActivity(`?setup ?help`);
 });
@@ -34,8 +33,8 @@ bot.on('err', e => {
 
 bot.on('message', async message => {
     try {
-        console.log(db.collection("Guilds"))
-        const guilds = db.collection("Guilds");
+        const guilds = db.collection('Guilds');
+        console.log(guilds)
         const { prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
         const channelPermissions = message.channel.permissionsFor(bot.user);
 
