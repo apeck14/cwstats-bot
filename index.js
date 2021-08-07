@@ -34,7 +34,6 @@ bot.on('err', e => {
 bot.on('message', async message => {
     try {
         const guilds = db.collection('Guilds');
-        console.log(guilds)
         const { prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
         const channelPermissions = message.channel.permissionsFor(bot.user);
 
