@@ -21,5 +21,8 @@
     "merge-img": "^2.1.3",
     "mongodb": "^3.6.11",
     "puppeteer": "^10.1.0"
+  },
+  "engines": {
+    "node": "15.3.0"
   }
 }
