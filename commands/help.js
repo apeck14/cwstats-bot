@@ -1,8 +1,6 @@
 module.exports = {
   name: 'help',
-  async execute(message, arg, bot, db) {
-    const guilds = db.collection("Guilds");
-
+  async execute (message, arg, bot, guilds, linkedAccounts, matches, statistics, weeksAdded) {
     const { channels, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
     const { commandChannelID } = channels;
 

@@ -3,11 +3,7 @@ const { request, red, parseDate, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'sync',
-    execute: async (message, arg, bot, db) => {
-        const matches = db.collection('Matches');
-        const guilds = db.collection("Guilds");
-        const weeksAdded = db.collection('Weeks_Added');
-
+    execute: async (message, arg, bot, guilds, linkedAccounts, matches, statistics, weeksAdded) => {
         const { channels, adminRoleID, clanTag, prefix, color } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
         const guildOwnerID = message.guild.owner?.id;

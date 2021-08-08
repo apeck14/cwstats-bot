@@ -2,9 +2,7 @@ const { red, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'setcolor',
-    execute: async (message, arg, bot, db) => {
-        const guilds = db.collection("Guilds");
-
+    execute: async (message, arg, bot, guilds, linkedAccounts, matches, statistics, weeksAdded) => {
         //must be server owner or admin role
         const { channels, prefix, adminRoleID, color } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;

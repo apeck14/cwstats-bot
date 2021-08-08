@@ -1,12 +1,10 @@
-const { MessageEmbed } = require("discord.js");
-const { getPlayerData, hex } = require("../util/clanUtil");
+const { getPlayerData } = require("../util/clanUtil");
 const { CanvasRenderService } = require('chartjs-node-canvas');
 const { red, orange, hexToRgbA, green } = require("../util/otherUtil");
 
 module.exports = {
     name: 'apply',
-    execute: async (message, arg, bot, db) => {
-        const guilds = db.collection("Guilds");
+    execute: async (message, arg, bot, guilds, linkedAccounts, matches, statistics, weeksAdded) => {
         const { channels, prefix, color } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { applyChannelID, applicationsChannelID } = channels;
 
@@ -22,7 +20,7 @@ module.exports = {
         arg = arg[0] === "#" ? arg.substr(1) : arg;
 
         const player = await getPlayerData(arg);
-        if (!player) return message.channel.send(new MessageEmbed().setDescription("Invalid tag! Try again.").setColor(hex));
+        if (!player) return message.channel.send({ embed: { color: red, description: `**Invalid tag!** Try again.` } });
 
         const pbRating = () => {
             /*

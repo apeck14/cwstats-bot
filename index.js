@@ -13,12 +13,17 @@ for (const file of commandFiles) {
     bot.commands.set(command.name, command);
 }
 
-let db;
+let guilds, linkedAccounts, matches, statistics, weeksAdded;
 
 bot.once('ready', async () => {
     console.log('CW2 Stats is online!');
 
-    db = await mongoUtil.db('General');
+    const db = await mongoUtil.db('General');
+    guilds = db.collection('Guilds');
+    linkedAccounts = db.collection('Linked Accounts');
+    matches = db.collection('Matches');
+    statistics = db.collection('Statistics');
+    weeksAdded = db.collection('Weeks_Added');
 
     bot.user.setActivity(`?setup ?help`);
 });
@@ -33,7 +38,6 @@ bot.on('err', e => {
 
 bot.on('message', async message => {
     try {
-        const guilds = db.collection('Guilds');
         const { prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
         const channelPermissions = message.channel.permissionsFor(bot.user);
 
@@ -52,11 +56,10 @@ bot.on('message', async message => {
             return message.channel.send({ embed: { color: red, description: '**__Missing Permissions__**\n\nPlease make sure I am able to **View Channel**, **Add Reactions**, **Attach Files**, **Embed Links**, and **Use External Emojis** in this channel.' } });
 
         //increment commands used in statistics
-        const statistics = db.collection("Statistics");
         statistics.updateOne({}, { $inc: { commandsUsed: 1 } });
 
         message.channel.startTyping();
-        await bot.commands.get(command).execute(message, args, bot, db);
+        await bot.commands.get(command).execute(message, args, bot, guilds, linkedAccounts, matches, statistics, weeksAdded);
         message.channel.stopTyping();
     } catch (err) {
         message.channel.send({ embed: { color: red, description: 'Unexpected error.' } });
@@ -68,9 +71,6 @@ bot.on('message', async message => {
 
 //when bot joins new guild
 bot.on('guildCreate', async guild => {
-    const guilds = db.collection("Guilds");
-    const statistics = db.collection("Statistics");
-
     guilds.insertOne(
         {
             guildID: guild.id,
@@ -93,9 +93,6 @@ bot.on('guildCreate', async guild => {
 
 //when bot leaves guild
 bot.on('guildDelete', async guild => {
-    const guilds = db.collection("Guilds");
-    const statistics = db.collection("Statistics");
-
     guilds.deleteOne({ guildID: guild.id });
     statistics.updateOne({}, { $inc: { guilds: -1 } });
 
