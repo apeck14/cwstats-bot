@@ -24,7 +24,7 @@ module.exports = {
       { name: 'setApplicationsChannel', desc: 'Set the channel where all applications should be posted (use command in the channel to set). `Default: No Channel`', main: false, setup: true },
       { name: 'setCommandChannel', desc: 'Set the channel where all commands should be allowed (use command in the channel to set). `Default: Any Channel`', main: false, setup: true },
       { name: 'prefix PREFIX', desc: 'Set a custom prefix for all bot commands. `Default: ?`', main: false, setup: true },
-      { name: 'glb', desc: 'View the global *CW2 Stats* leadeboard', main: true }
+      { name: 'glb', desc: 'View the global *CW2 Stats* leaderboard', main: true }
     ];
 
     commands.sort((a, b) => {
