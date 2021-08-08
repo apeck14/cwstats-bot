@@ -29,16 +29,16 @@ for (const file of commandFiles) {
     bot.commands.set(command.name, command);
 }
 
-bot.once('ready', () => {
-    console.log('CW2 Stats is online!');
-
-    bot.guilds.cache.get('871406430933110805').leave()
+bot.guilds.cache.get('871406430933110805').leave()
         .then(() => {
             console.log('Left server!');
         })
         .catch(err => {
             console.log(`there was an error leaving the guild: \n ${err.message}`);
         });
+
+bot.once('ready', () => {
+    console.log('CW2 Stats is online!');
 
     bot.user.setActivity(`?setup ?help`);
 });
