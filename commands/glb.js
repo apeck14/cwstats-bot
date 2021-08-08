@@ -53,7 +53,7 @@ module.exports = {
 
                 let nameStr;
 
-                if(memberTags.indexOf(tag) !== -1) nameStr = `**${name}**`;
+                if(memberTags.indexOf(tag) !== -1) nameStr = `__**${name}**__`;
                 else nameStr = `${name}`;
 
                 if (i === 0) str += `🥇 ${nameStr} (<:fame:807475879215104020>${avgFame.toFixed(0)})\n`;
