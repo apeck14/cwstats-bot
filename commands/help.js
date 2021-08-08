@@ -15,15 +15,16 @@ module.exports = {
       { name: "player #TAG?", desc: "View information about any player", main: true },
       { name: 'apply #TAG', desc: 'Apply to join the clan', main: true },
       { name: 'race #TAG?', desc: 'View current river race stats of any clan', main: true },
-      { name: 'stats #TAG?', desc: 'View war stats of a clan member', main: true },
-      { name: 'sync', desc: 'Sync all recent weeks\' clan war data', main: false },
+      { name: 'stats #TAG?', desc: 'View war stats of a player', main: true },
+      { name: 'sync', desc: 'Sync all recent weeks\' war data', main: false },
       { name: 'setColor #HEXCODE', desc: 'Set the clan color (ex: #F1F1F1)', main: false, setup: true },
       { name: 'setAdminRole @ROLE', desc: 'Set the role that can use admin commands (only administrators can set role)', main: false, setup: true },
       { name: 'setClanTag #TAG', desc: 'Set the clan tag for this server', main: false, setup: true },
       { name: 'setApplyChannel', desc: 'Set the channel where new server members should be applying (use command in the channel to set). `Default: Any Channel`', main: false, setup: true },
       { name: 'setApplicationsChannel', desc: 'Set the channel where all applications should be posted (use command in the channel to set). `Default: No Channel`', main: false, setup: true },
       { name: 'setCommandChannel', desc: 'Set the channel where all commands should be allowed (use command in the channel to set). `Default: Any Channel`', main: false, setup: true },
-      { name: 'prefix PREFIX', desc: 'Set a custom prefix for all bot commands. `Default: ?`', main: false, setup: true }
+      { name: 'prefix PREFIX', desc: 'Set a custom prefix for all bot commands. `Default: ?`', main: false, setup: true },
+      { name: 'glb', desc: 'View the global *CW2 Stats* leadeboard', main: true }
     ];
 
     commands.sort((a, b) => {
