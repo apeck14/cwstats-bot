@@ -2,7 +2,9 @@ const { red } = require('../util/clanUtil');
 
 module.exports = {
     name: 'setup',
-    execute: async (message, arg, bot, guilds, linkedAccounts, matches, statistics, weeksAdded) => {
+    execute: async (message, arg, bot, db) => {
+        const guilds = db.collection('Guilds');
+        
         const { channels, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
 
@@ -18,13 +20,13 @@ module.exports = {
         desc += `\n**__6. Change Prefix and Bot Color__** (Optional)\nIf need be, you can change my prefix (default: ?), or change the color of my messages to match your clan. \n\`\`\`${prefix}prefix PREFIX\n${prefix}setColor #HEXCODE\`\`\``;
         desc += `\n**Finished!** The bot should now be fully functional within your server. To see the full list of commands, use ${prefix}help.`;
 
-        return message.channel.send({embed: {
+        message.channel.send({embed: {
             title: '__Setup__',
             color: '#ff237a',
             footer: {
                 text: 'For help, suggestions, or bug reports contact Apehk#5688 via Discord.'
             },
             description: desc
-        }})
+        }});
     }
 }

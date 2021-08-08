@@ -4,7 +4,9 @@ const { red, orange, hexToRgbA, green } = require("../util/otherUtil");
 
 module.exports = {
     name: 'apply',
-    execute: async (message, arg, bot, guilds, linkedAccounts, matches, statistics, weeksAdded) => {
+    execute: async (message, arg, bot, db) => {
+        const guilds = db.collection('Guilds');
+        
         const { channels, prefix, color } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { applyChannelID, applicationsChannelID } = channels;
 

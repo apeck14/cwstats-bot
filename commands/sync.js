@@ -3,7 +3,11 @@ const { request, red, parseDate, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'sync',
-    execute: async (message, arg, bot, guilds, linkedAccounts, matches, statistics, weeksAdded) => {
+    execute: async (message, arg, bot, db) => {
+        const guilds = db.collection('Guilds');
+        const matches = db.collection('Matches');
+        const weeksAdded = db.collection('Weeks_Added');        
+
         const { channels, adminRoleID, clanTag, prefix, color } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
         const guildOwnerID = message.guild.owner?.id;
@@ -77,7 +81,7 @@ module.exports = {
             desc += `\n`;
         }
 
-        return message.channel.send({
+        message.channel.send({
             embed: {
                 color: color,
                 description: `✅ **${raceLog.length} New Week(s) Added!**\n\n` + desc

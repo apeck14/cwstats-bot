@@ -2,7 +2,9 @@ const { red, green, request, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'setclantag',
-    execute: async (message, arg, bot, guilds, linkedAccounts, matches, statistics, weeksAdded) => {
+    execute: async (message, arg, bot, db) => {
+        const guilds = db.collection('Guilds');
+
         //must be server owner or admin role
         const { channels, prefix, adminRoleID, clanTag } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
@@ -31,6 +33,5 @@ module.exports = {
             console.log(e);
             message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
         }
-
     },
 };

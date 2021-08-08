@@ -2,7 +2,9 @@ const { red, green, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'setadminrole',
-    execute: async (message, arg, bot, guilds, linkedAccounts, matches, statistics, weeksAdded) => {
+    execute: async (message, arg, bot, db) => {
+        const guilds = db.collection('Guilds');
+        
         //only server owner can set this role
         //must be used in command channel
 

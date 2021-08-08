@@ -7,7 +7,11 @@ const { MessageAttachment } = require("discord.js");
 
 module.exports = {
     name: 'stats',
-    execute: async (message, arg, bot, guilds, linkedAccounts, matches, statistics, weeksAdded) => {
+    execute: async (message, arg, bot, db) => {
+        const guilds = db.collection('Guilds');
+        const linkedAccounts = db.collection('Linked Accounts');
+        const matches = db.collection('Matches');
+
         const { channels, prefix, clanTag } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
 

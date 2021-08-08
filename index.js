@@ -1,7 +1,23 @@
 const { Client, Collection } = require('discord.js');
 const fs = require('fs');
-const mongoUtil = require('./util/mongoUtil');
 const { red } = require('./util/otherUtil');
+const { MongoClient } = require('mongodb');
+const mdbClient = new MongoClient(process.env.uri, { useUnifiedTopology: true, useNewUrlParser: true });
+
+mdbClient
+    .connect()
+    .then(() => {
+        console.log('Connected to database!');
+    })
+    .catch((e) => {
+        console.err(e);
+    });
+
+process.on('exit', async () => {
+    console.log('Database closed!');
+
+    await mdbClient.close();
+});
 
 const bot = new Client();
 bot.commands = new Collection();
@@ -13,18 +29,8 @@ for (const file of commandFiles) {
     bot.commands.set(command.name, command);
 }
 
-let guilds, linkedAccounts, matches, statistics, weeksAdded;
-
-bot.once('ready', async () => {
+bot.once('ready', () => {
     console.log('CW2 Stats is online!');
-
-    const db = await mongoUtil.db('General');
-    return console.log(db)
-    guilds = db.collection('Guilds');
-    linkedAccounts = db.collection('Linked Accounts');
-    matches = db.collection('Matches');
-    statistics = db.collection('Statistics');
-    weeksAdded = db.collection('Weeks_Added');
 
     bot.user.setActivity(`?setup ?help`);
 });
@@ -39,6 +45,10 @@ bot.on('err', e => {
 
 bot.on('message', async message => {
     try {
+        const db = await mdbClient.db('General');
+        const guilds = db.collection('Guilds');
+        const statistics = db.collection('Statistics');
+
         const { prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
         const channelPermissions = message.channel.permissionsFor(bot.user);
 
@@ -60,7 +70,7 @@ bot.on('message', async message => {
         statistics.updateOne({}, { $inc: { commandsUsed: 1 } });
 
         message.channel.startTyping();
-        await bot.commands.get(command).execute(message, args, bot, guilds, linkedAccounts, matches, statistics, weeksAdded);
+        await bot.commands.get(command).execute(message, args, bot, db);
         message.channel.stopTyping();
     } catch (err) {
         message.channel.send({ embed: { color: red, description: 'Unexpected error.' } });
@@ -72,6 +82,10 @@ bot.on('message', async message => {
 
 //when bot joins new guild
 bot.on('guildCreate', async guild => {
+    const db = await mdbClient.db('General');
+    const guilds = db.collection('Guilds');
+    const statistics = db.collection('Statistics');
+    
     guilds.insertOne(
         {
             guildID: guild.id,
@@ -94,6 +108,10 @@ bot.on('guildCreate', async guild => {
 
 //when bot leaves guild
 bot.on('guildDelete', async guild => {
+    const db = await mdbClient.db('General');
+    const guilds = db.collection('Guilds');
+    const statistics = db.collection('Statistics');
+
     guilds.deleteOne({ guildID: guild.id });
     statistics.updateOne({}, { $inc: { guilds: -1 } });
 
