@@ -29,10 +29,10 @@ for (const file of commandFiles) {
     bot.commands.set(command.name, command);
 }
 
-console.log(bot.guilds.cache)
-
 bot.once('ready', () => {
     console.log('CW2 Stats is online!');
+
+    console.log(bot.guilds)
 
     bot.user.setActivity(`?setup ?help`);
 });
