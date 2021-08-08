@@ -29,13 +29,7 @@ for (const file of commandFiles) {
     bot.commands.set(command.name, command);
 }
 
-bot.guilds.cache.get('871406430933110805').leave()
-        .then(() => {
-            console.log('Left server!');
-        })
-        .catch(err => {
-            console.log(`there was an error leaving the guild: \n ${err.message}`);
-        });
+console.log(bot.guilds.cache)
 
 bot.once('ready', () => {
     console.log('CW2 Stats is online!');
