@@ -19,6 +19,7 @@ bot.once('ready', async () => {
     console.log('CW2 Stats is online!');
 
     const db = await mongoUtil.db('General');
+    return console.log(db)
     guilds = db.collection('Guilds');
     linkedAccounts = db.collection('Linked Accounts');
     matches = db.collection('Matches');
