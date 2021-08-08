@@ -1,4 +1,4 @@
-const { request, red } = require("../util/otherUtil");
+const { request, red, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'race',
@@ -16,7 +16,7 @@ module.exports = {
 
         const rr = await request(`https://proxy.royaleapi.dev/v1/clans/%23${clanTag.substr(1)}/currentriverrace`);
         if (!rr) return message.channel.send({ embed: { color: red, description: `**Invalid clan tag!**` } });
-        else if(rr.clans.length <= 1) return message.channel.send({ embed: { color: red, description: `**This clan is not in a race.**` } }); //no race happening
+        else if(rr.clans.length <= 1) return message.channel.send({ embed: { color: orange, description: `**This clan is not in a race.**` } }); //no race happening
 
         const isCololsseum = rr.periodType === 'colosseum';
         const score = (isCololsseum) ? 'fame' : 'periodPoints';
