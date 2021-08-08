@@ -45,7 +45,7 @@ module.exports = {
         const desc = () => {
             let indeces = (leaderboard.length < 25) ? leaderboard.length : 25;
 
-            let str = '';
+            let str = `Total Players: ${leaderboard.length}\n\n`;
 
             //above 4k
             for (let i = 0; i < indeces; i++) {
