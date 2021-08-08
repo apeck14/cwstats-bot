@@ -6,7 +6,7 @@ module.exports = {
     name: 'glb',
     execute: async (message, arg, bot, db) => {
         const guilds = db.collection('Guilds');
-        const matches = db.collection('Mathces');
+        const matches = db.collection('Matches');
 
         const { channels, clanTag, color } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
