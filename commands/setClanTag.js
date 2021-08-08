@@ -4,6 +4,7 @@ module.exports = {
     name: 'setclantag',
     execute: async (message, arg, bot, db) => {
         const guilds = db.collection('Guilds');
+        const statistics = db.collection('Statistics');
 
         //must be server owner or admin role
         const { channels, prefix, adminRoleID, clanTag } = await guilds.findOne({ guildID: message.channel.guild.id });
