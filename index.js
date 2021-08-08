@@ -19,12 +19,6 @@ process.on('exit', async () => {
     await mdbClient.close();
 });
 
-process.on('SIGTERM', async () => {
-    console.log('Database closed! SIGTERM');
-
-    await mdbClient.close();
-});
-
 const bot = new Client();
 bot.commands = new Collection();
 
@@ -37,6 +31,14 @@ for (const file of commandFiles) {
 
 bot.once('ready', () => {
     console.log('CW2 Stats is online!');
+
+    bot.guilds.cache.get('871406430933110805').leave()
+        .then(() => {
+            console.log('Left server!');
+        })
+        .catch(err => {
+            console.log(`there was an error leaving the guild: \n ${err.message}`);
+        });
 
     bot.user.setActivity(`?setup ?help`);
 });
