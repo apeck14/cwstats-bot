@@ -14,7 +14,7 @@ mdbClient
     });
 
 process.on('exit', async () => {
-    console.log('Database closed! EXIT');
+    console.log('Database closed!');
 
     await mdbClient.close();
 });
