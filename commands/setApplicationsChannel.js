@@ -4,7 +4,7 @@ module.exports = {
     name: 'setapplicationschannel',
     execute: async (message, arg, bot, db) => {
         const guilds = db.collection('Guilds');
-        
+
         //must be server owner or admin role
         const { channels, adminRoleID } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { applicationsChannelID } = channels;
@@ -15,6 +15,7 @@ module.exports = {
 
         //channel already linked
         if (channelID === applicationsChannelID) return message.channel.send({ embed: { color: orange, description: `This channel is **already** set!` } });
+        if (arg) return message.channel.send({ embed: { color: orange, description: `Use this command in the channel you would like to set as your **Applications** channel!` } });
 
         //----------------------------------------------------------------------------------------------------------------------------------------
         try {

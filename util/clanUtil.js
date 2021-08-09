@@ -20,8 +20,6 @@ const clanUtil = {
             //both names and tags
             return mem.items.map(p => ({ tag: p.tag, name: p.name }));
         } catch(e) {
-            if(e.response) console.error(e.response)
-            else console.error(e);
             return [];
         }
     },

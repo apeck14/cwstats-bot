@@ -15,6 +15,7 @@ module.exports = {
 
         //channel already linked
         if (channelID === applyChannelID) return message.channel.send({ embed: { color: orange, description: `This channel is **already** set!` } });
+        if (arg) return message.channel.send({ embed: { color: orange, description: `Use this command in the channel you would like to set as your **Apply** channel!` } });
 
         //----------------------------------------------------------------------------------------------------------------------------------------
         try {

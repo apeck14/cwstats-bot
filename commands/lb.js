@@ -13,6 +13,9 @@ module.exports = {
 
         //must be in command channel if set
         if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
+        if (!clanTag) return message.channel.send({ embed: { color: red, description: `**No clan tag linked!** Please use \`${prefix}setClanTag\` to link your clan.` } });
+
+        if (arg.toLowerCase() === 'full?') return message.channel.send({ embed: { color: orange, description: `Parameters followed by \`?\` on the **help** list are optional parameters. To view the full leaderboard use \`${prefix}lb full\`.` } });
 
         const memberTags = await getMembers(clanTag, true);
         if (!memberTags) return message.channel.send({ embed: { color: orange, description: `Invalid clan tag. Please make sure you have set the correct clan tag for your server.` } });
@@ -45,7 +48,7 @@ module.exports = {
 
         const desc = () => {
             let indeces = (leaderboard.length < 10) ? leaderboard.length : 10;
-            if (arg.toLowerCase() === 'full' || arg.toLowerCase() === 'all') indeces = leaderboard.length; //if arg = 'full' then show all current members on lb
+            if (arg.toLowerCase() === 'full') indeces = leaderboard.length; //if arg = 'full' then show all current members on lb
 
             let str = '';
 
