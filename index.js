@@ -1,5 +1,6 @@
 const { Client, Collection } = require('discord.js');
 const fs = require('fs');
+const { uri } = require('./config.json');
 const { red } = require('./util/otherUtil');
 const { MongoClient } = require('mongodb');
 const mdbClient = new MongoClient(process.env.uri, { useUnifiedTopology: true, useNewUrlParser: true });
@@ -69,17 +70,18 @@ bot.on('message', async message => {
 
         if (!bot.commands.has(command)) return;
 
-        console.log(`SEND_MESSAGES: ${channelPermissions.has('SEND_MESSAGES')}`);
-        console.log(`ADD_REACTIONS: ${channelPermissions.has('ADD_REACTIONS')}`);
-        console.log(`ATTACH_FILES: ${channelPermissions.has('ATTACH_FILES')}`);
-        console.log(`EMBED_LINKS: ${channelPermissions.has('EMBED_LINKS')}`);
-        console.log(`USE_EXTERNAL_EMOJIS: ${channelPermissions.has('USE_EXTERNAL_EMOJIS')}`);
-        console.log(`VIEW_CHANNEL: ${channelPermissions.has('VIEW_CHANNEL')}`);
-
         //CHECK PERMISSIONS
         if (!channelPermissions.has('SEND_MESSAGES')) return;
-        if (!channelPermissions.has(['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS', 'VIEW_CHANNEL']))
-            return message.channel.send({ embed: { color: red, description: '**__Missing Permissions__**\n\nPlease make sure I am able to **View Channel**, **Add Reactions**, **Attach Files**, **Embed Links**, and **Use External Emojis** in this channel.' } });
+
+        const requiredPerms = ['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS'];
+        const missingPerms = requiredPerms.map(perm => (
+            {
+                perm: perm,
+                hasPerm: channelPermissions.has(perm)
+            }
+        )).filter(perm => !perm.hasPerm).map(p => p.perm);
+
+        if(missingPerms.length > 0) return message.channel.send({ embed: { color: red, description: `**__Missing Permissions__**\n${missingPerms.map(p => `\n• **${p}**`).join('')}` } });
 
         //increment commands used in statistics
         statistics.updateOne({}, { $inc: { commandsUsed: 1 } });
@@ -88,7 +90,6 @@ bot.on('message', async message => {
         await bot.commands.get(command).execute(message, args, bot, db);
         message.channel.stopTyping();
     } catch (err) {
-        message.channel.send({ embed: { color: red, description: 'Unexpected error.' } });
         message.channel.stopTyping();
         console.log(`${message.guild?.name} (${message.guild?.id})`);
         console.error(err);
