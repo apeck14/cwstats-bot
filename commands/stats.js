@@ -174,7 +174,7 @@ module.exports = {
         context.font = `${globalRankMultiplier}px Impact`;
 
         const globalRankXCoord = () => {
-            return 1570 + ((215 - globalRankWidth) / 2) + 25;
+            return 1560 + ((215 - globalRankWidth) / 2) + 25;
         }
 
         context.fillText(player.globalRank, globalRankXCoord(), 332);
