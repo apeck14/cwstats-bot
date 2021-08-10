@@ -1,6 +1,5 @@
 const { Client, Collection } = require('discord.js');
 const fs = require('fs');
-const { uri } = require('./config.json');
 const { red } = require('./util/otherUtil');
 const { MongoClient } = require('mongodb');
 const mdbClient = new MongoClient(process.env.uri, { useUnifiedTopology: true, useNewUrlParser: true });
