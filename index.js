@@ -63,9 +63,9 @@ bot.on('message', async message => {
         if (!bot.commands.has(command)) return;
 
         //CHECK PERMISSIONS
-        if (!channelPermissions.has('SEND_MESSAGES') || !channelPermissions.has('VIEW_CHANNEL')) return;
+        if (!channelPermissions.has('SEND_MESSAGES') || !channelPermissions.has('EMBED_LINKS')) return;
 
-        const requiredPerms = ['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS'];
+        const requiredPerms = ['ADD_REACTIONS', 'ATTACH_FILES', 'USE_EXTERNAL_EMOJIS'];
         const missingPerms = requiredPerms.map(perm => (
             {
                 perm: perm,
