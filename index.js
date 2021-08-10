@@ -14,9 +14,17 @@ mdbClient
     });
 
 process.on('exit', async () => {
-    console.log('Database closed!');
+    if(mdbClient.isConnected()) {
+        await mdbClient.close();
+        console.log('Database closed!');
+    }
+});
 
-    await mdbClient.close();
+process.on('SIGTERM', async () => {
+    if(mdbClient.isConnected()) {
+        await mdbClient.close();
+        console.log('Database closed!');
+    }
 });
 
 const bot = new Client();
