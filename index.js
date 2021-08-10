@@ -61,6 +61,13 @@ bot.on('message', async message => {
 
         if (!bot.commands.has(command)) return;
 
+        console.log(`SEND_MESSAGES: ${channelPermissions.has('SEND_MESSAGES')}`);
+        console.log(`ADD_REACTIONS: ${channelPermissions.has('ADD_REACTIONS')}`);
+        console.log(`ATTACH_FILES: ${channelPermissions.has('ATTACH_FILES')}`);
+        console.log(`EMBED_LINKS: ${channelPermissions.has('EMBED_LINKS')}`);
+        console.log(`USE_EXTERNAL_EMOJIS: ${channelPermissions.has('USE_EXTERNAL_EMOJIS')}`);
+        console.log(`VIEW_CHANNEL: ${channelPermissions.has('VIEW_CHANNEL')}`);
+
         //CHECK PERMISSIONS
         if (!channelPermissions.has('SEND_MESSAGES')) return;
         if (!channelPermissions.has(['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS', 'VIEW_CHANNEL']))
