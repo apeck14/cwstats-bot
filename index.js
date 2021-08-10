@@ -64,9 +64,8 @@ bot.on('message', async message => {
 
         //CHECK PERMISSIONS
         if (!channelPermissions.has('SEND_MESSAGES')) return;
-        if (!channelPermissions.has('EMBED_LINKS')) return message.channel.send(`🚨 **__Missing Permission:__** Embed Links`);
 
-        const requiredPerms = ['ADD_REACTIONS', 'ATTACH_FILES', 'USE_EXTERNAL_EMOJIS'];
+        const requiredPerms = ['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS'];
         const missingPerms = requiredPerms.map(perm => (
             {
                 perm: perm,
@@ -74,7 +73,7 @@ bot.on('message', async message => {
             }
         )).filter(perm => !perm.hasPerm).map(p => p.perm);
 
-        if(missingPerms.length > 0) return message.channel.send({ embed: { color: red, description: `**__Missing Permissions__**\n${missingPerms.map(p => `\n• **${p}**`).join('')}` } });
+        if(missingPerms.length > 0) return message.channel.send(`🚨 **__Missing Permissions:__** 🚨\n${missingPerms.map(p => `\n• **${p.replace(/_/g, ' ')}**`).join('')}`);
 
         //increment commands used in statistics
         statistics.updateOne({}, { $inc: { commandsUsed: 1 } });
