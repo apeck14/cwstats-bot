@@ -43,7 +43,7 @@ module.exports = {
         if (leaderboard.length === 0) return message.channel.send({ embed: { color: orange, description: `**No data available at this time. Something went wrong.` } }); //if no members on lb
 
         const desc = () => {
-            let indeces = (leaderboard.length < 25) ? leaderboard.length : 25;
+            let indeces = (leaderboard.length < 15) ? leaderboard.length : 15;
 
             let str = `Total Players: **${leaderboard.length}**\n\n`;
 
