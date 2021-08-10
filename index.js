@@ -66,12 +66,7 @@ bot.on('message', async message => {
         if (!channelPermissions.has('SEND_MESSAGES')) return;
 
         const requiredPerms = ['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS'];
-        const missingPerms = requiredPerms.map(perm => (
-            {
-                perm: perm,
-                hasPerm: channelPermissions.has(perm)
-            }
-        )).filter(perm => !perm.hasPerm).map(p => p.perm);
+        const missingPerms = requiredPerms.filter(p => !channelPermissions.has(p));
 
         if(missingPerms.length > 0) return message.channel.send(`🚨 **__Missing Permissions:__** 🚨\n${missingPerms.map(p => `\n• **${p.replace(/_/g, ' ')}**`).join('')}`);
 
