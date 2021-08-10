@@ -61,6 +61,8 @@ bot.on('message', async message => {
 
         if (!bot.commands.has(command)) return;
 
+        console.log(channelPermissions.has('SEND_MESSAGES'))
+
         //CHECK PERMISSIONS
         if (!channelPermissions.has('SEND_MESSAGES')) return;
         if (!channelPermissions.has(['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS', 'VIEW_CHANNEL']))
