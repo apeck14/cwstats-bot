@@ -21,13 +21,6 @@ process.on('exit', async () => {
     }
 });
 
-process.on('SIGTERM', async () => {
-    if(mdbClient.isConnected()) {
-        await mdbClient.close();
-        console.log('Database closed!');
-    }
-});
-
 const bot = new Client();
 bot.commands = new Collection();
 
