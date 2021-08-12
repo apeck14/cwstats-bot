@@ -1,6 +1,6 @@
 const { getPlayerData } = require("../util/clanUtil");
 const { CanvasRenderService } = require('chartjs-node-canvas');
-const { red, hexToRgbA } = require("../util/otherUtil");
+const { red, hexToRgbA, orange } = require("../util/otherUtil");
 
 module.exports = {
     name: 'player',
@@ -14,11 +14,18 @@ module.exports = {
         //must be in command channel if set
         if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
 
-        if (!arg) {
+        if (!arg) { //linked account
             const linkedAccount = await linkedAccounts.findOne({ discordID: message.author.id });
 
             if (linkedAccount) arg = linkedAccount.tag;
             else if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!** To use without a tag, you must link your ID.\n\n__Usage:__\n\`${prefix}player #ABC123\`` } });
+        }
+        else if (arg.indexOf('<@') === 0) { //@ing someone with linked account
+            const playerId = arg.substring(3, arg.indexOf('>'));
+            const linkedPlayer = await linkedAccounts.findOne({ discordID: playerId });
+
+            if (!linkedPlayer) return message.channel.send({ embed: { color: orange, description: `<@!${playerId}> **does not have an account linked.**` } });
+            arg = linkedPlayer.tag;
         }
 
         arg = arg.toUpperCase().replace('O', '0');
