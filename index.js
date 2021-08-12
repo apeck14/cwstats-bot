@@ -45,13 +45,14 @@ bot.on('err', e => {
 });
 
 bot.on('message', async message => {
+    const channelPermissions = message.channel.permissionsFor(bot.user);
+    
     try {
         const db = await mdbClient.db('General');
         const guilds = db.collection('Guilds');
         const statistics = db.collection('Statistics');
 
         const { prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
-        const channelPermissions = message.channel.permissionsFor(bot.user);
 
         if (message.author.bot || !message.content.startsWith(prefix)) return;
 
