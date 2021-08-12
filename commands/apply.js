@@ -6,7 +6,7 @@ module.exports = {
     name: 'apply',
     execute: async (message, arg, bot, db) => {
         const guilds = db.collection('Guilds');
-        
+
         const { channels, prefix, color } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { applyChannelID, applicationsChannelID } = channels;
 
@@ -17,6 +17,20 @@ module.exports = {
         if (!bot.channels.cache.has(applicationsChannelID)) return message.channel.send({ embed: { color: orange, description: `**Applications channel** not set!` } });
 
         if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!**\n\n__Usage:__\n\`${prefix}apply #ABC123\`` } });
+
+        //make sure bot has permissions in Applications channel
+        const applicationsChannelPermissions = bot.channels.cache.get(applicationsChannelID).permissionsFor(bot.user);
+        const requiredPerms = ['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'SEND_MESSAGES', 'USE_EXTERNAL_EMOJIS', 'VIEW_CHANNEL'];
+        const missingPerms = requiredPerms.filter(p => !applicationsChannelPermissions.has(p));
+        if (missingPerms.length > 0) {
+            return message.channel.send({
+                embed: {
+                    description: `🚨 **__Missing Permissions__** in <#${applicationsChannelID}>: 🚨\n${missingPerms.map(p => `\n• **${p.replace(/_/g, ' ')}**`).join('')}`,
+                    color: red
+                },
+            }
+            );
+        }
 
         arg = arg.toUpperCase().replace('O', '0');
         arg = arg[0] === "#" ? arg.substr(1) : arg;
