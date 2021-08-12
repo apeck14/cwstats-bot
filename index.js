@@ -2,6 +2,7 @@ const { Client, Collection } = require('discord.js');
 const fs = require('fs');
 const { MongoClient } = require('mongodb');
 const mdbClient = new MongoClient(process.env.uri, { useUnifiedTopology: true, useNewUrlParser: true });
+const { red } = require('./util/otherUtil');
 
 mdbClient
     .connect()
@@ -67,7 +68,7 @@ bot.on('message', async message => {
         const requiredPerms = ['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS'];
         const missingPerms = requiredPerms.filter(p => !channelPermissions.has(p));
 
-        if(missingPerms.length > 0) return message.channel.send(`🚨 **__Missing Permissions:__** 🚨\n${missingPerms.map(p => `\n• **${p.replace(/_/g, ' ')}**`).join('')}`);
+        if (missingPerms.length > 0) return message.channel.send(`🚨 **__Missing Permissions:__** 🚨\n${missingPerms.map(p => `\n• **${p.replace(/_/g, ' ')}**`).join('')}`);
 
         //increment commands used in statistics
         statistics.updateOne({}, { $inc: { commandsUsed: 1 } });
@@ -77,6 +78,7 @@ bot.on('message', async message => {
         message.channel.stopTyping();
     } catch (err) {
         message.channel.stopTyping();
+        if (channelPermissions.has('EMBED_LINKS')) message.channel.send({ embed: { color: red, description: 'Unexpected error.', footer: { text: 'If this problem persists, please DM Apehk#5688 on Discord.' } } })
         console.log(`${message.guild?.name} (${message.guild?.id})`);
         console.error(err);
     }
