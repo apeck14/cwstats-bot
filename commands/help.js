@@ -14,10 +14,10 @@ module.exports = {
     const commands = [
       { name: 'lb full?', desc: 'View your clan\'s war leaderboard', main: true },
       { name: 'link #TAG', desc: `Link your CR tag to the bot (so you don't have to type in your tag each time you call *${prefix}player* or *${prefix}stats*)`, main: true },
-      { name: "player #TAG?", desc: "View information about any player", main: true },
+      { name: "player #TAG/@USER", desc: "View information about any player", main: true },
       { name: 'apply #TAG', desc: 'Apply to join the clan', main: true },
       { name: 'race #TAG?', desc: 'View current river race stats of any clan', main: true },
-      { name: 'stats #TAG?', desc: 'View war stats of a player', main: true },
+      { name: 'stats #TAG/@USER', desc: 'View war stats of a player', main: true },
       { name: 'sync', desc: 'Sync all recent weeks\' war data', main: false },
       { name: 'setColor #HEXCODE', desc: 'Set the clan color (ex: #F1F1F1)', main: false, setup: true },
       { name: 'setAdminRole @ROLE', desc: 'Set the role that can use admin commands (only administrators can set role)', main: false, setup: true },
