@@ -79,7 +79,7 @@ bot.on('message', async message => {
         message.channel.stopTyping();
     } catch (err) {
         message.channel.stopTyping();
-        if (channelPermissions.has('EMBED_LINKS')) message.channel.send({ embed: { color: red, description: 'Unexpected error.', footer: { text: 'If this problem persists, please DM Apehk#5688 on Discord.' } } })
+        if (channelPermissions.has('EMBED_LINKS')) message.channel.send({ embed: { color: red, description: '**Unexpected error.**', footer: { text: 'If this problem persists, please DM Apehk#5688 on Discord.' } } })
         console.log(`${message.guild?.name} (${message.guild?.id})`);
         console.error(err);
     }
