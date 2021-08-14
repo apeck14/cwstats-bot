@@ -23,11 +23,10 @@ module.exports = {
 
         const remainingAttacks = rr.clan.participants
             .filter(p => currentMemberTags.includes(p.tag)) //current members only
-            .map(p => ({ name: p.name, attacksLeft: 4 - p.decksUsedToday }))
-            .filter(p => p.attacksLeft > 0)
-            .sort((a, b) => b.attacksLeft - a.attacksLeft);
+            .map(p => ({ name: p.name, attacksUsedToday: p.decksUsedToday }))
+            .sort((a, b) => a.attacksUsedToday - b.attacksUsedToday);
 
-        const totalAttacksLeft = remainingAttacks.reduce((a, b) => b.attacksLeft + a, 0);
+        const totalAttacksLeft = 200 - remainingAttacks.reduce((a, b) => b.attacksUsedToday + a, 0);
         const currentFame = () => {
             if (rr.clan.fame === 0 && rr.clan.periodPoints === 0) return 0;
             else if (rr.clan.fame > 0 && rr.clan.periodPoints === 0) return rr.clan.fame;
@@ -37,27 +36,27 @@ module.exports = {
         let desc = ``;
 
         if (totalAttacksLeft === 0) return message.channel.send({ embed: { color: green, description: `All attacks have been used!` } }); //all attacks used
-        else if (totalAttacksLeft !== 0 && remainingAttacks.length === 0) { //attacks left, but all members currently in clan have used attacks
-            return message.channel.send({ embed: { color: color, description: `**${rr.clan.name}**\n<:fame:807475879215104020> **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n\n*All current members have completed attacks!*` } });
+        else if (totalAttacksLeft !== 0 && remainingAttacks.filter(p => p.attacksUsedToday < 4).length === 0) { //attacks left, but all members currently in clan have used attacks
+            return message.channel.send({ embed: { title: '__Remaining Attacks__', color: color, description: `**${rr.clan.name}**\n<:fame:807475879215104020> **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n\n*All current members have completed attacks!*` } });
         }
 
         desc += `**${rr.clan.name}**\n<:fame:807475879215104020> **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n`;
 
-        if (remainingAttacks.some(p => p.attacksLeft === 4)) {
+        if (remainingAttacks.some(p => p.attacksUsedToday === 0)) {
             desc += `\n**__4 Attacks Left__**\n`;
-            remainingAttacks.filter(p => p.attacksLeft === 4).forEach(p => desc += `• ${p.name}\n`);
+            remainingAttacks.filter(p => p.attacksUsedToday === 0).forEach(p => desc += `• ${p.name}\n`);
         }
-        if (remainingAttacks.some(p => p.attacksLeft === 3)) {
+        if (remainingAttacks.some(p => p.attacksUsedToday === 1)) {
             desc += `\n**__3 Attacks Left__**\n`;
-            remainingAttacks.filter(p => p.attacksLeft === 3).forEach(p => desc += `• ${p.name}\n`);
+            remainingAttacks.filter(p => p.attacksUsedToday === 1).forEach(p => desc += `• ${p.name}\n`);
         }
-        if (remainingAttacks.some(p => p.attacksLeft === 2)) {
+        if (remainingAttacks.some(p => p.attacksUsedToday === 2)) {
             desc += `\n**__2 Attacks Left__**\n`;
-            remainingAttacks.filter(p => p.attacksLeft === 2).forEach(p => desc += `• ${p.name}\n`);
+            remainingAttacks.filter(p => p.attacksUsedToday === 2).forEach(p => desc += `• ${p.name}\n`);
         }
-        if (remainingAttacks.some(p => p.attacksLeft === 1)) {
+        if (remainingAttacks.some(p => p.attacksUsedToday === 3)) {
             desc += `\n**__1 Attack Left__**\n`;
-            remainingAttacks.filter(p => p.attacksLeft === 1).forEach(p => desc += `• ${p.name}\n`);
+            remainingAttacks.filter(p => p.attacksUsedToday === 3).forEach(p => desc += `• ${p.name}\n`);
         }
 
         message.channel.send({ embed: { title: `__Remaining Attacks__`, color: color, description: desc } });
