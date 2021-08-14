@@ -21,12 +21,13 @@ module.exports = {
 
         const currentMemberTags = await getMembers(clanTag, true);
 
+        const totalAttacksLeft = 200 - rr.clan.participants.reduce((a, b) => a + b.decksUsedToday, 0);
+
         const remainingAttacks = rr.clan.participants
             .filter(p => currentMemberTags.includes(p.tag)) //current members only
             .map(p => ({ name: p.name, attacksUsedToday: p.decksUsedToday }))
             .sort((a, b) => a.attacksUsedToday - b.attacksUsedToday);
 
-        const totalAttacksLeft = 200 - remainingAttacks.reduce((a, b) => b.attacksUsedToday + a, 0);
         const currentFame = () => {
             if (rr.clan.fame === 0 && rr.clan.periodPoints === 0) return 0;
             else if (rr.clan.fame > 0 && rr.clan.periodPoints === 0) return rr.clan.fame;
