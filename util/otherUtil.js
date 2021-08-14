@@ -32,7 +32,7 @@ const otherUtil = {
             const req = await axios.get(url, { headers : { 'Authorization': 'Bearer ' + API_KEY.token(incrementToken) } });
             return req.data || req;
         } catch (e) {
-            console.error(e.response.statusText || e.response || e);
+            console.error(e.response?.statusText || e.response || e);
         }
     },
     average: arr => {
