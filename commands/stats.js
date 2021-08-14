@@ -25,7 +25,7 @@ module.exports = {
             else if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!** To use without a tag, you must link your ID.\n\n__Usage:__\n\`${prefix}stats #ABC123\`\n\`${prefix}link #ABC123\`` } });
         }
         else if (arg.indexOf('<@') === 0) { //@ing someone with linked account
-            const playerId = arg.substring(3, arg.indexOf('>'));
+            const playerId = arg.replace(/[^a-zA-Z0-9]/g, '');
             const linkedPlayer = await linkedAccounts.findOne({ discordID: playerId });
 
             if (!linkedPlayer) return message.channel.send({ embed: { color: orange, description: `<@!${playerId}> **does not have an account linked.**` } });
