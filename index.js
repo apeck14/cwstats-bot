@@ -30,7 +30,7 @@ for (const file of commandFiles) {
     bot.commands.set(command.name, command);
 }
 
-bot.once('ready', () => {
+bot.once('ready', async () => {
     console.log('CW2 Stats is online!');
 
     bot.guilds.cache.each(g => {
