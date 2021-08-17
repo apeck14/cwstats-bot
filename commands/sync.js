@@ -69,14 +69,16 @@ module.exports = {
 
             desc += `• **__Week ${r.sectionIndex + 1} (${r.createdDateStr})__**\n`;
 
+            const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
+
             if (raceLog.length < 5) {
                 for (let i = 0; i < r.clan.participants.length; i++) {
-                    if (i === 0) desc += `${i + 1}. ${r.clan.participants[i].name} <:fame:807475879215104020>${r.clan.participants[i].fame}\n`; //1st
-                    else if (i === 1) desc += `${i + 1}. ${r.clan.participants[i].name} <:fame:807475879215104020>${r.clan.participants[i].fame}\n`; //2nd
-                    else if (i === 2) desc += `${i + 1}. ${r.clan.participants[i].name} <:fame:807475879215104020>${r.clan.participants[i].fame}\n`; //3rd
-                    else if (i === r.clan.participants.length - 3 && i > 2) desc += `...\n${i + 1}. ${r.clan.participants[i].name} <:fame:807475879215104020>${r.clan.participants[i].fame}\n`; //third to last
-                    else if (i === r.clan.participants.length - 2 && i > 2) desc += `${i + 1}. ${r.clan.participants[i].name} <:fame:807475879215104020>${r.clan.participants[i].fame}\n`; //second to last
-                    else if (i === r.clan.participants.length - 1 && i > 2) desc += `${i + 1}. ${r.clan.participants[i].name} <:fame:807475879215104020>${r.clan.participants[i].fame}\n\n`; //last
+                    if (i === 0) desc += `${i + 1}. ${r.clan.participants[i].name} <:${fameEmoji.name}:${fameEmoji.id}>${r.clan.participants[i].fame}\n`; //1st
+                    else if (i === 1) desc += `${i + 1}. ${r.clan.participants[i].name} <:${fameEmoji.name}:${fameEmoji.id}>${r.clan.participants[i].fame}\n`; //2nd
+                    else if (i === 2) desc += `${i + 1}. ${r.clan.participants[i].name} <:${fameEmoji.name}:${fameEmoji.id}>${r.clan.participants[i].fame}\n`; //3rd
+                    else if (i === r.clan.participants.length - 3 && i > 2) desc += `...\n${i + 1}. ${r.clan.participants[i].name} <:${fameEmoji.name}:${fameEmoji.id}>${r.clan.participants[i].fame}\n`; //third to last
+                    else if (i === r.clan.participants.length - 2 && i > 2) desc += `${i + 1}. ${r.clan.participants[i].name} <:${fameEmoji.name}:${fameEmoji.id}>${r.clan.participants[i].fame}\n`; //second to last
+                    else if (i === r.clan.participants.length - 1 && i > 2) desc += `${i + 1}. ${r.clan.participants[i].name} <:${fameEmoji.name}:${fameEmoji.id}>${r.clan.participants[i].fame}\n\n`; //last
                 }
             }
         }

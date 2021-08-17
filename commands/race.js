@@ -1,3 +1,4 @@
+const { getClanBadge } = require("../util/clanUtil");
 const { request, red, orange } = require("../util/otherUtil");
 
 module.exports = {
@@ -16,7 +17,7 @@ module.exports = {
 
         const rr = await request(`https://proxy.royaleapi.dev/v1/clans/%23${clanTag.substr(1)}/currentriverrace`);
         if (!rr) return message.channel.send({ embed: { color: red, description: `**Invalid clan tag!**` } });
-        else if(rr.clans.length <= 1) return message.channel.send({ embed: { color: orange, description: `**This clan is not in a race.**` } }); //no race happening
+        else if (rr.clans.length <= 1) return message.channel.send({ embed: { color: orange, description: `**This clan is not in a race.**` } }); //no race happening
 
         const isCololsseum = rr.periodType === 'colosseum';
         const score = (isCololsseum) ? 'fame' : 'periodPoints';
@@ -26,7 +27,9 @@ module.exports = {
                 name: c.name,
                 tag: c.tag,
                 medals: c[score],
-                attacksUsedToday: c.participants.reduce((a, b) => a + b.decksUsedToday, 0)
+                attacksUsedToday: c.participants.reduce((a, b) => a + b.decksUsedToday, 0),
+                badgeId: c.badgeId,
+                clanWarTrophies: c.clanScore
             }));
 
         const battleDaysCompleted = () => {
@@ -48,23 +51,23 @@ module.exports = {
         const projectedFame = c => {
             let projFame;
 
-            if(isCololsseum) projFame = c.medals + (c.avgFame * (200 - c.attacksUsedToday + (200 * (3 - battleDaysCompleted())))); //projected weekly fame
+            if (isCololsseum) projFame = c.medals + (c.avgFame * (200 - c.attacksUsedToday + (200 * (3 - battleDaysCompleted())))); //projected weekly fame
             else projFame = c.medals + ((200 - c.attacksUsedToday) * c.avgFame); //projected daily fame
 
             return Math.round(projFame / 50) * 50;
         }
 
         //set average and projected fame
-        for(const c of clans){
+        for (const c of clans) {
             c.avgFame = avgFame(c);
             c.projFame = projectedFame(c);
         }
 
         //set ranks (in case of ties) and average fame
-        for(let i = 0; i < clans.length; i++){
+        for (let i = 0; i < clans.length; i++) {
             const tiedClans = clans.filter(c => c.medals === clans[i].medals);
 
-            for(const c of tiedClans){
+            for (const c of tiedClans) {
                 clans.find(x => x.tag === c.tag).rank = i + 1;
             }
 
@@ -74,12 +77,15 @@ module.exports = {
         const desc = () => {
             let str = ``;
 
-            for(const c of clans){
+            for (const c of clans) {
+                const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(c.badgeId, c.clanWarTrophies));
+                const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
+
                 if (c.tag === clanTag)
-                    str += `__**${c.rank}. ${c.name}**__\n<:fame:807475879215104020> **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nFame/Atk: **${c.avgFame.toFixed(1)}**\n\n`;
+                    str += `**${c.rank}. <:${badgeEmoji.name}:${badgeEmoji.id}> __${c.name}__**\n<:${fameEmoji.name}:${fameEmoji.id}> **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nFame/Atk: **${c.avgFame.toFixed(1)}**\n\n`;
                 else
-                    str += `**${c.rank}. ${c.name}**\n<:fame:807475879215104020> **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nFame/Atk: **${c.avgFame.toFixed(1)}**\n\n`;
-                }
+                    str += `**${c.rank}.** <:${badgeEmoji.name}:${badgeEmoji.id}> **${c.name}**\n<:${fameEmoji.name}:${fameEmoji.id}> ${c.medals}\nProj. Fame: ${c.projFame.toFixed(0)}\nAtks. Left: ${200 - c.attacksUsedToday}\nFame/Atk: ${c.avgFame.toFixed(1)}\n\n`;
+            }
 
             return str;
         }

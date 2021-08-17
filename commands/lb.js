@@ -1,6 +1,6 @@
 const { groupBy } = require("lodash");
-const { getMembers } = require("../util/clanUtil");
-const { average, orange, red } = require("../util/otherUtil");
+const { getClanBadge } = require("../util/clanUtil");
+const { average, orange, red, request } = require("../util/otherUtil");
 
 module.exports = {
     name: 'lb',
@@ -17,7 +17,9 @@ module.exports = {
 
         if (arg.toLowerCase() === 'full?') return message.channel.send({ embed: { color: orange, description: `Parameters followed by \`?\` on the **help** list are optional parameters. To view the full leaderboard use \`${prefix}lb full\`.` } });
 
-        const memberTags = await getMembers(clanTag, true);
+        const { memberList, badgeId, clanWarTrophies } = await request(`https://proxy.royaleapi.dev/v1/clans/%23${clanTag.substr(1)}`);
+
+        const memberTags = memberList.map(m => m.tag);
         if (!memberTags) return message.channel.send({ embed: { color: orange, description: `Invalid clan tag. Please make sure you have set the correct clan tag for your server.` } });
 
         const memberMatches = await matches.find({ tag: { $in: memberTags }, clanTag: clanTag }).toArray(); //members in clan currently, and have atleast 1 fame score in arr
@@ -52,14 +54,16 @@ module.exports = {
 
             let str = '';
 
+            const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
+
             //above 4k
             for (let i = 0; i < indeces; i++) {
                 const { name, avgFame } = leaderboard[i];
 
-                if (i === 0) str += `🥇 **${name}** (<:fame:807475879215104020>${avgFame.toFixed(0)})\n`;
-                else if (i === 1) str += `🥈 **${name}** (<:fame:807475879215104020>${avgFame.toFixed(0)})\n`;
-                else if (i === 2) str += `🥉 **${name}** (<:fame:807475879215104020>${avgFame.toFixed(0)})\n`;
-                else str += `**${i + 1}.** ${name} (<:fame:807475879215104020>${avgFame.toFixed(0)})\n`;
+                if (i === 0) str += `🥇 **${name}** (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
+                else if (i === 1) str += `🥈 **${name}** (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
+                else if (i === 2) str += `🥉 **${name}** (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
+                else str += `**${i + 1}.** ${name} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
             }
 
             return str;
@@ -71,6 +75,13 @@ module.exports = {
             description: desc(),
             footer: {
                 text: `Ranked by avg. fame while in clan | ${prefix}stats`
+            },
+            files: [{
+                attachment: `./allBadges/${getClanBadge(badgeId, clanWarTrophies, false)}.png`,
+                name: 'badge.png'
+            }],
+            thumbnail: {
+                url: 'attachment://badge.png'
             }
         }
 

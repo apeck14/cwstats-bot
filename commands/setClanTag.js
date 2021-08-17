@@ -1,3 +1,4 @@
+const { getClanBadge } = require("../util/clanUtil");
 const { red, green, request, orange } = require("../util/otherUtil");
 
 module.exports = {
@@ -27,9 +28,11 @@ module.exports = {
 
         //----------------------------------------------------------------------------------------------------------------------------------------
         try {
-            if(!clanTag) statistics.updateOne({}, { $inc: { linkedClans: 1 } }); //add new linked clan (if clan has not been linked in the past)
+            if (!clanTag) statistics.updateOne({}, { $inc: { linkedClans: 1 } }); //add new linked clan (if clan has not been linked in the past)
             guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { clanTag: tag } });
-            message.channel.send({ embed: { color: green, description: `✅ Server successfully linked to **${clan.name}**!` } });
+
+            const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(clan.badgeId, clan.clanWarTrophies));
+            message.channel.send({ embed: { color: green, description: `✅ Server successfully linked to <:${badgeEmoji.name}:${badgeEmoji.id}> **${clan.name}**!` } });
         } catch (e) {
             console.log(e);
             message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });

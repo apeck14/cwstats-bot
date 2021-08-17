@@ -1,8 +1,6 @@
-const { red } = require("../util/otherUtil");
-
 module.exports = {
   name: 'help',
-  async execute (message, arg, bot, db) {
+  async execute(message, arg, bot, db) {
     const guilds = db.collection('Guilds');
 
     const { channels, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
