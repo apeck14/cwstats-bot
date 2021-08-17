@@ -36,7 +36,7 @@ bot.once('ready', async () => {
     const db = await mdbClient.db('General');
     const guilds = db.collection('Guilds');
 
-    bot.guilds.cache.each(g => {
+    bot.guilds.cache.each(async g => {
         if (g.name.toLowerCase().indexOf('emoji') === -1 && g.name.toLowerCase().indexOf('emojis') === -1 && g.name.toLowerCase().indexOf('bot') === -1) {
 
             //if guild not in database or guild does not have clan tag set
