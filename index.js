@@ -33,10 +33,11 @@ for (const file of commandFiles) {
 bot.once('ready', async () => {
     console.log('CW2 Stats is online!');
 
+    const db = await mdbClient.db('General');
+    const guilds = db.collection('Guilds');
+
     bot.guilds.cache.each(g => {
         if (g.name.toLowerCase().indexOf('emoji') === -1 && g.name.toLowerCase().indexOf('emojis') === -1 && g.name.toLowerCase().indexOf('bot') === -1) {
-            const db = await mdbClient.db('General');
-            const guilds = db.collection('Guilds');
 
             //if guild not in database or guild does not have clan tag set
             const guild = await guilds.findOne({ guildID: g.id });
