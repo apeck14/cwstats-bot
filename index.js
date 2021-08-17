@@ -30,24 +30,8 @@ for (const file of commandFiles) {
     bot.commands.set(command.name, command);
 }
 
-bot.once('ready', async () => {
+bot.once('ready', () => {
     console.log('CW2 Stats is online!');
-
-    const db = await mdbClient.db('General');
-    const guilds = db.collection('Guilds');
-
-    bot.guilds.cache.each(async g => {
-        if (g.name.toLowerCase().indexOf('emoji') === -1 && g.name.toLowerCase().indexOf('emojis') === -1 && g.name.toLowerCase().indexOf('bot') === -1) {
-
-            //if guild not in database or guild does not have clan tag set
-            const guild = await guilds.findOne({ guildID: g.id });
-
-            if (!guild || !guild.clanTag) {
-                console.log(g.name);
-                g.leave();
-            }
-        }
-    })
 
     bot.user.setActivity(`?setup ?help`);
 });
