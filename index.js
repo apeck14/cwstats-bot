@@ -14,7 +14,7 @@ mdbClient
     });
 
 process.on('exit', async () => {
-    if(mdbClient.isConnected()) {
+    if (mdbClient.isConnected()) {
         await mdbClient.close();
         console.log('Database closed!');
     }
@@ -33,6 +33,21 @@ for (const file of commandFiles) {
 bot.once('ready', () => {
     console.log('CW2 Stats is online!');
 
+    bot.guilds.cache.each(g => {
+        if (g.name.toLowerCase().indexOf('emoji') === -1 && g.name.toLowerCase().indexOf('emojis') === -1 && g.name.toLowerCase().indexOf('bot') === -1) {
+            const db = await mdbClient.db('General');
+            const guilds = db.collection('Guilds');
+
+            //if guild not in database or guild does not have clan tag set
+            const guild = await guilds.findOne({ guildID: g.id });
+
+            if (!guild || !guild.clanTag) {
+                console.log(g.name);
+                g.leave();
+            }
+        }
+    })
+
     bot.user.setActivity(`?setup ?help`);
 });
 
@@ -46,7 +61,7 @@ bot.on('err', e => {
 
 bot.on('message', async message => {
     const channelPermissions = message.channel.permissionsFor(bot.user);
-    
+
     try {
         const db = await mdbClient.db('General');
         const guilds = db.collection('Guilds');
@@ -90,7 +105,7 @@ bot.on('guildCreate', async guild => {
     const db = await mdbClient.db('General');
     const guilds = db.collection('Guilds');
     const statistics = db.collection('Statistics');
-    
+
     guilds.insertOne(
         {
             guildID: guild.id,
