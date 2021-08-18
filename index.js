@@ -71,6 +71,8 @@ bot.on('message', async message => {
 
         if (missingPerms.length > 0) return message.channel.send(`🚨 **__Missing Permissions:__** 🚨\n${missingPerms.map(p => `\n• **${p.replace(/_/g, ' ')}**`).join('')}`);
 
+        if (message.author.id === '847298602849271899') return message.channel.send(`<@847298602849271899> maybe next time!`);
+
         //increment commands used in statistics
         statistics.updateOne({}, { $inc: { commandsUsed: 1 } });
 
