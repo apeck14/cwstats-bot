@@ -1,3 +1,5 @@
+const { red } = require("../util/otherUtil");
+
 module.exports = {
   name: 'help',
   async execute(message, arg, bot, db) {
