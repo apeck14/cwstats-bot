@@ -33,6 +33,8 @@ for (const file of commandFiles) {
 bot.once('ready', () => {
     console.log('CW2 Stats is online!');
 
+    bot.guilds.cache.find(g => g.id === '861253572787175456').leave();
+
     bot.user.setActivity(`?setup ?help`);
 });
 
