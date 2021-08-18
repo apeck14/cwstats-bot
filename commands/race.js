@@ -79,8 +79,8 @@ module.exports = {
 
             for (const c of clans) {
                 console.log(c)
+                console.log(getClanBadge(c.badgeId, c.clanWarTrophies))
                 const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(c.badgeId, c.clanWarTrophies));
-                console.log(badgeEmoji)
                 const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
 
                 if (c.tag === clanTag)
