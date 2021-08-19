@@ -30,8 +30,35 @@ for (const file of commandFiles) {
     bot.commands.set(command.name, command);
 }
 
-bot.once('ready', () => {
+bot.once('ready', async () => {
+    const db = await mdbClient.db('General');
+    const guilds = db.collection('Guilds');
+
     console.log('CW2 Stats is online!');
+
+    //make sure all current guilds have a spot in database, in case the bot joined while down
+    bot.guilds.cache.each(async g => {
+        const guildInDb = await guilds.find({ guildID: g.id });
+
+        if (!guildInDb) {
+            guilds.insertOne(
+                {
+                    guildID: guild.id,
+                    clanTag: null,
+                    prefix: '?',
+                    adminRoleID: null,
+                    color: '#ff237a', //pink
+                    channels: {
+                        applyChannelID: null,
+                        applicationsChannelID: null,
+                        commandChannelID: null
+                    }
+                }
+            );
+
+            console.log(`JOINED GUILD: ${g.name}`);
+        }
+    });
 
     bot.user.setActivity(`?setup ?help`);
 });
