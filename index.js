@@ -38,7 +38,7 @@ bot.once('ready', async () => {
 
     //make sure all current guilds have a spot in database, in case the bot joined while down
     bot.guilds.cache.each(async g => {
-        const guildInDb = await guilds.find({ guildID: g.id });
+        const guildInDb = await guilds.findOne({ guildID: g.id });
 
         if (!guildInDb) {
             guilds.insertOne(
