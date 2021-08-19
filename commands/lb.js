@@ -46,7 +46,7 @@ module.exports = {
             return b.avgFame - a.avgFame;
         });
 
-        if (leaderboard.length === 0) return message.channel.send({ embed: { color: orange, description: `**No data available!** To add data, use \`${prefix}add\`.` } }); //if no members on lb
+        if (leaderboard.length === 0) return message.channel.send({ embed: { color: orange, description: `**No data available!** To add data, use \`${prefix}sync\`.` } }); //if no members on lb
 
         const desc = () => {
             let indeces = (leaderboard.length < 10) ? leaderboard.length : 10;
