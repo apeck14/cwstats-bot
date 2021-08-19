@@ -43,7 +43,7 @@ bot.once('ready', async () => {
         if (!guildInDb) {
             guilds.insertOne(
                 {
-                    guildID: guild.id,
+                    guildID: g.id,
                     clanTag: null,
                     prefix: '?',
                     adminRoleID: null,
