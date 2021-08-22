@@ -72,6 +72,7 @@ bot.on('err', e => {
 });
 
 bot.on('message', async message => {
+    if (!message.guild) return;
     const channelPermissions = message.channel.permissionsFor(bot.user);
 
     try {
