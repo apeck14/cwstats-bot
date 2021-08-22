@@ -36,29 +36,40 @@ bot.once('ready', async () => {
 
     console.log('CW2 Stats is online!');
 
-    //make sure all current guilds have a spot in database, in case the bot joined while down
-    bot.guilds.cache.each(async g => {
-        const guildInDb = await guilds.findOne({ guildID: g.id });
+    try {
+        bot.guilds.cache.each(async g => {
+            const guildInDb = await guilds.findOne({ guildID: g.id });
 
-        if (!guildInDb) {
-            guilds.insertOne(
-                {
-                    guildID: g.id,
-                    clanTag: null,
-                    prefix: '?',
-                    adminRoleID: null,
-                    color: '#ff237a', //pink
-                    channels: {
-                        applyChannelID: null,
-                        applicationsChannelID: null,
-                        commandChannelID: null
+            if (guildInDb && guildInDb.channels.commandChannelID)
+                bot.channels.cache.get(guildInDb.channels.commandChannelID).send(`**__Bot Update__**\n\nThe bot has recently reached it's maximum capacity of 100 Discord servers, and is now in the process of being verified vy Discord! :partying_face:\n\nHowever, clan badges and other emojis have been temporarily disabled, but all functionality will remain the same! Clan badges will be back very shortly.`);
+        });
+
+        //make sure all current guilds have a spot in database, in case the bot joined while down
+        bot.guilds.cache.each(async g => {
+            const guildInDb = await guilds.findOne({ guildID: g.id });
+
+            if (!guildInDb) {
+                guilds.insertOne(
+                    {
+                        guildID: g.id,
+                        clanTag: null,
+                        prefix: '?',
+                        adminRoleID: null,
+                        color: '#ff237a', //pink
+                        channels: {
+                            applyChannelID: null,
+                            applicationsChannelID: null,
+                            commandChannelID: null
+                        }
                     }
-                }
-            );
+                );
 
-            console.log(`JOINED GUILD: ${g.name}`);
-        }
-    });
+                console.log(`JOINED GUILD: ${g.name}`);
+            }
+        });
+    } catch (e) {
+        console.error(e)
+    }
 
     bot.user.setActivity(`?setup ?help`);
 });

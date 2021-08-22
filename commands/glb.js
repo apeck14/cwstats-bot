@@ -73,29 +73,30 @@ module.exports = {
             let str = `**__Top Players__**\n`;
 
             const playerPromises = leaderboard.slice(0, 5).map(p => request(`https://proxy.royaleapi.dev/v1/clans/%23${p.clanTag.substr(1)}`, true));
-            const playerPromisesComp = await Promise.all(playerPromises);
+            //const playerPromisesComp = await Promise.all(playerPromises);
 
             const clanPromises = clanLeaderboard.slice(0, 5).map(c => request(`https://proxy.royaleapi.dev/v1/clans/%23${c.clanTag.substr(1)}`, true));
+
             const clanPromisesComp = await Promise.all(clanPromises);
+
+            const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
 
             //top players
             for (let i = 0; i < 5; i++) {
                 const { name, avgFame, tag } = leaderboard[i];
 
-                const matchingClan = playerPromisesComp.find(c => c.tag === leaderboard[i].clanTag);
-                const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(matchingClan.badgeId, matchingClan.clanWarTrophies));
+                //const matchingClan = playerPromisesComp.find(c => c.tag === leaderboard[i].clanTag);
+                //const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(matchingClan.badgeId, matchingClan.clanWarTrophies));
 
                 let nameStr;
 
                 if (memberTags.indexOf(tag) !== -1) nameStr = `__**${name}**__`;
                 else nameStr = `${name}`;
 
-                const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
-
-                if (i === 0) str += `🥇 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
-                else if (i === 1) str += `🥈 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
-                else if (i === 2) str += `🥉 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
-                else str += `**${i + 1}.** <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
+                if (i === 0) str += `🥇 ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
+                else if (i === 1) str += `🥈 ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
+                else if (i === 2) str += `🥉 ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
+                else str += `**${i + 1}.** ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
             }
 
             str += '\n**__Top Clans__**\n';
@@ -104,19 +105,17 @@ module.exports = {
                 const rankedClan = clanLeaderboard[i];
 
                 const matchingClan = clanPromisesComp.find(c => c.tag === rankedClan.clanTag);
-                const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(matchingClan.badgeId, matchingClan.clanWarTrophies));
+                //const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(matchingClan.badgeId, matchingClan.clanWarTrophies));
 
                 let nameStr;
 
                 if (rankedClan.clanTag === clanTag) nameStr = `__**${matchingClan.name}**__`;
                 else nameStr = `${matchingClan.name}`;
 
-                const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
-
-                if (i === 0) str += `🥇 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${(rankedClan.avgFame * 200).toFixed(0)})\n`;
-                else if (i === 1) str += `🥈 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${(rankedClan.avgFame * 200).toFixed(0)})\n`;
-                else if (i === 2) str += `🥉 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${(rankedClan.avgFame * 200).toFixed(0)})\n`;
-                else str += `**${i + 1}.** <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${(rankedClan.avgFame * 200).toFixed(0)})\n`;
+                if (i === 0) str += `🥇 ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${(rankedClan.avgFame * 200).toFixed(0)})\n`;
+                else if (i === 1) str += `🥈 ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${(rankedClan.avgFame * 200).toFixed(0)})\n`;
+                else if (i === 2) str += `🥉 ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${(rankedClan.avgFame * 200).toFixed(0)})\n`;
+                else str += `**${i + 1}.** ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${(rankedClan.avgFame * 200).toFixed(0)})\n`;
             }
 
             return str;

@@ -34,17 +34,17 @@ module.exports = {
             return rr.clan.periodPoints;
         }
 
-        const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(rr.clan.badgeId, rr.clan.clanScore));
+        //const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(rr.clan.badgeId, rr.clan.clanScore));
         const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
 
         let desc = ``;
 
         if (totalAttacksLeft === 0) return message.channel.send({ embed: { color: green, description: `All attacks have been used!` } }); //all attacks used
         else if (totalAttacksLeft !== 0 && remainingAttacks.filter(p => p.attacksUsedToday < 4).length === 0) { //attacks left, but all members currently in clan have used attacks
-            return message.channel.send({ embed: { title: '__Remaining Attacks__', color: color, description: `<:${badgeEmoji.name}:${badgeEmoji.id}> **${rr.clan.name}**\n<:${fameEmoji.name}:${fameEmoji.id}> **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n\n*All current members have completed attacks!*` } });
+            return message.channel.send({ embed: { title: '__Remaining Attacks__', color: color, description: `Clan: **${rr.clan.name}**\n<:${fameEmoji.name}:${fameEmoji.id}> **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n\n*All current members have completed attacks!*` } });
         }
 
-        desc += `<:${badgeEmoji.name}:${badgeEmoji.id}> **${rr.clan.name}**\n<:${fameEmoji.name}:${fameEmoji.id}> **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n`;
+        desc += `Clan: **${rr.clan.name}**\n<:${fameEmoji.name}:${fameEmoji.id}> **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n`;
 
         if (remainingAttacks.some(p => p.attacksUsedToday === 0)) {
             desc += `\n**__4 Attacks Left__**\n`;
