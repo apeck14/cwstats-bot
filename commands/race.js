@@ -78,13 +78,13 @@ module.exports = {
             let str = ``;
 
             for (const c of clans) {
-                //const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(c.badgeId, c.clanWarTrophies));
+                const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(c.badgeId, c.clanWarTrophies));
                 const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
 
                 if (c.tag === clanTag)
-                    str += `**${c.rank}. __${c.name}__**\n<:${fameEmoji.name}:${fameEmoji.id}> **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nFame/Atk: **${c.avgFame.toFixed(1)}**\n\n`;
+                    str += `**${c.rank}. <:${badgeEmoji.name}:${badgeEmoji.id}> __${c.name}__**\n<:${fameEmoji.name}:${fameEmoji.id}> **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nFame/Atk: **${c.avgFame.toFixed(1)}**\n\n`;
                 else
-                    str += `**${c.rank}.** **${c.name}**\n<:${fameEmoji.name}:${fameEmoji.id}> ${c.medals}\nProj. Fame: ${c.projFame.toFixed(0)}\nAtks. Left: ${200 - c.attacksUsedToday}\nFame/Atk: ${c.avgFame.toFixed(1)}\n\n`;
+                    str += `**${c.rank}.** <:${badgeEmoji.name}:${badgeEmoji.id}> **${c.name}**\n<:${fameEmoji.name}:${fameEmoji.id}> ${c.medals}\nProj. Fame: ${c.projFame.toFixed(0)}\nAtks. Left: ${200 - c.attacksUsedToday}\nFame/Atk: ${c.avgFame.toFixed(1)}\n\n`;
             }
 
             return str;
