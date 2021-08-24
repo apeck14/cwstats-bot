@@ -173,8 +173,6 @@ module.exports = {
             }
         }
 
-        console.log(clanBadge)
-
         const width = 300;
         const height = 300;
         const canvas = new CanvasRenderService(width, height);
