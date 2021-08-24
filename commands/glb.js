@@ -32,7 +32,7 @@ module.exports = {
                     name: weeks[weeks.length - 1].name,
                     tag: weeks[0].tag,
                     totalWeeks: weeks.length,
-                    avgFame: average(weeks.map(m => m.fame)),
+                    avgFame: average(weeks.map(m => m.fame)) / 4,
                     clanTag: weeks[0].clanTag
                 }
             )
@@ -92,10 +92,10 @@ module.exports = {
 
                 const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
 
-                if (i === 0) str += `🥇 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
-                else if (i === 1) str += `🥈 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
-                else if (i === 2) str += `🥉 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
-                else str += `**${i + 1}.** <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
+                if (i === 0) str += `🥇 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(1)})\n`;
+                else if (i === 1) str += `🥈 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(1)})\n`;
+                else if (i === 2) str += `🥉 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(1)})\n`;
+                else str += `**${i + 1}.** <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(1)})\n`;
             }
 
             str += '\n**__Top Clans__**\n';
@@ -113,10 +113,10 @@ module.exports = {
 
                 const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
 
-                if (i === 0) str += `🥇 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${(rankedClan.avgFame * 200).toFixed(0)})\n`;
-                else if (i === 1) str += `🥈 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${(rankedClan.avgFame * 200).toFixed(0)})\n`;
-                else if (i === 2) str += `🥉 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${(rankedClan.avgFame * 200).toFixed(0)})\n`;
-                else str += `**${i + 1}.** <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${(rankedClan.avgFame * 200).toFixed(0)})\n`;
+                if (i === 0) str += `🥇 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${rankedClan.avgFame.toFixed(1)})\n`;
+                else if (i === 1) str += `🥈 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${rankedClan.avgFame.toFixed(1)})\n`;
+                else if (i === 2) str += `🥉 <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${rankedClan.avgFame.toFixed(1)})\n`;
+                else str += `**${i + 1}.** <:${badgeEmoji.name}:${badgeEmoji.id}> ${nameStr} (<:${fameEmoji.name}:${fameEmoji.id}>${rankedClan.avgFame.toFixed(1)})\n`;
             }
 
             return str;
@@ -124,7 +124,10 @@ module.exports = {
 
         const lbEmbed = {
             color: color,
-            title: `__CW2 Weekly Avg. Leaders__`,
+            author: {
+                name: `CW2 Stats Leaderboard`,
+                icon_url: bot.user.displayAvatarURL()
+            },
             description: await desc(),
             footer: {
                 text: `Players: ${leaderboard.length} | Clans: ${clanLeaderboard.length}`
