@@ -51,8 +51,11 @@ module.exports = {
                 confirmEmbed.delete();
 
                 //check reaction
-                if (firstReact._emoji.name === '✅') {
-                    await linkedAccounts.updateOne({ discordID: message.author.id }, { $set: { tag: tag } });
+                if (!firstReact || firstReact._emoji.name === '❌') {
+                    return;
+                }
+                else {
+                    linkedAccounts.updateOne({ discordID: message.author.id }, { $set: { tag: tag } });
 
                     return message.channel.send({ embed: { color: green, description: `✅ Updated! Account linked to **${player.name}**` } });
                 }
