@@ -173,6 +173,8 @@ module.exports = {
             }
         }
 
+        console.log(player.name)
+
         const width = 300;
         const height = 300;
         const canvas = new CanvasRenderService(width, height);

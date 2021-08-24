@@ -38,8 +38,6 @@ module.exports = {
         const player = await getPlayerData(arg);
         let clanBadge;
 
-        console.log(player)
-
         if (!player) return message.channel.send({ embed: { color: red, description: `**Invalid tag!** Try again.` } });
 
         if (!player.clan) {
