@@ -173,7 +173,7 @@ module.exports = {
             }
         }
 
-        console.log(player.name)
+        console.log(clanBadge)
 
         const width = 300;
         const height = 300;
