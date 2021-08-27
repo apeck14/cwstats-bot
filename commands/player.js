@@ -18,7 +18,7 @@ module.exports = {
             const linkedAccount = await linkedAccounts.findOne({ discordID: message.author.id });
 
             if (linkedAccount) arg = linkedAccount.tag;
-            else if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!** To use without a tag, you must link your ID.\n\n__Usage:__\n\`${prefix}player #ABC123\`` } });
+            else return message.channel.send({ embed: { color: red, description: `**No tag given!** To use without a tag, you must link your ID.\n\n__Usage:__\n\`${prefix}player #ABC123\`\n\`${prefix}link #ABC123\`` } });
         }
         else if (arg.indexOf('<@') === 0) { //@ing someone with linked account
             const playerId = arg.replace(/[^0-9]/g, '');
