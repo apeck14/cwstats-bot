@@ -25,8 +25,24 @@ module.exports = {
 
         const remainingAttacks = rr.clan.participants
             .filter(p => currentMemberTags.includes(p.tag)) //current members only
-            .map(p => ({ name: p.name, attacksUsedToday: p.decksUsedToday }))
-            .sort((a, b) => a.attacksUsedToday - b.attacksUsedToday);
+            .map(p => ({ name: p.name, attacksUsedToday: p.decksUsedToday }));
+
+        const fourAttacks = [];
+        const threeAttacks = [];
+        const twoAttacks = []
+        const oneAttack = [];
+
+        for (const p of remainingAttacks) { //push all players to appropiate array
+            if (p.attacksUsedToday === 0) fourAttacks.push(p);
+            else if (p.attacksUsedToday === 1) threeAttacks.push(p);
+            else if (p.attacksUsedToday === 2) twoAttacks.push(p);
+            else if (p.attacksUsedToday === 3) oneAttack.push(p);
+        }
+
+        fourAttacks.sort((a, b) => a.name.localeCompare(b.name));
+        threeAttacks.sort((a, b) => a.name.localeCompare(b.name));
+        twoAttacks.sort((a, b) => a.name.localeCompare(b.name));
+        oneAttack.sort((a, b) => a.name.localeCompare(b.name));
 
         const currentFame = () => {
             if (rr.clan.fame === 0 && rr.clan.periodPoints === 0) return 0;
@@ -46,21 +62,21 @@ module.exports = {
 
         desc += `<:${badgeEmoji.name}:${badgeEmoji.id}> **${rr.clan.name}**\n<:${fameEmoji.name}:${fameEmoji.id}> **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n`;
 
-        if (remainingAttacks.some(p => p.attacksUsedToday === 0)) {
+        if (fourAttacks.length > 0) {
             desc += `\n**__4 Attacks Left__**\n`;
-            remainingAttacks.filter(p => p.attacksUsedToday === 0).forEach(p => desc += `• ${p.name}\n`);
+            fourAttacks.forEach(p => desc += `• ${p.name}\n`);
         }
-        if (remainingAttacks.some(p => p.attacksUsedToday === 1)) {
+        if (threeAttacks.length > 0) {
             desc += `\n**__3 Attacks Left__**\n`;
-            remainingAttacks.filter(p => p.attacksUsedToday === 1).forEach(p => desc += `• ${p.name}\n`);
+            threeAttacks.sort((a, b) => b.name - a.name).forEach(p => desc += `• ${p.name}\n`);
         }
-        if (remainingAttacks.some(p => p.attacksUsedToday === 2)) {
+        if (twoAttacks.length > 0) {
             desc += `\n**__2 Attacks Left__**\n`;
-            remainingAttacks.filter(p => p.attacksUsedToday === 2).forEach(p => desc += `• ${p.name}\n`);
+            twoAttacks.sort((a, b) => b.name - a.name).forEach(p => desc += `• ${p.name}\n`);
         }
-        if (remainingAttacks.some(p => p.attacksUsedToday === 3)) {
+        if (oneAttack.length > 0) {
             desc += `\n**__1 Attack Left__**\n`;
-            remainingAttacks.filter(p => p.attacksUsedToday === 3).forEach(p => desc += `• ${p.name}\n`);
+            oneAttack.sort((a, b) => b.name - a.name).forEach(p => desc += `• ${p.name}\n`);
         }
 
         message.channel.send({ embed: { title: `__Remaining Attacks__`, color: color, description: desc } });
