@@ -22,7 +22,7 @@ module.exports = {
         if (!linkedAccount) return message.channel.send({ embed: { color: orange, description: `Please **link** your tag to use this feature!\n\n__Usage:__\n\`${prefix}link #ABC123\`` } });
         else tag = linkedAccount.tag;
 
-        const player = await getPlayerData(tag);
+        const player = await getPlayerData('#988VP2JCR');
         if (!player) return message.channel.send({ embed: { color: red, description: `**Player not found.** Please re-link your tag with the correct tag.` } });
 
         const cardsGroupedByLevel = groupBy(player.cards, c => 13 - (c.maxLevel - c.level));
@@ -1263,7 +1263,7 @@ module.exports = {
             for (let i = 0; i < uniqueDeckSets[1].length; i++) {
                 desc += `[**${i + 1}**](${getDeckUrl(uniqueDeckSets[1][i].cards)}): `;
                 for (const c of uniqueDeckSets[1][i].cards) {
-                    const cardEmoji = bot.emojis.cache.find(e => e.name === c.replace(/-/g, "_") && e.guild.name.indexOf('Emoji' > -1));
+                    const cardEmoji = bot.emojis.cache.find(e => e.name === c.replace(/-/g, "_") && e.guild.name.indexOf('Emoji') > -1);
                     desc += `<:${cardEmoji.name}:${cardEmoji.id}>`;
                 }
 
