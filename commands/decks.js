@@ -22,7 +22,7 @@ module.exports = {
         if (!linkedAccount) return message.channel.send({ embed: { color: orange, description: `Please **link** your tag to use this feature!\n\n__Usage:__\n\`${prefix}link #ABC123\`` } });
         else tag = linkedAccount.tag;
 
-        const player = await getPlayerData('#988VP2JCR');
+        const player = await getPlayerData(tag);
         if (!player) return message.channel.send({ embed: { color: red, description: `**Player not found.** Please re-link your tag with the correct tag.` } });
 
         const cardsGroupedByLevel = groupBy(player.cards, c => 13 - (c.maxLevel - c.level));
