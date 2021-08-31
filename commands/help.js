@@ -27,7 +27,8 @@ module.exports = {
       { name: 'setCommandChannel', desc: 'Set the channel where all commands should be allowed (use command in the channel to set). `Default: Any Channel`', main: false, setup: true },
       { name: 'prefix PREFIX', desc: 'Set a custom prefix for all bot commands. `Default: ?`', main: false, setup: true },
       { name: 'glb', desc: 'View the global *CW2 Stats* leaderboard', main: true },
-      { name: 'attacks #TAG*', desc: 'View players with remaining attacks of any clan', main: true }
+      { name: 'attacks #TAG*', desc: 'View players with remaining attacks of any clan', main: true },
+      { name: 'decks', desc: 'Find top war deck sets based on your card levels', main: true }
     ];
 
     commands.sort((a, b) => {
