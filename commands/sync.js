@@ -1,5 +1,5 @@
-const { verifyClanBio } = require("../util/clanUtil");
 const { request, red, parseDate, orange } = require("../util/otherUtil");
+const { getClanBadge } = require("../util/clanUtil");
 
 module.exports = {
     name: 'sync',
@@ -16,9 +16,8 @@ module.exports = {
         if (message.author.id !== guildOwnerID && message.member._roles.indexOf(adminRoleID) === -1) return message.channel.send({ embed: { color: red, description: 'Only **admins** can use this command!' } });
         else if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
 
-        //tag must be linked and verified
+        //tag must be linked
         if (!clanTag) return message.channel.send({ embed: { color: red, description: `You must **link** a clan before using this command!\n\n__Usage:__\n\`${prefix}setClanTag #ABC123\`` } });
-        //else if(!await verifyClanBio(clanTag)) return message.channel.send({embed: {color: orange, description: `__**Clan not verified!**__\n\nTo verify your clan, add '**top.gg/CW2Stats**' to your clan bio!`}});
 
         //-------------------------------------------------------------------------------------------------------------------------
 
@@ -34,7 +33,7 @@ module.exports = {
             const weekDate = parseDate(r.createdDate);
             weekDate.setTime(weekDate.getTime() - (24 * 60 * 60 * 1000)); //subtract one day
 
-            r.clan.participants.sort((a, b) => b.fame - a.fame); // sort by fame
+            r.clan.participants.sort((a, b) => b.fame - a.fame); //sort by fame
             r.createdDate = weekDate;
             r.createdDateStr = `${weekDate.getUTCMonth() + 1}/${weekDate.getUTCDate()}/${weekDate.getUTCFullYear()}`;
         }
@@ -44,7 +43,10 @@ module.exports = {
         //RACELOG FILTERS
         raceLog = raceLog.filter(r => r.clan.participants.length > 0 && r.clan.fame > 0) //filter weeks with no participants to add
             .filter(r => parseDate(r.createdDate) > parseDate('20210621T000000.000Z')) //created date is past most recent update's first week (first week is bugged)
-            .filter(r => weeksAddedForClan.indexOf(r.createdDateStr) === -1); //filter out weeks that have already been added
+            .filter(r => weeksAddedForClan.indexOf(r.createdDateStr) === -1) //filter out weeks that have already been added
+            .reverse(); //start with oldest weeks
+
+        raceLog.forEach(r => r.clan.participants = r.clan.participants.filter(p => p.fame >= 1600 && p.decksUsed >= 16 && p.boatAttacks === 0)); //filter out players that didnt use all 16 war attacks
 
         if (raceLog.length === 0) return message.channel.send({ embed: { color: orange, description: `**There are no new weeks to add at this time!**` } });
 
@@ -54,20 +56,32 @@ module.exports = {
         for (const r of raceLog) {
             weeksAdded.insertOne({ clanTag: clanTag, date: r.createdDateStr }); //add week to Weeks_Added in DB
 
-            r.clan.participants = r.clan.participants.filter(p => p.fame >= 1600 && p.decksUsed >= 16 && p.boatAttacks === 0);
+            //add all matches from all weeks
+            //sort each players matches by date
+            //remove all matches past maxMatchesAllowed limit (keeep most recent)
 
             for (const p of r.clan.participants) { //loop through particpiants
-                matches.insertOne({
+                const maxMatchesAllowed = 15; //CHANGE AS NEEDED
+                const playerMatches = (await matches.find({ tag: p.tag }).toArray()).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                if (playerMatches.length >= maxMatchesAllowed) {
+                    for (let i = 0; i < (playerMatches.length - maxMatchesAllowed) + 1; i++) {
+                        await matches.deleteOne(playerMatches[i]);
+                    }
+                }
+
+                await matches.insertOne({
                     name: p.name,
                     tag: p.tag,
                     date: r.createdDateStr,
                     clanTag: clanTag,
                     fame: p.fame,
-                    clanTrophies: r.clan.clanScore
+                    clanTrophies: r.clan.clanScore,
+                    badgeId: r.clan.badgeId
                 });
             }
 
-            desc += `• **__Week ${r.sectionIndex + 1} (${r.createdDateStr})__**\n`;
+            desc += `• **Week ${r.sectionIndex + 1} (${r.createdDateStr})**\n`;
 
             const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
 
@@ -89,7 +103,15 @@ module.exports = {
                 description: `✅ **${raceLog.length} New Week(s) Added!**\n\n` + desc,
                 footer: {
                     text: `Players deemed to have missed battle days are not added.`
-                }
+                },
+                author: {
+                    name: raceLog[0].clan.name,
+                    icon_url: 'attachment://badge.png'
+                },
+                files: [{
+                    attachment: `./allBadges/${getClanBadge(raceLog[0].clan.badgeId, raceLog[0].clan.clanWarTrophies, false)}.png`,
+                    name: 'badge.png'
+                }],
             }
         });
 
