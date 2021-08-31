@@ -1250,7 +1250,7 @@ module.exports = {
         for (let i = 0; i < uniqueDeckSets[0].length; i++) {
             desc += `[**${i + 1}**](${getDeckUrl(uniqueDeckSets[0][i].cards)}): `;
             for (const c of uniqueDeckSets[0][i].cards) {
-                const cardEmoji = bot.emojis.cache.find(e => e.name === c.replace(/-/g, "_"));
+                const cardEmoji = bot.emojis.cache.find(e => e.name === c.replace(/-/g, "_") && e.guild.name.indexOf('Emoji') > -1);
                 desc += `<:${cardEmoji.name}:${cardEmoji.id}>`;
             }
 
@@ -1263,7 +1263,7 @@ module.exports = {
             for (let i = 0; i < uniqueDeckSets[1].length; i++) {
                 desc += `[**${i + 1}**](${getDeckUrl(uniqueDeckSets[1][i].cards)}): `;
                 for (const c of uniqueDeckSets[1][i].cards) {
-                    const cardEmoji = bot.emojis.cache.find(e => e.name === c.replace(/-/g, "_"));
+                    const cardEmoji = bot.emojis.cache.find(e => e.name === c.replace(/-/g, "_") && e.guild.name.indexOf('Emoji' > -1));
                     desc += `<:${cardEmoji.name}:${cardEmoji.id}>`;
                 }
 
