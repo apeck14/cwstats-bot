@@ -15,6 +15,7 @@ module.exports = {
         //must be in command channel if set
         if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
 
+        return message.channel.send({ embed: { color: orange, description: `**This command has been temporarily disabled.** Will be back soon. :)` } });
         //account must be linked
         const linkedAccount = await linkedAccounts.findOne({ discordID: message.author.id });
         let tag;
