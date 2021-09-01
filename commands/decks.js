@@ -225,7 +225,7 @@ module.exports = {
         let desc = `\n**__Best War Deck Set__**\nRating: **${(average(uniqueDeckSets[0].map(d => d.rating))).toFixed(1)}**\n`;
 
         for (let i = 0; i < 4; i++) {
-            desc += `[**Deck ${i + 1}**](${getDeckUrl(uniqueDeckSets[0][i].cards)}): `;
+            desc += `[**Copy**](${getDeckUrl(uniqueDeckSets[0][i].cards)}): `;
             for (const c of uniqueDeckSets[0][i].cards) {
                 const cardEmoji = bot.emojis.cache.find(e => e.name === c.replace(/-/g, "_") && e.guild.name.indexOf('Emoji') > -1);
                 desc += `<:${cardEmoji.name}:${cardEmoji.id}>`;
@@ -238,7 +238,7 @@ module.exports = {
             desc += `\n**__Alternative__**\nRating: **${(average(uniqueDeckSets[1].map(d => d.rating))).toFixed(1)}**\n`;
 
             for (let i = 0; i < 4; i++) {
-                desc += `[** Deck ${i + 1}**](${getDeckUrl(uniqueDeckSets[1][i].cards)}): `;
+                desc += `[**Copy**](${getDeckUrl(uniqueDeckSets[1][i].cards)}): `;
                 for (const c of uniqueDeckSets[1][i].cards) {
                     const cardEmoji = bot.emojis.cache.find(e => e.name === c.replace(/-/g, "_") && e.guild.name.indexOf('Emoji') > -1);
                     desc += `<:${cardEmoji.name}:${cardEmoji.id}>`;
