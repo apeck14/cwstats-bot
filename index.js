@@ -95,6 +95,8 @@ bot.on('message', async message => {
 
         if (!bot.commands.has(command)) return;
 
+        console.log()
+
         //CHECK PERMISSIONS
         if (!channelPermissions.has('SEND_MESSAGES')) return;
 
