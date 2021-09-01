@@ -35,6 +35,13 @@ module.exports = {
         const deckSets = [];
         let cardsAvailable = [];
 
+        const loadingEmbed = await message.channel.send({
+            embed: {
+                description: `Searching through **${allDecks.length}** deck(s)...`,
+                color: '#ff237a'
+            }
+        });
+
         for (let lvl = 13; lvl >= 1; lvl--) {
             cardsAvailable = cardsAvailable.concat(cardsGroupedByLevel[`${lvl}`]);
 
@@ -1271,7 +1278,7 @@ module.exports = {
             }
         }
 
-        message.channel.send({
+        await message.channel.send({
             embed: {
                 description: desc,
                 color: color,
@@ -1280,5 +1287,7 @@ module.exports = {
                 }
             }
         });
+
+        loadingEmbed.delete();
     }
 }
