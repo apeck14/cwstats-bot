@@ -123,7 +123,7 @@ bot.on('guildCreate', async guild => {
     const guilds = db.collection('Guilds');
     const statistics = db.collection('Statistics');
 
-    guilds.insertOne(
+    await guilds.insertOne(
         {
             guildID: guild.id,
             clanTag: null,
