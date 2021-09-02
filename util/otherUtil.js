@@ -1,6 +1,5 @@
 const axios = require('axios');
 const API_KEY = require('./tokenUtil.js');
-const fs = require('fs');
 
 const otherUtil = {
     green: '#00FF00',
@@ -62,17 +61,11 @@ const otherUtil = {
         }
         return 'rgba(255, 255, 255, 0.25)'; //transparent white
     },
-    jsonReader: (filePath, cb) => {
-        fs.readFile(filePath, (err, fileData) => {
-            if (err) return cb && cb(err);
+    getEmoji: (bot, emojiName) => {
+        const ownerIds = ['493245767448789023', '878013634851258428', '878025564538146816', '878031332817645681', '878030152691499028', '878395655121436682', '878394839950061630', '878397282461024287', '878396465817460757'];
+        const emoji = bot.emojis.cache.find(e => ownerIds.includes(e.guild.ownerID) && e.name === emojiName);
 
-            try {
-                const obj = JSON.parse(fileData)
-                return cb && cb(null, obj);
-            } catch (err) {
-                return cb && cb(err);
-            }
-        })
+        return `<:${emoji.name}:${emoji.id}>`;
     }
 }
 
