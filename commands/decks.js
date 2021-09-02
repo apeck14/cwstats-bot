@@ -218,7 +218,20 @@ module.exports = {
             return url.substring(0, url.length - 1);
         }
 
-        let desc = `\n**__Best War Deck Set__**\nRating: **${(average(deckSets[0].map(d => d.rating))).toFixed(1)}**\n`;
+        function getAvgLvl(deckSet) {
+            let sum = 0;
+
+            for (const d of deckSet) {
+                for (const c of d.cards) {
+                    const card = player.cards.find(ca => ca.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '') === c);
+                    sum += 13 - (card.maxLevel - card.level);
+                }
+            }
+
+            return sum / 32;
+        }
+
+        let desc = `\n**__Best War Deck Set__**\nRating: **${(average(deckSets[0].map(d => d.rating))).toFixed(1)}**\nAvg. Lvl: **${getAvgLvl(deckSets[0]).toFixed(1)}**\n`;
 
         for (let i = 0; i < 4; i++) {
             desc += `[**Copy**](${getDeckUrl(deckSets[0][i].cards)}): `;
@@ -230,7 +243,7 @@ module.exports = {
         }
 
         if (deckSets.length >= 2) {
-            desc += `\n**__Alternative__**\nRating: **${(average(deckSets[1].map(d => d.rating))).toFixed(1)}**\n`;
+            desc += `\n**__Alternative__**\nRating: **${(average(deckSets[1].map(d => d.rating))).toFixed(1)}**\nAvg. Lvl: **${getAvgLvl(deckSets[1]).toFixed(1)}**\n`;
 
             for (let i = 0; i < 4; i++) {
                 desc += `[**Copy**](${getDeckUrl(deckSets[1][i].cards)}): `;
@@ -242,7 +255,7 @@ module.exports = {
             }
         }
 
-        return message.channel.send({
+        await message.channel.send({
             embed: {
                 description: desc,
                 color: color,
