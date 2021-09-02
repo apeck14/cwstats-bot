@@ -242,7 +242,7 @@ module.exports = {
             }
         }
 
-        await message.channel.send({
+        return message.channel.send({
             embed: {
                 description: desc,
                 color: color,
