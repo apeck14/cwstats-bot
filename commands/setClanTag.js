@@ -1,5 +1,5 @@
 const { getClanBadge } = require("../util/clanUtil");
-const { red, green, request, orange } = require("../util/otherUtil");
+const { red, green, request, orange, getEmoji } = require("../util/otherUtil");
 
 module.exports = {
     name: 'setclantag',
@@ -31,8 +31,8 @@ module.exports = {
             if (!clanTag) statistics.updateOne({}, { $inc: { linkedClans: 1 } }); //add new linked clan (if clan has not been linked in the past)
             guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { clanTag: tag } });
 
-            const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(clan.badgeId, clan.clanWarTrophies));
-            message.channel.send({ embed: { color: green, description: `✅ Server successfully linked to <:${badgeEmoji.name}:${badgeEmoji.id}> **${clan.name}**!` } });
+            const badgeEmoji = getEmoji(bot, getClanBadge(clan.badgeId, clan.clanWarTrophies));
+            message.channel.send({ embed: { color: green, description: `✅ Server successfully linked to ${badgeEmoji} **${clan.name}**!` } });
 
             console.log(`Clan Linked: ${clan?.name} (${clan?.tag})`);
         } catch (e) {

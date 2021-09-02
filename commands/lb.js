@@ -1,6 +1,6 @@
 const { groupBy } = require("lodash");
 const { getClanBadge } = require("../util/clanUtil");
-const { average, orange, red, request } = require("../util/otherUtil");
+const { average, orange, red, request, getEmoji } = require("../util/otherUtil");
 
 module.exports = {
     name: 'lb',
@@ -54,16 +54,16 @@ module.exports = {
 
             let str = '';
 
-            const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
+            const fameEmoji = getEmoji(bot, 'fame');
 
             //above 4k
             for (let i = 0; i < indeces; i++) {
                 const { name, avgFame } = leaderboard[i];
 
-                if (i === 0) str += `🥇 **${name}** (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
-                else if (i === 1) str += `🥈 **${name}** (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
-                else if (i === 2) str += `🥉 **${name}** (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
-                else str += `**${i + 1}.** ${name} (<:${fameEmoji.name}:${fameEmoji.id}>${avgFame.toFixed(0)})\n`;
+                if (i === 0) str += `🥇 **${name}** (${fameEmoji}${avgFame.toFixed(0)})\n`;
+                else if (i === 1) str += `🥈 **${name}** (${fameEmoji}${avgFame.toFixed(0)})\n`;
+                else if (i === 2) str += `🥉 **${name}** (${fameEmoji}${avgFame.toFixed(0)})\n`;
+                else str += `**${i + 1}.** ${name} (${fameEmoji}${avgFame.toFixed(0)})\n`;
             }
 
             return str;

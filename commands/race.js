@@ -1,5 +1,5 @@
 const { getClanBadge } = require("../util/clanUtil");
-const { request, red, orange } = require("../util/otherUtil");
+const { request, red, orange, getEmoji } = require("../util/otherUtil");
 
 module.exports = {
     name: 'race',
@@ -78,13 +78,13 @@ module.exports = {
             let str = ``;
 
             for (const c of clans) {
-                const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(c.badgeId, c.clanWarTrophies));
-                const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
+                const badgeEmoji = getEmoji(bot, getClanBadge(c.badgeId, c.clanWarTrophies));
+                const fameEmoji = getEmoji(bot, 'fame');
 
                 if (c.tag === clanTag)
-                    str += `**${c.rank}. <:${badgeEmoji.name}:${badgeEmoji.id}> __${c.name}__**\n<:${fameEmoji.name}:${fameEmoji.id}> **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nFame/Atk: **${c.avgFame.toFixed(1)}**\n\n`;
+                    str += `**${c.rank}. ${badgeEmoji} __${c.name}__**\n${fameEmoji} **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nFame/Atk: **${c.avgFame.toFixed(1)}**\n\n`;
                 else
-                    str += `**${c.rank}.** <:${badgeEmoji.name}:${badgeEmoji.id}> **${c.name}**\n<:${fameEmoji.name}:${fameEmoji.id}> ${c.medals}\nProj. Fame: ${c.projFame.toFixed(0)}\nAtks. Left: ${200 - c.attacksUsedToday}\nFame/Atk: ${c.avgFame.toFixed(1)}\n\n`;
+                    str += `**${c.rank}.** ${badgeEmoji} **${c.name}**\n${fameEmoji} ${c.medals}\nProj. Fame: ${c.projFame.toFixed(0)}\nAtks. Left: ${200 - c.attacksUsedToday}\nFame/Atk: ${c.avgFame.toFixed(1)}\n\n`;
             }
 
             return str;

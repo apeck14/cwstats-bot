@@ -1,4 +1,4 @@
-const { request, red, orange, green } = require("../util/otherUtil");
+const { request, red, orange, green, getEmoji } = require("../util/otherUtil");
 const { getMembers, getClanBadge } = require("../util/clanUtil");
 
 module.exports = {
@@ -50,17 +50,17 @@ module.exports = {
             return rr.clan.periodPoints;
         }
 
-        const badgeEmoji = bot.emojis.cache.find(e => e.name === getClanBadge(rr.clan.badgeId, rr.clan.clanScore));
-        const fameEmoji = bot.emojis.cache.find(e => e.name === 'fame');
+        const badgeEmoji = getEmoji(bot, getClanBadge(rr.clan.badgeId, rr.clan.clanScore));
+        const fameEmoji = getEmoji(bot, 'fame');
 
         let desc = ``;
 
         if (totalAttacksLeft === 0) return message.channel.send({ embed: { color: green, description: `All attacks have been used!` } }); //all attacks used
         else if (totalAttacksLeft !== 0 && remainingAttacks.filter(p => p.attacksUsedToday < 4).length === 0) { //attacks left, but all members currently in clan have used attacks
-            return message.channel.send({ embed: { title: '__Remaining Attacks__', color: color, description: `<:${badgeEmoji.name}:${badgeEmoji.id}> **${rr.clan.name}**\n<:${fameEmoji.name}:${fameEmoji.id}> **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n\n*All current members have completed attacks!*` } });
+            return message.channel.send({ embed: { title: '__Remaining Attacks__', color: color, description: `${badgeEmoji} **${rr.clan.name}**\n${fameEmoji} **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n\n*All current members have completed attacks!*` } });
         }
 
-        desc += `<:${badgeEmoji.name}:${badgeEmoji.id}> **${rr.clan.name}**\n<:${fameEmoji.name}:${fameEmoji.id}> **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n`;
+        desc += `${badgeEmoji} **${rr.clan.name}**\n${fameEmoji} **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n`;
 
         if (fourAttacks.length > 0) {
             desc += `\n**__4 Attacks Left__**\n`;

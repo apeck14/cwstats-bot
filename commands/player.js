@@ -1,6 +1,6 @@
 const { getPlayerData, getClanBadge, getArenaEmoji } = require("../util/clanUtil");
 const { CanvasRenderService } = require('chartjs-node-canvas');
-const { red, hexToRgbA, orange, request } = require("../util/otherUtil");
+const { red, hexToRgbA, orange, request, getEmoji } = require("../util/otherUtil");
 
 module.exports = {
     name: 'player',
@@ -178,20 +178,20 @@ module.exports = {
         const canvas = new CanvasRenderService(width, height);
         const image = await canvas.renderToBuffer(chart);
 
-        const badgeEmoji = bot.emojis.cache.find(e => e.name === clanBadge);
-        const levelEmoji = bot.emojis.cache.find(e => e.name === `level${player.level}`);
-        const pbEmoji = bot.emojis.cache.find(e => e.name === getArenaEmoji(player.pb));
-        const level13 = bot.emojis.cache.find(e => e.name === `level13c`);
-        const level12 = bot.emojis.cache.find(e => e.name === `level12`);
-        const level11 = bot.emojis.cache.find(e => e.name === `level11`);
+        const badgeEmoji = getEmoji(bot, clanBadge);
+        const levelEmoji = getEmoji(bot, `level${player.level}`);
+        const pbEmoji = getEmoji(bot, getArenaEmoji(player.pb));
+        const level13 = getEmoji(bot, `level13c`);
+        const level12 = getEmoji(bot, `level12`);
+        const level11 = getEmoji(bot, `level11`);
 
         const desc = () => {
             const lvl13Cards = player.cards.filter(c => c.maxLevel - c.level === 0).length;
             const lvl12Cards = player.cards.filter(c => c.maxLevel - c.level === 1).length;
             const lvl11Cards = player.cards.filter(c => c.maxLevel - c.level === 2).length;
 
-            const top = `<:${badgeEmoji.name}:${badgeEmoji.id}> **${player.clan}**\n\n`;
-            const mid = `**__Stats__**\n**PB**: <:${pbEmoji.name}:${pbEmoji.id}> ${player.pb}\n**CW1 War Wins**: ${player.warWins}\n**Most Chall. Wins**: ${player.mostChallWins}\n**CC Wins**: ${player.challWins}\n**GC Wins**: ${player.grandChallWins}\n\n`;
+            const top = `${badgeEmoji} **${player.clan}**\n\n`;
+            const mid = `**__Stats__**\n**PB**: ${pbEmoji} ${player.pb}\n**CW1 War Wins**: ${player.warWins}\n**Most Chall. Wins**: ${player.mostChallWins}\n**CC Wins**: ${player.challWins}\n**GC Wins**: ${player.grandChallWins}\n\n`;
             const bottom = `**__Cards__**\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}\n\n[RoyaleAPI Profile](https://royaleapi.com/player/${arg.substr(1)})`;
             return top + mid + bottom;
         }
