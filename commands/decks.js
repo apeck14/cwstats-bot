@@ -1,6 +1,6 @@
-const { groupBy, uniqWith, isEqual } = require("lodash");
+const { groupBy } = require("lodash");
 const { getPlayerData } = require("../util/clanUtil");
-const { average, orange, red } = require("../util/otherUtil");
+const { average, orange, red, getEmoji } = require("../util/otherUtil");
 
 module.exports = {
     name: 'decks',
@@ -15,7 +15,6 @@ module.exports = {
         //must be in command channel if set
         if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
 
-        return message.channel.send({ embed: { color: orange, description: `**This command has been temporarily disabled.** Will be back soon. :)` } });
         //account must be linked
         const linkedAccount = await linkedAccounts.findOne({ discordID: message.author.id });
         let tag;
@@ -23,58 +22,47 @@ module.exports = {
         if (!linkedAccount) return message.channel.send({ embed: { color: orange, description: `Please **link** your tag to use this feature!\n\n__Usage:__\n\`${prefix}link #ABC123\`` } });
         else tag = linkedAccount.tag;
 
-        const player = await getPlayerData(tag);
+        const player = await getPlayerData('#LPV0LLJQJ');
         if (!player) return message.channel.send({ embed: { color: red, description: `**Player not found.** Please re-link your tag with the correct tag.` } });
 
         const cardsGroupedByLevel = groupBy(player.cards, c => 13 - (c.maxLevel - c.level));
 
         for (const lvl in cardsGroupedByLevel) {
-            cardsGroupedByLevel[lvl] = cardsGroupedByLevel[lvl].map(c => c.name.toLowerCase().replace(/\s+/g, '-'));
+            cardsGroupedByLevel[lvl] = cardsGroupedByLevel[lvl].map(c => c.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, ''));
         }
 
         const allDecks = await decks.find({}).toArray();
+
         const deckSets = [];
         let cardsAvailable = [];
+        let decksAvailable = [];
+        let lastLvlAdded;
 
-        const loadingEmbed = await message.channel.send({
-            embed: {
-                description: `Searching through **${allDecks.length}** deck(s)...`,
-                color: '#ff237a'
-            }
-        });
+        function containsAllCards(deck) {
+            return deck.cards.every(c => cardsAvailable.includes(c));
+        }
 
         for (let lvl = 13; lvl >= 1; lvl--) {
             cardsAvailable = cardsAvailable.concat(cardsGroupedByLevel[`${lvl}`]);
+            lastLvlAdded = lvl;
 
-            if (cardsAvailable.length < 8) continue;
+            if (cardsAvailable.length >= 32) break;
+        }
 
-            let tempDecks = [];
+        while (deckSets.length < 2) {
+            if (cardsAvailable.length > 80) decksAvailable = allDecks.filter(d => d.rating >= 52 && containsAllCards(d));
+            else if (cardsAvailable.length > 70) decksAvailable = allDecks.filter(d => d.rating >= 50 && containsAllCards(d));
+            else if (cardsAvailable.length > 50) decksAvailable = allDecks.filter(d => d.rating >= 44 && containsAllCards(d));
+            else decksAvailable = allDecks.filter(containsAllCards);
 
-            //push all decks to decks containing cards from cardsAvailable
-            for (const d of allDecks) {
-                let allCardsAvailable = true;
+            //get all possible deck sets
+            for (let i = 0, len = decksAvailable.length; i < len - 3; i++) {
+                let decksUsed = [decksAvailable[i]];
 
-                for (const c of d.cards) {
-                    if (!cardsAvailable.includes(c)) allCardsAvailable = false;
-                }
-
-                if (allCardsAvailable) tempDecks.push(d);
-            }
-
-            tempDecks = tempDecks.map(d => ({ cards: d.cards, rating: d.rating, dateAdded: d.dateAdded }))
-
-            const decks = uniqWith(tempDecks, isEqual); //remove duplicate decks
-
-            if (decks.length < 4) continue;
-
-            //loop through all decks for deck sets
-            for (let i = 0; i < decks.length - 1; i++) {
-                let decksUsed = [decks[i]];
-
-                for (let x = i + 1; x < decks.length; x++) {
+                for (let x = i + 1; x < len; x++) {
                     let allCardsAvailable = true;
 
-                    for (const c of decks[x].cards) {
+                    for (const c of decksAvailable[x].cards) {
                         //check if card is in any of current decks
                         for (const d of decksUsed) {
                             if (d.cards.includes(c)) {
@@ -84,26 +72,33 @@ module.exports = {
                         }
                     }
 
-                    if (allCardsAvailable) decksUsed.push(decks[x]);
-                    if (decksUsed.length === 4) deckSets.push(decksUsed);
+                    if (allCardsAvailable) decksUsed.push(decksAvailable[x]);
+                    if (decksUsed.length === 4) {
+                        deckSets.push(decksUsed);
+                        break;
+                    }
                 }
             }
 
-            if (deckSets.length > 0) break;
+            //add more cards to cardsAvailable
+            if (deckSets.length < 2) {
+                lastLvlAdded--;
+
+                if (cardsGroupedByLevel[`${lastLvlAdded}`]?.length > 0) cardsAvailable = cardsAvailable.concat(cardsGroupedByLevel[`${lastLvlAdded}`]);
+            }
+
+            if (lastLvlAdded <= 0) break;
         }
 
-        const uniqueDeckSets = uniqWith(deckSets, isEqual);
+        if (deckSets.length === 0) return message.channel.send({ embed: { color: orange, description: `**No deck sets found.** More cards need to be unlocked.` } });
 
-        if (uniqueDeckSets.length === 0) return message.channel.send({ embed: { color: orange, description: `**No deck sets found.** Try again when you have unlocked more cards.` } });
-
-        //sort by average rating then average time of dateAdded's
-        uniqueDeckSets.sort((a, b) => {
+        deckSets.sort((a, b) => {
             const avgRatingA = average(a.map(d => d.rating));
             const avgRatingB = average(b.map(d => d.rating));
-            const avgTimeA = average(a.map(d => (new Date(d.dateAdded)).getTime()));
-            const avgTimeB = average(b.map(d => (new Date(d.dateAdded)).getTime()));
+            const avgDateA = average(a.map(d => new Date(d.date).getTime()));
+            const avgDateB = average(b.map(d => new Date(d.date).getTime()));
 
-            if (avgRatingA === avgRatingB) return avgTimeB - avgTimeA;
+            if (avgRatingA === avgRatingB) return avgDateA - avgDateB;
             return avgRatingB - avgRatingA;
         });
 
@@ -223,26 +218,24 @@ module.exports = {
             return url.substring(0, url.length - 1);
         }
 
-        let desc = `\n**__Best War Deck Set__**\nRating: **${(average(uniqueDeckSets[0].map(d => d.rating))).toFixed(1)}**\n`;
+        let desc = `\n**__Best War Deck Set__**\nRating: **${(average(deckSets[0].map(d => d.rating))).toFixed(1)}**\n`;
 
         for (let i = 0; i < 4; i++) {
-            desc += `[**Copy**](${getDeckUrl(uniqueDeckSets[0][i].cards)}): `;
-            for (const c of uniqueDeckSets[0][i].cards) {
-                const cardEmoji = bot.emojis.cache.find(e => e.name === c.replace(/-/g, "_") && e.guild.name.indexOf('Emoji') > -1);
-                desc += `<:${cardEmoji.name}:${cardEmoji.id}>`;
+            desc += `[**Copy**](${getDeckUrl(deckSets[0][i].cards)}): `;
+            for (const c of deckSets[0][i].cards) {
+                desc += getEmoji(bot, c.replace(/-/g, "_"));
             }
 
             desc += '\n';
         }
 
-        if (uniqueDeckSets.length >= 2) {
-            desc += `\n**__Alternative__**\nRating: **${(average(uniqueDeckSets[1].map(d => d.rating))).toFixed(1)}**\n`;
+        if (deckSets.length >= 2) {
+            desc += `\n**__Alternative__**\nRating: **${(average(deckSets[1].map(d => d.rating))).toFixed(1)}**\n`;
 
             for (let i = 0; i < 4; i++) {
-                desc += `[**Copy**](${getDeckUrl(uniqueDeckSets[1][i].cards)}): `;
-                for (const c of uniqueDeckSets[1][i].cards) {
-                    const cardEmoji = bot.emojis.cache.find(e => e.name === c.replace(/-/g, "_") && e.guild.name.indexOf('Emoji') > -1);
-                    desc += `<:${cardEmoji.name}:${cardEmoji.id}>`;
+                desc += `[**Copy**](${getDeckUrl(deckSets[1][i].cards)}): `;
+                for (const c of deckSets[1][i].cards) {
+                    desc += getEmoji(bot, c.replace(/-/g, "_"));
                 }
 
                 desc += '\n';
@@ -255,10 +248,11 @@ module.exports = {
                 color: color,
                 author: {
                     name: `${player.name} | ${player.tag}`
+                },
+                footer: {
+                    text: `${deckSets.length} Deck Set(s) Found`
                 }
             }
         });
-
-        loadingEmbed.delete();
     }
 }
