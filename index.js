@@ -60,6 +60,35 @@ bot.once('ready', async () => {
                 console.log(`JOINED GUILD: ${g.name}`);
             }
         });
+
+        //UPDATE MESSAGE:
+        const newUpdate = true;
+
+        if (newUpdate) {
+            bot.guilds.cache.each(async g => {
+                const guildInDb = await guilds.findOne({ guildID: g.id });
+
+                if (guildInDb && guildInDb.channels.commandChannelID) {
+                    const channelPermissions = bot.channels.cache.get(guildInDb.channels.commandChannelID).permissionsFor(bot.user);
+                    const requiredPerms = ['SEND_MESSAGES', 'EMBED_LINKS', 'VIEW_CHANNEL'];
+                    const missingPerms = requiredPerms.filter(p => !channelPermissions.has(p));
+
+                    //check permissions
+                    if (missingPerms.length === 0) {
+                        bot.channels.cache.get(guildInDb.channels.commandChannelID).send({
+                            embed: {
+                                title: '__New Feature!__ (9/3/2021)',
+                                thumbnail: {
+                                    url: 'https://i.imgur.com/lpf9HLe.png'
+                                },
+                                color: '#ff237a',
+                                description: `__**Decks Command**__\nEasily find personalized war deck sets from thousands of top rated war decks, based on your card levels! All deck ratings are calculated from usage rate, win percentage and dates used to ensure accuracy and keep meta decks in the loop!\`\`\`${guildInDb.prefix}decks\`\`\`**Link your account to use this command.**`
+                            }
+                        });
+                    }
+                }
+            });
+        }
     } catch (e) {
         console.error(e)
     }
