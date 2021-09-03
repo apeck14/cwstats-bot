@@ -62,7 +62,7 @@ bot.once('ready', async () => {
         });
 
         //UPDATE MESSAGE:
-        const newUpdate = true;
+        const newUpdate = false;
 
         if (newUpdate) {
             bot.guilds.cache.each(async g => {
