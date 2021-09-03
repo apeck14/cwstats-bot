@@ -64,7 +64,7 @@ bot.once('ready', async () => {
         //UPDATE MESSAGE:
         const newUpdate = false;
 
-        if (newUpdate) {
+        if (newUpdate === true) {
             bot.guilds.cache.each(async g => {
                 const guildInDb = await guilds.findOne({ guildID: g.id });
 
