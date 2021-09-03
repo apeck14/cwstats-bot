@@ -100,10 +100,13 @@ module.exports = {
         deckSets.sort((a, b) => {
             const avgRatingA = average(a.map(d => d.rating));
             const avgRatingB = average(b.map(d => d.rating));
-            const avgDateA = average(a.map(d => new Date(d.date).getTime()));
-            const avgDateB = average(b.map(d => new Date(d.date).getTime()));
+            const avgLvlA = getAvgLvl(a);
+            const avgLvlB = getAvgLvl(b);
 
-            if (avgRatingA === avgRatingB) return avgDateA - avgDateB;
+            if (avgRatingA === avgRatingB) {
+                if (avgLvlA === avgLvlB) return average(a.map(d => new Date(d.dateAdded).getTime())) - average(b.map(d => new Date(d.dateAdded).getTime()));
+                return avgLvlB - avgLvlA;
+            }
             return avgRatingB - avgRatingA;
         });
 
@@ -260,7 +263,7 @@ module.exports = {
             }
         }
 
-        await message.channel.send({
+        return message.channel.send({
             embed: {
                 description: desc,
                 color: color,
