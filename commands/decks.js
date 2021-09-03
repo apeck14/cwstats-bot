@@ -43,16 +43,16 @@ module.exports = {
         }
 
         for (let lvl = 13; lvl >= 1; lvl--) {
-            cardsAvailable = cardsAvailable.concat(cardsGroupedByLevel[`${lvl}`]);
+            if (cardsGroupedByLevel[`${lvl}`]) cardsAvailable = cardsAvailable.concat(cardsGroupedByLevel[`${lvl}`]);
             lastLvlAdded = lvl;
 
             if (cardsAvailable.length >= 32) break;
         }
 
         while (deckSets.length < 2) {
-            if (cardsAvailable.length > 80) decksAvailable = allDecks.filter(d => d.rating >= 52 && containsAllCards(d));
-            else if (cardsAvailable.length > 70) decksAvailable = allDecks.filter(d => d.rating >= 50 && containsAllCards(d));
-            else if (cardsAvailable.length > 50) decksAvailable = allDecks.filter(d => d.rating >= 44 && containsAllCards(d));
+            if (cardsAvailable.length > 80) decksAvailable = allDecks.filter(d => d.rating >= 51 && containsAllCards(d));
+            else if (cardsAvailable.length > 70) decksAvailable = allDecks.filter(d => d.rating >= 49 && containsAllCards(d));
+            else if (cardsAvailable.length > 50) decksAvailable = allDecks.filter(d => d.rating >= 45 && containsAllCards(d));
             else decksAvailable = allDecks.filter(containsAllCards);
 
             //get all possible deck sets
@@ -91,6 +91,11 @@ module.exports = {
         }
 
         if (deckSets.length === 0) return message.channel.send({ embed: { color: orange, description: `**No deck sets found.** More cards need to be unlocked.` } });
+        else if (deckSets.length === 2) {
+            if (deckSets[0][0]._id === deckSets[1][0]._id && deckSets[0][1]._id === deckSets[1][1]._id && deckSets[0][2]._id === deckSets[1][2]._id && deckSets[0][3]._id === deckSets[1][3]._id) {
+                deckSets.pop();
+            }
+        }
 
         deckSets.sort((a, b) => {
             const avgRatingA = average(a.map(d => d.rating));
