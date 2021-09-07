@@ -303,9 +303,6 @@ module.exports = {
                 color: color,
                 author: {
                     name: `${player.name} | ${player.tag}`
-                },
-                footer: {
-                    text: `${deckSets.length} Deck Set(s) Found`
                 }
             }
         });
