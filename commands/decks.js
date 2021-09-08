@@ -196,7 +196,10 @@ module.exports = {
 
         if (cardsAvailable.length < 32) return message.channel.send({ embed: { color: orange, description: `**No deck sets found.** More cards need to be unlocked.` } });
 
-        const allDecks = (await decks.find({}).toArray()).sort((a, b) => b.rating - a.rating);
+        const allDecks = (await decks.find({}).toArray()).sort((a, b) => {
+            if (b.rating === a.rating) return new Date(a.dateAdded) - new Date(b.dateAdded);
+            return b.rating - a.rating;
+        });
         const deckSets = [];
 
         while (deckSets.length < 2) {
@@ -303,6 +306,9 @@ module.exports = {
                 color: color,
                 author: {
                     name: `${player.name} | ${player.tag}`
+                },
+                footer: {
+                    text: `Searched ${allDecks.length} deck(s)`
                 }
             }
         });
