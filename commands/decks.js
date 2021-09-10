@@ -25,7 +25,7 @@ module.exports = {
         const player = await getPlayerData(tag);
         if (!player) return message.channel.send({ embed: { color: red, description: `**Player not found.** Please re-link your tag with the correct tag.` } });
 
-        const cardsGroupedByLevel = groupBy(player.cards.filter(c => c.maxLevel - c.level < 5), c => 13 - (c.maxLevel - c.level));
+        const cardsGroupedByLevel = groupBy(player.cards, c => 13 - (c.maxLevel - c.level));
 
         for (const lvl in cardsGroupedByLevel) {
             cardsGroupedByLevel[lvl] = cardsGroupedByLevel[lvl].map(c => c.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, ''));
