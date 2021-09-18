@@ -217,7 +217,7 @@ module.exports = {
         context.fillText(playerStats.avgFame.last4Weeks.toFixed(0), 1838, 1058);
         context.fillText(playerStats.avgFame.last8Weeks.toFixed(0), 1383, 1108);
 
-        context.fillText(playerStats.rankings.global, 1480, 1286);
+        context.fillText(`${playerStats.rankings.global} / ${globalLb.length}`, 1480, 1286);
         context.fillText(playerStats.rankings.clan, 1340, 1339);
 
         //GRAPH -----------------------------------------
