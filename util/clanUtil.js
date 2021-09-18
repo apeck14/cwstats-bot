@@ -57,25 +57,13 @@ const clanUtil = {
         }
     },
     /**
-     * Check if clan bio contains 'top.gg/CW2Stats'
-     * @param {String} tag - Clan tag
-     * @returns {Boolean}
-     */
-    verifyClanBio: async tag => {
-        if (typeof tag !== 'string') return false;
-
-        const { description } = await request(`https://proxy.royaleapi.dev/v1/clans/%23${(tag[0] === '#') ? tag.substr(1) : tag}`);
-
-        return (description.toLowerCase().indexOf('top.gg/cw2stats') === -1) ? false : true;
-    },
-    /**
      * Get file name for any clan's badge
      * @param {Number} badgeId 
      * @param {Number} trophyCount 
      * @returns name of badge file
      */
     getClanBadge: (badgeId, trophyCount, returnEmojiPath = true) => {
-        if (badgeId === -1) return 'no_clan'; //no clan
+        if (badgeId === -1 || badgeId === null) return 'no_clan'; //no clan
 
         const badges = [
             {
