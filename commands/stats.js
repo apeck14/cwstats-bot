@@ -1,9 +1,10 @@
-const { getMembers } = require("../util/clanUtil");
+const { getMembers, getClanBadge, getPlayerData } = require("../util/clanUtil");
 const { CanvasRenderService } = require('chartjs-node-canvas');
-const { red, hexToRgbA, average, orange } = require("../util/otherUtil");
+const { red, hexToRgbA, orange, request } = require("../util/otherUtil");
 const { groupBy } = require("lodash");
-const { createCanvas, loadImage } = require("canvas");
+const { createCanvas, loadImage, registerFont } = require("canvas");
 const { MessageAttachment } = require("discord.js");
+registerFont('./fonts/Supercell-Magic_5.ttf', { family: 'Supercell-Magic' });
 
 module.exports = {
     name: 'stats',
@@ -12,7 +13,7 @@ module.exports = {
         const linkedAccounts = db.collection('Linked Accounts');
         const matches = db.collection('Matches');
 
-        const { channels, prefix, clanTag } = await guilds.findOne({ guildID: message.channel.guild.id });
+        const { channels, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
 
         //must be in command channel if set
@@ -35,241 +36,199 @@ module.exports = {
         arg = arg.toUpperCase().replace('O', '0');
         if (arg[0] !== '#') arg = '#' + arg;
 
+        const player = await getPlayerData(arg)
+
         const allMatches = await matches.find({}).toArray();
         const allMatchesGrouped = groupBy(allMatches, 'tag');
 
-        if(!allMatchesGrouped[arg] || allMatchesGrouped[arg].length === 0) return message.channel.send({ embed: { color: orange, description: '**Player has no data.**' } });
+        if (!allMatchesGrouped[arg] || allMatchesGrouped[arg].length === 0) return message.channel.send({ embed: { color: orange, description: '**Player has no data.**' } });
 
-        const clanMembers = await getMembers(clanTag, true); //current clan members' tags
+        const clanMembers = await getMembers(player.clanTag, true); //current clan members' tags
 
-        const clanLb = []; //{tag: '', avgFame: '', totalWeeks: 0}
-        const globalLb = []; //{tag: '', avgFame: '', totalWeeks: 0}
+        function avgFame(matches, weeks) { //matches needs to be pre-sorted by date if not total avg
+            const indeces = (weeks > matches.length) ? matches.length : weeks;
+            let sum = 0;
 
-        if(clanMembers.indexOf(arg) !== -1) {
-            //create clan leaderboard
-            for(const t of clanMembers){
-                const playerMatches = allMatchesGrouped[t];
+            for (let i = 0; i < indeces; i++) {
+                sum += matches[i].fame;
+            }
 
-                if(playerMatches && playerMatches.length > 0){
-                    const playerFameScores = playerMatches.map(w => w.fame);
-                    clanLb.push({tag: t, avgFame: average(playerFameScores), totalWeeks: playerMatches.length});
-                }
+            return sum / weeks;
+        }
+
+        function sortByDateDescending(arr) {
+            return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+
+        const globalLb = []; // {'tag': '', 'totalAvgFame': 0, totalWeeks: 0}
+        const clanLb = []; // {'tag': '', 'totalAvgFame': 0, totalWeeks: 0}
+
+        for (const t in allMatchesGrouped) { //push players to global and clan lb
+            const p = { tag: allMatchesGrouped[t][0].tag, totalAvgFame: avgFame(allMatchesGrouped[t], allMatchesGrouped[t].length), totalWeeks: allMatchesGrouped[t].length };
+
+            if (p.tag === arg) sortByDateDescending(allMatchesGrouped[t]);
+
+            globalLb.push(p);
+            if (clanMembers.includes(p.tag)) clanLb.push(p);
+        }
+
+        //sort leaderboards
+        globalLb.sort((a, b) => {
+            if (a.totalAvgFame === b.totalAvgFame) return b.totalWeeks - a.totalWeeks;
+            return b.totalAvgFame - a.totalAvgFame;
+        });
+        clanLb.sort((a, b) => {
+            if (a.totalAvgFame === b.totalAvgFame) return b.totalWeeks - a.totalWeeks;
+            return b.totalAvgFame - a.totalAvgFame;
+        });
+
+        const playerStats = {
+            avgFame: {
+                last2Weeks: avgFame(allMatchesGrouped[arg], 2),
+                last4Weeks: avgFame(allMatchesGrouped[arg], 4),
+                last8Weeks: avgFame(allMatchesGrouped[arg], 8),
+                total: avgFame(allMatchesGrouped[arg], allMatchesGrouped[arg].length)
+            },
+            rankings: {
+                global: globalLb.findIndex(p => p.tag === arg) + 1,
+                clan: clanLb.findIndex(p => p.tag === arg) + 1
             }
         }
 
-        //create global leaderboard
-        for(const t in allMatchesGrouped){
-            const playerMatches = allMatchesGrouped[t];
+        if (playerStats.rankings.clan === 0) playerStats.rankings.clan === 'N/A'; // not in clan
 
-            const playerFameScores = playerMatches.map(w => w.fame);
-            globalLb.push({tag: t, avgFame: average(playerFameScores), totalWeeks: playerMatches.length});
-        }
-
-        //sort by fame then totalWeeks
-        clanLb.sort((a, b) => {
-            if (a.avgFame === b.avgFame) return b.totalWeeks - a.totalWeeks;
-            return b.avgFame - a.avgFame;
-        });
-
-        globalLb.sort((a, b) => {
-            if (a.avgFame === b.avgFame) return b.totalWeeks - a.totalWeeks;
-            return b.avgFame - a.avgFame;
-        });
-
-        const player = {
-            avgFame: globalLb.find(p => p.tag === arg).avgFame,
-            clanRank: clanLb.findIndex(p => p.tag === arg) + 1,
-            globalRank: globalLb.findIndex(p => p.tag === arg) + 1,
-            weeks: allMatchesGrouped[arg]
-        };
-
-        player.name = player.weeks[player.weeks.length - 1].name;
-
-        //if player not in clan linked to server
-        if(clanLb.length === 0) player.clanRank = 'N/A';
-
-        const canvas = createCanvas(450, 320); //2100 x 1500
+        const image = await loadImage('./overlay.png');
+        const canvas = createCanvas(image.width, image.height); //2130 x 1530
         const context = canvas.getContext('2d');
-        const image = await loadImage('./overlay.jpg');
-
-        canvas.width = image.width;
-        canvas.height = image.height;
 
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-        //player name & tag --------------------------------------------------------------------------
-        let nameWidth, nameMultiplier, tagWidth;
+        // NAME and TAG ----------------------
+        let tagWidth, nameWidth;
+        for (let i = 85; i >= 20; i -= 5) {
+            context.font = `35px Supercell-Magic`;
+            tagWidth = context.measureText(arg).width;
 
-        for(let i = 110; i >= 10; i -= 5){ //set all name and tag multipliers
-            let totalWidth = 0;
+            context.font = `${i}px Supercell-Magic`;
+            nameWidth = context.measureText(player.name).width;
 
-            context.font = `${i}px Impact`;
-            totalWidth += context.measureText(player.name).width;
-
-            context.font = `50px Impact`;
-            totalWidth += context.measureText(arg).width;
-
-            totalWidth += 15;
-
-            if(totalWidth <= 1000){
-                context.font = `${i}px Impact`;
-                nameWidth = context.measureText(player.name).width;
-                nameMultiplier = i;
-
-                context.font = `50px Impact`;
-                tagWidth = context.measureText(arg).width;
-                break;
-            }
-
+            if ((nameWidth + 15 + tagWidth) <= 900) break;
         }
-
-        context.font = `${nameMultiplier}px Impact`;
-        context.fillStyle = 'white';
-
-        const emptySpace = () => {
-            return 1000 - (nameWidth + tagWidth + 15);
-        }
-
-        const nameXCoord = () => {
-            return 15 + 50 + (emptySpace() / 2);
-        }
-
-        context.fillText(player.name, nameXCoord(), 170);
-
-        //player tag
-        context.font = '50px Impact';
-        context.fillStyle = '#D3D3D3';
-
-        const tagXCoord = () => {
-            return nameXCoord() + nameWidth + 15;
-        }
-
-        context.fillText(arg, tagXCoord(), 170); //tag
 
         context.fillStyle = 'white';
 
-        context.fillRect(nameXCoord(), 185, nameWidth + 15 + tagWidth, 10); //underline
+        const nameCoords = {
+            x: 1140 + ((900 - (nameWidth + 15 + tagWidth)) / 2),
+            y: 155
+        }
+        const tagCoords = {
+            x: nameCoords.x + context.measureText(player.name).width + 15,
+            y: 155
+        }
 
-        //----------------------------------------------------------------------------------------------
-        //clan rank & global rank
-        let clanRankWidth, globalRankWidth, clanRankMultiplier, globalRankMultiplier;
+        context.fillText(player.name, nameCoords.x, nameCoords.y);
 
-        for(let i = 60; i >= 10; i -= 5){ //set clan and global rank multipliers
-            context.font = `${i}px Impact`;
-            
-            const tempClanRankWidth = context.measureText(player.clanRank).width;
-            const tempGlobalRankWidth = context.measureText(player.globalRank).width;
+        context.font = `35px Supercell-Magic`;
+        context.fillStyle = '#958f99';
+        context.fillText(arg, tagCoords.x, tagCoords.y);
 
-            if(!clanRankMultiplier && (tempClanRankWidth + 50) < 265){
-                clanRankWidth = tempClanRankWidth;
-                clanRankMultiplier = i;
+        // CLAN BADGE and CLAN NAME ----------------------
+        context.font = `30px Supercell-Magic`;
+        const clanNameWidth = context.measureText(player.clan).width;
+        context.fillStyle = 'white';
+        const clanBadgeCoords = {
+            x: 1090 + ((1000 - (80 + 5 + clanNameWidth)) / 2),
+            y: 168
+        }
+        const clanNameCoords = {
+            x: clanBadgeCoords.x + 80 + 5,
+            y: 220
+        }
+
+        let clanBadge;
+        if (player.clanTag) {
+            const { badgeId, clanWarTrophies } = await request(`https://proxy.royaleapi.dev/v1/clans/%23${player.clanTag.substr(1)}`, true);
+            clanBadge = await loadImage(`./allBadges/${getClanBadge(badgeId, clanWarTrophies, false)}.png`);
+        }
+        else {
+            clanBadge = await loadImage(`./allBadges/no_clan.png`);
+            player.clan = 'None';
+            playerStats.rankings.clan = 'N/A';
+        }
+
+        context.drawImage(clanBadge, clanBadgeCoords.x, clanBadgeCoords.y, 80, 80);
+        context.fillText(player.clan, clanNameCoords.x, clanNameCoords.y);
+
+        // TABLE DATA --------------------------------
+        context.font = `40px Supercell-Magic`;
+
+        const tableCoords = {
+            date: {
+                x: 190,
+                y: 330
+            },
+            clanWarTrophies: {
+                x: (trophies) => {
+                    return 532 + ((220 - context.measureText(trophies).width) / 2)
+                },
+                y: 330
+            },
+            fame: {
+                x: (score) => {
+                    return 763 + ((206 - context.measureText(score).width) / 2);
+                },
+                y: 330
             }
-            if(!globalRankMultiplier && (tempGlobalRankWidth + 50) < 265){
-                globalRankWidth = tempGlobalRankWidth;
-                globalRankMultiplier = i;
-            }
         }
 
-        context.font = `${clanRankMultiplier}px Impact`;
-        
-        const clanRankXCoord = () => {
-            return 1130 + ((215 - clanRankWidth) / 2) + 25;
+        const weeklyFameTotals = allMatchesGrouped[arg].map(w => w.fame);
+        const min = Math.min(...weeklyFameTotals);
+        const max = Math.max(...weeklyFameTotals);
+
+        const indeces = (allMatchesGrouped[arg].length < 15) ? allMatchesGrouped[arg].length : 15;
+
+        for (let i = 0; i < indeces; i++) {
+            context.fillStyle = '#8fb5dc';
+            const week = allMatchesGrouped[arg][i];
+
+            context.fillText(week.date, tableCoords.date.x, tableCoords.date.y);
+
+            context.fillStyle = '#958f99';
+            context.fillText(week.clanTrophies, tableCoords.clanWarTrophies.x(week.clanTrophies), tableCoords.clanWarTrophies.y);
+
+            if (week.fame === min && min !== max) context.fillStyle = '#ff0000';
+            else if (week.fame === max && min !== max) context.fillStyle = '#32cd32';
+
+            context.fillText(week.fame, tableCoords.fame.x(week.fame), tableCoords.fame.y);
+
+            tableCoords.date.y += 75.8;
+            tableCoords.clanWarTrophies.y += 75.8;
+            tableCoords.fame.y += 75.8;
         }
 
-        context.fillText(player.clanRank, clanRankXCoord(), 332);
+        //AVERAGE MEDALS and WAR RANKINGS ---------------------------------
+        context.fillStyle = '#ed3689'; //pink
 
-        context.font = `${globalRankMultiplier}px Impact`;
+        context.font = `44px Supercell-Magic`;
+        context.fillText(playerStats.avgFame.total.toFixed(0), 1725, 1120);
 
-        const globalRankXCoord = () => {
-            return 1560 + ((215 - globalRankWidth) / 2) + 25;
-        }
+        context.font = `35px Supercell-Magic`;
+        context.fillText(playerStats.avgFame.last2Weeks.toFixed(0), 1379, 1058);
+        context.fillText(playerStats.avgFame.last4Weeks.toFixed(0), 1838, 1058);
+        context.fillText(playerStats.avgFame.last8Weeks.toFixed(0), 1383, 1108);
 
-        context.fillText(player.globalRank, globalRankXCoord(), 332);
+        context.fillText(playerStats.rankings.global, 1480, 1286);
+        context.fillText(playerStats.rankings.clan, 1340, 1339);
 
-        //------------------------------------------------------------------------------
-        //average fame
-        player.avgFame = player.avgFame.toFixed(0);
-
-        let avgFameWidth, avgFameMultiplier;
-
-        for(let i = 70; i >= 10; i -= 5){ //set clan and global rank multipliers
-            context.font = `${i}px Impact`;
-            
-            const tempAvgFameWidth = context.measureText(player.avgFame).width;
-
-            if(tempAvgFameWidth + 50 < 265){
-                avgFameWidth = tempAvgFameWidth;
-                avgFameMultiplier = i;
-                break;
-            }
-        }
-
-        context.font = `${avgFameMultiplier}px Impact`;
-
-        const avgFameXCoord = () => {
-            return 1355 + ((215 - avgFameWidth) / 2) + 25;
-        }
-
-        context.fillText(player.avgFame, avgFameXCoord(), 1218);
-
-        //--------------------------------------------------------------------------------------------
-        //table data
-        context.font = `40px Impact`;
-
-        const highestClanTrophies = player.weeks.sort((a, b) => b.clanTrophies - a.clanTrophies)[0].clanTrophies;
-        const highestFame = player.weeks.sort((a, b) => b.fame - a.fame)[0].fame;
-        const lowestClanTrophies = player.weeks.sort((a, b) => a.clanTrophies - b.clanTrophies)[0].clanTrophies;
-        const lowestFame = player.weeks.sort((a, b) => a.fame - b.fame)[0].fame;
-
-        player.weeks.sort((a, b) => { //sort by date
-            a = new Date(a.date);
-            b = new Date(b.date);
-
-            return b - a;
-        })
-
-        const clanTrophiesXCoord = txtLength => {
-            return 498 + ((195 - txtLength) / 2);
-        }
-
-        const fameXCoord = txtLength => {
-            return 690 + ((195 - txtLength) / 2);
-        }
-
-        let yCoord = 415;
-
-        const indeces = (player.weeks.length < 15) ? player.weeks.length : 15;
-
-        for(let i = 0; i < indeces; i++){
-            const { date, clanTrophies, fame } = player.weeks[i];
-
-            context.fillStyle = 'white';
-            context.fillText(date, 243, yCoord); //date
-
-            if(clanTrophies === lowestClanTrophies) context.fillStyle = 'red';
-            else if(clanTrophies === highestClanTrophies) context.fillStyle = 'green';
-            context.fillText(clanTrophies, clanTrophiesXCoord(context.measureText(clanTrophies).width), yCoord); //clan trophies
-
-            if(fame === lowestFame) context.fillStyle = 'red';
-            else if(fame === highestFame) context.fillStyle = 'green';
-            else context.fillStyle = 'white';
-            context.fillText(fame, fameXCoord(context.measureText(fame).width), yCoord); //fame
-
-            yCoord += 59;
-        }
-
-        //-------------------------------------------------------------------------
-        //chart
-        player.weeks = player.weeks.reverse();
-
+        //GRAPH -----------------------------------------
         const chart = {
             type: 'line',
             data: {
-                labels: player.weeks.map(w => ' '),
+                labels: weeklyFameTotals.slice(0, indeces).map(w => ' '),
                 datasets: [
                     {
                         label: 'Fame',
-                        data: player.weeks.map(w => w.fame),
+                        data: weeklyFameTotals.reverse(),
                         borderColor: '#ff237a',
                         backgroundColor: hexToRgbA('#ff237a'),
                         fill: true
@@ -299,26 +258,21 @@ module.exports = {
                 },
                 plugins: {
                     legend: {
-                        labels: {
-                            color: "white",
-                            font: {
-                                size: 34
-                            }
-                        }
+                        display: false
                     }
                 }
             }
         }
 
-        const width = 950;
-        const height = 630;
+        const width = 960;
+        const height = 680;
         const chartCanvas = new CanvasRenderService(width, height);
         const chartBuffer = await chartCanvas.renderToBuffer(chart);
 
         const chartImg = await loadImage(chartBuffer);
-        context.drawImage(chartImg, 1010, 430, chartImg.width, chartImg.height);
-
+        context.drawImage(chartImg, 1052, 240, chartImg.width, chartImg.height);
 
         message.channel.send(new MessageAttachment(canvas.toBuffer(), 'image.png'));
+
     }
 }
