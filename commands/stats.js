@@ -46,14 +46,14 @@ module.exports = {
         const clanMembers = await getMembers(player.clanTag, true); //current clan members' tags
 
         function avgFame(matches, weeks) { //matches needs to be pre-sorted by date if not total avg
-            const indeces = (weeks > matches.length) ? matches.length : weeks;
+            const indeces = (matches.length < weeks) ? matches.length : weeks;
             let sum = 0;
 
             for (let i = 0; i < indeces; i++) {
                 sum += matches[i].fame;
             }
 
-            return sum / weeks;
+            return sum / indeces;
         }
 
         function sortByDateDescending(arr) {
