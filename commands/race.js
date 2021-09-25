@@ -90,18 +90,18 @@ module.exports = {
             return str;
         }
 
-        const raceEmbed = {
-            color: color,
-            title: `__Current River Race__`,
-            description: desc(),
-            thumbnail: {
-                url: 'https://static.wikia.nocookie.net/clashroyale/images/9/9f/War_Shield.png/revision/latest?cb=20180425130200'
-            },
-            footer: {
-                text: (isCololsseum) ? 'Missed attacks negatively affect avg. fame' : ''
+        return message.channel.send({
+            embed: {
+                color: color,
+                title: `__Current River Race__`,
+                description: desc(),
+                thumbnail: {
+                    url: 'https://static.wikia.nocookie.net/clashroyale/images/9/9f/War_Shield.png/revision/latest?cb=20180425130200'
+                },
+                footer: {
+                    text: (isCololsseum) ? 'Missed attacks negatively affect avg. fame' : ''
+                }
             }
-        }
-
-        message.channel.send({ embed: raceEmbed });
+        });
     }
 }

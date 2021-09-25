@@ -20,10 +20,10 @@ module.exports = {
         //----------------------------------------------------------------------------------------------------------------------------------------
         try {
             guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { 'channels.applicationsChannelID': channelID } });
-            message.channel.send({ embed: { color: green, description: `✅ **Applications** channel now set to <#${channelID}>!` } });
+            return message.channel.send({ embed: { color: green, description: `✅ **Applications** channel now set to <#${channelID}>!` } });
         } catch (e) {
             console.log(e);
-            message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
+            return message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
         }
     },
 };

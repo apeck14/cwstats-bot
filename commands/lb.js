@@ -69,22 +69,22 @@ module.exports = {
             return str;
         };
 
-        const lbEmbed = {
-            color: color,
-            title: `__Avg. Fame Leaders__`,
-            description: desc(),
-            footer: {
-                text: `Ranked by avg. fame while in clan | ${prefix}stats`
-            },
-            files: [{
-                attachment: `./allBadges/${getClanBadge(badgeId, clanWarTrophies, false)}.png`,
-                name: 'badge.png'
-            }],
-            thumbnail: {
-                url: 'attachment://badge.png'
+        return message.channel.send({
+            embed: {
+                color: color,
+                title: `__Avg. Fame Leaders__`,
+                description: desc(),
+                footer: {
+                    text: `Ranked by avg. fame while in clan | ${prefix}stats`
+                },
+                files: [{
+                    attachment: `./allBadges/${getClanBadge(badgeId, clanWarTrophies, false)}.png`,
+                    name: 'badge.png'
+                }],
+                thumbnail: {
+                    url: 'attachment://badge.png'
+                }
             }
-        }
-
-        message.channel.send({ embed: lbEmbed });
+        });
     }
 }

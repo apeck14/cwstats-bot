@@ -62,7 +62,7 @@ module.exports = {
             }
         } catch (e) {
             console.dir(e);
-            message.channel.send({ embed: { color: red, description: `Unexpected Error.` } });
+            return message.channel.send({ embed: { color: red, description: `Unexpected Error.` } });
         }
     }
 }

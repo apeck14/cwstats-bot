@@ -23,20 +23,40 @@ module.exports = {
 
         const totalAttacksLeft = 200 - rr.clan.participants.reduce((a, b) => a + b.decksUsedToday, 0);
 
-        const remainingAttacks = rr.clan.participants
-            .filter(p => currentMemberTags.includes(p.tag)) //current members only
-            .map(p => ({ name: p.name, attacksUsedToday: p.decksUsedToday }));
+        const remainingAttacks = rr.clan.participants.map(p => ({ name: p.name, tag: p.tag, attacksUsedToday: p.decksUsedToday }));
 
         const fourAttacks = [];
         const threeAttacks = [];
         const twoAttacks = []
         const oneAttack = [];
 
+        const showFooter = false;
+
         for (const p of remainingAttacks) { //push all players to appropiate array
-            if (p.attacksUsedToday === 0) fourAttacks.push(p);
-            else if (p.attacksUsedToday === 1) threeAttacks.push(p);
-            else if (p.attacksUsedToday === 2) twoAttacks.push(p);
-            else if (p.attacksUsedToday === 3) oneAttack.push(p);
+            if (p.attacksUsedToday === 0) {
+                if (currentMemberTags.includes(p.tag)) fourAttacks.push(p);
+            }
+            else if (p.attacksUsedToday === 1) {
+                if (!currentMemberTags.includes(p.tag)) {
+                    p.name += '*';
+                    showFooter = true;
+                }
+                threeAttacks.push(p);
+            }
+            else if (p.attacksUsedToday === 2) {
+                if (!currentMemberTags.includes(p.tag)) {
+                    p.name += '*';
+                    showFooter = true;
+                }
+                twoAttacks.push(p);
+            }
+            else if (p.attacksUsedToday === 3) {
+                if (!currentMemberTags.includes(p.tag)) {
+                    p.name += '*';
+                    showFooter = true;
+                }
+                oneAttack.push(p);
+            }
         }
 
         fourAttacks.sort((a, b) => a.name.localeCompare(b.name));
@@ -79,7 +99,15 @@ module.exports = {
             oneAttack.sort((a, b) => b.name - a.name).forEach(p => desc += `• ${p.name}\n`);
         }
 
-        message.channel.send({ embed: { title: `__Remaining Attacks__`, color: color, description: desc } });
+        return message.channel.send({
+            embed: {
+                title: `__Remaining Attacks__`,
+                color: color, description: desc,
+                footer: {
+                    text: (showFooter) ? `* = Not in clan` : ``
+                }
+            }
+        });
 
     }
 }

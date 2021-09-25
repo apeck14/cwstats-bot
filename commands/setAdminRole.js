@@ -4,7 +4,7 @@ module.exports = {
     name: 'setadminrole',
     execute: async (message, arg, bot, db) => {
         const guilds = db.collection('Guilds');
-        
+
         //only server owner can set this role
         //must be used in command channel
 
@@ -27,10 +27,10 @@ module.exports = {
         //----------------------------------------------------------------------------------------------------------------------------------------
         try {
             guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { adminRoleID: roleID } });
-            message.channel.send({ embed: { color: green, description: `✅ **Admin** role now set to <@&${roleID}>!` } });
+            return message.channel.send({ embed: { color: green, description: `✅ **Admin** role now set to <@&${roleID}>!` } });
         } catch (e) {
             console.log(e);
-            message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
+            return message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
         }
     },
 };

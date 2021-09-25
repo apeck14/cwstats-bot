@@ -4,7 +4,7 @@ module.exports = {
     name: 'setapplychannel',
     execute: async (message, arg, bot, db) => {
         const guilds = db.collection('Guilds');
-        
+
         //must be server owner or admin role
         const { channels, adminRoleID } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { applyChannelID } = channels;
@@ -20,10 +20,10 @@ module.exports = {
         //----------------------------------------------------------------------------------------------------------------------------------------
         try {
             guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { 'channels.applyChannelID': channelID } });
-            message.channel.send({ embed: { color: green, description: `✅ **Apply** channel now set to <#${channelID}>!` } });
+            return message.channel.send({ embed: { color: green, description: `✅ **Apply** channel now set to <#${channelID}>!` } });
         } catch (e) {
             console.log(e);
-            message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
+            return message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
         }
     },
 };

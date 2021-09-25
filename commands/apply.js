@@ -217,6 +217,6 @@ module.exports = {
         };
 
         message.channel.send({ embed: confirmationEmbed });
-        bot.channels.cache.get(applicationsChannelID).send({ embed: applicationEmbed });
+        return bot.channels.cache.get(applicationsChannelID).send({ embed: applicationEmbed });
     }
 }

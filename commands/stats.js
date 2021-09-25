@@ -272,7 +272,7 @@ module.exports = {
         const chartImg = await loadImage(chartBuffer);
         context.drawImage(chartImg, 1052, 240, chartImg.width, chartImg.height);
 
-        message.channel.send(new MessageAttachment(canvas.toBuffer(), 'image.png'));
+        return message.channel.send(new MessageAttachment(canvas.toBuffer(), 'image.png'));
 
     }
 }

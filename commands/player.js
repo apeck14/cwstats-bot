@@ -196,7 +196,7 @@ module.exports = {
             return top + mid + bottom;
         }
 
-        message.channel.send({
+        return message.channel.send({
             embed: {
                 color: color,
                 title: `${levelEmoji} ${player.name} (${player.tag})`,

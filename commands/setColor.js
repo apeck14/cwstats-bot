@@ -4,7 +4,7 @@ module.exports = {
     name: 'setcolor',
     execute: async (message, arg, bot, db) => {
         const guilds = db.collection('Guilds');
-        
+
         //must be server owner or admin role
         const { channels, prefix, adminRoleID, color } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
@@ -23,10 +23,10 @@ module.exports = {
         //----------------------------------------------------------------------------------------------------------------------------------------
         try {
             guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { color: arg.toUpperCase() } });
-            message.channel.send({ embed: { color: arg, description: `✅ Clan **color** now set to **${arg.toUpperCase()}**!` } });
+            return message.channel.send({ embed: { color: arg, description: `✅ Clan **color** now set to **${arg.toUpperCase()}**!` } });
         } catch (e) {
             console.log(e);
-            message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
+            return message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
         }
     },
 };

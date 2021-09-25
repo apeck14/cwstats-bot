@@ -41,15 +41,15 @@ module.exports = {
     const setupCommands = commands.filter(c => c.setup).map(c => `• **${prefix}${c.name}** - ${c.desc}\n`).join('');
     const adminCommands = commands.filter(c => !c.main && !c.setup).map(c => `• **${prefix}${c.name}** - ${c.desc}\n`).join('');
 
-    const helpEmbed = {
-      title: '__Commands__',
-      color: '#ff237a',
-      description: `${mainCommands}\n__**Admin**__\n${adminCommands}\n**__Setup__**\n${setupCommands}`,
-      footer: {
-        text: `* = not required`
+    return message.channel.send({
+      embed: {
+        title: '__Commands__',
+        color: '#ff237a',
+        description: `${mainCommands}\n__**Admin**__\n${adminCommands}\n**__Setup__**\n${setupCommands}`,
+        footer: {
+          text: `* = not required`
+        }
       }
-    }
-
-    message.channel.send({ embed: helpEmbed });
+    });
   },
 };

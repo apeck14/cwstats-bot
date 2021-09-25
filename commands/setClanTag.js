@@ -34,10 +34,10 @@ module.exports = {
             const badgeEmoji = getEmoji(bot, getClanBadge(clan.badgeId, clan.clanWarTrophies));
             message.channel.send({ embed: { color: green, description: `✅ Server successfully linked to ${badgeEmoji} **${clan.name}**!` } });
 
-            console.log(`Clan Linked: ${clan?.name} (${clan?.tag})`);
+            return console.log(`Clan Linked: ${clan?.name} (${clan?.tag})`);
         } catch (e) {
             console.log(e);
-            message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
+            return message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
         }
     },
 };

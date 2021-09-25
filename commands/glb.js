@@ -132,6 +132,6 @@ module.exports = {
             }
         }
 
-        message.channel.send({ embed: lbEmbed });
+        return message.channel.send({ embed: lbEmbed });
     }
 }

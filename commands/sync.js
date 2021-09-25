@@ -5,8 +5,8 @@ module.exports = {
     name: 'sync',
     execute: async (message, arg, bot, db) => {
         const guilds = db.collection('Guilds');
-        const matches = db.collection('Matches');
-        const weeksAdded = db.collection('Weeks_Added');
+        const matches = db.collection('Test Matches'); //Matches
+        const weeksAdded = db.collection('Test Weeks Added'); //Weeks_Added
 
         const { channels, adminRoleID, prefix, clanTag, color } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
@@ -97,7 +97,7 @@ module.exports = {
             }
         }
 
-        message.channel.send({
+        return message.channel.send({
             embed: {
                 color: color,
                 description: `✅ **${raceLog.length} New Week(s) Added!**\n\n` + desc,
