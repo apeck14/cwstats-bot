@@ -30,7 +30,7 @@ module.exports = {
         const twoAttacks = []
         const oneAttack = [];
 
-        const showFooter = false;
+        let showFooter = false;
 
         for (const p of remainingAttacks) { //push all players to appropiate array
             if (p.attacksUsedToday === 0) {
