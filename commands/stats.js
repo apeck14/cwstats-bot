@@ -9,6 +9,7 @@ registerFont('./fonts/Supercell-Magic_5.ttf', { family: 'Supercell-Magic' });
 module.exports = {
     name: 'stats',
     execute: async (message, arg, bot, db) => {
+        return message.channel.send({ embed: { color: orange, description: 'This command has been temporarily disabled. Will be back soon.' } });
         const guilds = db.collection('Guilds');
         const linkedAccounts = db.collection('Linked Accounts');
         const matches = db.collection('Matches');

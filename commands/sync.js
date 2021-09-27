@@ -4,11 +4,12 @@ const { getClanBadge } = require("../util/clanUtil");
 module.exports = {
     name: 'sync',
     execute: async (message, arg, bot, db) => {
+        return message.channel.send({ embed: { color: orange, description: 'This command has been temporarily disabled. Will be back soon.' } });
         const guilds = db.collection('Guilds');
-        const matches = db.collection('Matches'); //Matches
-        const weeksAdded = db.collection('Weeks Added'); //Weeks_Added
+        const matches = db.collection('Matches');
+        const weeksAdded = db.collection('Weeks_Added');
 
-        const { channels, adminRoleID, prefix, clanTag, color } = await guilds.findOne({ guildID: message.channel.guild.id });
+        const { channels, adminRoleID, clanTag, prefix, color } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
         const guildOwnerID = message.guild.owner?.id;
 

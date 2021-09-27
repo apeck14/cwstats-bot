@@ -5,6 +5,7 @@ const { average, orange, red, request, getEmoji } = require("../util/otherUtil")
 module.exports = {
     name: 'lb',
     execute: async (message, arg, bot, db) => {
+        return message.channel.send({ embed: { color: orange, description: 'This command has been temporarily disabled. Will be back soon.' } });
         const guilds = db.collection('Guilds');
         const matches = db.collection('Matches');
 
