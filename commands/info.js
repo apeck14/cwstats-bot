@@ -1,4 +1,5 @@
-const { red } = require("../util/otherUtil");
+const { getClanBadge } = require("../util/clanUtil");
+const { red, request, getEmoji } = require("../util/otherUtil");
 
 module.exports = {
     name: 'info',
@@ -26,18 +27,25 @@ module.exports = {
 
         const players = await matches.distinct('tag');
 
-        const tag = clanTag || '*NOT SET*';
         const adminRole = (adminRoleID) ? `<@${adminRoleID}>` : '*NOT SET*';
         const colorHex = color || '*NOT SET*';
         const cmdChnl = (commandChannelID) ? `<#${commandChannelID}>` : '*NOT SET*';
         const applyChnl = (applyChannelID) ? `<#${applyChannelID}>` : '*NOT SET*';
         const appChnl = (applicationsChannelID) ? `<#${applicationsChannelID}>` : '*NOT SET*';
+        const clan = async () => {
+            if (!clanTag) return '*NOT SET*';
+
+            const c = await request(`https://proxy.royaleapi.dev/v1/clans/%23${clanTag.substr(1)}`, true);
+            const badgeEmoji = getEmoji(bot, getClanBadge(c.badgeId, c.clanWarTrophies));
+
+            return `${badgeEmoji} ${c.name}`;
+        }
 
         return message.channel.send({
             embed: {
                 title: '__Bot & Server Info__',
                 color: '#ff237a',
-                description: `**Total Servers**: ${serverCount()}\n**Commands Used**: ${commandsUsed}\n**Clans**: ${linkedClans}\n**Players**: ${players.length}\n\n**__Server__**\n**Clan Tag**: ${tag}\n**Color**: ${colorHex}\n**Admin Role**: ${adminRole}\n**Command Channel**: ${cmdChnl}\n**Apply Channel**: ${applyChnl}\n**Applications Channel**: ${appChnl}`
+                description: `**Total Servers**: ${serverCount()}\n**Commands Used**: ${commandsUsed}\n**Clans**: ${linkedClans}\n**Players**: ${players.length}\n\n**__Server__**\n**Clan**: ${await clan()}\n**Color**: ${colorHex}\n**Admin Role**: ${adminRole}\n**Command Channel**: ${cmdChnl}\n**Apply Channel**: ${applyChnl}\n**Applications Channel**: ${appChnl}`
             }
         });
     },
