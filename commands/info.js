@@ -45,7 +45,7 @@ module.exports = {
             embed: {
                 title: '__Bot & Server Info__',
                 color: '#ff237a',
-                description: `**Total Servers**: ${serverCount()}\n**Commands Used**: ${commandsUsed}\n**Clans**: ${linkedClans}\n**Players**: ${players.length}\n\n**__Server__**\n**Clan**: ${await clan()}\n**Color**: ${colorHex}\n**Admin Role**: ${adminRole}\n**Command Channel**: ${cmdChnl}\n**Apply Channel**: ${applyChnl}\n**Applications Channel**: ${appChnl}`
+                description: `**Servers**: ${serverCount()}\n**Commands Used**: ${commandsUsed}\n**Clans**: ${linkedClans}\n**Players**: ${players.length}\n\n**__Server__**\n**Clan**: ${await clan()}\n**Color**: ${colorHex}\n**Admin Role**: ${adminRole}\n**Command Channel**: ${cmdChnl}\n**Apply Channel**: ${applyChnl}\n**Applications Channel**: ${appChnl}`
             }
         });
     },
