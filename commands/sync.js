@@ -4,7 +4,6 @@ const { getClanBadge } = require("../util/clanUtil");
 module.exports = {
     name: 'sync',
     execute: async (message, arg, bot, db) => {
-        return message.channel.send({ embed: { color: orange, description: 'This command has been temporarily disabled. Will be back soon.' } });
         const guilds = db.collection('Guilds');
         const matches = db.collection('Matches');
         const weeksAdded = db.collection('Weeks_Added');
