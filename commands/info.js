@@ -38,7 +38,7 @@ module.exports = {
             const c = await request(`https://proxy.royaleapi.dev/v1/clans/%23${clanTag.substr(1)}`, true);
             const badgeEmoji = getEmoji(bot, getClanBadge(c.badgeId, c.clanWarTrophies));
 
-            return `${badgeEmoji} ${c.name}`;
+            return `${badgeEmoji}${c.name}`;
         }
 
         return message.channel.send({
