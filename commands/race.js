@@ -33,7 +33,7 @@ module.exports = {
             }));
 
         const battleDaysCompleted = () => {
-            if (!isCololsseum || (rr.periodIndex - rr.periodLogs[rr.periodLogs.length - 1].periodIndex) <= 4) return 0;
+            if (!isCololsseum || !rr.periodLogs?.length || (rr.periodIndex - rr.periodLogs[rr.periodLogs.length - 1].periodIndex) <= 4) return 0;
             else return rr.periodIndex - rr.periodLogs[rr.periodLogs.length - 1].periodIndex - 4;
         }
 
