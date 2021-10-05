@@ -16,7 +16,7 @@ module.exports = {
         if (!clanTag) return message.channel.send({ embed: { color: red, description: `**No clan tag linked!** Please use \`${prefix}setClanTag\` to link your clan.` } });
 
         const rr = await request(`https://proxy.royaleapi.dev/v1/clans/%23${clanTag.substr(1)}/currentriverrace`);
-        if (!rr) return message.channel.send({ embed: { color: red, description: `**Invalid clan tag!**` } });
+        if (!rr) return message.channel.send({ embed: { color: red, description: `**Invalid clan tag, or clan is not in a race!**` } });
         else if (rr.clans.length <= 1) return message.channel.send({ embed: { color: orange, description: `**This clan is not in a race.**` } }); //no race happening
 
         const isCololsseum = rr.periodType === 'colosseum';
@@ -33,8 +33,9 @@ module.exports = {
             }));
 
         const battleDaysCompleted = () => {
-            if (!isCololsseum || (rr.periodIndex - rr.periodLogs[rr.periodLogs.length - 1].periodIndex) <= 4) return 0;
-            else return rr.periodIndex - rr.periodLogs[rr.periodLogs.length - 1].periodIndex - 4;
+            const dayOfWeek = rr.periodIndex % 7; // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
+            if (!isCololsseum || dayOfWeek <= 3) return 0;
+            else return dayOfWeek - 3;
         }
 
         const avgFame = c => {
