@@ -308,7 +308,7 @@ module.exports = {
                     name: `${player.name} | ${player.tag}`
                 },
                 footer: {
-                    text: `Searched ${allDecks.length} deck(s)`
+                    text: `Deck ratings are calculated from win % and usage rate`
                 }
             }
         });
