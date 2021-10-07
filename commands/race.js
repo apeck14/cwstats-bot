@@ -94,7 +94,7 @@ module.exports = {
         return message.channel.send({
             embed: {
                 color: color,
-                title: `__Current River Race__`,
+                title: (isCololsseum) ? `__Colosseum Week__` : `__Current River Race__`,
                 description: desc(),
                 thumbnail: {
                     url: 'https://static.wikia.nocookie.net/clashroyale/images/9/9f/War_Shield.png/revision/latest?cb=20180425130200'
