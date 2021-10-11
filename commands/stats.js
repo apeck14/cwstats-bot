@@ -201,9 +201,11 @@ module.exports = {
 
             context.fillText(week.fame, tableCoords.fame.x(week.fame), tableCoords.fame.y);
 
-            tableCoords.date.y += 75.8;
-            tableCoords.clanWarTrophies.y += 75.8;
-            tableCoords.fame.y += 75.8;
+            const lineSpacing = 76.1;
+
+            tableCoords.date.y += lineSpacing;
+            tableCoords.clanWarTrophies.y += lineSpacing;
+            tableCoords.fame.y += lineSpacing;
         }
 
         //AVERAGE MEDALS and WAR RANKINGS ---------------------------------
