@@ -1,27 +1,48 @@
-const { getClanBadge } = require("../util/clanUtil");
-const { request, red, orange, getEmoji } = require("../util/otherUtil");
+const { ApiRequest } = require("../functions/api");
+const { getEmoji, getClanBadge } = require("../functions/util");
+const { orange } = require("../data/colors");
 
 module.exports = {
     name: 'race',
-    execute: async (message, arg, bot, db) => {
+    aliases: ['race', 'r'],
+    disabled: false,
+    execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
 
-        let { channels, color, clanTag, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
+        const { channels, color, clans, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
+        const { tag1, tag2, tag3 } = clans;
         const { commandChannelID } = channels;
 
-        if (arg) clanTag = (arg[0] === '#') ? arg.toUpperCase().replace('O', '0') : '#' + arg.toUpperCase().replace('O', '0');
-
         //must be in command channel if set
-        if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
-        if (!clanTag) return message.channel.send({ embed: { color: red, description: `**No clan tag linked!** Please use \`${prefix}setClanTag\` to link your clan.` } });
+        if (commandChannelID && commandChannelID !== message.channel.id) throw `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`;
 
-        const rr = await request(`https://proxy.royaleapi.dev/v1/clans/%23${clanTag.substr(1)}/currentriverrace`);
-        if (!rr) return message.channel.send({ embed: { color: red, description: `**Invalid clan tag, or clan is not in a race!**` } });
-        else if (rr.clans.length <= 1) return message.channel.send({ embed: { color: orange, description: `**This clan is not in a race.**` } }); //no race happening
+        let tag;
+
+        if (!args[0] || args[0] === '1') {
+            if (!tag1) throw `**No clan linked.**\n\n**__Usage__**\n\`\`\`${prefix}setClan1 #ABC123\`\`\``;
+            tag = tag1;
+        }
+        else if (args[0] === '2') {
+            if (!tag2) throw `**No clan linked.**\n\n**__Usage__**\n\`\`\`${prefix}setClan2 #ABC123\`\`\``;
+            tag = tag2;
+        }
+        else if (args[0] === '3') {
+            if (!tag3) throw `**No clan linked.**\n\n**__Usage__**\n\`\`\`${prefix}setClan3 #ABC123\`\`\``;
+            tag = tag3;
+        }
+        else tag = '#' + formatTag(args[0]);
+
+        const rr = await ApiRequest('currentriverrace', tag)
+            .catch((e) => {
+                if (e.response?.status === 404) message.channel.send({ embed: { description: '**Clan is not in a river race, or invalid tag.**', color: orange } });
+            });
+
+        if (!rr) return;
+        else if (rr.clans.length <= 1) return message.channel.send({ embed: { description: '**Clan is not in a river race.**', color: orange } });
 
         const isCololsseum = rr.periodType === 'colosseum';
         const score = (isCololsseum) ? 'fame' : 'periodPoints';
-        const clans = rr.clans
+        const rrClans = rr.clans
             .sort((a, b) => b[score] - a[score])
             .map(c => ({
                 name: c.name,
@@ -59,17 +80,17 @@ module.exports = {
         }
 
         //set average and projected fame
-        for (const c of clans) {
+        for (const c of rrClans) {
             c.avgFame = avgFame(c);
             c.projFame = projectedFame(c);
         }
 
         //set ranks (in case of ties) and average fame
-        for (let i = 0; i < clans.length; i++) {
-            const tiedClans = clans.filter(c => c.medals === clans[i].medals);
+        for (let i = 0; i < rrClans.length; i++) {
+            const tiedClans = rrClans.filter(c => c.medals === rrClans[i].medals);
 
             for (const c of tiedClans) {
-                clans.find(x => x.tag === c.tag).rank = i + 1;
+                rrClans.find(x => x.tag === c.tag).rank = i + 1;
             }
 
             i += tiedClans.length - 1;
@@ -78,11 +99,11 @@ module.exports = {
         const desc = () => {
             let str = ``;
 
-            for (const c of clans) {
+            for (const c of rrClans) {
                 const badgeEmoji = getEmoji(bot, getClanBadge(c.badgeId, c.clanWarTrophies));
                 const fameEmoji = getEmoji(bot, 'fame');
 
-                if (c.tag === clanTag)
+                if (c.tag === tag)
                     str += `**${c.rank}. ${badgeEmoji} __${c.name}__**\n${fameEmoji} **${c.medals}**\nProj. Fame: **${c.projFame.toFixed(0)}**\nAtks. Left: **${200 - c.attacksUsedToday}**\nFame/Atk: **${c.avgFame.toFixed(1)}**\n\n`;
                 else
                     str += `**${c.rank}.** ${badgeEmoji} **${c.name}**\n${fameEmoji} ${c.medals}\nProj. Fame: ${c.projFame.toFixed(0)}\nAtks. Left: ${200 - c.attacksUsedToday}\nFame/Atk: ${c.avgFame.toFixed(1)}\n\n`;

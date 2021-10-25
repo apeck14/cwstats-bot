@@ -1,25 +1,46 @@
-const { request, red, orange, green, getEmoji } = require("../util/otherUtil");
-const { getMembers, getClanBadge } = require("../util/clanUtil");
+const { ApiRequest } = require('../functions/api');
+const { getEmoji, getClanBadge } = require('../functions/util');
+const { green, orange } = require('../data/colors');
 
 module.exports = {
     name: 'attacks',
-    execute: async (message, arg, bot, db) => {
+    aliases: ['attacks', 'atks'],
+    disabled: false,
+    execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
 
-        let { channels, color, clanTag, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
+        const { channels, color, clans, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
-
-        if (arg) clanTag = (arg[0] === '#') ? arg.toUpperCase().replace('O', '0') : '#' + arg.toUpperCase().replace('O', '0');
+        const { tag1, tag2, tag3 } = clans;
 
         //must be in command channel if set
-        if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
-        if (!clanTag) return message.channel.send({ embed: { color: red, description: `**No clan tag linked!** Please use \`${prefix}setClanTag\` to link your clan.` } });
+        if (commandChannelID && commandChannelID !== message.channel.id) throw `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`;
 
-        const rr = await request(`https://proxy.royaleapi.dev/v1/clans/%23${clanTag.substr(1)}/currentriverrace`);
-        if (!rr) return message.channel.send({ embed: { color: red, description: `**Invalid clan tag!**` } });
-        else if (rr.clans.length <= 1) return message.channel.send({ embed: { color: orange, description: `**This clan is not in a race.**` } }); //no race happening
+        let tag;
 
-        const currentMemberTags = await getMembers(clanTag, true);
+        if (!args[0] || args[0] === '1') {
+            if (!tag1) throw `**No clan linked.**\n\n**__Usage__**\n\`\`\`${prefix}setClan1 #ABC123\`\`\``;
+            tag = tag1;
+        }
+        else if (args[0] === '2') {
+            if (!tag2) throw `**No clan linked.**\n\n**__Usage__**\n\`\`\`${prefix}setClan2 #ABC123\`\`\``;
+            tag = tag2;
+        }
+        else if (args[0] === '3') {
+            if (!tag3) throw `**No clan linked.**\n\n**__Usage__**\n\`\`\`${prefix}setClan3 #ABC123\`\`\``;
+            tag = tag3;
+        }
+        else tag = '#' + formatTag(args[0]);
+
+        const rr = await ApiRequest('currentriverrace', tag)
+            .catch((e) => {
+                if (e.response?.status === 404) message.channel.send({ embed: { description: '**Clan is not in a river race, or invalid tag.**', color: orange } });
+            });
+
+        if (!rr) return;
+        else if (rr.clans.length <= 1) return message.channel.send({ embed: { description: '**Clan is not in a river race.**', color: orange } });
+
+        const currentMemberTags = await ApiRequest('members', tag, '', true);
 
         const totalAttacksLeft = 200 - rr.clan.participants.reduce((a, b) => a + b.decksUsedToday, 0);
 
@@ -83,19 +104,19 @@ module.exports = {
         desc += `${badgeEmoji} **${rr.clan.name}**\n${fameEmoji} **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n`;
 
         if (fourAttacks.length > 0) {
-            desc += `\n**__4 Attacks Left__**\n`;
+            desc += `\n**__4 Attacks__**\n`;
             fourAttacks.forEach(p => desc += `• ${p.name}\n`);
         }
         if (threeAttacks.length > 0) {
-            desc += `\n**__3 Attacks Left__**\n`;
+            desc += `\n**__3 Attacks__**\n`;
             threeAttacks.sort((a, b) => b.name - a.name).forEach(p => desc += `• ${p.name}\n`);
         }
         if (twoAttacks.length > 0) {
-            desc += `\n**__2 Attacks Left__**\n`;
+            desc += `\n**__2 Attacks__**\n`;
             twoAttacks.sort((a, b) => b.name - a.name).forEach(p => desc += `• ${p.name}\n`);
         }
         if (oneAttack.length > 0) {
-            desc += `\n**__1 Attack Left__**\n`;
+            desc += `\n**__1 Attack__**\n`;
             oneAttack.sort((a, b) => b.name - a.name).forEach(p => desc += `• ${p.name}\n`);
         }
 
@@ -108,6 +129,5 @@ module.exports = {
                 }
             }
         });
-
     }
 }

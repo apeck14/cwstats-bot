@@ -1,18 +1,18 @@
-const { red } = require("../util/otherUtil");
-
 module.exports = {
   name: 'help',
-  async execute(message, arg, bot, db) {
+  aliases: ['help'],
+  disabled: false,
+  async execute(message, args, bot, db) {
     const guilds = db.collection('Guilds');
 
     const { channels, prefix } = await guilds.findOne({ guildID: message.channel.guild.id });
     const { commandChannelID } = channels;
 
     //must be in command channel if set
-    if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
+    if (commandChannelID && commandChannelID !== message.channel.id) throw `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`;
 
     const commands = [
-      { name: 'lb full*', desc: 'View your clan\'s war leaderboard', main: true },
+      { name: 'lb <clan>* full*', desc: 'View your clan\' leaderboard', main: true },
       { name: 'link #TAG', desc: `Link your CR tag to the bot (so you don't have to type in your tag each time you call *${prefix}player* or *${prefix}stats*)`, main: true },
       { name: "player #TAG/@USER", desc: "View information about any player", main: true },
       { name: 'apply #TAG', desc: 'Apply to join the clan', main: true },

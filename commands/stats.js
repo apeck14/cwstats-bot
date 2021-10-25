@@ -1,14 +1,18 @@
-const { getMembers, getClanBadge, getPlayerData } = require("../util/clanUtil");
-const { CanvasRenderService } = require('chartjs-node-canvas');
-const { red, hexToRgbA, orange, request } = require("../util/otherUtil");
-const { groupBy } = require("lodash");
-const { createCanvas, loadImage, registerFont } = require("canvas");
+const { loadImage, createCanvas, registerFont } = require("canvas");
+const { CanvasRenderService } = require("chartjs-node-canvas");
 const { MessageAttachment } = require("discord.js");
+const { groupBy } = require("lodash");
+const { ApiRequest } = require("../functions/api");
+const { getClanBadge, hexToRgbA, formatTag } = require("../functions/util");
+const { orange } = require("../data/colors");
+
 registerFont('./fonts/Supercell-Magic_5.ttf', { family: 'Supercell-Magic' });
 
 module.exports = {
     name: 'stats',
-    execute: async (message, arg, bot, db) => {
+    aliases: ['stats', 's'],
+    disabled: false,
+    execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
         const linkedAccounts = db.collection('Linked Accounts');
         const matches = db.collection('Matches');
@@ -17,33 +21,38 @@ module.exports = {
         const { commandChannelID } = channels;
 
         //must be in command channel if set
-        if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
+        if (commandChannelID && commandChannelID !== message.channel.id) throw `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`;
 
-        if (!arg) {
+        let tag;
+
+        if (!args[0]) {
             const linkedAccount = await linkedAccounts.findOne({ discordID: message.author.id });
 
-            if (linkedAccount) arg = linkedAccount.tag;
-            else if (!arg) return message.channel.send({ embed: { color: red, description: `**No tag given!** To use without a tag, you must link your ID.\n\n__Usage:__\n\`${prefix}stats #ABC123\`\n\`${prefix}link #ABC123\`` } });
+            if (!linkedAccount?.tag)
+                return message.channel.send({ embed: { color: orange, description: `**No tag linked!**\n\n__Usage:__\n\`${prefix}link #ABC123\`` } });
+
+            tag = linkedAccount.tag;
         }
-        else if (arg.indexOf('<@') === 0) { //@ing someone with linked account
-            const playerId = arg.replace(/[^0-9]/g, '');
-            const linkedPlayer = await linkedAccounts.findOne({ discordID: playerId });
+        else if (args[0].startsWith('<@')) {
+            const id = args[0].replace(/[^0-9]/g, '');
+            const linkedAccount = await linkedAccounts.findOne({ discordID: id });
 
-            if (!linkedPlayer) return message.channel.send({ embed: { color: orange, description: `<@!${playerId}> **does not have an account linked.**` } });
-            arg = linkedPlayer.tag;
+            if (!linkedAccount) return message.channel.send({ embed: { color: orange, description: `<@!${id}> **does not have an account linked.**` } });
+            tag = linkedAccount.tag;
         }
+        else tag = `#${formatTag(args[0])}`;
 
-        arg = arg.toUpperCase().replace('O', '0');
-        if (arg[0] !== '#') arg = '#' + arg;
-
-        const player = await getPlayerData(arg)
+        const player = await ApiRequest('', tag, 'players')
+            .catch((e) => {
+                if (e.response?.status === 404) throw '**Invalid tag.** Try again.';
+            });;
 
         const allMatches = await matches.find({}).toArray();
         const allMatchesGrouped = groupBy(allMatches, 'tag');
 
-        if (!allMatchesGrouped[arg] || allMatchesGrouped[arg].length === 0) return message.channel.send({ embed: { color: orange, description: '**Player has no data.**' } });
+        if (!allMatchesGrouped[tag] || allMatchesGrouped[tag].length === 0) return message.channel.send({ embed: { color: orange, description: '**Player has no data.**' } });
 
-        const clanMembers = await getMembers(player.clanTag, true); //current clan members' tags
+        const clanMembers = await ApiRequest('members', player.clan.tag, '', true);
 
         function avgFame(matches, weeks) { //matches needs to be pre-sorted by date if not total avg
             const indeces = (matches.length < weeks) ? matches.length : weeks;
@@ -66,7 +75,7 @@ module.exports = {
         for (const t in allMatchesGrouped) { //push players to global and clan lb
             const p = { tag: allMatchesGrouped[t][0].tag, totalAvgFame: avgFame(allMatchesGrouped[t], allMatchesGrouped[t].length), totalWeeks: allMatchesGrouped[t].length };
 
-            if (p.tag === arg) sortByDateDescending(allMatchesGrouped[t]);
+            if (p.tag === tag) sortByDateDescending(allMatchesGrouped[t]);
 
             globalLb.push(p);
             if (clanMembers.includes(p.tag)) clanLb.push(p);
@@ -84,14 +93,14 @@ module.exports = {
 
         const playerStats = {
             avgFame: {
-                last2Weeks: avgFame(allMatchesGrouped[arg], 2),
-                last4Weeks: avgFame(allMatchesGrouped[arg], 4),
-                last8Weeks: avgFame(allMatchesGrouped[arg], 8),
-                total: avgFame(allMatchesGrouped[arg], allMatchesGrouped[arg].length)
+                last2Weeks: avgFame(allMatchesGrouped[tag], 2),
+                last4Weeks: avgFame(allMatchesGrouped[tag], 4),
+                last8Weeks: avgFame(allMatchesGrouped[tag], 8),
+                total: avgFame(allMatchesGrouped[tag], allMatchesGrouped[tag].length)
             },
             rankings: {
-                global: globalLb.findIndex(p => p.tag === arg) + 1,
-                clan: clanLb.findIndex(p => p.tag === arg) + 1
+                global: globalLb.findIndex(p => p.tag === tag) + 1,
+                clan: clanLb.findIndex(p => p.tag === tag) + 1
             }
         }
 
@@ -107,7 +116,7 @@ module.exports = {
         let tagWidth, nameWidth;
         for (let i = 85; i >= 20; i -= 5) {
             context.font = `35px Supercell-Magic`;
-            tagWidth = context.measureText(arg).width;
+            tagWidth = context.measureText(tag).width;
 
             context.font = `${i}px Supercell-Magic`;
             nameWidth = context.measureText(player.name).width;
@@ -130,11 +139,11 @@ module.exports = {
 
         context.font = `35px Supercell-Magic`;
         context.fillStyle = '#958f99';
-        context.fillText(arg, tagCoords.x, tagCoords.y);
+        context.fillText(tag, tagCoords.x, tagCoords.y);
 
         // CLAN BADGE and CLAN NAME ----------------------
         context.font = `30px Supercell-Magic`;
-        const clanNameWidth = context.measureText(player.clan).width;
+        const clanNameWidth = context.measureText(player.clan.name).width;
         context.fillStyle = 'white';
         const clanBadgeCoords = {
             x: 1090 + ((1000 - (80 + 5 + clanNameWidth)) / 2),
@@ -146,18 +155,18 @@ module.exports = {
         }
 
         let clanBadge;
-        if (player.clanTag) {
-            const { badgeId, clanWarTrophies } = await request(`https://proxy.royaleapi.dev/v1/clans/%23${player.clanTag.substr(1)}`, true);
-            clanBadge = await loadImage(`./allBadges/${getClanBadge(badgeId, clanWarTrophies, false)}.png`);
+        if (player.clan.tag) {
+            const clan = await ApiRequest('', player.clan.tag, 'clans');
+            clanBadge = await loadImage(`./allBadges/${getClanBadge(clan.badgeId, clan.clanWarTrophies, false)}.png`);
         }
         else {
             clanBadge = await loadImage(`./allBadges/no_clan.png`);
-            player.clan = 'None';
+            player.clan.name = 'None';
             playerStats.rankings.clan = 'N/A';
         }
 
         context.drawImage(clanBadge, clanBadgeCoords.x, clanBadgeCoords.y, 80, 80);
-        context.fillText(player.clan, clanNameCoords.x, clanNameCoords.y);
+        context.fillText(player.clan.name, clanNameCoords.x, clanNameCoords.y);
 
         // TABLE DATA --------------------------------
         context.font = `40px Supercell-Magic`;
@@ -181,15 +190,15 @@ module.exports = {
             }
         }
 
-        const weeklyFameTotals = allMatchesGrouped[arg].map(w => w.fame);
+        const weeklyFameTotals = allMatchesGrouped[tag].map(w => w.fame);
         const min = Math.min(...weeklyFameTotals);
         const max = Math.max(...weeklyFameTotals);
 
-        const indeces = (allMatchesGrouped[arg].length < 15) ? allMatchesGrouped[arg].length : 15;
+        const indeces = (allMatchesGrouped[tag].length < 15) ? allMatchesGrouped[tag].length : 15;
 
         for (let i = 0; i < indeces; i++) {
             context.fillStyle = '#8fb5dc';
-            const week = allMatchesGrouped[arg][i];
+            const week = allMatchesGrouped[tag][i];
 
             context.fillText(week.date, tableCoords.date.x, tableCoords.date.y);
 

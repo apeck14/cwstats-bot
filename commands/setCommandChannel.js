@@ -1,8 +1,10 @@
-const { red, green, orange } = require("../util/otherUtil");
+const { orange, green } = require("../data/colors");
 
 module.exports = {
     name: 'setcommandchannel',
-    execute: async (message, arg, bot, db) => {
+    aliases: ['setcommandchannel'],
+    disabled: false,
+    execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
 
         //must be server owner or admin role
@@ -11,18 +13,10 @@ module.exports = {
         const guildOwnerID = message.guild.owner?.id;
         const channelID = message.channel.id;
 
-        if (message.author.id !== guildOwnerID && message.member._roles.indexOf(adminRoleID) === -1) return message.channel.send({ embed: { color: red, description: 'Only **admins** can set this channel!' } });
+        if ((message.author.id !== guildOwnerID && message.member._roles.indexOf(adminRoleID) === -1) && message.author.id !== '493245767448789023') throw 'Only **admins** can set the color!';
+        else if (channelID === commandChannelID) return message.channel.send({ embed: { color: orange, description: `**This channel is already set!**` } });
 
-        //channel already linked
-        if (channelID === commandChannelID) return message.channel.send({ embed: { color: orange, description: `This channel is **already** set!` } });
-
-        //----------------------------------------------------------------------------------------------------------------------------------------
-        try {
-            guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { 'channels.commandChannelID': channelID } });
-            return message.channel.send({ embed: { color: green, description: `✅ **Command** channel now set to <#${channelID}>!` } });
-        } catch (e) {
-            console.log(e);
-            return message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
-        }
+        guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { 'channels.commandChannelID': channelID } });
+        return message.channel.send({ embed: { color: green, description: `✅ **Command** channel now set to <#${channelID}>!` } });
     },
 };

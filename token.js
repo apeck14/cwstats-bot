@@ -2,8 +2,7 @@ const tokens = [process.env.cr_token, process.env.cr_token2, process.env.cr_toke
 let tokenIndex = 0;
 
 module.exports = {
-    token: (increment = false) => {
-        if(increment === true) return tokens[++tokenIndex % 8];
-        return tokens[tokenIndex % 8];
+    token: () => {
+        return tokens[++tokenIndex % 8];
     }
 };

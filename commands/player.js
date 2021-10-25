@@ -1,137 +1,54 @@
-const { getPlayerData, getClanBadge, getArenaEmoji } = require("../util/clanUtil");
-const { CanvasRenderService } = require('chartjs-node-canvas');
-const { red, hexToRgbA, orange, request, getEmoji } = require("../util/otherUtil");
+const { ApiRequest } = require("../functions/api");
+const { getClanBadge, hexToRgbA, getEmoji, getArenaEmoji, formatTag } = require("../functions/util");
+const { pbRating, cardsRating, challRating, cw1Rating } = require("../functions/ratings");
+const { CanvasRenderService } = require("chartjs-node-canvas");
 
 module.exports = {
     name: 'player',
-    execute: async (message, arg, bot, db) => {
+    aliases: ['player', 'p', 'playa'],
+    disabled: false,
+    execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
         const linkedAccounts = db.collection('Linked Accounts');
 
         const { channels, prefix, color } = await guilds.findOne({ guildID: message.channel.guild.id });
         const { commandChannelID } = channels;
 
-        //must be in command channel if set
-        if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
+        if (commandChannelID && commandChannelID !== message.channel.id) throw `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`;
 
-        if (!arg) { //linked account
+        let tag;
+
+        if (!args[0]) {
             const linkedAccount = await linkedAccounts.findOne({ discordID: message.author.id });
 
-            if (linkedAccount) arg = linkedAccount.tag;
-            else return message.channel.send({ embed: { color: red, description: `**No tag given!** To use without a tag, you must link your ID.\n\n__Usage:__\n\`${prefix}player #ABC123\`\n\`${prefix}link #ABC123\`` } });
+            if (!linkedAccount?.tag)
+                return message.channel.send({ embed: { color: orange, description: `**No tag linked!**\n\n__Usage:__\n\`${prefix}link #ABC123\`` } });
+
+            tag = linkedAccount.tag;
         }
-        else if (arg.indexOf('<@') === 0) { //@ing someone with linked account
-            const playerId = arg.replace(/[^0-9]/g, '');
-            const linkedPlayer = await linkedAccounts.findOne({ discordID: playerId });
+        else if (args[0].startsWith('<@')) {
+            const id = args[0].replace(/[^0-9]/g, '');
+            const linkedAccount = await linkedAccounts.findOne({ discordID: id });
 
-            if (!linkedPlayer) return message.channel.send({ embed: { color: orange, description: `<@!${playerId}> **does not have an account linked.**` } });
-            arg = linkedPlayer.tag;
+            if (!linkedAccount) return message.channel.send({ embed: { color: orange, description: `<@!${id}> **does not have an account linked.**` } });
+            tag = linkedAccount.tag;
         }
+        else tag = args[0];
 
-        arg = arg.toUpperCase().replace('O', '0');
-        if (arg[0] !== '#') arg = '#' + arg;
+        const player = await ApiRequest('', tag, 'players')
+            .catch((e) => {
+                if (e.response?.status === 404) throw '**Invalid tag.** Try again.';
+            });
 
-        const player = await getPlayerData(arg);
         let clanBadge;
-
-        if (!player) return message.channel.send({ embed: { color: red, description: `**Invalid tag!** Try again.` } });
 
         if (!player.clan) {
             player.clan = 'None';
             clanBadge = getClanBadge(-1);
         }
         else { //get clan badge
-            const { badgeId, clanWarTrophies } = await request(`https://proxy.royaleapi.dev/v1/clans/%23${player.clanTag.substr(1)}`, true);
-            clanBadge = getClanBadge(badgeId, clanWarTrophies);
-        }
-
-        const pbRating = () => {
-            /*
-            100: 7500
-            80: 6900
-            60: 6300
-            40: 5700
-            20: 5100
-            0: 4500
-            */
-
-            if (player.pb >= 7500) return 100;
-            else if (player.pb <= 4500) return 0;
-
-            return ((player.pb - 4500) / 3000) * 100;
-        }
-
-        const cardsRating = () => {
-            /*
-            Lvl 13 = +1
-            Lvl 12 = +0.5
-            Lvl 11 = +0.2
-            Lvl 10 = +0.08
-            Lvl 9 = +0.04
-
-            100: 100+
-            80: 80
-            60: 60
-            40: 40
-            20: 20
-            0: 0            
-            */
-            let sum = 0;
-
-            for (const c of player.cards) {
-                const diff = c.maxLevel - c.level;
-
-                if (diff === 0) sum++;
-                else if (diff === 1) sum += 0.5;
-                else if (diff === 2) sum += 0.2;
-                else if (diff === 3) sum += 0.08;
-                else if (diff === 4) sum += 0.04;
-            }
-
-            return sum;
-        }
-
-        const challRating = () => {
-            /*
-            Challenges: (30%)
-            GC = +50
-            CC = +5
-
-            100: 100+
-            80: 80
-            60: 60
-            40: 40
-            20: 20
-            0: 0
-            
-            Most Chall Wins: (70%)
-            100: 20
-            80: 16
-            60: 12
-            40: 8
-            20: 4
-            0: 0
-            */
-
-            let challengesRating = (player.challWins * 5) + (player.grandChallWins * 50);
-            const mostChallWinsRating = player.mostChallWins * 5;
-
-            if (challengesRating > 100) challengesRating = 100;
-
-            return (challengesRating * 0.3) + (mostChallWinsRating * 0.7);
-        }
-
-        const cw1Rating = () => {
-            /*
-            100: 325+
-            80: 260
-            60: 195
-            40: 130
-            20: 65
-            0: 0
-            */
-            if (player.warWins >= 350) return 100;
-            return player.warWins / 3.5;
+            const clan = await ApiRequest('', player.clan.tag, 'clans');
+            clanBadge = getClanBadge(clan.badgeId, clan.clanWarTrophies);
         }
 
         const chart = {
@@ -139,7 +56,7 @@ module.exports = {
             data: {
                 labels: ['PB', 'Cards', 'Challs', 'CW1'],
                 datasets: [{
-                    data: [pbRating(), cardsRating(), challRating(), cw1Rating()],
+                    data: [pbRating(player), cardsRating(player), challRating(player), cw1Rating(player)],
                     borderColor: color,
                     backgroundColor: hexToRgbA(color)
                 }]
@@ -190,9 +107,9 @@ module.exports = {
             const lvl12Cards = player.cards.filter(c => c.maxLevel - c.level === 1).length;
             const lvl11Cards = player.cards.filter(c => c.maxLevel - c.level === 2).length;
 
-            const top = `${badgeEmoji} **${player.clan}**\n\n`;
+            const top = `${badgeEmoji} **${player.clan.name}**\n\n`;
             const mid = `**__Stats__**\n**PB**: ${pbEmoji} ${player.pb}\n**CW1 War Wins**: ${player.warWins}\n**Most Chall. Wins**: ${player.mostChallWins}\n**CC Wins**: ${player.challWins}\n**GC Wins**: ${player.grandChallWins}\n\n`;
-            const bottom = `**__Cards__**\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}\n\n[RoyaleAPI Profile](https://royaleapi.com/player/${arg.substr(1)})`;
+            const bottom = `**__Cards__**\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}\n\n[RoyaleAPI Profile](https://royaleapi.com/player/${formatTag(tag)})`;
             return top + mid + bottom;
         }
 

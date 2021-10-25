@@ -1,8 +1,10 @@
-const { red, green, orange } = require("../util/otherUtil");
+const { green, orange } = require("../data/colors");
 
 module.exports = {
     name: 'prefix',
-    execute: async (message, arg, bot, db) => {
+    aliases: ['prefix'],
+    disabled: false,
+    execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
 
         //must be server owner or admin role
@@ -10,23 +12,16 @@ module.exports = {
         const { commandChannelID } = channels;
         const guildOwnerID = message.guild.owner?.id;
 
-        if (message.author.id !== guildOwnerID && message.member._roles.indexOf(adminRoleID) === -1) return message.channel.send({ embed: { color: red, description: 'Only **admins** can set this channel!' } });
-        else if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
+        if ((message.author.id !== guildOwnerID && message.member._roles.indexOf(adminRoleID) === -1) && (message.author.id !== '493245767448789023')) throw 'Only **admins** can set the prefix!';
+        else if (commandChannelID && commandChannelID !== message.channel.id) throw `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`;
 
-        if (!arg) return message.channel.send({ embed: { color: red, description: `**No prefix given!** Try again.\n\n__Usage:__\n\`${prefix}prefix !\`` } });
-        else if (arg.length !== 1) return message.channel.send({ embed: { color: red, description: `Prefix can only be **1** character!\n\n__Usage:__\n\`${prefix}prefix !\`` } });
-        else if (/^[a-z0-9]+$/i.test(arg)) return message.channel.send({ embed: { color: red, description: `**Prefix cannot be a letter or number!** Try again.\n\n__Usage:__\n\`${prefix}prefix !\`` } });
+        if (!args[0]) throw `**No prefix given!** Try again.\n\n__Usage:__\n\`${prefix}prefix !\``;
+        else if (args[0].length > 2) throw `Prefix can be up to 2 characters in length!`;
 
         //prefix already linked
-        if (prefix === arg) return message.channel.send({ embed: { color: orange, description: `This prefix has **already** been set!` } });
+        if (prefix === args[0]) return message.channel.send({ embed: { color: orange, description: `This prefix has **already** been set!` } });
 
-        //----------------------------------------------------------------------------------------------------------------------------------------
-        try {
-            guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { prefix: arg } });
-            return message.channel.send({ embed: { color: green, description: `✅ **Prefix** now set to **${arg}**` } });
-        } catch (e) {
-            console.log(e);
-            return message.channel.send({ embed: { color: red, description: `**Unexpected error.** Try again.` } });
-        }
-    },
+        guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { prefix: args[0] } });
+        return message.channel.send({ embed: { color: green, description: `✅ **Prefix** now set to **${args[0]}**` } });
+    }
 };

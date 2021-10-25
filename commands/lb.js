@@ -1,28 +1,63 @@
-const { groupBy } = require("lodash");
-const { getClanBadge } = require("../util/clanUtil");
-const { average, orange, red, request, getEmoji } = require("../util/otherUtil");
+const { groupBy } = require('lodash');
+const { ApiRequest } = require('../functions/api');
+const { average, getClanBadge, getEmoji } = require('../functions/util');
+const { orange } = require('../data/colors');
 
 module.exports = {
     name: 'lb',
-    execute: async (message, arg, bot, db) => {
+    aliases: ['lb', 'leaderboard'],
+    disabled: false,
+    execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
         const matches = db.collection('Matches');
 
-        const { channels, clanTag, prefix, color } = await guilds.findOne({ guildID: message.channel.guild.id });
+        const { channels, clans, prefix, color } = await guilds.findOne({ guildID: message.channel.guild.id });
+        const { tag1, tag2, tag3 } = clans;
         const { commandChannelID } = channels;
 
         //must be in command channel if set
-        if (commandChannelID && commandChannelID !== message.channel.id) return message.channel.send({ embed: { color: red, description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` } });
-        if (!clanTag) return message.channel.send({ embed: { color: red, description: `**No clan tag linked!** Please use \`${prefix}setClanTag\` to link your clan.` } });
+        if (commandChannelID && commandChannelID !== message.channel.id) throw `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`;
 
-        if (arg.toLowerCase() === 'full?') return message.channel.send({ embed: { color: orange, description: `Parameters followed by \`?\` on the **help** list are optional parameters. To view the full leaderboard use \`${prefix}lb full\`.` } });
+        let tags = [];
 
-        const { memberList, badgeId, clanWarTrophies } = await request(`https://proxy.royaleapi.dev/v1/clans/%23${clanTag.substr(1)}`);
+        if (!args[0] || args[0].toLowerCase() === 'full') {
+            if (tag1) tags.push(tag1);
+            if (tag2) tags.push(tag2);
+            if (tag3) tags.push(tag3);
+        }
+        else if (args[0] === '1') {
+            if (!tag1) throw `**No clan linked.**\n\n**__Usage__**\n\`\`\`${prefix}setClan1 #ABC123\`\`\``;
+            tags.push(tag1);
+        }
+        else if (args[0] === '2') {
+            if (!tag2) throw `**No clan linked.**\n\n**__Usage__**\n\`\`\`${prefix}setClan2 #ABC123\`\`\``;
+            tags.push(tag2);
+        }
+        else if (args[0] === '3') {
+            if (!tag3) throw `**No clan linked.**\n\n**__Usage__**\n\`\`\`${prefix}setClan3 #ABC123\`\`\``;
+            tags.push(tag3);
+        }
+        else throw '**Invalid parameter(s).**';
 
-        const memberTags = memberList.map(m => m.tag);
-        if (!memberTags) return message.channel.send({ embed: { color: orange, description: `Invalid clan tag. Please make sure you have set the correct clan tag for your server.` } });
+        const memberTags = [];
+        let clanWarTrophies, badgeId, header;
 
-        const memberMatches = await matches.find({ tag: { $in: memberTags }, clanTag: clanTag }).toArray(); //members in clan currently, and have atleast 1 fame score in arr
+        for (const t of tags) {
+            const clan = await ApiRequest('', t, 'clans');
+
+            if (!clanWarTrophies) clanWarTrophies = clan.clanWarTrophies;
+            if (!badgeId) badgeId = clan.badgeId;
+            if (!header) {
+                if (tags.length > 1) header = 'All Clans';
+                else header = `${clan.name} | ${clan.tag}`;
+            }
+
+            memberTags.push(...clan.memberList.map(p => p.tag));
+        }
+
+        if (memberTags.length === 0) return message.channel.send({ embed: { color: orange, description: `**No players found in clan(s) currently.**` } });
+
+        const memberMatches = await matches.find({ tag: { $in: memberTags }, clanTag: { $in: tags } }).toArray(); //members in clan currently, and have atleast 1 fame score in arr
 
         const groupedMatches = groupBy(memberMatches, 'tag');
 
@@ -49,15 +84,17 @@ module.exports = {
         if (leaderboard.length === 0) return message.channel.send({ embed: { color: orange, description: `**No data available!** To add data, use \`${prefix}sync\`.` } }); //if no members on lb
 
         const desc = () => {
-            let indeces = (leaderboard.length < 10) ? leaderboard.length : 10;
-            if (arg.toLowerCase() === 'full') indeces = leaderboard.length; //if arg = 'full' then show all current members on lb
+            const indeces = () => {
+                if ((args[1] && args[1].toLowerCase() === 'full') || (args[0] && args[0].toLowerCase() === 'full')) return (leaderboard.length < 50) ? leaderboard.length : 50;
+                else return (leaderboard.length < 10) ? leaderboard.length : 10;
+            }
 
             let str = '';
 
             const fameEmoji = getEmoji(bot, 'fame');
 
             //above 4k
-            for (let i = 0; i < indeces; i++) {
+            for (let i = 0; i < indeces(); i++) {
                 const { name, avgFame } = leaderboard[i];
 
                 if (i === 0) str += `🥇 **${name}** (${fameEmoji}${avgFame.toFixed(0)})\n`;
@@ -74,6 +111,9 @@ module.exports = {
                 color: color,
                 title: `__Avg. Fame Leaders__`,
                 description: desc(),
+                author: {
+                    name: header
+                },
                 footer: {
                     text: `Ranked by avg. fame while in clan | ${prefix}stats`
                 },

@@ -1,67 +1,34 @@
-const { request } = require('./otherUtil');
+module.exports = {
+    //returns ABC123
+    formatTag: (tag) => {
+        if (typeof tag !== 'string') return;
 
-const clanUtil = {
-    /**
-     * Get array of members from a clan
-     * @param {String} tag - clan tag
-     * @param {*} tagsOnly - return array of player tags only
-     * @param {*} namesOnly - return array of player names only
-     * @returns {Array} - array of player tags/names of members
-     */
-    getMembers: async (tag, tagsOnly = false, namesOnly = false) => {
-        try {
-            tag = (tag[0] === `#`) ? tag.substr(1) : tag;
-            const mem = await request(`https://proxy.royaleapi.dev/v1/clans/%23${tag}/members`);
-
-            //only player tags
-            if (tagsOnly === true && namesOnly === false) return mem.items.map(p => p.tag);
-            //only player names
-            else if (namesOnly === true && tagsOnly === false) return mem.items.map(p => p.name);
-            //both names and tags
-            return mem.items.map(p => ({ tag: p.tag, name: p.name }));
-        } catch (e) {
-            return [];
-        }
+        return `${tag.toUpperCase().replace(/[^0-9a-z]/gi, '').replace('O', '0')}`;
     },
-    /**
-     * Get basic data of any player
-     * @param {String} tag - Clash Royale tag of player
-     * @returns {Object} - Info about player (name, tag, clan, level, cards, warWins, etc)
-     */
-    getPlayerData: async tag => {
+    parseDate: date => {
+        if (date instanceof Date) return date;
+        return new Date(Date.UTC(
+            date.substr(0, 4),
+            date.substr(4, 2) - 1,
+            date.substr(6, 2),
+            date.substr(9, 2),
+            date.substr(11, 2),
+            date.substr(13, 2),
+        ));
+    },
+    average: arr => {
+        let sum = 0;
+
         try {
-            tag = tag[0] === "#" ? tag.substr(1) : tag;
-            const player = await request(`https://proxy.royaleapi.dev/v1/players/%23${tag}`);
-
-            const classicChallBadge = player.badges.filter(b => b.name === "Classic12Wins");
-            const grandChallBadge = player.badges.filter(b => b.name === "Grand12Wins");
-            const classicChallWins = classicChallBadge.length === 1 ? classicChallBadge[0].progress : 0;
-            const grandChallWins = grandChallBadge.length === 1 ? grandChallBadge[0].progress : 0;
-
-            return {
-                name: player.name,
-                tag: player.tag,
-                clan: player.clan?.name || null,
-                clanTag: player.clan?.tag || null,
-                level: player.expLevel,
-                pb: player.bestTrophies,
-                cards: player.cards,
-                warWins: player.warDayWins,
-                mostChallWins: player.challengeMaxWins,
-                challWins: classicChallWins,
-                grandChallWins: grandChallWins
+            for (const n of arr) {
+                sum += parseInt(n);
             }
-
+            return sum / arr.length;
         } catch (e) {
-            return false;
+            console.log(e);
+            return 0;
         }
     },
-    /**
-     * Get file name for any clan's badge
-     * @param {Number} badgeId 
-     * @param {Number} trophyCount 
-     * @returns name of badge file
-     */
     getClanBadge: (badgeId, trophyCount, returnEmojiPath = true) => {
         if (badgeId === -1 || badgeId === null) return 'no_clan'; //no clan
 
@@ -1362,6 +1329,25 @@ const clanUtil = {
 
         return `${badgeName}_${league}`
     },
+    //convert hex to transparent rgba value
+    hexToRgbA: (hex) => {
+        let c;
+        if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+            c = hex.substring(1).split('');
+            if (c.length == 3) {
+                c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+            }
+            c = '0x' + c.join('');
+            return 'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',0.25)';
+        }
+        return 'rgba(255, 255, 255, 0.25)'; //transparent white
+    },
+    getEmoji: (bot, emojiName) => {
+        const ownerIds = ['493245767448789023', '878013634851258428', '878025564538146816', '878031332817645681', '878030152691499028', '878395655121436682', '878394839950061630', '878397282461024287', '878396465817460757'];
+        const emoji = bot.emojis.cache.find(e => ownerIds.includes(e.guild.ownerID) && e.name === emojiName);
+
+        return `<:${emoji.name}:${emoji.id}>`;
+    },
     getArenaEmoji: pb => {
         if (pb >= 8000) return 'arena24';
         else if (pb >= 7600) return 'arena23';
@@ -1387,7 +1373,120 @@ const clanUtil = {
         else if (pb >= 600) return 'arena3';
         else if (pb >= 300) return 'arena2';
         else return 'arena1';
+    },
+    getDeckUrl: cards => {
+        const cardData = [
+            { key: 'knight', id: 26000000 },
+            { key: 'archers', id: 26000001 },
+            { key: 'goblins', id: 26000002 },
+            { key: 'giant', id: 26000003 },
+            { key: 'pekka', id: 26000004 },
+            { key: 'minions', id: 26000005 },
+            { key: 'balloon', id: 26000006 },
+            { key: 'witch', id: 26000007 },
+            { key: 'barbarians', id: 26000008 },
+            { key: 'golem', id: 26000009 },
+            { key: 'skeletons', id: 26000010 },
+            { key: 'valkyrie', id: 26000011 },
+            { key: 'skeleton-army', id: 26000012 },
+            { key: 'bomber', id: 26000013 },
+            { key: 'musketeer', id: 26000014 },
+            { key: 'baby-dragon', id: 26000015 },
+            { key: 'prince', id: 26000016 },
+            { key: 'wizard', id: 26000017 },
+            { key: 'mini-pekka', id: 26000018 },
+            { key: 'spear-goblins', id: 26000019 },
+            { key: 'giant-skeleton', id: 26000020 },
+            { key: 'hog-rider', id: 26000021 },
+            { key: 'minion-horde', id: 26000022 },
+            { key: 'ice-wizard', id: 26000023 },
+            { key: 'royal-giant', id: 26000024 },
+            { key: 'guards', id: 26000025 },
+            { key: 'princess', id: 26000026 },
+            { key: 'dark-prince', id: 26000027 },
+            { key: 'three-musketeers', id: 26000028 },
+            { key: 'lava-hound', id: 26000029 },
+            { key: 'ice-spirit', id: 26000030 },
+            { key: 'fire-spirit', id: 26000031 },
+            { key: 'miner', id: 26000032 },
+            { key: 'sparky', id: 26000033 },
+            { key: 'bowler', id: 26000034 },
+            { key: 'lumberjack', id: 26000035 },
+            { key: 'battle-ram', id: 26000036 },
+            { key: 'inferno-dragon', id: 26000037 },
+            { key: 'ice-golem', id: 26000038 },
+            { key: 'mega-minion', id: 26000039 },
+            { key: 'dart-goblin', id: 26000040 },
+            { key: 'goblin-gang', id: 26000041 },
+            { key: 'electro-wizard', id: 26000042 },
+            { key: 'elite-barbarians', id: 26000043 },
+            { key: 'hunter', id: 26000044 },
+            { key: 'executioner', id: 26000045 },
+            { key: 'bandit', id: 26000046 },
+            { key: 'royal-recruits', id: 26000047 },
+            { key: 'night-witch', id: 26000048 },
+            { key: 'bats', id: 26000049 },
+            { key: 'royal-ghost', id: 26000050 },
+            { key: 'ram-rider', id: 26000051 },
+            { key: 'zappies', id: 26000052 },
+            { key: 'rascals', id: 26000053 },
+            { key: 'cannon-cart', id: 26000054 },
+            { key: 'mega-knight', id: 26000055 },
+            { key: 'skeleton-barrel', id: 26000056 },
+            { key: 'flying-machine', id: 26000057 },
+            { key: 'wall-breakers', id: 26000058 },
+            { key: 'royal-hogs', id: 26000059 },
+            { key: 'goblin-giant', id: 26000060 },
+            { key: 'fisherman', id: 26000061 },
+            { key: 'magic-archer', id: 26000062 },
+            { key: 'electro-dragon', id: 26000063 },
+            { key: 'firecracker', id: 26000064 },
+            { key: 'elixir-golem', id: 26000067 },
+            { key: 'battle-healer', id: 26000068 },
+            { key: 'skeleton-dragons', id: 26000080 },
+            { key: 'mother-witch', id: 26000083 },
+            { key: 'electro-spirit', id: 26000084 },
+            { key: 'electro-giant', id: 26000085 },
+            { key: 'cannon', id: 27000000 },
+            { key: 'goblin-hut', id: 27000001 },
+            { key: 'mortar', id: 27000002 },
+            { key: 'inferno-tower', id: 27000003 },
+            { key: 'bomb-tower', id: 27000004 },
+            { key: 'barbarian-hut', id: 27000005 },
+            { key: 'tesla', id: 27000006 },
+            { key: 'elixir-collector', id: 27000007 },
+            { key: 'x-bow', id: 27000008 },
+            { key: 'tombstone', id: 27000009 },
+            { key: 'furnace', id: 27000010 },
+            { key: 'goblin-cage', id: 27000012 },
+            { key: 'goblin-drill', id: 27000013 },
+            { key: 'fireball', id: 28000000 },
+            { key: 'arrows', id: 28000001 },
+            { key: 'rage', id: 28000002 },
+            { key: 'rocket', id: 28000003 },
+            { key: 'goblin-barrel', id: 28000004 },
+            { key: 'freeze', id: 28000005 },
+            { key: 'mirror', id: 28000006 },
+            { key: 'lightning', id: 28000007 },
+            { key: 'zap', id: 28000008 },
+            { key: 'poison', id: 28000009 },
+            { key: 'graveyard', id: 28000010 },
+            { key: 'the-log', id: 28000011 },
+            { key: 'tornado', id: 28000012 },
+            { key: 'clone', id: 28000013 },
+            { key: 'earthquake', id: 28000014 },
+            { key: 'barbarian-barrel', id: 28000015 },
+            { key: 'heal-spirit', id: 28000016 },
+            { key: 'giant-snowball', id: 28000017 },
+            { key: 'royal-delivery', id: 28000018 }
+        ]
+
+        let url = 'https://link.clashroyale.com/deck/en?deck=';
+
+        for (const c of cards) {
+            url += `${cardData.find(ca => ca.key === c).id};`;
+        }
+
+        return url.substring(0, url.length - 1);
     }
 }
-
-module.exports = clanUtil;
