@@ -18,9 +18,9 @@ module.exports = {
         const { commandChannelID } = channels;
         const guildOwnerID = message.guild.owner?.id;
 
-        if (message.author.id !== guildOwnerID && message.member._roles.indexOf(adminRoleID) === -1) throw `Only the **server owner** or users with the set admin role can set the clan tag!\n\n__Usage:__\n\`${prefix}setClanTag #TAG\`\n\`${prefix}setAdminRole @ROLE\``;
+        if (message.author.id !== guildOwnerID && message.member._roles.indexOf(adminRoleID) === -1) throw `Only the **server owner** or users with the set admin role can set the clan tag!\n\n__Usage:__\n\`${prefix}setClan1 #TAG\`\n\`${prefix}setAdminRole @ROLE\``;
         else if (commandChannelID && commandChannelID !== message.channel.id) throw `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`;
-        else if (!args[0]) throw `**No tag given!** Try again.\n\n__Usage:__\n\`${prefix}setClanTag #TAG\``;
+        else if (!args[0]) throw `**No tag given!** Try again.\n\n__Usage:__\n\`${prefix}setClan1 #TAG\``;
 
         const clan = await ApiRequest('', args[0], 'clans')
             .catch((e) => {
