@@ -37,7 +37,7 @@ module.exports = {
         guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { 'clans.tag2': args[0] } });
 
         const badgeEmoji = getEmoji(bot, getClanBadge(clan.badgeId, clan.clanWarTrophies));
-        message.channel.send({ embed: { color: green, description: `✅ Server successfully linked to ${badgeEmoji} **${clan.name}**!` } });
+        message.channel.send({ embed: { color: green, description: `✅ Clan 2 successfully linked to ${badgeEmoji} **${clan.name}**!` } });
 
         return console.log(`Clan Linked: ${clan?.name} (${clan?.tag})`);
     },

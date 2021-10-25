@@ -61,8 +61,8 @@ module.exports = {
                     {
                         label: 'Fame',
                         data: fameTotals.reverse(),
-                        borderColor: pink,
-                        backgroundColor: hexToRgbA(pink),
+                        borderColor: embedColor,
+                        backgroundColor: hexToRgbA(embedColor),
                         fill: true
                     }
                 ]
