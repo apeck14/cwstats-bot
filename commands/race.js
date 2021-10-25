@@ -1,5 +1,5 @@
 const { ApiRequest } = require("../functions/api");
-const { getEmoji, getClanBadge } = require("../functions/util");
+const { getEmoji, getClanBadge, formatTag } = require("../functions/util");
 const { orange } = require("../data/colors");
 
 module.exports = {
