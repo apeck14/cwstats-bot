@@ -12,6 +12,9 @@ With the bot being out for a few months now, I was able to gather enough feedbac
     - Use \`?setClan1\`, \`?setClan2\`, \`?setClan3\` to link the 3 clans within your family
     - Easily view race stats, attacks, sync stats, etc now! Simply type ?race 2 to view clan 2's race, ?sync 3 to sync clan 3's stats...and so on.
 
+- **Clan Command** (NEW)
+    - View war/general information for any clan
+
 - **Decks Command**
     - No longer have to have tag linked to use this command
     - Do \`?decks @USER\` or \`?decks #TAG\` to view recommended decks for any player!
