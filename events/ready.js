@@ -4,6 +4,6 @@ module.exports = {
     execute: (bot) => {
         console.log('CW2 Stats is online!');
 
-        bot.user.setActivity(`?setup ?help`);
+        bot.user.setActivity(`NEW UPDATE: ?update`);
     }
 }
