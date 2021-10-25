@@ -35,8 +35,8 @@ module.exports = {
 
         let clanBadge;
 
-        if (!player.clan) {
-            player.clan = 'None';
+        if (!player.clan?.name) {
+            player.clan.name = 'None';
             clanBadge = getClanBadge(-1);
         }
         else { //get clan badge
