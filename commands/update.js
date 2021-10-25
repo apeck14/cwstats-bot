@@ -25,7 +25,7 @@ With the bot being out for a few months now, I was able to gather enough feedbac
 
 - **Aliases:**
     - Aliases are other ways to type the same command. Here is the full list:
-        - attacks: atks
+        - attacks: atks, a
         - clan: c
         - decks: d
         - info: i
