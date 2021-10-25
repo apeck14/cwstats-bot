@@ -28,7 +28,8 @@ module.exports = {
       { name: 'prefix PREFIX', desc: 'Set a custom prefix for all bot commands. `Default: ?`', main: false, setup: true },
       { name: 'info', desc: 'View bot & server info', main: true },
       { name: 'attacks #TAG*', desc: 'View players with remaining attacks of any clan', main: true },
-      { name: 'decks', desc: 'Find top war deck sets based on your card levels', main: true }
+      { name: 'decks', desc: 'Find top war deck sets based on your card levels', main: true },
+      { name: 'clan', desc: 'View war information for any clan', main: true }
     ];
 
     commands.sort((a, b) => {
