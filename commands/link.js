@@ -5,6 +5,8 @@ const { green, orange } = require("../data/colors");
 module.exports = {
     name: 'link',
     aliases: ['link', 'save'],
+    description: 'Link a tag to your Discord account',
+    parameters: ['#TAG'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

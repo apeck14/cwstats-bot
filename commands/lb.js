@@ -6,6 +6,8 @@ const { orange } = require('../data/colors');
 module.exports = {
     name: 'lb',
     aliases: ['lb', 'leaderboard'],
+    description: 'View clan war leaderboard(s) for you clan(s)',
+    parameters: ['1-3', '1-3 full'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

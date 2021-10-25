@@ -6,6 +6,8 @@ const { average, getDeckUrl, getEmoji, getArenaEmoji } = require("../functions/u
 module.exports = {
     name: 'decks',
     aliases: ['decks', 'd'],
+    description: 'Get top rated war deck set(s) based on a player\'s cards',
+    parameters: ['#TAG', '@USER'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

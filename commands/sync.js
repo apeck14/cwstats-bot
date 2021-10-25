@@ -5,6 +5,8 @@ const { orange } = require("../data/colors");
 module.exports = {
     name: 'sync',
     aliases: ['sync'],
+    description: 'Add weekly war stats for your clans',
+    parameters: ['1-3'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

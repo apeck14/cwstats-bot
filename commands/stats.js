@@ -11,6 +11,8 @@ registerFont('./fonts/Supercell-Magic_5.ttf', { family: 'Supercell-Magic' });
 module.exports = {
     name: 'stats',
     aliases: ['stats', 's'],
+    description: 'View war stats for any player',
+    parameters: ['#TAG', '@USER'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

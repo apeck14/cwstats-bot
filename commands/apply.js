@@ -7,6 +7,8 @@ const { green } = require('../data/colors');
 module.exports = {
     name: 'apply',
     aliases: ['apply'],
+    description: `Allow for newcomers to apply through Discord`,
+    parameters: ['#TAG'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

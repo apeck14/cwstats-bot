@@ -3,6 +3,8 @@ const { orange, green } = require("../data/colors");
 module.exports = {
     name: 'setapplicationschannel',
     aliases: ['setapplicationschannel'],
+    description: 'Set the server Applications Channel',
+    parameters: ['#CHANNEL'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

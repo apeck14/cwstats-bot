@@ -5,6 +5,8 @@ const { green, orange } = require('../data/colors');
 module.exports = {
     name: 'attacks',
     aliases: ['attacks', 'atks', 'a'],
+    description: 'Get list of remaining attacks for any clan',
+    parameters: ['1-3', '#TAG'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

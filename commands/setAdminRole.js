@@ -3,6 +3,8 @@ const { orange, green } = require("../data/colors");
 module.exports = {
     name: 'setadminrole',
     aliases: ['setadminrole'],
+    description: 'Set the server Admin Role',
+    parameters: ['@ROLE'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

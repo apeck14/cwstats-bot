@@ -3,6 +3,8 @@ const { green, orange } = require("../data/colors");
 module.exports = {
     name: 'prefix',
     aliases: ['prefix'],
+    description: 'Set the server prefix',
+    parameters: ['PREFIX'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

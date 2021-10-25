@@ -1,6 +1,8 @@
 module.exports = {
     name: 'info',
     aliases: ['info', 'i'],
+    description: 'View sever & bot info',
+    parameters: [],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

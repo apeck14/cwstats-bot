@@ -5,6 +5,8 @@ const { orange } = require("../data/colors");
 module.exports = {
     name: 'race',
     aliases: ['race', 'r'],
+    description: 'View any clan\'s current race',
+    parameters: ['1-3', '#TAG'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
@@ -36,6 +38,8 @@ module.exports = {
             .catch((e) => {
                 if (e.response?.status === 404) message.channel.send({ embed: { description: '**Clan is not in a river race, or invalid tag.**', color: orange } });
             });
+
+        console.log(tag)
 
         if (!rr) return;
         else if (rr.clans.length <= 1) return message.channel.send({ embed: { description: '**Clan is not in a river race.**', color: orange } });

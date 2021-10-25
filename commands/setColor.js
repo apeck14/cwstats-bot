@@ -3,6 +3,8 @@ const { orange } = require("../data/colors");
 module.exports = {
     name: 'setcolor',
     aliases: ['setcolor', 'color'],
+    description: 'Set the server color',
+    parameters: ['#HEX'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

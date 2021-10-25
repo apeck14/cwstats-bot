@@ -5,6 +5,8 @@ const { green, orange } = require("../data/colors");
 module.exports = {
     name: 'setclan3',
     aliases: ['setclan3', 'setclantag3'],
+    description: 'Set Clan 3',
+    parameters: ['#TAG'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

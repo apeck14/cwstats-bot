@@ -2,6 +2,8 @@
 module.exports = {
     name: 'setup',
     aliases: ['setup'],
+    description: 'Learn how to setup the bot',
+    parameters: [],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
