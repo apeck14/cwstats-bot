@@ -2,6 +2,8 @@ module.exports = {
     name: 'ready',
     once: true,
     execute: (bot, db) => {
+        const guilds = db.collection('Guilds');
+
         console.log('CW2 Stats is online!');
 
         //make sure all current guilds have a spot in database, in case the bot joined while down
@@ -36,7 +38,6 @@ module.exports = {
 
         if (sendUpdateMessage) {
             bot.guilds.cache.each(async g => {
-                const guilds = db.collection('Guilds');
                 const guildInDb = await guilds.findOne({ guildID: g.id });
 
                 if (guildInDb && guildInDb.channels.commandChannelID) {
