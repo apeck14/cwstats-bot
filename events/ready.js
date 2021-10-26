@@ -4,7 +4,7 @@ module.exports = {
     execute: (bot, db) => {
         console.log('CW2 Stats is online!');
 
-        const sendUpdateMessage = true;
+        const sendUpdateMessage = false;
 
         if (sendUpdateMessage) {
             bot.guilds.cache.each(async g => {
