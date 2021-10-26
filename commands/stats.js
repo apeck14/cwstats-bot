@@ -47,14 +47,15 @@ module.exports = {
         const player = await ApiRequest('', tag, 'players')
             .catch((e) => {
                 if (e.response?.status === 404) throw '**Invalid tag.** Try again.';
-            });;
+            });
 
         const allMatches = await matches.find({}).toArray();
         const allMatchesGrouped = groupBy(allMatches, 'tag');
 
         if (!allMatchesGrouped[tag] || allMatchesGrouped[tag].length === 0) return message.channel.send({ embed: { color: orange, description: '**Player has no data.**' } });
 
-        const clanMembers = await ApiRequest('members', player.clan.tag, '', true);
+        let clanMembers = [];
+        if (player.clan.tag) clanMembers = await ApiRequest('members', player.clan.tag, '', true);
 
         function avgFame(matches, weeks) { //matches needs to be pre-sorted by date if not total avg
             const indeces = (matches.length < weeks) ? matches.length : weeks;
