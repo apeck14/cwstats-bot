@@ -8,6 +8,8 @@ module.exports = {
         guilds.deleteOne({ guildID: guild.id });
         statistics.updateOne({}, { $inc: { guilds: -1 } });
 
+        console.log(guild)
+
         console.log(`LEFT GUILD: ${guild.name}`);
     }
 }
