@@ -39,8 +39,6 @@ module.exports = {
                 if (e.response?.status === 404) message.channel.send({ embed: { description: '**Clan is not in a river race, or invalid tag.**', color: orange } });
             });
 
-        console.log(tag)
-
         if (!rr) return;
         else if (rr.clans.length <= 1) return message.channel.send({ embed: { description: '**Clan is not in a river race.**', color: orange } });
 
