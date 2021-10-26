@@ -10,6 +10,6 @@ module.exports = {
 
         console.log(guild)
 
-        console.log(`LEFT GUILD: ${guild.name}`);
+        if (guild.id !== '898782595750428712' && guild.id !== '901538946222293002') console.log(`LEFT GUILD: ${guild.name}`);
     }
 }
