@@ -1,7 +1,7 @@
 module.exports = {
     name: 'ready',
     once: true,
-    execute: (bot) => {
+    execute: (bot, db) => {
         console.log('CW2 Stats is online!');
 
         const sendUpdateMessage = true;
