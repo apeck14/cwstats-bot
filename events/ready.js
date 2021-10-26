@@ -4,6 +4,34 @@ module.exports = {
     execute: (bot, db) => {
         console.log('CW2 Stats is online!');
 
+        //make sure all current guilds have a spot in database, in case the bot joined while down
+        bot.guilds.cache.each(async g => {
+            const guildInDb = await guilds.findOne({ guildID: g.id });
+
+            if (!guildInDb) {
+                guilds.insertOne(
+                    {
+                        guildID: g.id,
+                        prefix: '?',
+                        adminRoleID: null,
+                        color: '#ff237a', //pink
+                        clans: {
+                            tag1: null,
+                            tag2: null,
+                            tag3: null
+                        },
+                        channels: {
+                            applyChannelID: null,
+                            applicationsChannelID: null,
+                            commandChannelID: null
+                        }
+                    }
+                );
+
+                console.log(`JOINED GUILD: ${g.name}`);
+            }
+        });
+
         const sendUpdateMessage = false;
 
         if (sendUpdateMessage) {
