@@ -2,6 +2,7 @@ const { ApiRequest } = require("../functions/api");
 const { getClanBadge, hexToRgbA, getEmoji, getArenaEmoji, formatTag } = require("../functions/util");
 const { pbRating, cardsRating, challRating, cw1Rating } = require("../functions/ratings");
 const { CanvasRenderService } = require("chartjs-node-canvas");
+const { orange } = require("../data/colors");
 
 module.exports = {
     name: 'player',
