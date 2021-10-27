@@ -7,7 +7,7 @@ module.exports = {
     aliases: ['sync'],
     description: 'Add weekly war stats for your clans',
     parameters: ['1-3'],
-    disabled: false,
+    disabled: true,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
         const matches = db.collection('Matches');

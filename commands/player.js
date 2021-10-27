@@ -8,7 +8,7 @@ module.exports = {
     aliases: ['player', 'p', 'playa'],
     description: 'View general info of any player',
     parameters: ['#TAG', '@USER'],
-    disabled: false,
+    disabled: true,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
         const linkedAccounts = db.collection('Linked Accounts');

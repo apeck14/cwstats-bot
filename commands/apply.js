@@ -9,7 +9,7 @@ module.exports = {
     aliases: ['apply'],
     description: `Allow for newcomers to apply through Discord`,
     parameters: ['#TAG'],
-    disabled: false,
+    disabled: true,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
 
