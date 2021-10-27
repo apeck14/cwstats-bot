@@ -3,7 +3,7 @@ module.exports = {
     formatTag: (tag) => {
         if (typeof tag !== 'string') return;
 
-        return `${tag.toUpperCase().replace(/[^0-9a-z]/gi, '').replace('O', '0')}`;
+        return `${tag.toUpperCase().replace(/[^0-9a-z]/gi, '').replace('O', '0').replace('o', '0')}`;
     },
     parseDate: date => {
         if (date instanceof Date) return date;
