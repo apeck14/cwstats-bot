@@ -46,7 +46,7 @@ module.exports = {
 
         if (!player) return;
 
-        const cardsGroupedByLevel = groupBy(player.cards, c => 13 - (c.maxLevel - c.level));
+        const cardsGroupedByLevel = groupBy(player.cards, c => 14 - (c.maxLevel - c.level));
 
         for (const lvl in cardsGroupedByLevel) {
             cardsGroupedByLevel[lvl] = cardsGroupedByLevel[lvl].map(c => c.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, ''));
@@ -72,7 +72,7 @@ module.exports = {
             for (const d of deckSet) {
                 for (const c of d.cards) {
                     const card = player.cards.find(ca => ca.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '') === c);
-                    sum += 13 - (card.maxLevel - card.level);
+                    sum += 14 - (card.maxLevel - card.level);
                 }
             }
 
@@ -92,7 +92,7 @@ module.exports = {
         let cardsAvailable = [];
         let lastLvlAdded;
 
-        for (let lvl = 13; lvl >= 1; lvl--) {
+        for (let lvl = 14; lvl >= 1; lvl--) {
             if (cardsGroupedByLevel[`${lvl}`]) cardsAvailable = cardsAvailable.concat(cardsGroupedByLevel[`${lvl}`]);
             lastLvlAdded = lvl;
 
