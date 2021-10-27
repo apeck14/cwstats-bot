@@ -7,7 +7,7 @@ module.exports = {
     aliases: ['sync'],
     description: 'Add weekly war stats for your clans',
     parameters: ['1-3'],
-    disabled: true,
+    disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
         const matches = db.collection('Matches');
@@ -40,7 +40,8 @@ module.exports = {
 
         const log = await ApiRequest('riverracelog', tag);
 
-        if (!log || log.length === 0) return message.channel.send({ embed: { color: orange, description: 'Clan has no data to add.' } });
+        if (!log) return;
+        else if (log.length === 0) return message.channel.send({ embed: { color: orange, description: 'Clan has no data to add.' } });
 
         let raceLog = log.map(r => ({
             sectionIndex: r.sectionIndex,

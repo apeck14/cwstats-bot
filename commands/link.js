@@ -24,6 +24,8 @@ module.exports = {
                 if (e.response?.status === 404) throw '**Invalid tag.** Try again.';
             });
 
+        if (!player) return;
+
         const linkedAccount = await linkedAccounts.findOne({ discordID: message.author.id });
 
         args[0] = formatTag(args[0]);

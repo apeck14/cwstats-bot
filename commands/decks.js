@@ -44,6 +44,8 @@ module.exports = {
                 if (e.response?.status === 404) throw '**Invalid tag.** Try again.';
             });
 
+        if (!player) return;
+
         const cardsGroupedByLevel = groupBy(player.cards, c => 13 - (c.maxLevel - c.level));
 
         for (const lvl in cardsGroupedByLevel) {

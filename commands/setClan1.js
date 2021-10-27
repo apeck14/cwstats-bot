@@ -27,6 +27,8 @@ module.exports = {
                 if (e.response?.status === 404) throw '**Invalid tag!** Try again.';
             });
 
+        if (!clan) return;
+
         args[0] = `#${formatTag(args[0])}`;
 
         //clan tag already linked or clan tag already in use by someone else

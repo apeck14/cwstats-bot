@@ -33,6 +33,8 @@ module.exports = {
                 if (e.response.status === 404) throw '**Invalid tag.** Try again.';
             });
 
+        if (!player) return;
+
         let clanBadge;
 
         if (!player.clan?.name) {

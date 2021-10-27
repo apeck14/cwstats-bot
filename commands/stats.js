@@ -49,6 +49,8 @@ module.exports = {
                 if (e.response?.status === 404) throw '**Invalid tag.** Try again.';
             });
 
+        if (!player) return;
+
         const allMatches = await matches.find({}).toArray();
         const allMatchesGrouped = groupBy(allMatches, 'tag');
 

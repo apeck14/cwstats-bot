@@ -47,6 +47,8 @@ module.exports = {
         for (const t of tags) {
             const clan = await ApiRequest('', t, 'clans');
 
+            if (!clan) return;
+
             if (!clanWarTrophies) clanWarTrophies = clan.clanWarTrophies;
             if (!badgeId) badgeId = clan.badgeId;
             if (!header) {

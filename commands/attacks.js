@@ -36,7 +36,7 @@ module.exports = {
 
         const rr = await ApiRequest('currentriverrace', tag)
             .catch((e) => {
-                if (e.response?.status === 404) message.channel.send({ embed: { description: '**Clan is not in a river race, or invalid tag.**', color: orange } });
+                if (e.response?.status === 404) throw '**Clan is not in a river race, or invalid tag.**';
             });
 
         if (!rr) return;
@@ -50,7 +50,7 @@ module.exports = {
 
         const fourAttacks = [];
         const threeAttacks = [];
-        const twoAttacks = []
+        const twoAttacks = [];
         const oneAttack = [];
 
         let showFooter = false;

@@ -45,13 +45,13 @@ module.exports = {
             .catch((e) => {
                 if (e.response?.status === 404) message.channel.send({ embed: { description: '**Clan is not in a river race, or invalid tag.**', color: orange } });
             });
-        if (!clan) return;
 
         const log = await ApiRequest('riverracelog', tag)
             .catch((e) => {
                 if (e.response?.status === 404) message.channel.send({ embed: { description: '**Clan is not in a river race, or invalid tag.**', color: orange } });
             });
-        if (!log) return;
+
+        if (!clan || !log) return;
 
         const fameTotals = log.map(w => w.standings.find(c => c.clan.tag === tag).clan.participants.reduce((a, b) => a + b.fame, 0));
 
