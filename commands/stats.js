@@ -13,7 +13,7 @@ module.exports = {
     aliases: ['stats', 's'],
     description: 'View war stats for any player',
     parameters: ['#TAG', '@USER'],
-    disabled: true,
+    disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
         const linkedAccounts = db.collection('Linked Accounts');

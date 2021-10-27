@@ -1,4 +1,4 @@
-const { ApiRequest } = require('../functions/api')
+const { ApiRequest } = require('../functions/api');
 const { CanvasRenderService } = require('chartjs-node-canvas');
 const { getClanBadge, hexToRgbA, getEmoji, getArenaEmoji, formatTag } = require("../functions/util");
 const { pbRating, cardsRating, challRating, cw1Rating } = require('../functions/ratings');
@@ -9,7 +9,7 @@ module.exports = {
     aliases: ['apply'],
     description: `Allow for newcomers to apply through Discord`,
     parameters: ['#TAG'],
-    disabled: true,
+    disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
 
@@ -30,7 +30,7 @@ module.exports = {
 
         const player = await ApiRequest('', args[0], 'players')
             .catch((e) => {
-                if (e.response?.status === 404) throw '**Invalid tag.** Try again.';
+                if (e.response.status === 404) throw '**Invalid tag.** Try again.';
             });
 
         let clanBadge;
@@ -89,18 +89,20 @@ module.exports = {
         const image = await canvas.renderToBuffer(radarGraph);
 
         const userMention = `<@!${message.author.id}>`;
-        const level13 = getEmoji(bot, 'level13c');
+        const level14 = getEmoji(bot, 'level14c');
+        const level13 = getEmoji(bot, 'level13');
         const level12 = getEmoji(bot, 'level12');
         const level11 = getEmoji(bot, 'level11');
 
         const desc = () => {
-            const lvl13Cards = player.cards.filter(c => c.maxLevel - c.level === 0).length;
-            const lvl12Cards = player.cards.filter(c => c.maxLevel - c.level === 1).length;
-            const lvl11Cards = player.cards.filter(c => c.maxLevel - c.level === 2).length;
+            const lvl14Cards = player.cards.filter(c => c.maxLevel - c.level === 0).length;
+            const lvl13Cards = player.cards.filter(c => c.maxLevel - c.level === 1).length;
+            const lvl12Cards = player.cards.filter(c => c.maxLevel - c.level === 2).length;
+            const lvl11Cards = player.cards.filter(c => c.maxLevel - c.level === 3).length;
 
             const top = `${getEmoji(bot, `level${player.level}`)} **${player.name}**\n${player.tag}\n${getEmoji(bot, clanBadge)} **${player.clan.name}**\n\n`;
             const mid = `**__Stats__**\n**PB**: ${getEmoji(bot, getArenaEmoji(player.pb))} ${player.pb}\n**CW1 War Wins**: ${player.warWins}\n**Most Chall. Wins**: ${player.mostChallWins}\n**CC Wins**: ${player.challWins}\n**GC Wins**: ${player.grandChallWins}\n\n`;
-            const bottom = `**__Cards__**\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}\n\n[RoyaleAPI Profile](https://royaleapi.com/player/${formatTag(args[0])})\n**Request By**: ${userMention}`;
+            const bottom = `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}\n\n[RoyaleAPI Profile](https://royaleapi.com/player/${formatTag(args[0])})\n**Request By**: ${userMention}`;
             return top + mid + bottom;
         }
 
