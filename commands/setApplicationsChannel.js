@@ -4,7 +4,7 @@ module.exports = {
     name: 'setapplicationschannel',
     aliases: ['setapplicationschannel'],
     description: 'Set the server Applications Channel',
-    parameters: ['#CHANNEL'],
+    parameters: [],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

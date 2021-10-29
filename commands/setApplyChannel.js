@@ -4,7 +4,7 @@ module.exports = {
     name: 'setapplychannel',
     aliases: ['setapplychannel'],
     description: 'Set the server Apply Channel',
-    parameters: ['#CHANNEL'],
+    parameters: [],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');

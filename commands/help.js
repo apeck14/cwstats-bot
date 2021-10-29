@@ -3,7 +3,7 @@ const { pink } = require('../data/colors');
 
 module.exports = {
     name: 'help',
-    aliases: ['help'],
+    aliases: ['help', 'commands', 'cmds'],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
@@ -27,7 +27,7 @@ module.exports = {
 
         return message.channel.send({
             embed: {
-                title: '__Commands__',
+                title: '__CW2 Stats Commands__',
                 description: desc,
                 color: pink
             }

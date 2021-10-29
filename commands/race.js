@@ -123,7 +123,7 @@ module.exports = {
                     url: 'https://static.wikia.nocookie.net/clashroyale/images/9/9f/War_Shield.png/revision/latest?cb=20180425130200'
                 },
                 footer: {
-                    text: (isCololsseum) ? 'Missed attacks negatively affect avg. fame' : ''
+                    text: (isCololsseum) ? 'Missed attacks negatively affect fame/atk' : ''
                 }
             }
         });

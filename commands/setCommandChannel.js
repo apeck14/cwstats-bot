@@ -4,7 +4,7 @@ module.exports = {
     name: 'setcommandchannel',
     aliases: ['setcommandchannel'],
     description: 'Set the server Command Channel',
-    parameters: ['#CHANNEL'],
+    parameters: [],
     disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
