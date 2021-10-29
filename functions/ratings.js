@@ -37,11 +37,12 @@ module.exports = {
         for (const c of player.cards) {
             const diff = c.maxLevel - c.level;
 
-            if (diff === 0) sum++;
-            else if (diff === 1) sum += 0.5;
-            else if (diff === 2) sum += 0.2;
-            else if (diff === 3) sum += 0.08;
-            else if (diff === 4) sum += 0.04;
+            if (diff === 0) sum++; //level 14
+            else if (diff === 1) sum += 0.75; //level 13
+            else if (diff === 2) sum += 0.35; //level 12
+            else if (diff === 3) sum += 0.15; //level 11
+            else if (diff === 4) sum += 0.08; //level 10
+            else if (diff === 5) sum += 0.04; //level 9
         }
 
         return sum;
