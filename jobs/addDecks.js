@@ -32,7 +32,7 @@ async function addDecks() {
     const db = await mdbClient.db('General');
     const decks = db.collection('Decks');
 
-    puppeteer.launch({ headless: true }).then(async browser => {
+    puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] }).then(async browser => {
         const page = await browser.newPage();
 
         await page.setDefaultNavigationTimeout(0);
