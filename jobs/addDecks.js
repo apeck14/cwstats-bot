@@ -5,12 +5,17 @@ puppeteer.use(StealthPlugin());
 const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
 const { MongoClient } = require('mongodb');
-const { uri } = require('../config.json');
 const mdbClient = new MongoClient(process.env.uri, { useUnifiedTopology: true, useNewUrlParser: true });
 
 if (mdbClient.isConnected()) {
-    console.log('already connected')
-    addDecks();
+    console.log('already connected');
+
+    try {
+        addDecks();
+    }
+    catch (e) {
+        console.error(e);
+    }
 }
 else {
     mdbClient
