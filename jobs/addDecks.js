@@ -30,7 +30,7 @@ else {
 
 async function addDecks() {
     const db = await mdbClient.db('General');
-    const decks = db.collection('Decks')
+    const decks = db.collection('Decks');
 
     puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] }).then(async browser => {
         const page = await browser.newPage();
@@ -43,7 +43,7 @@ async function addDecks() {
 
         for await (const dirent of dir) { //loop through all cards
             const c = dirent.name.replace('.png', '');
-            const url = `https://royaleapi.com/decks/popular?time=7d&inc=${c}&players=PvP&type=Ladder&size=20&sort=rating&min_trophies=5600&max_trophies=10000&min_elixir=1&max_elixir=9&mode=digest`;
+            const url = `https://royaleapi.com/decks/popular?time=7d&inc=${c}&players=PvP&type=NormalBattle&size=20&sort=win&min_trophies=0&max_trophies=10000&min_elixir=1&max_elixir=9&mode=digest`;
 
             await page.goto(url);
 
