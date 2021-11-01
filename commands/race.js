@@ -120,7 +120,7 @@ module.exports = {
                 title: (isCololsseum) ? `__Colosseum Week__` : `__Current River Race__`,
                 description: desc(),
                 thumbnail: {
-                    url: 'https://static.wikia.nocookie.net/clashroyale/images/9/9f/War_Shield.png/revision/latest?cb=20180425130200'
+                    url: 'https://clashroyale.com/uploaded-images-blog/_175xAUTO_fit_center-center_80/icon_pvp.png?mtime=20200830211028'
                 },
                 footer: {
                     text: (isCololsseum) ? 'Missed attacks negatively affect fame/atk' : ''
