@@ -33,6 +33,7 @@ async function addDecks() {
     const decks = db.collection('Decks');
 
     puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] }).then(async browser => {
+        console.log('Updating decks...');
         const page = await browser.newPage();
 
         await page.setDefaultNavigationTimeout(0);
@@ -74,19 +75,16 @@ async function addDecks() {
                 }
 
                 totalDecksAdded += decksAdded;
-
-                console.log(`${decksAdded} deck(s) added! (${c})`);
             }
 
             if (c !== 'zappies') {
                 const timeout = ((Math.random() * 8) + 3) * 1000;
                 await page.waitForTimeout(timeout);
-                console.log(`Waited ${(timeout / 1000).toFixed(2)}s.`);
             }
         }
 
         console.log(`Finished! (${totalDecksAdded} decks added)`);
 
-        await browser.close();
+        return await browser.close();
     })
 }
