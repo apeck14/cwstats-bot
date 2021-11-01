@@ -1377,6 +1377,9 @@ module.exports = {
     getDeckUrl: cards => {
         const cardData = [
             { key: 'knight', id: 26000000 },
+            { key: 'archer-queen', id: 26000072 },
+            { key: 'golden-knight', id: 26000074 },
+            { key: 'skeleton-king', id: 26000069 },
             { key: 'archers', id: 26000001 },
             { key: 'goblins', id: 26000002 },
             { key: 'giant', id: 26000003 },
