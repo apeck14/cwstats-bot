@@ -36,7 +36,10 @@ module.exports = {
 
         const bannedTags = ['#9GQ8R29Y', '#9UV202Q2'];
 
-        if (bannedTags.includes(tag) && (message.guild.id !== '722956243261456536' && message.guild.id !== '592511340736937984')) throw '**This tag has been banned.**';
+        if (bannedTags.includes(tag) && (message.guild.id !== '722956243261456536' && message.guild.id !== '592511340736937984')) {
+            console.log(`Banned Tag Used: ${tag}`)
+            throw '**This tag has been banned.**';
+        }
 
         const rr = await ApiRequest('currentriverrace', tag)
             .catch((e) => {
