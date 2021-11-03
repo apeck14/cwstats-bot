@@ -34,6 +34,10 @@ module.exports = {
         }
         else tag = '#' + formatTag(args[0]);
 
+        const bannedTags = ['#9GQ8R29Y', '#9UV202Q2'];
+
+        if (bannedTags.includes(tag) && (message.guild.id !== '722956243261456536' && message.guild.id !== '592511340736937984')) throw '**This tag has been banned.**';
+
         const rr = await ApiRequest('currentriverrace', tag)
             .catch((e) => {
                 if (e.response?.status === 404) message.channel.send({ embed: { description: '**Clan is not in a river race, or invalid tag.**', color: orange } });
