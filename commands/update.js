@@ -3,7 +3,8 @@ module.exports = {
     aliases: ['update'],
     disabled: false,
     execute: async (message, args, bot, db) => {
-        return message.channel.send(`**__NEW UPDATE: 10/24/2021__**
+        return message.channel.send({
+            content: `**__NEW UPDATE: 10/24/2021__**
 
 With the bot being out for a few months now, I was able to gather enough feedback to determine which key features were missing. With that being said, here are some new additions:
 
@@ -43,6 +44,6 @@ With the bot being out for a few months now, I was able to gather enough feedbac
         - stats: s
     - Ex: \`?a 1\` will now show attacks left for your 1st clan
 
-Thank you everyone for your support and feedback. More features are on the way! As always, DM Apehk#5688 on Discord with questions/comments/feedback!`)
+Thank you everyone for your support and feedback. More features are on the way! As always, DM Apehk#5688 on Discord with questions/comments/feedback!`})
     }
 }

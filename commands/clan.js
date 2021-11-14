@@ -1,4 +1,4 @@
-const { CanvasRenderService } = require("chartjs-node-canvas");
+const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
 const { ApiRequest } = require("../functions/api");
 const { hexToRgbA, getEmoji, average, getClanBadge, formatTag } = require("../functions/util");
 const { pink, orange } = require("../data/colors");
@@ -43,12 +43,12 @@ module.exports = {
 
         const clan = await ApiRequest('', tag, 'clans')
             .catch((e) => {
-                if (e.response?.status === 404) message.channel.send({ embed: { description: '**Clan is not in a river race, or invalid tag.**', color: orange } });
+                if (e.response?.status === 404) message.channel.send({ embeds: [{ description: '**Clan is not in a river race, or invalid tag.**', color: orange }] });
             });
 
         const log = await ApiRequest('riverracelog', tag)
             .catch((e) => {
-                if (e.response?.status === 404) message.channel.send({ embed: { description: '**Clan is not in a river race, or invalid tag.**', color: orange } });
+                if (e.response?.status === 404) message.channel.send({ embeds: [{ description: '**Clan is not in a river race, or invalid tag.**', color: orange }] });
             });
 
         if (!clan || !log) return;
@@ -100,7 +100,7 @@ module.exports = {
 
         const width = 900;
         const height = 600;
-        const canvas = new CanvasRenderService(width, height);
+        const canvas = new ChartJSNodeCanvas({ width: width, height: height });
         const image = await canvas.renderToBuffer(graph);
 
         const max = (fameTotals.length === 0) ? 'N/A' : Math.max(...fameTotals);
@@ -112,7 +112,7 @@ module.exports = {
         const warStats = `\n\n__**War Stats**__\nMax: ${fameEmoji}**${max}**\nMin: ${fameEmoji}**${min}**\nAvg.: ${fameEmoji}**${avg}**`;
 
         return message.channel.send({
-            embed: {
+            embeds: [{
                 color: embedColor,
                 title: `__${clan.name}__ (${clan.tag})`,
                 description: desc + warStats,
@@ -122,17 +122,17 @@ module.exports = {
                 image: {
                     url: 'attachment://graph.png'
                 },
-                files: [
-                    {
-                        attachment: image,
-                        name: 'graph.png'
-                    },
-                    {
-                        attachment: `./allBadges/${getClanBadge(clan.badgeId, clan.clanWarTrophies, false)}.png`,
-                        name: 'badge.png'
-                    }
-                ]
-            }
+            }],
+            files: [
+                {
+                    attachment: image,
+                    name: 'graph.png'
+                },
+                {
+                    attachment: `./data/allBadges/${getClanBadge(clan.badgeId, clan.clanWarTrophies, false)}.png`,
+                    name: 'badge.png'
+                }
+            ]
         })
     }
 }

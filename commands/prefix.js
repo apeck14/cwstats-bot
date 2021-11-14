@@ -21,9 +21,9 @@ module.exports = {
         else if (args[0].length > 2) throw `Prefix can be up to 2 characters in length!`;
 
         //prefix already linked
-        if (prefix === args[0]) return message.channel.send({ embed: { color: orange, description: `This prefix has **already** been set!` } });
+        if (prefix === args[0]) return message.channel.send({ embeds: [{ color: orange, description: `This prefix has **already** been set!` }] });
 
         guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { prefix: args[0] } });
-        return message.channel.send({ embed: { color: green, description: `✅ **Prefix** now set to **${args[0]}**` } });
+        return message.channel.send({ embeds: [{ color: green, description: `✅ **Prefix** now set to **${args[0]}**` }] });
     }
 };

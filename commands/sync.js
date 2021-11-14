@@ -41,7 +41,7 @@ module.exports = {
         const log = await ApiRequest('riverracelog', tag);
 
         if (!log) return;
-        else if (log.length === 0) return message.channel.send({ embed: { color: orange, description: 'Clan has no data to add.' } });
+        else if (log.length === 0) return message.channel.send({ embeds: [{ color: orange, description: 'Clan has no data to add.' }] });
 
         let raceLog = log.map(r => ({
             sectionIndex: r.sectionIndex,
@@ -68,7 +68,7 @@ module.exports = {
 
         raceLog.forEach(r => r.clan.participants = r.clan.participants.filter(p => p.fame >= 1600 && p.decksUsed >= 16 && p.boatAttacks === 0)); //filter out players that didnt use all 16 war attacks
 
-        if (raceLog.length === 0) return message.channel.send({ embed: { color: orange, description: `**There are no new weeks to add at this time!**` } });
+        if (raceLog.length === 0) return message.channel.send({ embeds: [{ color: orange, description: `**There are no new weeks to add at this time!**` }] });
 
         let desc = '';
 
@@ -118,7 +118,7 @@ module.exports = {
         }
 
         return message.channel.send({
-            embed: {
+            embeds: [{
                 color: color,
                 description: `✅ **${raceLog.length} New Week(s) Added!**\n\n` + desc,
                 footer: {
@@ -127,7 +127,7 @@ module.exports = {
                 author: {
                     name: `${raceLog[0].clan.name} | ${raceLog[0].clan.tag}`
                 }
-            }
+            }]
         });
 
     }

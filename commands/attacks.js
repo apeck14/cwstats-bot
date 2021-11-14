@@ -40,7 +40,7 @@ module.exports = {
             });
 
         if (!rr) return;
-        else if (rr.clans.length <= 1) return message.channel.send({ embed: { description: '**Clan is not in a river race.**', color: orange } });
+        else if (rr.clans.length <= 1) return message.channel.send({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
 
         const currentMemberTags = await ApiRequest('members', tag, '', true);
 
@@ -98,9 +98,9 @@ module.exports = {
 
         let desc = ``;
 
-        if (totalAttacksLeft === 0) return message.channel.send({ embed: { color: green, description: `All attacks have been used!` } }); //all attacks used
+        if (totalAttacksLeft === 0) return message.channel.send({ embeds: [{ color: green, description: `All attacks have been used!` }] }); //all attacks used
         else if (totalAttacksLeft !== 0 && remainingAttacks.filter(p => p.attacksUsedToday < 4).length === 0) { //attacks left, but all members currently in clan have used attacks
-            return message.channel.send({ embed: { title: '__Remaining Attacks__', color: color, description: `${badgeEmoji} **${rr.clan.name}**\n${fameEmoji} **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n\n*All current members have completed attacks!*` } });
+            return message.channel.send({ embeds: [{ title: '__Remaining Attacks__', color: color, description: `${badgeEmoji} **${rr.clan.name}**\n${fameEmoji} **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n\n*All current members have completed attacks!*` }] });
         }
 
         desc += `${badgeEmoji} **${rr.clan.name}**\n${fameEmoji} **${currentFame()}**\nAttacks Left: **${totalAttacksLeft}**\n`;
@@ -123,13 +123,13 @@ module.exports = {
         }
 
         return message.channel.send({
-            embed: {
+            embeds: [{
                 title: `__Remaining Attacks__`,
                 color: color, description: desc,
                 footer: {
                     text: (showFooter) ? `* = Not in clan` : ``
                 }
-            }
+            }]
         });
     }
 }

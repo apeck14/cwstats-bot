@@ -5,17 +5,11 @@ puppeteer.use(StealthPlugin());
 const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
 const { MongoClient } = require('mongodb');
-const mdbClient = new MongoClient(process.env.uri, { useUnifiedTopology: true, useNewUrlParser: true });
+const { uri } = require('../config.json');
+const mdbClient = new MongoClient(uri, { useUnifiedTopology: true, useNewUrlParser: true });
 
 if (mdbClient.isConnected()) {
-    console.log('already connected');
-
-    try {
-        addDecks();
-    }
-    catch (e) {
-        console.error(e);
-    }
+    addDecks();
 }
 else {
     mdbClient
@@ -33,18 +27,17 @@ async function addDecks() {
     const decks = db.collection('Decks');
 
     puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] }).then(async browser => {
-        console.log('Updating decks...');
         const page = await browser.newPage();
 
         await page.setDefaultNavigationTimeout(0);
 
-        const dir = await fs.promises.opendir('./cards');
+        const dir = await fs.promises.opendir('./data/cards');
 
         let totalDecksAdded = 0;
 
         for await (const dirent of dir) { //loop through all cards
             const c = dirent.name.replace('.png', '');
-            const url = `https://royaleapi.com/decks/popular?time=7d&inc=${c}&players=PvP&type=NormalBattle&size=20&sort=win&min_trophies=0&max_trophies=10000&min_elixir=1&max_elixir=9&mode=digest`;
+            const url = `https://royaleapi.com/decks/popular?time=7d&inc=${c}&players=PvP&type=Ladder&size=20&sort=rating&min_trophies=5600&max_trophies=10000&min_elixir=1&max_elixir=9&mode=digest`;
 
             await page.goto(url);
 
@@ -75,16 +68,19 @@ async function addDecks() {
                 }
 
                 totalDecksAdded += decksAdded;
+
+                console.log(`${decksAdded} deck(s) added! (${c})`);
             }
 
             if (c !== 'zappies') {
                 const timeout = ((Math.random() * 8) + 3) * 1000;
                 await page.waitForTimeout(timeout);
+                console.log(`Waited ${(timeout / 1000).toFixed(2)}s.`);
             }
         }
 
         console.log(`Finished! (${totalDecksAdded} decks added)`);
 
-        return await browser.close();
+        await browser.close();
     })
 }

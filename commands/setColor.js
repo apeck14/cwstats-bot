@@ -22,9 +22,9 @@ module.exports = {
         else if (!/^#([0-9A-F]{3}){1,2}$/i.test(args[0])) throw `**Invalid color hex!** Try again.\n\n__Usage:__\n\`${prefix}setColor #HEX\``;
 
         //color already linked
-        if (color === args[0].toUpperCase()) return message.channel.send({ embed: { color: orange, description: `This color is already set!` } });
+        if (color === args[0].toUpperCase()) return message.channel.send({ embeds: [{ color: orange, description: `This color is already set!` }] });
 
         guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { color: args[0].toUpperCase() } });
-        return message.channel.send({ embed: { color: args[0], description: `✅ Clan **color** now set to **${args[0].toUpperCase()}**!` } });
+        return message.channel.send({ embeds: [{ color: args[0], description: `✅ Clan **color** now set to **${args[0].toUpperCase()}**!` }] });
     },
 };

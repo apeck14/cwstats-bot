@@ -59,7 +59,7 @@ module.exports = {
             memberTags.push(...clan.memberList.map(p => p.tag));
         }
 
-        if (memberTags.length === 0) return message.channel.send({ embed: { color: orange, description: `**No players found in clan(s) currently.**` } });
+        if (memberTags.length === 0) return message.channel.send({ embeds: [{ color: orange, description: `**No players found in clan(s) currently.**` }] });
 
         const memberMatches = await matches.find({ tag: { $in: memberTags }, clanTag: { $in: tags } }).toArray(); //members in clan currently, and have atleast 1 fame score in arr
 
@@ -85,7 +85,7 @@ module.exports = {
             return b.avgFame - a.avgFame;
         });
 
-        if (leaderboard.length === 0) return message.channel.send({ embed: { color: orange, description: `**No data available!** To add data, use \`${prefix}sync\`.` } }); //if no members on lb
+        if (leaderboard.length === 0) return message.channel.send({ embeds: [{ color: orange, description: `**No data available!** To add data, use \`${prefix}sync\`.` }] }); //if no members on lb
 
         const desc = () => {
             const indeces = () => {
@@ -111,7 +111,7 @@ module.exports = {
         };
 
         return message.channel.send({
-            embed: {
+            embeds: [{
                 color: color,
                 title: `__Avg. Fame Leaders__`,
                 description: desc(),
@@ -121,14 +121,14 @@ module.exports = {
                 footer: {
                     text: `Ranked by avg. fame while in clan | ${prefix}stats`
                 },
-                files: [{
-                    attachment: `./allBadges/${getClanBadge(badgeId, clanWarTrophies, false)}.png`,
-                    name: 'badge.png'
-                }],
                 thumbnail: {
                     url: 'attachment://badge.png'
                 }
-            }
+            }],
+            files: [{
+                attachment: `./data/allBadges/${getClanBadge(badgeId, clanWarTrophies, false)}.png`,
+                name: 'badge.png'
+            }]
         });
     }
 }

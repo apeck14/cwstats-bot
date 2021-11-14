@@ -39,14 +39,14 @@ module.exports = {
         const clan3 = tag3 || '*NOT SET*';
 
         return message.channel.send({
-            embed: {
+            embeds: [{
                 title: '__Bot & Server Info__',
                 color: '#ff237a',
                 footer: {
                     text: `Developed By: Apehk`
                 },
                 description: `**Servers**: ${serverCount()}\n**Commands Used**: ${commandsUsed}\n**Clans**: ${linkedClans}\n**Players**: ${players.length}\n\n**__Server__**\n**Clan 1**: ${clan1}\n**Clan 2**: ${clan2}\n**Clan 3**: ${clan3}\n**Color**: ${colorHex}\n**Admin Role**: ${adminRole}\n**Command Channel**: ${cmdChnl}\n**Apply Channel**: ${applyChnl}\n**Applications Channel**: ${appChnl}`
-            }
+            }]
         });
     }
 }

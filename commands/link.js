@@ -40,16 +40,16 @@ module.exports = {
                 }
             );
 
-            return message.channel.send({ embed: { color: green, description: `✅ Account linked to **${player.name}**!` } });
+            return message.channel.send({ embeds: [{ color: green, description: `✅ Account linked to **${player.name}**!` }] });
         }
         //already linked to that tag
         else if (linkedAccount.tag === `#${args[0]}`) {
-            return message.channel.send({ embed: { color: orange, description: "**You have already linked that ID!**" } });
+            return message.channel.send({ embeds: [{ color: orange, description: "**You have already linked that ID!**" }] });
         }
         //already linked, send confirmation embed to update to new tag
         else {
             //send confirmatiom embed
-            const confirmEmbed = await message.channel.send({ embed: { color: green, description: `Are you sure you want to link your account to a new ID?\n\n**Old ID:** ${linkedAccount.tag}\n**New ID:** #${args[0]}` } });
+            const confirmEmbed = await message.channel.send({ embeds: [{ color: green, description: `Are you sure you want to link your account to a new ID?\n\n**Old ID:** ${linkedAccount.tag}\n**New ID:** #${args[0]}` }] });
 
             const emojis = ['✅', '❌'];
             for (const e of emojis) await confirmEmbed.react(e);
@@ -65,7 +65,7 @@ module.exports = {
             else {
                 linkedAccounts.updateOne({ discordID: message.author.id }, { $set: { tag: `#${args[0]}` } });
 
-                return message.channel.send({ embed: { color: green, description: `✅ Updated! Account linked to **${player.name}**` } });
+                return message.channel.send({ embeds: [{ color: green, description: `✅ Updated! Account linked to **${player.name}**` }] });
             }
         }
     }

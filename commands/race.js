@@ -43,11 +43,11 @@ module.exports = {
 
         const rr = await ApiRequest('currentriverrace', tag)
             .catch((e) => {
-                if (e.response?.status === 404) message.channel.send({ embed: { description: '**Clan is not in a river race, or invalid tag.**', color: orange } });
+                if (e.response?.status === 404) message.channel.send({ embeds: [{ description: '**Clan is not in a river race, or invalid tag.**', color: orange }] });
             });
 
         if (!rr) return;
-        else if (rr.clans.length <= 1) return message.channel.send({ embed: { description: '**Clan is not in a river race.**', color: orange } });
+        else if (rr.clans.length <= 1) return message.channel.send({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
 
         const isCololsseum = rr.periodType === 'colosseum';
         const score = (isCololsseum) ? 'fame' : 'periodPoints';
@@ -122,7 +122,7 @@ module.exports = {
         }
 
         return message.channel.send({
-            embed: {
+            embeds: [{
                 color: color,
                 title: (isCololsseum) ? `__Colosseum Week__` : `__Current River Race__`,
                 description: desc(),
@@ -132,7 +132,7 @@ module.exports = {
                 footer: {
                     text: (isCololsseum) ? 'Missed attacks negatively affect fame/atk' : ''
                 }
-            }
+            }]
         });
     }
 }

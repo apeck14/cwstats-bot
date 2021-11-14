@@ -26,7 +26,7 @@ module.exports = {
             const linkedAccount = await linkedAccounts.findOne({ discordID: message.author.id });
 
             if (!linkedAccount?.tag)
-                return message.channel.send({ embed: { color: orange, description: `**No tag linked!**\n\n__Usage:__\n\`${prefix}link #ABC123\`` } });
+                return message.channel.send({ embeds: [{ color: orange, description: `**No tag linked!**\n\n__Usage:__\n\`${prefix}link #ABC123\`` }] });
 
             tag = linkedAccount.tag;
         }
@@ -34,7 +34,7 @@ module.exports = {
             const id = args[0].replace(/[^0-9]/g, '');
             const linkedAccount = await linkedAccounts.findOne({ discordID: id });
 
-            if (!linkedAccount) return message.channel.send({ embed: { color: orange, description: `<@!${id}> **does not have an account linked.**` } });
+            if (!linkedAccount) return message.channel.send({ embeds: [{ color: orange, description: `<@!${id}> **does not have an account linked.**` }] });
             tag = linkedAccount.tag;
         }
         else tag = args[0];
@@ -99,7 +99,7 @@ module.exports = {
             if (cardsAvailable.length >= 32) break;
         }
 
-        if (cardsAvailable.length < 32) return message.channel.send({ embed: { color: orange, description: `**No deck sets found.** More cards need to be unlocked.` } });
+        if (cardsAvailable.length < 32) return message.channel.send({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] });
 
         const allDecks = (await decks.find({}).toArray()).sort((a, b) => {
             if (b.rating === a.rating) return new Date(a.dateAdded) - new Date(b.dateAdded);
@@ -166,7 +166,7 @@ module.exports = {
             if (lastLvlAdded <= 0) break;
         }
 
-        if (deckSets.length === 0) return message.channel.send({ embed: { color: orange, description: `**No deck sets found.** More cards need to be unlocked.` } });
+        if (deckSets.length === 0) return message.channel.send({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] });
 
         deckSets.sort((a, b) => {
             const avgRatingA = average(a.map(d => d.rating));
@@ -206,13 +206,13 @@ module.exports = {
         }
 
         return message.channel.send({
-            embed: {
+            embeds: [{
                 description: `${getEmoji(bot, getArenaEmoji(player.pb))} **${player.name} | ${player.tag}**\n` + desc,
                 color: color,
                 footer: {
                     text: `Deck ratings are calculated from win % and usage rate`
                 }
-            }
+            }]
         });
     }
 }

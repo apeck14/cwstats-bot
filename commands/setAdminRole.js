@@ -26,9 +26,9 @@ module.exports = {
         if (!message.guild.roles.cache.has(roleID)) throw `**Invalid role!** Try again.\n\n__Usage:__\n\`${prefix}setAdminRole @ROLE\``;
 
         //role already linked
-        if (roleID === adminRoleID) return message.channel.send({ embed: { color: orange, description: `This role is **already** set!` } });
+        if (roleID === adminRoleID) return message.channel.send({ embeds: [{ color: orange, description: `This role is **already** set!` }] });
 
         guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { adminRoleID: roleID } });
-        return message.channel.send({ embed: { color: green, description: `✅ **Admin** role now set to <@&${roleID}>!` } });
+        return message.channel.send({ embeds: [{ color: green, description: `✅ **Admin** role now set to <@&${roleID}>!` }] });
     },
 };

@@ -18,10 +18,10 @@ module.exports = {
         if ((message.author.id !== guildOwnerID && message.member._roles.indexOf(adminRoleID) === -1) && message.author.id !== '493245767448789023') throw 'Only **admins** can set this channel!';
 
         //channel already linked
-        if (args[0]) return message.channel.send({ embed: { color: orange, description: `Use this command in the channel you would like to set as your **Apply** channel!` } });
-        else if (channelID === applyChannelID) return message.channel.send({ embed: { color: orange, description: `This channel is **already** set!` } });
+        if (args[0]) return message.channel.send({ embeds: [{ color: orange, description: `Use this command in the channel you would like to set as your **Apply** channel!` }] });
+        else if (channelID === applyChannelID) return message.channel.send({ embeds: [{ color: orange, description: `This channel is **already** set!` }] });
 
         guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { 'channels.applyChannelID': channelID } });
-        return message.channel.send({ embed: { color: green, description: `✅ **Apply** channel now set to <#${channelID}>!` } });
+        return message.channel.send({ embeds: [{ color: green, description: `✅ **Apply** channel now set to <#${channelID}>!` }] });
     },
 };

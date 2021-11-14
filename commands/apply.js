@@ -1,5 +1,5 @@
 const { ApiRequest } = require('../functions/api');
-const { CanvasRenderService } = require('chartjs-node-canvas');
+const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const { getClanBadge, hexToRgbA, getEmoji, getArenaEmoji, formatTag } = require("../functions/util");
 const { pbRating, cardsRating, challRating, cw1Rating } = require('../functions/ratings');
 const { green } = require('../data/colors');
@@ -87,7 +87,7 @@ module.exports = {
 
         const width = 300;
         const height = 300;
-        const canvas = new CanvasRenderService(width, height);
+        const canvas = new ChartJSNodeCanvas({ width: width, height: height });
         const image = await canvas.renderToBuffer(radarGraph);
 
         const userMention = `<@!${message.author.id}>`;
@@ -106,7 +106,7 @@ module.exports = {
 
             const top = `${getEmoji(bot, `level${player.level}`)} **${player.name}**\n${player.tag}\n${getEmoji(bot, clanBadge)} **${player.clan.name}**\n\n`;
             const mid = `**__Stats__**\n**PB**: ${getEmoji(bot, getArenaEmoji(player.pb))} ${player.pb}\n**CW1 War Wins**: ${player.warWins}\n**Most Chall. Wins**: ${player.mostChallWins}\n**CC Wins**: ${player.challWins}\n**GC Wins**: ${player.grandChallWins}\n\n`;
-            const bottom = `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}\n\n[In-Game Profile](${inGameURL})\n[RoyaleAPI Profile](${royaleApiURL})\n**Request By**: ${userMention}`;
+            const bottom = `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}\n\n[**In-Game Profile**](${inGameURL})\n[**RoyaleAPI Profile**](${royaleApiURL})\n**Request By**: ${userMention}`;
             return top + mid + bottom;
         }
 
@@ -116,11 +116,7 @@ module.exports = {
             thumbnail: {
                 url: 'attachment://graph.png'
             },
-            description: desc(),
-            files: [{
-                attachment: image,
-                name: 'graph.png'
-            }]
+            description: desc()
         };
 
         const confirmationEmbed = {
@@ -128,7 +124,9 @@ module.exports = {
             description: `✅ Request sent for **${player.name}**! A Co-Leader will contact you shortly.`
         };
 
-        message.channel.send({ embed: confirmationEmbed });
-        return bot.channels.cache.get(applicationsChannelID).send({ embed: applicationEmbed });
+        message.channel.send({ embeds: [confirmationEmbed] });
+        return bot.channels.cache.get(applicationsChannelID).send({
+            embeds: [applicationEmbed], files: [{ attachment: image, name: 'graph.png' }]
+        });
     }
 }

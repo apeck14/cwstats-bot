@@ -1,6 +1,5 @@
 const { loadImage, createCanvas, registerFont } = require("canvas");
-const { CanvasRenderService } = require("chartjs-node-canvas");
-const { MessageAttachment } = require("discord.js");
+const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
 const { groupBy } = require("lodash");
 const { ApiRequest } = require("../functions/api");
 const { getClanBadge, hexToRgbA, formatTag } = require("../functions/util");
@@ -31,7 +30,7 @@ module.exports = {
             const linkedAccount = await linkedAccounts.findOne({ discordID: message.author.id });
 
             if (!linkedAccount?.tag)
-                return message.channel.send({ embed: { color: orange, description: `**No tag linked!**\n\n__Usage:__\n\`${prefix}link #ABC123\`` } });
+                return message.channel.send({ embeds: [{ color: orange, description: `**No tag linked!**\n\n__Usage:__\n\`${prefix}link #ABC123\`` }] });
 
             tag = linkedAccount.tag;
         }
@@ -39,7 +38,7 @@ module.exports = {
             const id = args[0].replace(/[^0-9]/g, '');
             const linkedAccount = await linkedAccounts.findOne({ discordID: id });
 
-            if (!linkedAccount) return message.channel.send({ embed: { color: orange, description: `<@!${id}> **does not have an account linked.**` } });
+            if (!linkedAccount) return message.channel.send({ embeds: [{ color: orange, description: `<@!${id}> **does not have an account linked.**` }] });
             tag = linkedAccount.tag;
         }
         else tag = `#${formatTag(args[0])}`;
@@ -54,7 +53,7 @@ module.exports = {
         const allMatches = await matches.find({}).toArray();
         const allMatchesGrouped = groupBy(allMatches, 'tag');
 
-        if (!allMatchesGrouped[tag] || allMatchesGrouped[tag].length === 0) return message.channel.send({ embed: { color: orange, description: '**Player has no data.**' } });
+        if (!allMatchesGrouped[tag] || allMatchesGrouped[tag].length === 0) return message.channel.send({ embeds: [{ color: orange, description: '**Player has no data.**' }] });
 
         let clanMembers = [];
         if (player.clan.tag) clanMembers = await ApiRequest('members', player.clan.tag, '', true);
@@ -162,10 +161,10 @@ module.exports = {
         let clanBadge;
         if (player.clan.tag) {
             const clan = await ApiRequest('', player.clan.tag, 'clans');
-            clanBadge = await loadImage(`./allBadges/${getClanBadge(clan.badgeId, clan.clanWarTrophies, false)}.png`);
+            clanBadge = await loadImage(`./data/allBadges/${getClanBadge(clan.badgeId, clan.clanWarTrophies, false)}.png`);
         }
         else {
-            clanBadge = await loadImage(`./allBadges/no_clan.png`);
+            clanBadge = await loadImage(`./data/allBadges/no_clan.png`);
             player.clan.name = 'None';
             playerStats.rankings.clan = 'N/A';
         }
@@ -282,13 +281,13 @@ module.exports = {
 
         const width = 960;
         const height = 680;
-        const chartCanvas = new CanvasRenderService(width, height);
+        const chartCanvas = new ChartJSNodeCanvas({ width: width, height: height });
         const chartBuffer = await chartCanvas.renderToBuffer(chart);
 
         const chartImg = await loadImage(chartBuffer);
         context.drawImage(chartImg, 1052, 240, chartImg.width, chartImg.height);
 
-        return message.channel.send(new MessageAttachment(canvas.toBuffer(), 'image.png'));
+        return message.channel.send({ files: [canvas.toBuffer()] });
 
     }
 }

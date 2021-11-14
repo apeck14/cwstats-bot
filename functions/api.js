@@ -47,6 +47,7 @@ module.exports = {
             return members.data.items;
         }
         else if (endpoint === 'riverracelog') url = `https://proxy.royaleapi.dev/v1/clans/%23${tag}/riverracelog`;
+        else if (endpoint === 'upcomingchests') url = `https://proxy.royaleapi.dev/v1/players/%23${tag}/upcomingchests`;
 
         const req = await axios.get(url, { headers: { 'Authorization': 'Bearer ' + API_KEY.token() } });
         return req.data?.items || req.data || req;

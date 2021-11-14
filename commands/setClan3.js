@@ -32,16 +32,16 @@ module.exports = {
         args[0] = `#${formatTag(args[0])}`;
 
         //clan tag already linked or clan tag already in use by someone else
-        if (tag1 === args[0] || tag2 === args[0] || tag3 === args[0]) return message.channel.send({ embed: { color: orange, description: `You have already linked this clan tag!` } });
+        if (tag1 === args[0] || tag2 === args[0] || tag3 === args[0]) return message.channel.send({ embeds: [{ color: orange, description: `You have already linked this clan tag!` }] });
 
         const [foundTag1, foundTag2, foundTag3] = await Promise.all([guilds.findOne({ 'clans.tag1': args[0] }), guilds.findOne({ 'clans.tag2': args[0] }), guilds.findOne({ 'clans.tag3': args[0] })])
-        if (foundTag1 || foundTag2 || foundTag3) return message.channel.send({ embed: { color: orange, description: `This clan has already been linked to a different server.`, footer: { text: `If you believe this is an error, contact Apehk#5688 via Discord.` } } });
+        if (foundTag1 || foundTag2 || foundTag3) return message.channel.send({ embeds: [{ color: orange, description: `This clan has already been linked to a different server.`, footer: { text: `If you believe this is an error, contact Apehk#5688 via Discord.` } }] });
 
         if (!tag3) statistics.updateOne({}, { $inc: { linkedClans: 1 } }); //add new linked clan (if clan has not been linked in the past)
         guilds.updateOne({ guildID: message.channel.guild.id }, { $set: { 'clans.tag3': args[0] } });
 
         const badgeEmoji = getEmoji(bot, getClanBadge(clan.badgeId, clan.clanWarTrophies));
-        message.channel.send({ embed: { color: green, description: `✅ Clan 3 successfully linked to ${badgeEmoji} **${clan.name}**!` } });
+        message.channel.send({ embeds: [{ color: green, description: `✅ Clan 3 successfully linked to ${badgeEmoji} **${clan.name}**!` }] });
 
         return console.log(`Clan Linked: ${clan?.name} (${clan?.tag})`);
     },

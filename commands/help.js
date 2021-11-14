@@ -26,11 +26,11 @@ module.exports = {
         }
 
         return message.channel.send({
-            embed: {
+            embeds: [{
                 title: '__CW2 Stats Commands__',
                 description: desc,
                 color: pink
-            }
+            }]
         })
     }
 }

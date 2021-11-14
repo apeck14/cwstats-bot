@@ -50,14 +50,14 @@ module.exports = {
                         //check permissions
                         if (missingPerms.length === 0) {
                             bot.channels.cache.get(guildInDb.channels.commandChannelID).send({
-                                embed: {
+                                embeds: [{
                                     title: '__New Update!__ (10/25/2021)',
                                     thumbnail: {
                                         url: 'https://i.postimg.cc/Nj2CWzQc/CW2-Stats.png'
                                     },
                                     color: '#ff237a',
                                     description: `**Clan families, new command, quality of life improvements...and more!**\n\nTo view the full details, use the **${guildInDb.prefix}update** command!`
-                                }
+                                }]
                             });
                         }
                     }
@@ -65,6 +65,6 @@ module.exports = {
             });
         }
 
-        bot.user.setActivity(`NEW UPDATE: ?update`);
+        bot.user.setActivity(`?setup ?donate`);
     }
 }
