@@ -7,7 +7,7 @@ module.exports = {
     aliases: ['link', 'save'],
     description: 'Link a tag to your Discord account',
     parameters: ['#TAG'],
-    disabled: false,
+    disabled: true,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
         const linkedAccounts = db.collection('Linked Accounts');

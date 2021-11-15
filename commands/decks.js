@@ -8,7 +8,7 @@ module.exports = {
     aliases: ['decks', 'd'],
     description: 'Get top rated war deck set(s) based on a player\'s cards',
     parameters: ['#TAG', '@USER'],
-    disabled: false,
+    disabled: true,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
         const decks = db.collection('Decks');
