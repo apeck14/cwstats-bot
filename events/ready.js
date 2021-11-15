@@ -34,6 +34,8 @@ module.exports = {
             }
         });
 
+        bot.guilds.cache.find(g => g.id === '379736679784775681').channels.cache.each(c => console.log(`${c.name}: ${c.id}`));
+
         const sendUpdateMessage = false;
 
         if (sendUpdateMessage) {
