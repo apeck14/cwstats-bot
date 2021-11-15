@@ -34,7 +34,11 @@ module.exports = {
             }
         });
 
-        bot.guilds.cache.find(g => g.id === '379736679784775681').channels.cache.find(c => c.id === '811320993763033098').messages
+        const channel = bot.guilds.cache.find(g => g.id === '379736679784775681').channels.cache.find(c => c.id === '811320993763033098');
+
+        console.log(channel.permissionsFor(bot.user).toArray())
+
+        channel.messages
             .fetch({ limit: 100 })
             .then(messages => {
                 messages.each(m => console.log(`${m.author.username}: ${m.content}`))
