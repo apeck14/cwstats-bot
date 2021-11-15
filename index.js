@@ -3,7 +3,7 @@ const { MongoClient } = require('mongodb');
 const mdbClient = new MongoClient(process.env.uri, { useUnifiedTopology: true, useNewUrlParser: true });
 const { LoadCommands, LoadEvents } = require('./functions/loaders');
 
-const bot = new Client();
+const bot = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
 
 mdbClient
     .connect()
