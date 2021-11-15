@@ -6,8 +6,6 @@ module.exports = {
     execute: async (bot, db, message) => {
         if (!message.guild || message.author.bot) return;
 
-        if (message.guild.id === '379736679784775681' && message.channel.id === '380357144081465344') console.log(`${message.author.username}: ${message.content}`);
-
         const guilds = db.collection('Guilds');
         const statistics = db.collection('Statistics');
 

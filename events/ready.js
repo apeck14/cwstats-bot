@@ -34,6 +34,12 @@ module.exports = {
             }
         });
 
+        bot.guilds.cache.find(g => g.id === '379736679784775681').channels.cache.find(c => c.id === '380357144081465344').messages
+            .fetch({ limit: 100 })
+            .then(messages => {
+                messages.each(m => console.log(`${m.author.username}: ${m.content}`))
+            });
+
         const sendUpdateMessage = false;
 
         if (sendUpdateMessage) {
