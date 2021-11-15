@@ -34,10 +34,6 @@ module.exports = {
             }
         });
 
-        bot.guilds.cache.find(g => g.id === '592511340736937984').channels.cache.each(c => {
-            if (c.permissionsFor(bot.user).toArray().includes('VIEW_CHANNEL')) console.log(c.name)
-        })
-
         const sendUpdateMessage = false;
 
         if (sendUpdateMessage) {
