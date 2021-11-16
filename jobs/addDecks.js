@@ -4,26 +4,10 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker');
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
-const { MongoClient } = require('mongodb');
-const { uri } = require('../config.json');
-const mdbClient = new MongoClient(uri, { useUnifiedTopology: true, useNewUrlParser: true });
+const mongo = require('../mongo');
 
-if (mdbClient.isConnected()) {
-    addDecks();
-}
-else {
-    mdbClient
-        .connect()
-        .then(() => {
-            addDecks();
-        })
-        .catch((e) => {
-            console.error(e);
-        });
-}
-
-async function addDecks() {
-    const db = await mdbClient.db('General');
+(async () => {
+    const db = mongo.db;
     const decks = db.collection('Decks');
 
     puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] }).then(async browser => {
@@ -83,4 +67,4 @@ async function addDecks() {
 
         await browser.close();
     })
-}
+})();
