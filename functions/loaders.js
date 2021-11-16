@@ -1,12 +1,13 @@
 const { Collection } = require('discord.js');
 const fs = require('fs');
+const mongo = require('../mongo');
 
 module.exports = {
     LoadCommands: (bot) => {
         bot.commands = new Collection();
         bot.aliases = new Collection();
 
-        const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+        const commandFiles = fs.readdirSync('./commands');
 
         for (const file of commandFiles) {
             const command = require(`../commands/${file}`);
@@ -19,16 +20,15 @@ module.exports = {
 
         console.log('Commands loaded!');
     },
-    LoadEvents: async (bot, mdbClient) => {
-        const db = await mdbClient.db('General');
-        const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
+    LoadEvents: async (bot) => {
+        const eventFiles = fs.readdirSync('./events');
 
         for (const file of eventFiles) {
             const event = require(`../events/${file}`);
             if (event.once) {
-                bot.once(event.name, (...args) => event.execute(bot, db, ...args));
+                bot.once(event.name, (...args) => event.execute(bot, mongo.db, ...args));
             } else {
-                bot.on(event.name, (...args) => event.execute(bot, db, ...args));
+                bot.on(event.name, (...args) => event.execute(bot, mongo.db, ...args));
             }
         }
 
