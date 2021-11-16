@@ -7,7 +7,7 @@ module.exports = {
     aliases: ['link', 'save'],
     description: 'Link a tag to your Discord account',
     parameters: ['#TAG'],
-    disabled: true,
+    disabled: false,
     execute: async (message, args, bot, db) => {
         const guilds = db.collection('Guilds');
         const linkedAccounts = db.collection('Linked Accounts');
@@ -53,7 +53,13 @@ module.exports = {
 
             const emojis = ['✅', '❌'];
             for (const e of emojis) await confirmEmbed.react(e);
-            const emojiCollector = await confirmEmbed.awaitReactions((r, u) => u.id === message.author.id && emojis.includes(r.emoji.name), { max: 1, time: 30000 });
+
+            const filter = (r, u) => {
+                return u.id === message.author.id && emojis.includes(r.emoji.name);
+            }
+
+            const emojiCollector = await confirmEmbed.awaitReactions({ filter, max: 1, time: 10000 });
+
             const firstReact = emojiCollector.first();
 
             confirmEmbed.delete();
