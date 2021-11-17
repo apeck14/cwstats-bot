@@ -7,6 +7,8 @@ puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
 const mongo = require('../mongo');
 
 (async () => {
+    await mongo.init();
+
     const db = mongo.db;
     const decks = db.collection('Decks');
 
@@ -52,8 +54,6 @@ const mongo = require('../mongo');
                 }
 
                 totalDecksAdded += decksAdded;
-
-                console.log(`${decksAdded} deck(s) added! (${c})`);
             }
 
             if (c !== 'zappies') {
