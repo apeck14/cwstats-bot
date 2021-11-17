@@ -61,6 +61,10 @@ const mongo = require('../mongo');
         for (const m of playerLog) {
             if (m.type !== 'riverRacePvP' && m.type !== 'riverRaceDuel') continue;
 
+            const matchExists = await warLog.findOne({ timestamp: m.battleTime, 'player1.tag': player.tag });
+
+            if (matchExists) continue;
+
             let [opponent, opponentClan] = await Promise.all([
                 axios.get(`https://proxy.royaleapi.dev/v1/players/%23${m.opponent[0].tag.substr(1)}`, { headers: { 'Authorization': 'Bearer ' + API_KEY } }),
                 axios.get(`https://proxy.royaleapi.dev/v1/clans/%23${m.opponent[0].clan.tag.substr(1)}`, { headers: { 'Authorization': 'Bearer ' + API_KEY } })
