@@ -61,7 +61,7 @@ const mongo = require('../mongo');
         for (const m of playerLog) {
             if (m.type !== 'riverRacePvP' && m.type !== 'riverRaceDuel') continue;
 
-            const matchExists = await warLog.findOne({ timestamp: m.battleTime, 'player1.tag': player.tag });
+            const matchExists = await warLog.findOne({ timestamp: m.battleTime }, { $or: [{ 'player1.tag': player.tag }, { 'player2.tag': player.tag }] });
 
             if (matchExists) continue;
 
