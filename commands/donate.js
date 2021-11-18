@@ -1,3 +1,5 @@
+const { MessageActionRow, MessageButton } = require("discord.js");
+
 module.exports = {
     name: 'donate',
     aliases: ['donate'],
@@ -5,17 +7,26 @@ module.exports = {
     parameters: [],
     disabled: false,
     execute: async (message, args, bot, db) => {
+        const row = new MessageActionRow()
+            .addComponents(
+                new MessageButton()
+                    .setLabel('Donate')
+                    .setStyle('LINK')
+                    .setURL('https://paypal.me/cw2stats')
+            )
+
         return message.channel.send({
             embeds: [
                 {
                     title: 'Donate with PayPal',
-                    description: 'CW2 Stats strives to assist top war clans by tracking war performances, race stats, automating recruitment, & much more. However, there are monthly costs in order for the bot to have these capabilities. If I have assisted your clan in any way, please consider donating a small amount. :slight_smile:\n\n[__**Donate**__](https://paypal.me/cw2stats)',
+                    description: 'CW2 Stats helps top war clans track member performance, view race stats, automate recruiting, & more! All proceeds help expand the capabilities of the bot.',
                     color: `#3b7bbf`,
                     thumbnail: {
                         url: 'https://w7.pngwing.com/pngs/875/329/png-transparent-paypal-logo-e-commerce-payment-system-paypal-blue-angle-company.png'
                     }
                 }
-            ]
+            ],
+            components: [row]
         })
     }
 }

@@ -1,6 +1,7 @@
 const { ApiRequest } = require('../functions/api');
 const { formatTag } = require('../functions/util');
 const { green, orange } = require("../data/colors");
+const { MessageActionRow, MessageButton } = require('discord.js');
 
 module.exports = {
     name: 'link',
@@ -48,31 +49,43 @@ module.exports = {
         }
         //already linked, send confirmation embed to update to new tag
         else {
+            const row = new MessageActionRow()
+                .addComponents(
+                    new MessageButton()
+                        .setCustomId('yes')
+                        .setLabel('Yes')
+                        .setStyle('SUCCESS'),
+                    new MessageButton()
+                        .setCustomId('no')
+                        .setLabel('No')
+                        .setStyle('DANGER')
+                )
+
             //send confirmatiom embed
-            const confirmEmbed = await message.channel.send({ embeds: [{ color: green, description: `Are you sure you want to link your account to a new ID?\n\n**Old ID:** ${linkedAccount.tag}\n**New ID:** #${args[0]}` }] });
+            const confirmEmbed = await message.channel.send({
+                embeds: [{ color: green, description: `Are you sure you want to link your account to a new ID?\n\n**Old ID:** ${linkedAccount.tag}\n**New ID:** #${args[0]}` }],
+                components: [row]
+            });
 
-            const emojis = ['✅', '❌'];
-            for (const e of emojis) await confirmEmbed.react(e);
-
-            const filter = (r, u) => {
-                return u.id === message.author.id && emojis.includes(r.emoji.name);
+            const iFilter = i => {
+                return i.user.id === message.author.id;
             }
 
-            const emojiCollector = await confirmEmbed.awaitReactions({ filter, max: 1, time: 10000 });
+            const collector = confirmEmbed.createMessageComponentCollector({ filter: iFilter, time: 10000 });
 
-            const firstReact = emojiCollector.first();
+            collector.on('collect', async i => {
+                confirmEmbed.delete();
 
-            confirmEmbed.delete();
+                if (i.customId === 'yes') {
+                    linkedAccounts.updateOne({ discordID: message.author.id }, { $set: { tag: `#${args[0]}` } });
 
-            //check reaction
-            if (!firstReact || firstReact._emoji.name === '❌') {
-                return;
-            }
-            else {
-                linkedAccounts.updateOne({ discordID: message.author.id }, { $set: { tag: `#${args[0]}` } });
+                    return message.channel.send({ embeds: [{ color: green, description: `✅ Updated! Account linked to **${player.name}**` }] });
+                }
+            });
 
-                return message.channel.send({ embeds: [{ color: green, description: `✅ Updated! Account linked to **${player.name}**` }] });
-            }
+            collector.on('end', () => {
+                if (!confirmEmbed.deleted) confirmEmbed.delete();
+            });
         }
     }
 }
