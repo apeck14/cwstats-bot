@@ -59,7 +59,6 @@ const mongo = require('../mongo');
             if (c !== 'zappies') {
                 const timeout = ((Math.random() * 8) + 3) * 1000;
                 await page.waitForTimeout(timeout);
-                console.log(`Waited ${(timeout / 1000).toFixed(2)}s.`);
             }
         }
 
