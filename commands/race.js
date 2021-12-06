@@ -47,6 +47,7 @@ module.exports = {
             });
 
         if (!rr) return;
+        else if (rr.state === 'matchmaking') return message.channel.send({ embeds: [{ description: ':mag: **Matchmaking is underway!**', color: orange }] });
         else if (rr.clans.length <= 1) return message.channel.send({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
 
         const isCololsseum = rr.periodType === 'colosseum';
