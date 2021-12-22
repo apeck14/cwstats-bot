@@ -58,6 +58,9 @@ module.exports = {
         let clanMembers = [];
         if (player.clan.tag) clanMembers = await ApiRequest('members', player.clan.tag, '', true);
 
+        //check if in banned clan
+        if (BANNED_TAGS.includes(player.clan.tag)) throw '**This player is in a CW2 Stats banned clan.**';
+
         function avgFame(matches, weeks) { //matches needs to be pre-sorted by date if not total avg
             const indeces = (matches.length < weeks) ? matches.length : weeks;
             let sum = 0;

@@ -1,4 +1,6 @@
 const { red, orange } = require('../data/colors');
+const BANNED_TAGS = require('../data/bannedTags.js');
+const { formatTag } = require('../functions/util');
 
 module.exports = {
     name: 'messageCreate',
@@ -32,6 +34,13 @@ module.exports = {
                     return message.channel.send({ embeds: [{ color: orange, description: ':tools: This command has been **temporarily disabled**.' }] });
 
                 message.channel.sendTyping();
+
+                //check if banned tag
+                if ((message.guild.id !== '722956243261456536' && message.guild.id !== '592511340736937984') && BANNED_TAGS.includes(`#${formatTag(args[0])}`)) {
+                    console.log(`Banned Tag Used: ${args[0]}`)
+                    throw '**This tag has been banned from CW2 Stats.**';
+                }
+
                 await cmdFile.execute(message, args, bot, db);
             }
             catch (e) {

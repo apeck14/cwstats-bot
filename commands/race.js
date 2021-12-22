@@ -1,6 +1,7 @@
 const { ApiRequest } = require("../functions/api");
 const { getEmoji, getClanBadge, formatTag } = require("../functions/util");
 const { orange } = require("../data/colors");
+const BANNED_TAGS = require('../data/bannedTags')
 
 module.exports = {
     name: 'race',
@@ -34,13 +35,6 @@ module.exports = {
         }
         else tag = '#' + formatTag(args[0]);
 
-        const bannedTags = ['#9GQ8R29Y', '#9UV202Q2'];
-
-        if (bannedTags.includes(tag) && (message.guild.id !== '722956243261456536' && message.guild.id !== '592511340736937984')) {
-            console.log(`Banned Tag Used: ${tag}`)
-            throw '**This tag has been banned.**';
-        }
-
         const rr = await ApiRequest('currentriverrace', tag)
             .catch((e) => {
                 if (e.response?.status === 404) message.channel.send({ embeds: [{ description: '**Clan is not in a river race, or invalid tag.**', color: orange }] });
@@ -49,6 +43,13 @@ module.exports = {
         if (!rr) return;
         else if (rr.state === 'matchmaking') return message.channel.send({ embeds: [{ description: ':mag: **Matchmaking is underway!**', color: orange }] });
         else if (rr.clans.length <= 1) return message.channel.send({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
+
+        //check if any banned clans
+        if (message.guild.id !== '722956243261456536' && message.guild.id !== '592511340736937984') {
+            for (let c of rr.clans) {
+                if (BANNED_TAGS.includes(c.tag)) throw '**A clan from this race is banned from CW2 Stats.**';
+            }
+        }
 
         const isCololsseum = rr.periodType === 'colosseum';
         const score = (isCololsseum) ? 'fame' : 'periodPoints';
