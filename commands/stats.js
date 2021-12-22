@@ -4,6 +4,7 @@ const { groupBy } = require("lodash");
 const { ApiRequest } = require("../functions/api");
 const { getClanBadge, hexToRgbA, formatTag } = require("../functions/util");
 const { orange } = require("../data/colors");
+const BANNED_TAGS = require('../data/bannedTags')
 
 registerFont('./fonts/Supercell-Magic_5.ttf', { family: 'Supercell-Magic' });
 
