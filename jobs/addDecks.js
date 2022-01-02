@@ -23,7 +23,7 @@ const mongo = require('../mongo');
 
         for await (const dirent of dir) { //loop through all cards
             const c = dirent.name.replace('.png', '');
-            const url = `https://royaleapi.com/decks/popular?time=7d&inc=${c}&players=PvP&type=Ladder&size=20&sort=rating&min_trophies=5600&max_trophies=10000&min_elixir=1&max_elixir=9&mode=digest`;
+            const url = `https://royaleapi.com/decks/popular?time=7d&inc=${c}&players=PvP&type=Ladder&size=20&sort=rating&min_trophies=6000&max_trophies=10000&min_elixir=1&max_elixir=9&mode=digest`;
 
             await page.goto(url);
 
