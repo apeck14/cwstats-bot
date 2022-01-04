@@ -114,10 +114,6 @@ module.exports = {
             if (cardsAvailable.length >= 32) break;
         }
 
-        console.log(cardsAvailable)
-
-        console.log(cardsAvailable.length)
-
         if (cardsAvailable.length < 32) return message.channel.send({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] });
 
         const allDecks = (await decks.find({}).toArray()).sort((a, b) => {
