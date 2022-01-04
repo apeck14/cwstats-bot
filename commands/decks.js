@@ -89,15 +89,34 @@ module.exports = {
             return sum;
         }
 
+        const cardsThatCanBePlayedUnderleved = ["Freeze", "Tornado", "Rage", "Inferno Tower", "Fisherman", "Clone", "Inferno Dragon"]; //cards that can be played 2 levels under your top level
         let cardsAvailable = [];
         let lastLvlAdded;
 
         for (let lvl = 14; lvl >= 1; lvl--) {
-            if (cardsGroupedByLevel[`${lvl}`]) cardsAvailable = cardsAvailable.concat(cardsGroupedByLevel[`${lvl}`]);
+            if (cardsGroupedByLevel[`${lvl}`]) {
+                for (const c of cardsGroupedByLevel[`${lvl}`]) {
+                    if (cardsAvailable.indexOf(c) !== -1) continue;
+                    cardsAvailable.push(c);
+                }
+            }
+
+            for (const c of cardsThatCanBePlayedUnderleved) {
+                if (cardsAvailable.indexOf(c.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '')) !== -1) continue;
+                const { maxLevel, level } = player.cards.find(card => card.name === c);
+                const cardLvl = 14 - (maxLevel - level);
+
+                if (lvl - cardLvl <= 2) cardsAvailable.push(c.toLowerCase().replace(/\s+/g, '-').replace(/\./g, ''));
+            }
+
             lastLvlAdded = lvl;
 
             if (cardsAvailable.length >= 32) break;
         }
+
+        console.log(cardsAvailable)
+
+        console.log(cardsAvailable.length)
 
         if (cardsAvailable.length < 32) return message.channel.send({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] });
 
