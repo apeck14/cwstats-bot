@@ -102,9 +102,10 @@ module.exports = {
             }
 
             for (const c of cardsThatCanBePlayedUnderleved) {
-                if (cardsAvailable.indexOf(c.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '')) !== -1) continue;
-                const { maxLevel, level } = player.cards.find(card => card.name === c);
-                const cardLvl = 14 - (maxLevel - level);
+                const cardInfo = player.cards.find(card => card.name === c);
+                if (!cardInfo || cardsAvailable.indexOf(c.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '')) !== -1) continue;
+
+                const cardLvl = 14 - (cardInfo.maxLevel - cardInfo.level);
 
                 if (lvl - cardLvl <= 2) cardsAvailable.push(c.toLowerCase().replace(/\s+/g, '-').replace(/\./g, ''));
             }
