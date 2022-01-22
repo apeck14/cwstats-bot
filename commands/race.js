@@ -44,6 +44,8 @@ module.exports = {
         else if (rr.state === 'matchmaking') return message.channel.send({ embeds: [{ description: ':mag: **Matchmaking is underway!**', color: orange }] });
         else if (rr.clans.length <= 1) return message.channel.send({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
 
+        console.log(message.author.id)
+
         //check if any banned clans
         if (message.guild.id !== '722956243261456536' && message.guild.id !== '592511340736937984' && message.author.id !== '493245767448789023') {
             for (let c of rr.clans) {
