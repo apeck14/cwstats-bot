@@ -45,7 +45,7 @@ module.exports = {
         else if (rr.clans.length <= 1) return message.channel.send({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
 
         //check if any banned clans
-        if (message.guild.id !== '722956243261456536' && message.guild.id !== '592511340736937984') {
+        if (message.guild.id !== '722956243261456536' && message.guild.id !== '592511340736937984' && message.author.id !== '493245767448789023') {
             for (let c of rr.clans) {
                 if (BANNED_TAGS.includes(c.tag)) throw '**A clan from this race is banned from CW2 Stats.**';
             }
