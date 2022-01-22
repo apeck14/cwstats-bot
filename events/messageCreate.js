@@ -36,7 +36,7 @@ module.exports = {
                 message.channel.sendTyping();
 
                 //check if banned tag
-                if ((message.guild.id !== '722956243261456536' && message.guild.id !== '592511340736937984') && BANNED_TAGS.includes(`#${formatTag(args[0])}`)) {
+                if ((message.guild.id !== '722956243261456536' && message.guild.id !== '592511340736937984' && message.author.id !== '493245767448789023') && BANNED_TAGS.includes(`#${formatTag(args[0])}`)) {
                     console.log(`Banned Tag Used: ${args[0]}`)
                     throw '**This tag has been banned from CW2 Stats.**';
                 }
