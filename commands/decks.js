@@ -2,6 +2,7 @@ const { ApiRequest } = require("../functions/api");
 const { groupBy } = require("lodash");
 const { orange } = require("../data/colors");
 const { average, getDeckUrl, getEmoji, getArenaEmoji } = require("../functions/util");
+const BANNED_TAGS = require('../data/bannedTags.js');
 
 module.exports = {
     name: 'decks',
@@ -44,7 +45,7 @@ module.exports = {
                 if (e.response?.status === 404) throw '**Invalid tag.** Try again.';
             });
 
-        if (!player) return;
+        if (!player || BANNED_TAGS.includes(player?.clan?.tag)) return;
 
         const cardsGroupedByLevel = groupBy(player.cards, c => 14 - (c.maxLevel - c.level));
 
