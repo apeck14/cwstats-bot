@@ -90,7 +90,7 @@ module.exports = {
             return sum;
         }
 
-        const cardsThatCanBePlayedUnderleved = ["Freeze", "Tornado", "Rage", "Inferno Tower", "Fisherman", "Clone", "Inferno Dragon"]; //cards that can be played 2 levels under your top level
+        const cardsThatCanBePlayedUnderleved = ["Freeze", "Tornado", "Rage", "Inferno Tower", "Fisherman", "Clone", "Inferno Dragon", "Giant Snowball", "Zap", "Electric Spirit", "Skeletons", "Ice Spirit"]; //cards that can be played 2 levels under your top level
         let cardsAvailable = [];
         let lastLvlAdded;
 
