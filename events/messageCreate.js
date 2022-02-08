@@ -21,6 +21,7 @@ module.exports = {
         const cmdFile = bot.commands.get(bot.aliases.get(alias));
 
         if (cmdFile) {
+            return message.channel.send({ embeds: [{ color: orange, description: ':tools: Unfortunately RoyaleAPI has unexpectedly shut down their proxy. Other options are being looked into, and any cost-efficient solution will be implemented. Sorry for the inconvenience.' }] });
             const channelPermissions = message.channel.permissionsFor(bot.user);
             const requiredPerms = ['ADD_REACTIONS', 'ATTACH_FILES', 'EMBED_LINKS', 'USE_EXTERNAL_EMOJIS'];
             const missingPerms = requiredPerms.filter(p => !channelPermissions.has(p));
