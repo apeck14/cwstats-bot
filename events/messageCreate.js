@@ -33,7 +33,7 @@ module.exports = {
                 if (cmdFile.disabled)
                     return message.channel.send({ embeds: [{ color: orange, description: ':tools: This command has been **temporarily disabled**.' }] });
 
-                return message.channel.send({ embeds: [{ color: orange, description: ':tools: Unfortunately RoyaleAPI has unexpectedly shut down their proxy. Other options are being looked into, and any cost-efficient solution will be implemented. Sorry for the inconvenience.' }] });
+                //return message.channel.send({ embeds: [{ color: orange, description: ':tools: Unfortunately RoyaleAPI has unexpectedly shut down their proxy. Other options are being looked into, and any cost-efficient solution will be implemented. Sorry for the inconvenience.' }] });
 
                 message.channel.sendTyping();
 
