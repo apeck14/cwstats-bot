@@ -48,6 +48,7 @@ module.exports = {
         if (message.guild.id !== '722956243261456536' && message.guild.id !== '592511340736937984' && message.author.id !== '493245767448789023') {
             for (let c of rr.clans) {
                 if (BANNED_TAGS.includes(c.tag)) throw '**A clan from this race is banned from CW2 Stats.**';
+                if (c.tag === "#YJCGRV9") throw '**Not found. This clan is currently under investigation by Supercell. '
             }
         }
 
