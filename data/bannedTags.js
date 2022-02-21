@@ -1,1 +1,1 @@
-module.exports = ["#20J20GC", "#9J8J8G2R"];
+module.exports = ["#20J20GC", "#9J8J8G2R", "#PRVJ0PY"];
