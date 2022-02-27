@@ -23,12 +23,12 @@ module.exports = {
         const abbrExists = abbreviations.find(a => a.abbr === abbreviation);
 
         if (!abbrExists)
-            return i.reply({ embeds: [{ description: `\`${abbreviation}\` **is not a set abbreivation.**`, color: red }], ephemeral: true });
+            return i.editReply({ embeds: [{ description: `\`${abbreviation}\` **is not a set abbreivation.**`, color: red }], ephemeral: true });
 
         statistics.updateOne({}, { $inc: { totalAbbreviations: -1 } });
         await guilds.updateOne({ guildID: i.channel.guild.id }, { $pull: { abbreviations: { abbr: abbreviation } } });
 
-        return i.reply({
+        return i.editReply({
             embeds: [{
                 title: '✅ Abbreviation Removed!',
                 description: `**Clan**: ${abbrExists.name}\n**Tag**: ${abbrExists.tag}\n**Abbreviation**: \`${abbreviation}\``,

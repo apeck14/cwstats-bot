@@ -28,7 +28,6 @@ module.exports = {
         ]
     },
     run: async (i, db, client) => {
-        i.deferReply();
         const linkedAccounts = db.collection('Linked Accounts');
         const decks = db.collection('Decks');
 

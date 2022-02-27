@@ -25,19 +25,19 @@ module.exports = {
         if (abbr) tag = abbr.tag;
 
         const race = await getRiverRace(tag).catch((e) => {
-            if (e?.response?.status === 404) return i.reply({ embeds: [{ description: '**Clan not found.**', color: red }], ephemeral: true });
+            if (e?.response?.status === 404) return i.editReply({ embeds: [{ description: '**Clan not found.**', color: red }], ephemeral: true });
 
-            return i.reply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
+            return i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
         });
 
         if (!race) return;
-        if (race.state === 'matchmaking') return i.reply({ embeds: [{ description: ':mag: **Matchmaking is underway!**', color: orange }] });
-        if (race.clans.length <= 1) return i.reply({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
+        if (race.state === 'matchmaking') return i.editReply({ embeds: [{ description: ':mag: **Matchmaking is underway!**', color: orange }] });
+        if (race.clans.length <= 1) return i.editReply({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
 
         const clan = await getClan(tag).catch((e) => {
-            if (e?.response?.status === 404) return i.reply({ embeds: [{ description: '**Clan not found.**', color: red }], ephemeral: true });
+            if (e?.response?.status === 404) return i.editReply({ embeds: [{ description: '**Clan not found.**', color: red }], ephemeral: true });
 
-            return i.reply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
+            return i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
         });
 
         if (!clan) return;
@@ -118,6 +118,6 @@ module.exports = {
         if (oneAttack.length > 0)
             embed.description += `\n**__1 Attack__**\n${oneAttack.map(p => `• ${p.name}\n`).join('')}`;
 
-        return i.reply({ embeds: [embed] });
+        return i.editReply({ embeds: [embed] });
     }
 };

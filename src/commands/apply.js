@@ -23,9 +23,9 @@ module.exports = {
         let tag = i.options.getString('tag');
 
         const player = await getPlayer(tag).catch((e) => {
-            if (e?.response?.status === 404) return i.reply({ embeds: [{ description: '**Player not found.**', color: red }], ephemeral: true });
+            if (e?.response?.status === 404) return i.editReply({ embeds: [{ description: '**Player not found.**', color: red }], ephemeral: true });
 
-            return i.reply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
+            return i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
         });
 
         if (!player) return;
@@ -69,7 +69,7 @@ module.exports = {
         applicationEmbed.description += `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}`; //cards
         applicationEmbed.description += `\n\n**Request By**: ${`<@!${i.user.id}>`}`;
 
-        i.reply({
+        i.editReply({
             embeds: [{
                 color: green,
                 description: `✅ Request sent for **${player.name}**! A Co-Leader will contact you shortly.`

@@ -26,14 +26,14 @@ module.exports = {
         if (abbr) tag = abbr.tag;
 
         const race = await getRiverRace(tag).catch((e) => {
-            if (e?.response?.status === 404) return i.reply({ embeds: [{ description: '**Clan not found.**', color: red }], ephemeral: true });
+            if (e?.response?.status === 404) return i.editReply({ embeds: [{ description: '**Clan not found.**', color: red }], ephemeral: true });
 
-            return i.reply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
+            return i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
         });
 
         if (!race) return;
-        if (race.state === 'matchmaking') return i.reply({ embeds: [{ description: ':mag: **Matchmaking is underway!**', color: orange }] });
-        if (race.clans.length <= 1) return i.reply({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
+        if (race.state === 'matchmaking') return i.editReply({ embeds: [{ description: ':mag: **Matchmaking is underway!**', color: orange }] });
+        if (race.clans.length <= 1) return i.editReply({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
 
         const isColosseum = race.periodType === "colosseum";
         const dayOfWeek = race.periodIndex % 7; // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
@@ -76,6 +76,6 @@ module.exports = {
             embed.description += `${fameEmoji} ${c.fame}\n${projectionEmoji} ${getProjFame(clan, isColosseum, dayOfWeek)}\n${fameAvgEmoji} **${getAvgFame(clan, isColosseum, dayOfWeek).toFixed(1)}**\n${decksRemainingEmoji} ${decksRemaining}\n\n`;
         }
 
-        return i.reply({ embeds: [embed] });
+        return i.editReply({ embeds: [embed] });
     },
 };
