@@ -44,10 +44,9 @@ module.exports = {
         return `${badgeName}_${league}`
     },
     getEmoji: (client, emojiName) => {
+        console.log(emojiName)
         const ownerIds = ['493245767448789023', '878013634851258428', '878025564538146816', '878031332817645681', '878030152691499028', '878395655121436682', '878394839950061630', '878397282461024287', '878396465817460757'];
         const emoji = client.emojis.cache.find(e => ownerIds.includes(e.guild.ownerId) && e.name === emojiName);
-
-        console.log(emojiName)
 
         return `<:${emoji.name}:${emoji.id}>`;
     },
