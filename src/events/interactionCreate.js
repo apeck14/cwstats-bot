@@ -12,9 +12,11 @@ module.exports = {
 
         const command = i.client.commands.get(i.commandName);
 
+        i.deferReply();
+
         if (command.data.name === 'apply') {
             if (!applyChannelID)
-                return i.reply({
+                return i.editReply({
                     embeds: [{
                         description: `**No apply channel set.**`,
                         color: orange
@@ -23,7 +25,7 @@ module.exports = {
                 });
 
             if (!applicationsChannelID)
-                return i.reply({
+                return i.editReply({
                     embeds: [{
                         description: `**No applications channel set.**`,
                         color: orange
@@ -32,7 +34,7 @@ module.exports = {
                 });
 
             if (applyChannelID !== i.channel.id)
-                return i.reply({
+                return i.editReply({
                     embeds: [{
                         description: `You can only use this command in the set **apply channel**! (<#${applyChannelID}>)`,
                         color: orange
@@ -49,7 +51,7 @@ module.exports = {
                     if (missingPerms.includes(p)) return `❌ \`${p}\`\n`;
                     return `✅ \`${p}\`\n`;
                 }).join('');
-                return i.reply({
+                return i.editReply({
                     embeds: [{
                         description: `**Missing permissions in** <#${applicationsChannelID}>.\n\n${permissionList}`,
                         color: red
@@ -61,7 +63,7 @@ module.exports = {
         else {
             //check if in set command channel
             if (commandChannelID && commandChannelID !== i.channel.id)
-                return i.reply({
+                return i.editReply({
                     embeds: [{
                         description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`,
                         color: orange
@@ -75,7 +77,7 @@ module.exports = {
                     if (i.member.permissions.has(c)) return `✅ \`${c}\`\n`;
                     return `❌ \`${c}\`\n`;
                 }).join('');
-                return i.reply({
+                return i.editReply({
                     embeds: [{
                         description: `You don't have **permission(s)** to use this command.\n\n${permissionList}`,
                         color: red
@@ -91,7 +93,7 @@ module.exports = {
         catch (e) {
             console.error(e);
 
-            return i.reply({
+            return i.editReply({
                 embeds: [{
                     description: `**Unexpected error.**`,
                     color: red,
