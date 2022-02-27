@@ -13,7 +13,7 @@ module.exports = {
                 channel_types: [0] //text channels only
             }
         ],
-        userPermissions: ['MANAGE_SERVER']
+        userPermissions: ['MANAGE_GUILD']
     },
     run: async (i, db, client) => {
         const guilds = db.collection('Guilds');
