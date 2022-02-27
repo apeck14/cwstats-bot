@@ -2,21 +2,23 @@ const fs = require("fs");
 const slash = require("../util/slash");
 
 module.exports = {
-  event: "ready",
-  oneTime: true,
-  run: async (client) => {
-    const commandFiles = fs.readdirSync("./src/commands")
+    event: "ready",
+    oneTime: true,
+    run: async (client) => {
+        const commandFiles = fs.readdirSync("./src/commands");
 
-    let commandsArray = [];
-    commandFiles.forEach((file) => {
-      const command = require(`../commands/${file}`);
-      client.commands.set(command.data.name, command);
+        client.user.setActivity('/update');
 
-      commandsArray.push(command);
-    });
+        let commandsArray = [];
+        commandFiles.forEach((file) => {
+            const command = require(`../commands/${file}`);
+            client.commands.set(command.data.name, command);
 
-    const finalArray = commandsArray.map((e) => e.data);
-    slash.register(client.user.id, finalArray);
-    console.log(`${client.user.tag} Started`);
-  },
+            commandsArray.push(command);
+        });
+
+        const finalArray = commandsArray.map((e) => e.data);
+        slash.register(client.user.id, finalArray);
+        console.log(`${client.user.tag} Started`);
+    },
 };
