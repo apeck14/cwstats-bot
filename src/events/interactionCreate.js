@@ -5,6 +5,24 @@ module.exports = {
     run: async (client, db, i) => {
         if (!i.isCommand()) return;
 
+        try {
+            await i.deferReply();
+        }
+        catch (e) {
+            console.error(e);
+
+            return await i.reply({
+                embeds: [{
+                    description: `**Unexpected error.**`,
+                    color: red,
+                    footer: {
+                        text: 'If this problem persists, DM Apehk#5688.'
+                    }
+                }],
+                ephemeral: true
+            });
+        }
+
         await i.deferReply({ ephemeral: true });
 
         const guilds = db.collection('Guilds');
