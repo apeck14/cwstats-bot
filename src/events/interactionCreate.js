@@ -9,6 +9,7 @@ module.exports = {
             await i.deferReply();
         }
         catch (e) {
+            console.log(i)
             console.error(e);
 
             return await i.reply({
