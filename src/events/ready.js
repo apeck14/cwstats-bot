@@ -29,7 +29,7 @@ module.exports = {
 
             if (!guildInDb) {
                 guilds.insertOne({
-                    guildID: guild.id,
+                    guildID: g.id,
                     channels: {
                         applyChannelID: null,
                         applicationsChannelID: null,
