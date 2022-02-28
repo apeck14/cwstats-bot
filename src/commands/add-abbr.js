@@ -45,7 +45,7 @@ module.exports = {
         if (abbreviations.find(a => a.tag === formatTag(tag)))
             return await i.editReply({ embeds: [{ description: '**This clan is already in use.** Remove it and try again.', color: red }], ephemeral: true });
 
-        const clan = await getClan(tag).catch((e) => {
+        const clan = await getClan(tag).catch(async e => {
             if (e?.response?.status === 404) return await i.editReply({ embeds: [{ description: '**Clan not found.**', color: red }], ephemeral: true });
 
             return await i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });

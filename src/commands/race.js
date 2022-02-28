@@ -25,7 +25,7 @@ module.exports = {
 
         if (abbr) tag = abbr.tag;
 
-        const race = await getRiverRace(tag).catch((e) => {
+        const race = await getRiverRace(tag).catch(async e => {
             if (e?.response?.status === 404) return await i.editReply({ embeds: [{ description: '**Clan not found.**', color: red }], ephemeral: true });
 
             return await i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });

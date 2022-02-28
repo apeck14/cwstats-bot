@@ -42,7 +42,7 @@ module.exports = {
             else return await i.editReply({ embeds: [{ color: orange, description: `<@!${user.id}> **does not have an account linked.**` }], ephemeral: true });
         }
 
-        const player = await getPlayer(tag).catch((e) => {
+        const player = await getPlayer(tag).catch(async e => {
             if (e?.response?.status === 404) return await i.editReply({ embeds: [{ description: '**Player not found.**', color: red }], ephemeral: true });
 
             return await i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
