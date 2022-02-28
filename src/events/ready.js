@@ -25,6 +25,7 @@ module.exports = {
         const guilds = db.collection('Guilds');
 
         client.guilds.cache.each(async g => {
+            if (g.id === '906938940618051655') console.log(g)
             const guildInDb = await guilds.findOne({ guildID: g.id });
 
             if (!guildInDb) {

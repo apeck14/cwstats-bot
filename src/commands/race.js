@@ -73,7 +73,7 @@ module.exports = {
             if (c.tag === race.clan.tag) embed.description += `${badgeEmoji} **__${name}__**\n`
             else embed.description += `${badgeEmoji} **${name}**\n`;
 
-            embed.description += `${fameEmoji} ${c.fame}\n${projectionEmoji} ${getProjFame(clan, isColosseum, dayOfWeek)}\n${fameAvgEmoji} **${getAvgFame(clan, isColosseum, dayOfWeek).toFixed(1)}**\n${decksRemainingEmoji} ${decksRemaining}\n\n`;
+            embed.description += `${fameEmoji} ${c.fame}\n${projectionEmoji} ${getProjFame(clan, isColosseum, dayOfWeek)}\n${decksRemainingEmoji} ${decksRemaining}\n${fameAvgEmoji} **${getAvgFame(clan, isColosseum, dayOfWeek).toFixed(1)}**\n\n`;
         }
 
         return i.editReply({ embeds: [embed] });
