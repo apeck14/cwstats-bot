@@ -12,7 +12,7 @@ module.exports = {
 
         const command = i.client.commands.get(i.commandName);
 
-        i.deferReply();
+        await i.deferReply();
 
         if (command.data.name === 'apply') {
             if (!applyChannelID)
