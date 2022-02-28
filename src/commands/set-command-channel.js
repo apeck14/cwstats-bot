@@ -3,7 +3,7 @@ const { green, orange } = require('../static/colors');
 module.exports = {
     data: {
         name: 'set-command-channel',
-        description: 'Set/unset command channel.',
+        description: 'Set command channel.',
         options: [
             {
                 type: 7,
