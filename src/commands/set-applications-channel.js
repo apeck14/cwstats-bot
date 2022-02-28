@@ -3,7 +3,7 @@ const { green, orange } = require('../static/colors');
 module.exports = {
     data: {
         name: 'set-applications-channel',
-        description: 'Set/unset applications channel.',
+        description: 'Set applications channel.',
         options: [
             {
                 type: 7,

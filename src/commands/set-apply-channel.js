@@ -3,7 +3,7 @@ const { green, orange } = require('../static/colors');
 module.exports = {
     data: {
         name: 'set-apply-channel',
-        description: 'Set/unset apply channel.',
+        description: 'Set apply channel.',
         options: [
             {
                 type: 7,
