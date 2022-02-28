@@ -39,14 +39,14 @@ module.exports = {
             const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id });
 
             if (linkedAccount.tag) tag = linkedAccount.tag;
-            else return i.editReply({ embeds: [{ color: orange, description: `**No tag linked!**` }], ephemeral: true });
+            else return await i.editReply({ embeds: [{ color: orange, description: `**No tag linked!**` }], ephemeral: true });
         }
         else if (iTag) tag = iTag; //tag
         else { //user
             const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id });
 
             if (linkedAccount?.tag) tag = linkedAccount.tag;
-            else return i.editReply({ embeds: [{ color: orange, description: `<@!${user.id}> **does not have an account linked.**` }], ephemeral: true });
+            else return await i.editReply({ embeds: [{ color: orange, description: `<@!${user.id}> **does not have an account linked.**` }], ephemeral: true });
         }
 
         const player = await getPlayer(tag).catch((e) => {
@@ -68,7 +68,7 @@ module.exports = {
         excludedCards = [...new Set(excludedCards)];
 
         if (excludedCards.length > 10)
-            return i.editReply({ embeds: [{ color: orange, description: '**You can only exclude up to 10 cards.**' }], ephemeral: true });
+            return await i.editReply({ embeds: [{ color: orange, description: '**You can only exclude up to 10 cards.**' }], ephemeral: true });
 
         player.cards = player.cards.map(c => ({ //rename all cards, and give level
             name: c.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, ''),
@@ -107,7 +107,7 @@ module.exports = {
         }
 
         if (cardsAvailable.length < 32) //less than 32 cards unlocked
-            return i.editReply({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] });
+            return await i.editReply({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] });
 
         const allDecks = (await decks.find({}).toArray()).sort((a, b) => {
             if (b.rating === a.rating) return new Date(a.dateAdded) - new Date(b.dateAdded);
@@ -196,7 +196,7 @@ module.exports = {
         }
 
         if (deckSets.length === 0) //no deck sets found
-            return i.editReply({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] });
+            return await i.editReply({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] });
 
         const getAvgCardLvl = (deckSet) => {
             let sum = 0;
@@ -247,6 +247,6 @@ module.exports = {
             embed.description += `${deckSets[1].map(d => `[**Copy**](${getDeckUrl(d.cards)}): ${d.cards.map(c => getEmoji(client, c.replace(/-/g, '_'))).join('')}\n`).join('')}`;
         }
 
-        return i.editReply({ embeds: [embed] });
+        return await i.editReply({ embeds: [embed] });
     }
 };

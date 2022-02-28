@@ -18,7 +18,7 @@ module.exports = {
             }
         });
 
-        return i.editReply({
+        return await i.editReply({
             embeds: [{
                 color: green,
                 description: `✅ All bot settings successfully reset to **default**!`

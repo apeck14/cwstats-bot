@@ -32,20 +32,20 @@ module.exports = {
             const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id });
 
             if (linkedAccount.tag) tag = linkedAccount.tag;
-            else return i.editReply({ embeds: [{ color: orange, description: `**No tag linked!**` }], ephemeral: true });
+            else return await i.editReply({ embeds: [{ color: orange, description: `**No tag linked!**` }], ephemeral: true });
         }
         else if (iTag) tag = iTag; //tag
         else { //user
             const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id });
 
             if (linkedAccount.tag) tag = linkedAccount.tag;
-            else return i.editReply({ embeds: [{ color: orange, description: `<@!${user.id}> **does not have an account linked.**` }], ephemeral: true });
+            else return await i.editReply({ embeds: [{ color: orange, description: `<@!${user.id}> **does not have an account linked.**` }], ephemeral: true });
         }
 
         const player = await getPlayer(tag).catch((e) => {
-            if (e?.response?.status === 404) return i.editReply({ embeds: [{ description: '**Player not found.**', color: red }], ephemeral: true });
+            if (e?.response?.status === 404) return await i.editReply({ embeds: [{ description: '**Player not found.**', color: red }], ephemeral: true });
 
-            return i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
+            return await i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
         });
 
         if (!player) return;
@@ -88,6 +88,6 @@ module.exports = {
         embed.description += `**__Stats__**\n**CW1 War Wins**: ${player.warDayWins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n`; //stats
         embed.description += `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}`; //cards
 
-        return i.editReply({ embeds: [embed] });
+        return await i.editReply({ embeds: [embed] });
     },
 };

@@ -21,9 +21,9 @@ module.exports = {
         const tag = formatTag(i.options.getString('tag'));
 
         const player = await getPlayer(tag).catch((e) => {
-            if (e?.response?.status === 404) return i.editReply({ embeds: [{ description: '**Player not found.**', color: red }], ephemeral: true });
+            if (e?.response?.status === 404) return await i.editReply({ embeds: [{ description: '**Player not found.**', color: red }], ephemeral: true });
 
-            return i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
+            return await i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
         });
 
         if (!player) return;
@@ -38,11 +38,11 @@ module.exports = {
                 tag: tag
             });
 
-            return i.editReply({ embeds: [{ color: green, description: `✅ Account linked to **${player.name}**!` }] });
+            return await i.editReply({ embeds: [{ color: green, description: `✅ Account linked to **${player.name}**!` }] });
         }
         //already linked to that tag
         else if (linkedAccount.tag === tag) {
-            return i.editReply({ embeds: [{ color: orange, description: "**You have already linked that ID!**" }], ephemeral: true });
+            return await i.editReply({ embeds: [{ color: orange, description: "**You have already linked that ID!**" }], ephemeral: true });
         }
         //already linked, send confirmation embed to update to new tag
         else {

@@ -40,6 +40,6 @@ module.exports = {
         if (abbreviations?.length > 0)
             embed.description += `\n**Abbreviations**: ${abbreviations.sort((a, b) => a.abbr.localeCompare(b.abbr)).map(a => `\n• \`${a.abbr}\`: ${a.name}`).join('')}`;
 
-        return i.editReply({ embeds: [embed] });
+        return await i.editReply({ embeds: [embed] });
     }
 };
