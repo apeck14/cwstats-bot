@@ -85,6 +85,25 @@ module.exports = {
                     ephemeral: true
                 });
             }
+
+            //check if bot has permissions in this channel
+            const channelPermissions = client.channels.cache.get(i.channelId).permissionsFor(client.user).toArray();
+            const requiredPerms = ['USE_EXTERNAL_EMOJIS'];
+            const missingPerms = requiredPerms.filter(p => !channelPermissions.includes(p));
+
+            if (missingPerms.length > 0) {
+                const permissionList = requiredPerms.map(p => {
+                    if (missingPerms.includes(p)) return `❌ \`${p}\`\n`;
+                    return `✅ \`${p}\`\n`;
+                }).join('');
+                return i.editReply({
+                    embeds: [{
+                        description: `__**Missing permissions**__\n\n${permissionList}`,
+                        color: red
+                    }],
+                    ephemeral: true
+                });
+            }
         }
 
         try {
