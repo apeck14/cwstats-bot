@@ -5,7 +5,7 @@ module.exports = {
     run: async (client, db, i) => {
         if (!i.isCommand()) return;
 
-        await i.deferReply();
+        await i.deferReply({ ephemeral: true });
 
         const guilds = db.collection('Guilds');
 
