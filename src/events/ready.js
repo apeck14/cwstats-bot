@@ -38,7 +38,7 @@ module.exports = {
                     abbreviations: []
                 });
 
-                console.log(`JOINED GUILD: ${guild.name} (${guild.id})`);
+                console.log(`JOINED GUILD: ${g.name} (${g.id})`);
             }
         });
     },
