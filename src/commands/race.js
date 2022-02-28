@@ -21,7 +21,7 @@ module.exports = {
         const { abbreviations } = await guilds.findOne({ guildID: i.channel.guild.id });
 
         let tag = i.options.getString('tag');
-        const abbr = abbreviations.find(a => a.abbr === tag);
+        const abbr = abbreviations?.find(a => a.abbr === tag);
 
         if (abbr) tag = abbr.tag;
 

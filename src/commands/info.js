@@ -37,7 +37,7 @@ module.exports = {
         embed.description += `**__Bot Info__**\n**Servers**: ${serverCount()}\n**Commands Used**: ${commandsUsed}\n**Total Abbreviations**: ${totalAbbreviations}\n\n`;
         embed.description += `**__Server Info__**\n**Command Channel**: ${cmdChnl}\n**Apply Channel**: ${applyChnl}\n**Applications Channel**: ${appChnl}`;
 
-        if (abbreviations.length > 0)
+        if (abbreviations?.length > 0)
             embed.description += `\n**Abbreviations**: ${abbreviations.sort((a, b) => a.abbr.localeCompare(b.abbr)).map(a => `\n• \`${a.abbr}\`: ${a.name}`).join('')}`;
 
         return i.editReply({ embeds: [embed] });
