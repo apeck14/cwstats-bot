@@ -4,7 +4,7 @@ const slash = require("../util/slash");
 module.exports = {
     event: "ready",
     oneTime: true,
-    run: async (client) => {
+    run: async (client, db) => {
         const commandFiles = fs.readdirSync("./src/commands");
 
         client.user.setActivity('/update');
