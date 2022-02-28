@@ -5,14 +5,14 @@ module.exports = {
     run: async (client, db, i) => {
         if (!i.isCommand()) return;
 
+        await i.deferReply();
+
         const guilds = db.collection('Guilds');
 
         const { channels } = await guilds.findOne({ guildID: i.channel.guild.id });
         const { commandChannelID, applicationsChannelID, applyChannelID } = channels;
 
         const command = i.client.commands.get(i.commandName);
-
-        await i.deferReply();
 
         if (command.data.name === 'apply') {
             if (!applyChannelID)
