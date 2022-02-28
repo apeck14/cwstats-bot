@@ -36,7 +36,7 @@ module.exports = {
         }
         else if (iTag) tag = iTag; //tag
         else { //user
-            const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id });
+            const linkedAccount = await linkedAccounts.findOne({ discordID: user.id });
 
             if (linkedAccount.tag) tag = linkedAccount.tag;
             else return await i.editReply({ embeds: [{ color: orange, description: `<@!${user.id}> **does not have an account linked.**` }], ephemeral: true });
