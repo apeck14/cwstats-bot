@@ -24,8 +24,6 @@ module.exports = {
             });
         }
 
-        await i.deferReply({ ephemeral: true });
-
         const guilds = db.collection('Guilds');
 
         const { channels } = await guilds.findOne({ guildID: i.channel.guild.id });
