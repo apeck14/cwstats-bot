@@ -3,7 +3,7 @@ const { orange, red } = require('../static/colors.js');
 module.exports = {
     event: "interactionCreate",
     run: async (client, db, i) => {
-        if (!i.isCommand()) return;
+        if (i?.type !== 'APPLICATION_COMMAND' || i.user.bot) return;
 
         try {
             await i.deferReply();
