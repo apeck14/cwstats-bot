@@ -38,7 +38,7 @@ module.exports = {
         if (!user && !iTag) { //linked account
             const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id });
 
-            if (linkedAccount.tag) tag = linkedAccount.tag;
+            if (linkedAccount?.tag) tag = linkedAccount.tag;
             else return await i.editReply({ embeds: [{ color: orange, description: `**No tag linked!**` }], ephemeral: true });
         }
         else if (iTag) tag = iTag; //tag
