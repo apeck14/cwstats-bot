@@ -51,8 +51,6 @@ module.exports = {
             throw e?.response?.statusText || 'Unexpected Error.';
         });
 
-        if (!clan) return;
-
         const abbrObj = {
             abbr: abbreviation,
             tag: clan.tag,
