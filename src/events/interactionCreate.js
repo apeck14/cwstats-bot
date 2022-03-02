@@ -3,26 +3,9 @@ const { orange, red } = require('../static/colors.js');
 module.exports = {
     event: "interactionCreate",
     run: async (client, db, i) => {
-        if (i?.type !== 'APPLICATION_COMMAND' || i.user.bot) return;
+        if (i?.type !== 'APPLICATION_COMMAND' || i.user.bot || i.deferred || i.replied) return;
 
-        try {
-            await i.deferReply();
-        }
-        catch (e) {
-            console.log(i)
-            console.error(e);
-
-            return await i.reply({
-                embeds: [{
-                    description: `**Unexpected error.**`,
-                    color: red,
-                    footer: {
-                        text: 'If this problem persists, DM Apehk#5688.'
-                    }
-                }],
-                ephemeral: true
-            });
-        }
+        await i.deferReply();
 
         const guilds = db.collection('Guilds');
 
