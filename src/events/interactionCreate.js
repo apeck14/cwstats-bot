@@ -114,10 +114,10 @@ module.exports = {
 
             return await i.editReply({
                 embeds: [{
-                    description: `**Unexpected error.**`,
+                    description: (typeof e === 'string') ? e : `**Unexpected error.**`,
                     color: red,
                     footer: {
-                        text: 'If this problem persists, DM Apehk#5688.'
+                        text: (typeof e === 'string') ? '' : 'If this problem persists, DM Apehk#5688.'
                     }
                 }],
                 ephemeral: true
