@@ -26,12 +26,11 @@ module.exports = {
         if (abbr) tag = abbr.tag;
 
         const race = await getRiverRace(tag).catch(async e => {
-            if (e?.response?.status === 404) return await i.editReply({ embeds: [{ description: '**Clan not found.**', color: red }], ephemeral: true });
+            if (e?.response?.status === 404) throw '**Clan not found.**';
 
-            return await i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
+            throw e?.response?.statusText || 'Unexpected Error.';
         });
 
-        if (!race) return;
         if (race.state === 'matchmaking') return await i.editReply({ embeds: [{ description: ':mag: **Matchmaking is underway!**', color: orange }] });
         if (!race.clans || race.clans.length <= 1) return await i.editReply({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
 

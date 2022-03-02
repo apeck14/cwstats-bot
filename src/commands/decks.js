@@ -50,11 +50,9 @@ module.exports = {
         }
 
         const player = await getPlayer(tag).catch(async e => {
-            if (e?.response?.status === 404) await i.editReply({ embeds: [{ description: '**Player not found.**', color: red }], ephemeral: true });
-            else await i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
+            if (e?.response?.status === 404) throw '**Player not found.**';
+            throw e?.response?.statusText || 'Unexpected Error.';
         });
-
-        if (!player) return;
 
         const allCards = require('../static/cardInfo.js');
 
