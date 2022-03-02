@@ -48,6 +48,8 @@ module.exports = {
             return await i.editReply({ embeds: [{ description: e?.response?.statusText || 'Unexpected Error.', color: red }], ephemeral: true });
         });
 
+        console.log(player)
+
         if (!player) return;
 
         let clanBadge;
