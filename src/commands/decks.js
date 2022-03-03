@@ -1,5 +1,5 @@
 const { getPlayer } = require("../util/api");
-const { orange, red, pink } = require('../static/colors');
+const { orange, pink } = require('../static/colors');
 const { getEmoji, getArenaEmoji, average, getDeckUrl } = require("../util/functions");
 
 module.exports = {
@@ -107,10 +107,12 @@ module.exports = {
         if (cardsAvailable.length < 32) //less than 32 cards unlocked
             return await i.editReply({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] });
 
-        const allDecks = (await decks.find({}).toArray()).sort((a, b) => {
+        let allDecks = (await decks.find({}).toArray()).sort((a, b) => {
             if (b.rating === a.rating) return new Date(a.dateAdded) - new Date(b.dateAdded);
             return b.rating - a.rating;
         });
+
+        if (cardsAvailable.length > 80) allDecks = allDecks.filter(d => d.rating >= 50)
 
         const deckSetRating = deckSetArr => {
             const sum = deckSetArr.reduce((a, b) => a + b.rating, 0)
@@ -189,6 +191,9 @@ module.exports = {
                 if (newCardsToAdd.length > 0)
                     cardsAvailable = cardsAvailable.concat(newCardsToAdd);
             }
+
+            if (cardsAvailable.length > 80)
+                allDecks = allDecks.filter(d => d.rating >= 50);
 
             if (lastLvlAdded <= 0) break;
         }

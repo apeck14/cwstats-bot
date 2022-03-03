@@ -1,5 +1,5 @@
 const { getPlayer, getClan } = require("../util/api");
-const { orange, red, pink } = require('../static/colors');
+const { orange, pink } = require('../static/colors');
 const { getClanBadge, getEmoji, getArenaEmoji, formatTag } = require("../util/functions");
 
 module.exports = {
@@ -50,8 +50,8 @@ module.exports = {
 
         let clanBadge;
 
-        if (!player?.clan?.name) {
-            player.clan.name = 'None';
+        if (!player.clan) {
+            player.clan = { name: 'None' };
             clanBadge = getClanBadge(-1);
         }
         else { //get clan badge
