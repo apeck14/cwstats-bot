@@ -271,7 +271,7 @@ module.exports = [
         aliases: ['threemusks', 'three-musks', '3m', 'tm'],
         id: 26000028
     },
-    { name: 'tombstone', aliases: ['ts'], id: 27000009 },
+    { name: 'tombstone', aliases: ['ts'], canBeUnderLeveled: true, id: 27000009 },
     {
         name: 'tornado',
         aliases: ['nado'],
