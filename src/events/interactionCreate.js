@@ -113,7 +113,18 @@ module.exports = {
             console.log(i)
             console.error(e);
 
-            return await i.editReply({
+            if (i?.replied) return i.editReply({
+                embeds: [{
+                    description: (typeof e === 'string') ? e : `**Unexpected error.**`,
+                    color: red,
+                    footer: {
+                        text: (typeof e === 'string') ? '' : 'If this problem persists, DM Apehk#5688.'
+                    }
+                }],
+                ephemeral: true
+            });
+
+            else return i.reply({
                 embeds: [{
                     description: (typeof e === 'string') ? e : `**Unexpected error.**`,
                     color: red,
