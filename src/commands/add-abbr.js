@@ -45,7 +45,7 @@ module.exports = {
         if (abbreviations.find(a => a.tag === formatTag(tag)))
             throw '**This clan is already in use.** Remove it and try again.';
 
-        const clan = await getClan(tag).catch(async e => {
+        const clan = await getClan(tag).catch(e => {
             if (e?.response?.status === 404) throw '**Clan not found.**';
 
             throw e?.response?.statusText || 'Unexpected Error.';

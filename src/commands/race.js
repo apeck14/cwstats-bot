@@ -27,7 +27,7 @@ module.exports = {
         else if (tag.length < 5)
             return await i.editReply({ embeds: [{ description: '**Abbreviation does not exist.**', color: orange }] });
 
-        const race = await getRiverRace(tag).catch(async e => {
+        const race = await getRiverRace(tag).catch(e => {
             if (e?.response?.status === 404) throw '**Clan not found.**';
 
             throw e?.response?.statusText || 'Unexpected Error.';
