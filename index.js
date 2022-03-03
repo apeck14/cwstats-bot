@@ -30,3 +30,7 @@ events.forEach((event) => {
 });
 
 client.login(process.env.token);
+
+process.on('unhandledRejection', e => {
+    console.error(e);
+});
