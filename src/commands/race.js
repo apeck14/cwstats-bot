@@ -24,6 +24,8 @@ module.exports = {
         const abbr = abbreviations?.find(a => a.abbr === tag);
 
         if (abbr) tag = abbr.tag;
+        else if (tag.length < 5)
+            return await i.editReply({ embeds: [{ description: '**Abbreviation does not exist.**', color: orange }] });
 
         const race = await getRiverRace(tag).catch(async e => {
             if (e?.response?.status === 404) throw '**Clan not found.**';
