@@ -5,6 +5,8 @@ module.exports = {
     run: async (client, db, i) => {
         if (i?.type !== 'APPLICATION_COMMAND' || !i.channel) return;
 
+        if (i?.user?.id === '493245767448789023') console.log(i)
+
         try {
             await i.deferReply();
 
