@@ -62,7 +62,7 @@ module.exports = {
             let maxPossibleFame = fame + (duelsRemainingToday * 500) + ((totalAttacksRemaining - (duelsRemainingToday * 2)) * 200); //max fame today
 
             if (isColosseum) {
-                const battleDaysComp = battleDaysCompleted(isColosseum, dayOfWeek);
+                const battleDaysComp = battleDaysCompleted();
                 maxPossibleFame += 45000 * (3 - battleDaysComp);
                 return (maxPossibleFame > 180000) ? 180000 : maxPossibleFame;
             }
