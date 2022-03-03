@@ -47,6 +47,10 @@ module.exports = {
 
         const maxDuelsCompletedToday = clan.participants.filter(p => p.decksUsedToday >= 2).length;
         const attacksCompletedToday = clan.participants.reduce((a, b) => a + b.decksUsedToday, 0);
+        const battleDaysCompleted = () => {
+            if (!isColosseum || dayOfWeek <= 3) return 0;
+            else return dayOfWeek - 3;
+        };
         const totalPossibleFame = () => {
             const movementPoints = (isColosseum) ? clan.periodPoints : clan.fame;
             const fame = (isColosseum) ? clan.fame : clan.periodPoints;
@@ -69,11 +73,6 @@ module.exports = {
         let winRate = fame / currentPossibleFame;
 
         if (isColosseum) {
-            const battleDaysCompleted = () => {
-                if (!isColosseum || dayOfWeek <= 3) return 0;
-                else return dayOfWeek - 3;
-            };
-
             if (attacksCompletedToday === 0 && battleDaysCompleted() === 0) return 0;
 
             currentPossibleFame += 45000 * battleDaysCompleted();
