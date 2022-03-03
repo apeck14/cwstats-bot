@@ -110,7 +110,7 @@ module.exports = {
             await command.run(i, db, client);
         }
         catch (e) {
-            console.log(i)
+            console.log(i?.commandName);
             console.error(e);
 
             if (i?.replied || i?.deferred) return i.editReply({
