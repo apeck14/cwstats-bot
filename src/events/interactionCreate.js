@@ -113,7 +113,7 @@ module.exports = {
             console.log(i)
             console.error(e);
 
-            if (i?.replied) return i.editReply({
+            if (i?.replied || i?.deferred) return i.editReply({
                 embeds: [{
                     description: (typeof e === 'string') ? e : `**Unexpected error.**`,
                     color: red,
