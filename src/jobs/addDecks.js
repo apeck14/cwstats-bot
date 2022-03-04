@@ -43,7 +43,7 @@ const mongo = require('../util/mongo');
         let totalDecksAdded = 0;
 
         for await (const c of allCards) { //loop through all cards
-            const url = `https://royaleapi.com/decks/popular?time=7d&inc=${c}&players=PvP&type=NormalBattle&size=20&sort=rating&min_elixir=1&max_elixir=9&mode=digest`;
+            const url = `https://royaleapi.com/decks/popular?time=7d&inc=${c.name}&players=PvP&type=NormalBattle&size=20&sort=rating&min_elixir=1&max_elixir=9&mode=digest`;
 
             await page.goto(url);
 
@@ -81,7 +81,7 @@ const mongo = require('../util/mongo');
                 totalDecksAdded += decksAdded;
             }
 
-            if (allCards.indexOf(c) !== allCards.length - 1) { //if not last card in search
+            if (allCards.findIndex(ca => c.name === ca.name) !== allCards.length - 1) { //if not last card in search
                 const timeout = ((Math.random() * 8) + 3) * 1000;
                 await page.waitForTimeout(timeout);
             }
