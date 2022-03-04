@@ -53,13 +53,18 @@ const mongo = require('../util/mongo');
             if (allDecks.length === ratings.length) {
                 let decksAdded = 0;
 
+                const today = new Date();
+                const month = today.getUTCMonth() + 1;
+                const date = today.getUTCDate();
+                const year = today.getUTCFullYear();
+
                 for (let i = 0; i < allDecks.length; i++) {
                     const today = new Date();
 
                     const deck = {
                         cards: (await page.evaluate(el => el.getAttribute("data-name"), allDecks[i])).split(',').sort(), //alphabetize
                         rating: parseInt(await page.evaluate(el => el.textContent, ratings[i])),
-                        dateAdded: `${today.getUTCMonth() + 1}/${today.getUTCDate()}/${today.getUTCFullYear()}`
+                        dateAdded: `${month}/${date}/${year}`
                     }
 
                     const deckExists = await decks.findOne({ cards: deck.cards });
@@ -76,7 +81,7 @@ const mongo = require('../util/mongo');
                 totalDecksAdded += decksAdded;
             }
 
-            if (c !== 'zappies') {
+            if (allCards.indexOf(c) !== allCards.length - 1) { //if not last card in search
                 const timeout = ((Math.random() * 8) + 3) * 1000;
                 await page.waitForTimeout(timeout);
             }
