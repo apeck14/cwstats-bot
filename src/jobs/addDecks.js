@@ -8,7 +8,7 @@ const mongo = require('../mongo');
 
 (async () => {
     const today = new Date();
-    if (today.getUTCDay() !== 0 && today.getUTCDay() !== 4) return;
+    if (today.getUTCDay() !== 1 && today.getUTCDay() !== 5) return;
 
     await mongo.init();
 
