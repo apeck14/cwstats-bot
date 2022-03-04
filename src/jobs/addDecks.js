@@ -38,12 +38,11 @@ const mongo = require('../util/mongo');
 
         await page.setDefaultNavigationTimeout(0);
 
-        const dir = await fs.promises.opendir('./data/cards');
+        const allCards = require('../static/cardInfo');
 
         let totalDecksAdded = 0;
 
-        for await (const dirent of dir) { //loop through all cards
-            const c = dirent.name.replace('.png', '');
+        for await (const c of allCards) { //loop through all cards
             const url = `https://royaleapi.com/decks/popular?time=7d&inc=${c}&players=PvP&type=NormalBattle&size=20&sort=rating&min_elixir=1&max_elixir=9&mode=digest`;
 
             await page.goto(url);
