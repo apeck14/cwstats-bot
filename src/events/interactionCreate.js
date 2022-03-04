@@ -5,8 +5,6 @@ module.exports = {
     run: async (client, db, i) => {
         if (i?.type !== 'APPLICATION_COMMAND' || !i.channel) return;
 
-        if (i?.user?.id === '493245767448789023') console.log(i)
-
         try {
             await i.deferReply();
 
@@ -112,32 +110,23 @@ module.exports = {
             await command.run(i, db, client);
         }
         catch (e) {
-            if (e instanceof Error) console.log(i)
-            else console.log(i?.commandName)
+            if (e instanceof Error) {
+                console.log(i);
+                console.log(e);
+            }
 
-            console.error(e);
+            const errEmbed = {
+                description: (typeof e === 'string') ? e : `**Unexpected error.**`,
+                color: red,
+                footer: {
+                    text: (typeof e === 'string') ? '' : 'If this problem persists, DM Apehk#5688.'
+                }
+            }
 
-            if (i?.replied || i?.deferred) return i.editReply({
-                embeds: [{
-                    description: (typeof e === 'string') ? e : `**Unexpected error.**`,
-                    color: red,
-                    footer: {
-                        text: (typeof e === 'string') ? '' : 'If this problem persists, DM Apehk#5688.'
-                    }
-                }],
-                ephemeral: true
-            });
+            if (i?.replied || i?.deferred)
+                return i.editReply({ embeds: [errEmbed], ephemeral: true });
 
-            else return i.reply({
-                embeds: [{
-                    description: (typeof e === 'string') ? e : `**Unexpected error.**`,
-                    color: red,
-                    footer: {
-                        text: (typeof e === 'string') ? '' : 'If this problem persists, DM Apehk#5688.'
-                    }
-                }],
-                ephemeral: true
-            });
+            return i.reply({ embeds: [errEmbed], ephemeral: true });
         }
     },
 };
