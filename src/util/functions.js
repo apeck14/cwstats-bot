@@ -1,3 +1,6 @@
+const allCards = require('../static/cardInfo');
+const badges = require('../static/badges.js');
+
 module.exports = {
     formatTag: (tag) => {
         if (typeof tag !== 'string') return;
@@ -6,8 +9,6 @@ module.exports = {
     },
     getClanBadge: (badgeId, trophyCount, returnEmojiPath = true) => {
         if (badgeId === -1 || badgeId === null) return 'no_clan'; //no clan
-
-        const badges = require('../static/badges.js');
 
         const badgeName = badges.find(b => b.id === badgeId).name;
         let league;
@@ -80,7 +81,7 @@ module.exports = {
 
         try {
             for (const n of arr) {
-                sum += parseInt(n);
+                sum += parseFloat(n);
             }
             return sum / arr.length;
         } catch (e) {
@@ -89,8 +90,6 @@ module.exports = {
         }
     },
     getDeckUrl: cards => {
-        const allCards = require('../static/cardInfo');
-
         let url = 'https://link.clashroyale.com/deck/en?deck=';
 
         for (const c of cards) {
@@ -98,5 +97,20 @@ module.exports = {
         }
 
         return url.substring(0, url.length - 1);
-    }
+    },
+    //convert hex to transparent rgba value
+    hexToRgbA: hex => {
+        if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+            let c = hex.substring(1).split('');
+
+            if (c.length == 3) {
+                c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+            }
+
+            c = '0x' + c.join('');
+
+            return 'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',0.25)';
+        }
+        return 'rgba(255, 255, 255, 0.25)'; //transparent white
+    },
 }
