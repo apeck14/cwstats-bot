@@ -22,7 +22,7 @@ module.exports = {
         embed.description += `**__Abbreviations__**\nInstead of linking clan tags to your server, you can now save up to 10 clan abbreviations. Use **/add-abbr** and **/remove-abbr** to manage your server abbreviations, and **/info** to view them.\n\n`;
         embed.description += `**__Stats__**\nPlayer & clan stats have been removed from the bot entirely, but the new website (cwstats.com) will include a much more detailed analysis for both.\n\n`;
         embed.description += `**__Other__**\n• **/reset** - Reset all bot settings back to default.\n• Ability to exclude cards when using **/decks**.\n• Quality of life improvements.\n\n`;
-        embed.description += `As always, please DM Apehk#5688 with questions and bug reports. Thanks! :)`;
+        embed.description += `As always, please join the [Support Server](https://discord.gg/fFY3cnMmnH) with questions and bug reports. Thanks! :)`;
 
         return await i.editReply({ embeds: [embed] });
     }

@@ -129,7 +129,7 @@ module.exports = {
                 description: (typeof e === 'string') ? e : `**Unexpected error.**`,
                 color: red,
                 footer: {
-                    text: (typeof e === 'string') ? '' : 'If this problem persists, DM Apehk#5688.'
+                    text: (typeof e === 'string') ? '' : 'If this problem persists, join the Support Server.'
                 }
             }
 
