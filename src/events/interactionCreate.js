@@ -3,7 +3,13 @@ const { orange, red } = require('../static/colors.js');
 module.exports = {
     event: "interactionCreate",
     run: async (client, db, i) => {
-        if (i?.type !== 'APPLICATION_COMMAND' || !i.channel) return;
+        if (i?.type !== 'APPLICATION_COMMAND') return;
+        if (!i?.guild) return i.reply({
+            embeds: [{
+                description: `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=280576&scope=bot%20applications.commands) me to a server to use my commands!**`,
+                color: orange
+            }]
+        });
 
         try {
             await i.deferReply();
@@ -111,7 +117,10 @@ module.exports = {
         }
         catch (e) {
             if (e instanceof Error) {
-                console.log(i);
+                console.log('Command Error');
+                console.log('Command:', i?.commandName);
+                console.log('User:', `${i?.user.username}#${i?.user.discriminator}`);
+                console.log('Guild:', `${i?.guild.name} (${i?.guild.id})`);
                 console.log(e);
             }
 
