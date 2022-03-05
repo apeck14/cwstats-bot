@@ -117,10 +117,11 @@ module.exports = {
         }
         catch (e) {
             if (e instanceof Error) {
-                console.log('Command Error');
+                console.log('Error');
                 console.log('Command:', i?.commandName);
                 console.log('User:', `${i?.user.username}#${i?.user.discriminator}`);
                 console.log('Guild:', `${i?.guild.name} (${i?.guild.id})`);
+                console.log('Options:', i?.options?._hoistedOptions.map(o => `\n${o.name}: ${o.value}`).join(''))
                 console.log(e);
             }
 
