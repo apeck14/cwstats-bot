@@ -32,5 +32,6 @@ events.forEach((event) => {
 client.login(process.env.token);
 
 process.on('unhandledRejection', e => {
-    console.error(e);
+    if (client.isReady()) console.error(e);
+    return;
 });
