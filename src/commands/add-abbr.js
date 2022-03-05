@@ -30,8 +30,8 @@ module.exports = {
         const abbreviation = i.options.getString('abbr');
         const tag = i.options.getString('tag');
 
-        if (abbreviations.length >= 10)
-            throw '**Only 10 abbreviations can be set.** Remove an existing abbreviation and try again.';
+        if (abbreviations.length >= 15)
+            throw '**Up to 15 abbreviations can be set.** Remove an existing abbreviation and try again.';
 
         if (!abbreviation.match(/^[0-9a-zA-Z]+$/))
             throw '**Abbreviation must be alphanumeric.**';
