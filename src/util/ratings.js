@@ -26,25 +26,69 @@ module.exports = {
     },
     getChallsRating: (maxChallWins, ccWins, gcWins) => {
         //0 - 750
-        //CC: +1
-        //GC: +10
-        //Most Chall Wins: +(n - 12) * 10 (for each win above 12)
+
         if (isNaN(maxChallWins) || isNaN(ccWins) || isNaN(gcWins)) return 0;
 
         let total = 0;
 
-        total += ccWins;
-        total += gcWins * 10;
+        //CCs
+        //1: +10
+        //2-9: +1 (18)
+        //10: +15 (33)
+        //11-49: +2 (109)
+        //50: +20 (129)
+        //51-99: +3 (273)
+        //100: +25 (298)
+        //100+: +4
+        for (let n = 0; n < ccWins; n++) {
+            if (n === 1) total += 10;
+            else if (n < 10) total += 1;
+            else if (n === 10) total += 15;
+            else if (n < 50) total += 2;
+            else if (n === 50) total += 20;
+            else if (n < 100) total += 3;
+            else if (n === 100) total += 25;
+            else total += 4;
+        }
 
+        //GCs
+        //1: +20
+        //2-9: +5 (60)
+        //10: +30 (90)
+        //11-49: +7 (356)
+        //50: +40 (396)
+        //51-99: +9 (828)
+        //100: +50 (878)
+        //100+: +10
+        for (let n = 0; n < gcWins; n++) {
+            if (n === 1) total += 20;
+            else if (n < 10) total += 5;
+            else if (n === 10) total += 30;
+            else if (n < 50) total += 7;
+            else if (n === 50) total += 40;
+            else if (n < 100) total += 9;
+            else if (n === 100) total += 50;
+            else total += 10;
+        }
+
+        //Most Chall Wins
+        //13: +10
+        //14: +20 (30)
+        //15: +30 (60)
+        //16: +40 (100)
+        //17: +50 (150)
+        //18: +60 (210)
+        //19: +70 (280)
+        //20: +80 (360)
         if (maxChallWins > 12) {
-            for (let i = 13; i < maxChallWins; i++) {
+            for (let i = 13; i <= maxChallWins; i++) {
                 total += (i - 12) * 10;
             }
         }
 
-        if (total >= 750) return 100;
+        if (total >= 800) return 100;
 
-        return (total / 750) * 100;
+        return (total / 800) * 100;
     },
     getCardsRating: cards => {
         //no cards collected - all cards collected
