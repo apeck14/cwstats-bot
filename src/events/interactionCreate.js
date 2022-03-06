@@ -16,7 +16,7 @@ module.exports = {
 
             const guilds = db.collection('Guilds');
 
-            const { channels } = await guilds.findOne({ guildID: i.channel.guild.id });
+            const { channels } = await guilds.findOne({ guildID: i.guildId });
             const { commandChannelID, applicationsChannelID, applyChannelID } = channels;
 
             const command = i.client.commands.get(i.commandName);
