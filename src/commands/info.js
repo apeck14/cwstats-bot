@@ -12,16 +12,6 @@ module.exports = {
         const { commandsUsed, totalAbbreviations } = (await statistics.find({}).toArray())[0];
         const { abbreviations, channels } = await guilds.findOne({ guildID: i.channel.guild.id });
         const { commandChannelID, applyChannelID, applicationsChannelID } = channels;
-
-        const serverCount = () => {
-            let sum = 0;
-
-            client.guilds.cache.each(() => {
-                sum++;
-            });
-
-            return sum;
-        };
         const cmdChnl = (commandChannelID) ? `<#${commandChannelID}>` : 'N/A';
         const applyChnl = (applyChannelID) ? `<#${applyChannelID}>` : 'N/A';
         const appChnl = (applicationsChannelID) ? `<#${applicationsChannelID}>` : 'N/A';
@@ -34,7 +24,7 @@ module.exports = {
             }
         }
 
-        embed.description += `**__Bot Info__**\n**Servers**: ${serverCount()}\n**Commands Used**: ${commandsUsed}\n**Total Abbreviations**: ${totalAbbreviations}\n\n`;
+        embed.description += `**__Bot Info__**\n**Servers**: ${client.guilds.cache.size}\n**Commands Used**: ${commandsUsed}\n**Total Abbreviations**: ${totalAbbreviations}\n\n`;
         embed.description += `**__Server Info__**\n**Command Channel**: ${cmdChnl}\n**Apply Channel**: ${applyChnl}\n**Applications Channel**: ${appChnl}`;
 
         if (abbreviations?.length > 0)
