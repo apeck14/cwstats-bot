@@ -14,10 +14,13 @@ module.exports = {
         const minutes = now.getUTCMinutes();
 
         const embed = {
-            title: '__Current War Leaderboard__',
+            title: '**__Current War Leaderboard__**',
             description: '',
             footer: {
                 text: `Last Updated: ${minutes}m ago`
+            },
+            thumbnail: {
+                url: 'https://i.imgur.com/VAPR8Jq.png'
             },
             color: pink
         }
