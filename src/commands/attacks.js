@@ -24,7 +24,7 @@ module.exports = {
 
         if (abbr) tag = abbr.tag;
         else if (tag.length < 5)
-            return await i.editReply({ embeds: [{ description: 'Abbreviation does not exist.', color: orange }] });
+            return i.editReply({ embeds: [{ description: 'Abbreviation does not exist.', color: orange }] });
 
         const race = await getRiverRace(tag).catch(async e => {
             if (e?.response?.status === 404) throw '**Clan not found.**';
@@ -32,8 +32,8 @@ module.exports = {
             throw e?.response?.statusText || 'Unexpected Error.';
         });
 
-        if (race.state === 'matchmaking') return await i.editReply({ embeds: [{ description: ':mag: **Matchmaking is underway!**', color: orange }] });
-        if (!race.clans || race.clans.length <= 1) return await i.editReply({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
+        if (race.state === 'matchmaking') return i.editReply({ embeds: [{ description: ':mag: **Matchmaking is underway!**', color: orange }] });
+        if (!race.clans || race.clans.length <= 1) return i.editReply({ embeds: [{ description: '**Clan is not in a river race.**', color: orange }] });
 
         const clan = await getClan(tag).catch(async e => {
             if (e?.response?.status === 404) throw '**Clan not found.**';
@@ -117,6 +117,6 @@ module.exports = {
         if (oneAttack.length > 0)
             embed.description += `\n**__1 Attack__**\n${oneAttack.map(p => `• ${p.name}\n`).join('')}`;
 
-        return await i.editReply({ embeds: [embed] });
+        return i.editReply({ embeds: [embed] });
     }
 };

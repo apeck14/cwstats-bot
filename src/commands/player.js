@@ -34,14 +34,14 @@ module.exports = {
             const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id });
 
             if (linkedAccount?.tag) tag = linkedAccount.tag;
-            else return await i.editReply({ embeds: [{ color: orange, description: `**No tag linked!**` }], ephemeral: true });
+            else return i.editReply({ embeds: [{ color: orange, description: `**No tag linked!**` }], ephemeral: true });
         }
         else if (iTag) tag = iTag; //tag
         else { //user
             const linkedAccount = await linkedAccounts.findOne({ discordID: user.id });
 
             if (linkedAccount?.tag) tag = linkedAccount.tag;
-            else return await i.editReply({ embeds: [{ color: orange, description: `<@!${user.id}> **does not have an account linked.**` }], ephemeral: true });
+            else return i.editReply({ embeds: [{ color: orange, description: `<@!${user.id}> **does not have an account linked.**` }], ephemeral: true });
         }
 
         const player = await getPlayer(tag).catch(async e => {
@@ -140,7 +140,7 @@ module.exports = {
         embed.description += `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}`; //cards
 
 
-        return await i.editReply({
+        return i.editReply({
             embeds: [embed],
             files: [{
                 attachment: image,

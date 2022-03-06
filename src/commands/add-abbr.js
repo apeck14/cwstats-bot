@@ -63,7 +63,7 @@ module.exports = {
         const badgeName = getClanBadge(clan.badgeId, clan.clanWarTrophies);
         const badgeEmoji = getEmoji(client, badgeName);
 
-        return await i.editReply({
+        return i.editReply({
             embeds: [{
                 title: '✅ Abbreviation Set!',
                 description: `**Clan**: ${badgeEmoji} ${clan.name}\n**Tag**: ${clan.tag}\n**Abbreviation**: \`${abbreviation}\``,

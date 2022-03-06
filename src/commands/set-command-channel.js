@@ -24,10 +24,10 @@ module.exports = {
         const channel = i.options.getChannel('channel');
 
         if (channel.id === commandChannelID)
-            return await i.editReply({ embeds: [{ color: orange, description: `**This channel is already set!**` }] });
+            return i.editReply({ embeds: [{ color: orange, description: `**This channel is already set!**` }] });
 
         guilds.updateOne({ guildID: i.channel.guild.id }, { $set: { 'channels.commandChannelID': channel.id } });
-        return await i.editReply({
+        return i.editReply({
             embeds: [{
                 color: green,
                 description: `✅ **Command** channel now set to <#${channel.id}>!`

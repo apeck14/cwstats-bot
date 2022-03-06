@@ -23,7 +23,7 @@ module.exports = {
 
             if (command.data.name === 'apply') {
                 if (!applyChannelID)
-                    return await i.editReply({
+                    return i.editReply({
                         embeds: [{
                             description: `**No apply channel set.**`,
                             color: orange
@@ -32,7 +32,7 @@ module.exports = {
                     });
 
                 if (!applicationsChannelID)
-                    return await i.editReply({
+                    return i.editReply({
                         embeds: [{
                             description: `**No applications channel set.**`,
                             color: orange
@@ -41,7 +41,7 @@ module.exports = {
                     });
 
                 if (applyChannelID !== i.channel.id)
-                    return await i.editReply({
+                    return i.editReply({
                         embeds: [{
                             description: `You can only use this command in the set **apply channel**! (<#${applyChannelID}>)`,
                             color: orange
@@ -58,7 +58,7 @@ module.exports = {
                         if (missingPerms.includes(p)) return `❌ \`${p}\`\n`;
                         return `✅ \`${p}\`\n`;
                     }).join('');
-                    return await i.editReply({
+                    return i.editReply({
                         embeds: [{
                             description: `**Missing permissions in** <#${applicationsChannelID}>.\n\n${permissionList}`,
                             color: red
@@ -70,7 +70,7 @@ module.exports = {
             else {
                 //check if in set command channel
                 if (commandChannelID && commandChannelID !== i.channel.id)
-                    return await i.editReply({
+                    return i.editReply({
                         embeds: [{
                             description: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`,
                             color: orange
@@ -84,7 +84,7 @@ module.exports = {
                         if (i.member.permissions.has(c)) return `✅ \`${c}\`\n`;
                         return `❌ \`${c}\`\n`;
                     }).join('');
-                    return await i.editReply({
+                    return i.editReply({
                         embeds: [{
                             description: `You don't have **permission(s)** to use this command.\n\n${permissionList}`,
                             color: red
@@ -103,7 +103,7 @@ module.exports = {
                         if (missingPerms.includes(p)) return `❌ \`${p}\`\n`;
                         return `✅ \`${p}\`\n`;
                     }).join('');
-                    return await i.editReply({
+                    return i.editReply({
                         embeds: [{
                             description: `__**Missing permissions**__\n\n${permissionList}`,
                             color: red

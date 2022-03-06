@@ -21,7 +21,7 @@ module.exports = {
             type: 1
         }
 
-        return await i.editReply({
+        return i.editReply({
             embeds: [{
                 title: 'Donate with PayPal',
                 description: 'CW2 Stats strives to aid all competitive war clans with game-changing data & stats! All proceeds help expand the capabilities of the bot & website.',

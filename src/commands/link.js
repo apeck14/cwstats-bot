@@ -36,11 +36,11 @@ module.exports = {
                 tag: tag
             });
 
-            return await i.editReply({ embeds: [{ color: green, description: `✅ Account linked to **${player.name}**!` }] });
+            return i.editReply({ embeds: [{ color: green, description: `✅ Account linked to **${player.name}**!` }] });
         }
         //already linked to that tag
         else if (linkedAccount.tag === tag) {
-            return await i.editReply({ embeds: [{ color: orange, description: "**You have already linked that ID!**" }], ephemeral: true });
+            return i.editReply({ embeds: [{ color: orange, description: "**You have already linked that ID!**" }], ephemeral: true });
         }
         //already linked, send confirmation embed to update to new tag
         else {

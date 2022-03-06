@@ -24,6 +24,6 @@ module.exports = {
         embed.description += `**__Other__**\n• **/reset** - Reset all bot settings back to default.\n• Ability to exclude cards when using **/decks**.\n• Quality of life improvements.\n\n`;
         embed.description += `As always, please join the [Support Server](https://discord.gg/fFY3cnMmnH) with questions and bug reports. Thanks! :)`;
 
-        return await i.editReply({ embeds: [embed] });
+        return i.editReply({ embeds: [embed] });
     }
 };
