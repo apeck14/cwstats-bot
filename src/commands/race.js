@@ -60,7 +60,7 @@ module.exports = {
             embed.description += `${(c.placement === Infinity) ? '' : `**${c.placement}.**`}` //placement
 
             const clan = race.clans.find(cl => cl.tag === c.tag);
-            const { name, badgeId, clanScore, participants } = clan;
+            const { name, badgeId, clanScore, participants, tag } = clan;
 
             const decksRemaining = 200 - participants.reduce((a, b) => a + b.decksUsedToday, 0);
 
@@ -70,9 +70,10 @@ module.exports = {
             const fameAvgEmoji = getEmoji(client, 'fameAvg');
             const decksRemainingEmoji = getEmoji(client, 'decksRemaining');
             const projectionEmoji = getEmoji(client, 'projection');
+            const url = `https://www.cwstats.com/clans/${tag.substring(1)}/riverrace`
 
-            if (c.tag === race.clan.tag) embed.description += `${badgeEmoji} **__${name}__**\n`
-            else embed.description += `${badgeEmoji} **${name}**\n`;
+            if (c.tag === race.clan.tag) embed.description += `${badgeEmoji} [**__${name}__**](${url})\n`
+            else embed.description += `${badgeEmoji} [**${name}**](${url})\n`;
 
             embed.description += `${fameEmoji} ${c.fame}\n${projectionEmoji} ${getProjFame(clan, isColosseum, dayOfWeek)}\n${decksRemainingEmoji} ${decksRemaining}\n${fameAvgEmoji} **${getAvgFame(clan, isColosseum, dayOfWeek).toFixed(1)}**\n\n`;
         }
