@@ -33,7 +33,10 @@ module.exports = {
             }
         }
 
-        dailyLb.insertMany(top100ClanAverages.filter(c => c.fameAvg));
+        const clansToInsert = top100ClanAverages.filter(c => c.fameAvg);
+
+        if (clansToInsert.length > 0)
+            dailyLb.insertMany(clansToInsert);
 
         console.log('Daily LB updated!')
     }
