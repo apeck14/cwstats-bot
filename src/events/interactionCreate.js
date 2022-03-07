@@ -3,8 +3,8 @@ const { orange, red } = require('../static/colors.js');
 module.exports = {
     event: "interactionCreate",
     run: async (client, db, i) => {
-        if (i?.type !== 'APPLICATION_COMMAND') return;
-        if (!i.guild) return i.reply({
+        if (i.isCommand()) return;
+        if (!i.guild) return i.editReply({
             embeds: [{
                 description: `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=280576&scope=bot%20applications.commands) me to a server to use my commands!**`,
                 color: orange

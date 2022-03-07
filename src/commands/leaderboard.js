@@ -14,7 +14,7 @@ module.exports = {
             return i.editReply({
                 embeds: [{
                     color: orange,
-                    description: '**No data to show!** Try again when war has begun!**'
+                    description: '**No data to show!** Try again when war has begun!'
                 }]
             })
 
