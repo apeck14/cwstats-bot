@@ -1,6 +1,6 @@
 const fs = require("fs");
 const mongo = require("./src/util/mongo");
-require('dotenv').config();
+//require('dotenv').config();
 
 const { Client, Collection, Intents } = require("discord.js");
 const { schedule } = require("node-cron");
