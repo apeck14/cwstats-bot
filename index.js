@@ -2,6 +2,9 @@ const fs = require("fs");
 const mongo = require("./src/util/mongo");
 require('dotenv').config();
 
+console.log('----------------------------')
+console.log(process.env.token)
+
 const { Client, Collection, Intents } = require("discord.js");
 const { schedule } = require("node-cron");
 
