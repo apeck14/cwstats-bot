@@ -1,5 +1,5 @@
 const { getRiverRace } = require("../util/api");
-const { orange, red, pink } = require('../static/colors');
+const { orange, pink } = require('../static/colors');
 const { getRacePlacements, getAvgFame, getProjFame } = require("../util/raceFunctions");
 const { getClanBadge, getEmoji } = require("../util/functions");
 
@@ -9,7 +9,7 @@ module.exports = {
         description: 'View river race stats & projections.',
         options: [
             {
-                type: 3, //https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-type
+                type: 3,
                 name: 'tag',
                 description: '#CLANTAG or abbreviation',
                 required: true
@@ -51,7 +51,8 @@ module.exports = {
             },
             author: {
                 name: `Week ${race.sectionIndex + 1} | ${(dayOfWeek < 3) ? 'Training' : 'War'} Day ${(dayOfWeek < 3) ? dayOfWeek + 1 : dayOfWeek - 2}`
-            }
+            },
+            url: `https://www.cwstats.com/clans/${race.clan.tag.substring(1)}/riverrace`
         }
 
         const placements = await getRacePlacements(race.clans, isColosseum);
@@ -70,10 +71,9 @@ module.exports = {
             const fameAvgEmoji = getEmoji(client, 'fameAvg');
             const decksRemainingEmoji = getEmoji(client, 'decksRemaining');
             const projectionEmoji = getEmoji(client, 'projection');
-            const url = `https://www.cwstats.com/clans/${tag.substring(1)}/riverrace`
 
-            if (c.tag === race.clan.tag) embed.description += `${badgeEmoji} [**__${name}__**](${url})\n`
-            else embed.description += `${badgeEmoji} [**${name}**](${url})\n`;
+            if (c.tag === race.clan.tag) embed.description += `${badgeEmoji} **__${name}__**\n`
+            else embed.description += `${badgeEmoji} **${name}**\n`;
 
             embed.description += `${fameEmoji} ${c.fame}\n${projectionEmoji} ${getProjFame(clan, isColosseum, dayOfWeek)}\n${decksRemainingEmoji} ${decksRemaining}\n${fameAvgEmoji} **${getAvgFame(clan, isColosseum, dayOfWeek).toFixed(1)}**\n\n`;
         }
