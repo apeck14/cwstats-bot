@@ -112,7 +112,7 @@ module.exports = {
             return b.rating - a.rating;
         });
 
-        if (cardsAvailable.length > 80) allDecks = allDecks.filter(d => d.rating >= 50)
+        if (cardsAvailable.length >= 80) allDecks = allDecks.slice(0, (allDecks.length > 200) ? 200 : allDecks.length);
 
         const deckSetRating = deckSetArr => {
             const sum = deckSetArr.reduce((a, b) => a + b.rating, 0)
@@ -192,8 +192,8 @@ module.exports = {
                     cardsAvailable = cardsAvailable.concat(newCardsToAdd);
             }
 
-            if (cardsAvailable.length > 80)
-                allDecks = allDecks.filter(d => d.rating >= 50);
+            if (cardsAvailable.length >= 80)
+                allDecks = allDecks.slice(0, (allDecks.length > 200) ? 200 : allDecks.length);
 
             if (lastLvlAdded <= 0) break;
         }
