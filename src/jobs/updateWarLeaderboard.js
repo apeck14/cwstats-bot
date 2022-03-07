@@ -19,7 +19,7 @@ module.exports = {
             if (c.fameAvg) continue; //if fame Avg already set
 
             const race = await getRiverRace(c.tag).catch(() => { });
-            if (!race) continue;
+            if (!race || race.periodType === 'training' || race.state === 'matchmaking') continue;
 
             const isColosseum = race.periodType === "colosseum";
             const dayOfWeek = race.periodIndex % 7; // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
@@ -33,7 +33,7 @@ module.exports = {
             }
         }
 
-        dailyLb.insertMany(top100ClanAverages);
+        dailyLb.insertMany(top100ClanAverages.filter(c => c.fameAvg));
 
         console.log('Daily LB updated!')
     }
