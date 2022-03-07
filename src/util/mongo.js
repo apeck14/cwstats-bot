@@ -2,7 +2,7 @@ const { MongoClient } = require('mongodb');
 
 class MongoBot {
     constructor() {
-        this.client = new MongoClient(process.env.uri, { useUnifiedTopology: true, useNewUrlParser: true });
+        this.client = new MongoClient(process.env.URI, { useUnifiedTopology: true, useNewUrlParser: true });
     }
     async init() {
         await this.client.connect();

@@ -2,9 +2,6 @@ const fs = require("fs");
 const mongo = require("./src/util/mongo");
 require('dotenv').config();
 
-console.log('----------------------------')
-console.log(process.env.token)
-
 const { Client, Collection, Intents } = require("discord.js");
 const { schedule } = require("node-cron");
 
@@ -48,7 +45,7 @@ for (const job of jobs) { //start all cron jobs
     }
 }
 
-client.login(process.env.token);
+client.login(process.env.TOKEN);
 
 process.on('unhandledRejection', e => {
     if (client.isReady()) console.error(e);
