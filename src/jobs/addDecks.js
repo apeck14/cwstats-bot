@@ -1,4 +1,3 @@
-const fs = require('fs');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
@@ -59,8 +58,6 @@ const mongo = require('../util/mongo');
                 const year = today.getUTCFullYear();
 
                 for (let i = 0; i < allDecks.length; i++) {
-                    const today = new Date();
-
                     const deck = {
                         cards: (await page.evaluate(el => el.getAttribute("data-name"), allDecks[i])).split(',').sort(), //alphabetize
                         rating: parseInt(await page.evaluate(el => el.textContent, ratings[i])),
