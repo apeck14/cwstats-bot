@@ -126,4 +126,15 @@ module.exports = {
         }
         return 'rgba(255, 255, 255, 0.25)'; //transparent white
     },
+    sortArrOfBadges: arr => {
+        //sort order
+        //CC | GC | 1000 WINS | YEARS PLAYED | LADDER | TOP SEASON | GTs | CRL | CRL2021
+        arr.sort((a, b) => {
+            const sortOrder = ['cc', 'cc-10', 'cc-100', 'gc', 'gc-10', 'gc-100', 'wins-1000', 'years-1', 'years-2', 'years-3', 'years-4', 'years-5', 'ladder', 'league-1', 'league-2', 'league-3', 'league-4', 'league-5', 'league-6', 'league-7', 'league-8', 'league-9', 'league-10', 'gt', 'crl', 'crl-2021'];
+            const aIndex = sortOrder.indexOf(a?.name || a);
+            const bIndex = sortOrder.indexOf(b?.name || b);
+
+            return aIndex - bIndex;
+        })
+    }
 }

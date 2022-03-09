@@ -1,6 +1,6 @@
 const { getPlayer, getClan } = require("../util/api");
 const { pink, green } = require('../static/colors');
-const { getClanBadge, getEmoji, getArenaEmoji, formatTag, hexToRgbA, getLeague } = require("../util/functions");
+const { getClanBadge, getEmoji, getArenaEmoji, formatTag, hexToRgbA, getLeague, sortArrOfBadges } = require("../util/functions");
 const { getPBRating, getCardsRating, getChallsRating, getCW1Rating } = require("../util/ratings");
 const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
 const { createCanvas, registerFont, loadImage } = require("canvas");
@@ -34,9 +34,6 @@ module.exports = {
         //create profile badges image
         const profileBadges = [];
 
-        //sort order
-        //CC | GC | 1000 WINS | YEARS PLAYED | LADDER | TOP SEASON | GTs | CRL | CRL2021
-
         for (const b of player?.badges) {
             if (b.name === 'Classic12Wins') { //ccs
                 if (b.progress < 10) profileBadges.push('cc');
@@ -61,6 +58,8 @@ module.exports = {
 
         //create profile badges image
         if (profileBadges.length > 0) {
+            sortArrOfBadges(profileBadges);
+
             const rows = Math.ceil(profileBadges.length / 5);
             badgeCanvas = createCanvas(575, rows * 148);
             const context = badgeCanvas.getContext('2d');

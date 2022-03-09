@@ -1,6 +1,6 @@
 const { getPlayer, getClan } = require("../util/api");
 const { orange, pink } = require('../static/colors');
-const { getClanBadge, getEmoji, getArenaEmoji, formatTag, hexToRgbA, getLeague } = require("../util/functions");
+const { getClanBadge, getEmoji, getArenaEmoji, formatTag, hexToRgbA, getLeague, sortArrOfBadges } = require("../util/functions");
 const { getCardsRating, getCW1Rating, getPBRating, getChallsRating } = require("../util/ratings");
 const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
 const { createCanvas, registerFont, loadImage } = require("canvas");
@@ -81,6 +81,8 @@ module.exports = {
 
         //create profile badges image
         if (profileBadges.length > 0) {
+            sortArrOfBadges(profileBadges);
+
             const rows = Math.ceil(profileBadges.length / 5);
             badgeCanvas = createCanvas(575, rows * 148);
             const context = badgeCanvas.getContext('2d');
