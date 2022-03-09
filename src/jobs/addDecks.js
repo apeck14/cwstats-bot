@@ -6,9 +6,6 @@ puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
 const mongo = require('../util/mongo');
 
 (async () => {
-    const today = new Date();
-    if (today.getUTCDay() !== 1 && today.getUTCDay() !== 5) return;
-
     await mongo.init();
 
     const db = mongo.db;
