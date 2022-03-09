@@ -62,7 +62,7 @@ module.exports = {
         //create profile badges image
         if (profileBadges.length > 0) {
             const rows = Math.ceil(profileBadges.length / 5);
-            badgeCanvas = createCanvas(680, rows * 148);
+            badgeCanvas = createCanvas(575, rows * 148);
             const context = badgeCanvas.getContext('2d');
 
             registerFont('./src/static/fonts/Supercell-Magic.ttf', { family: 'Supercell-Magic' });
