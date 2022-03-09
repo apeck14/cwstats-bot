@@ -42,4 +42,4 @@ const mongo = require('../util/mongo');
         dailyLb.insertMany(clansToInsert);
 
     console.log('Daily LB updated!');
-});
+})();
