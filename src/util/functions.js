@@ -76,6 +76,19 @@ module.exports = {
         else if (pb >= 300) return 'arena2';
         else return 'arena1';
     },
+    getLeague: pb => {
+        if (pb >= 8000) return 'league-10';
+        else if (pb >= 7600) return 'league-9';
+        else if (pb >= 7300) return 'league-8';
+        else if (pb >= 7000) return 'league-7';
+        else if (pb >= 6600) return 'league-6';
+        else if (pb >= 6300) return 'league-5';
+        else if (pb >= 6000) return 'league-4';
+        else if (pb >= 5600) return 'league-3';
+        else if (pb >= 5300) return 'league-2';
+        else if (pb >= 5000) return 'league-1';
+        else return null;
+    },
     average: arr => {
         let sum = 0;
 
