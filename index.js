@@ -1,6 +1,5 @@
 const fs = require("fs");
 require('dotenv').config({ debug: true });
-const mongo = require("./src/util/mongo");
 
 const mongo = require("./src/util/mongo");
 mongo.init();
