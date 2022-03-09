@@ -1,8 +1,9 @@
 const { getPlayer, getClan } = require("../util/api");
 const { pink, green } = require('../static/colors');
-const { getClanBadge, getEmoji, getArenaEmoji, formatTag, hexToRgbA } = require("../util/functions");
+const { getClanBadge, getEmoji, getArenaEmoji, formatTag, hexToRgbA, getLeague } = require("../util/functions");
 const { getPBRating, getCardsRating, getChallsRating, getCW1Rating } = require("../util/ratings");
 const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
+const { createCanvas, registerFont, loadImage } = require("canvas");
 
 module.exports = {
     data: {
@@ -29,6 +30,73 @@ module.exports = {
 
             throw e?.response?.statusText || 'Unexpected Error.';
         });
+
+        //create profile badges image
+        const profileBadges = [];
+
+        //sort order
+        //CC | GC | 1000 WINS | YEARS PLAYED | LADDER | TOP SEASON | GTs | CRL | CRL2021
+
+        for (const b of player?.badges) {
+            if (b.name === 'Classic12Wins') { //ccs
+                if (b.progress < 10) profileBadges.push('cc');
+                else if (b.progress < 100) profileBadges.push('cc-10');
+                else profileBadges.push('cc-100');
+            }
+            else if (b.name === 'Grand12Wins') { //gcs
+                if (b.progress < 10) profileBadges.push('gc');
+                else if (b.progress < 100) profileBadges.push('gc-10');
+                else profileBadges.push('gc-100');
+            }
+            else if (b.name === '1000Wins') profileBadges.push('wins-1000'); //1000 wins
+            else if (b.name.indexOf('Played') >= 0) profileBadges.push(`years-${b.name[6]}`); //years played
+            else if (b.name.indexOf('LadderTop1000') >= 0) profileBadges.push({ name: 'ladder', progress: `#${b.progress}` }); //ladder
+            else if (b.name === 'TopLeague') profileBadges.push(getLeague(b.progress)); //TOP LEAGUE
+            else if (b.name.indexOf('LadderTournamentTop1000') >= 0) profileBadges.push({ name: 'gt', progress: `#${b.progress}` }); //GTs
+            else if (b.name === 'Crl20Wins') profileBadges.push({ ...b, name: 'crl' }); //CRL
+            else if (b.name === 'Crl20Wins2021') profileBadges.push({ ...b, name: 'crl-2021' }); //CRL2021
+        }
+
+        let badgeCanvas;
+
+        //create profile badges image
+        if (profileBadges.length > 0) {
+            const rows = Math.ceil(profileBadges.length / 5);
+            badgeCanvas = createCanvas(680, rows * 148);
+            const context = badgeCanvas.getContext('2d');
+
+            registerFont('./src/static/fonts/Supercell-Magic.ttf', { family: 'Supercell-Magic' });
+            context.font = `14px Supercell-Magic`;
+            context.fillStyle = 'white';
+
+            let dx = 0; //distance from left edge
+            let dy = 0; //distance from top edge
+
+            //128 | 5 | 128 | 5 | 128 | 5 | 128 | 5 | 128
+            //10
+
+            for (let i = 0; i < profileBadges.length; i++) {
+                if (i % 5 === 0 && i !== 0) {
+                    dx = 0;
+                    dy += 148; //move to next row
+                }
+
+                const b = profileBadges[i];
+                const badgeImg = await loadImage(`./src/static/images/profile/${b?.name || b}.png`);
+
+                context.drawImage(badgeImg, dx, dy, 128, 128);
+
+                if (b instanceof Object) { //write text on badge (GTs/LADDER/CRL/CRL21)
+                    const textWidth = context.measureText(b.progress).width;
+                    const x = dx + ((128 - textWidth) / 2);
+                    const y = dy + 105;
+
+                    context.fillText(b.progress, x, y);
+                }
+
+                dx += badgeImg.width - 15;
+            }
+        }
 
         let clanBadge;
 
@@ -111,6 +179,9 @@ module.exports = {
             description: ``,
             thumbnail: {
                 url: 'attachment://playerGraph.png'
+            },
+            image: {
+                url: 'attachment://badges.png'
             }
         }
 
@@ -132,6 +203,10 @@ module.exports = {
             files: [{
                 attachment: image,
                 name: 'playerGraph.png'
+            },
+            {
+                attachment: badgeCanvas.toBuffer(),
+                name: 'badges.png'
             }]
         });
     },
