@@ -1,5 +1,5 @@
 const { getRiverRace, getClan } = require("../util/api");
-const { orange, red, pink } = require('../static/colors');
+const { orange, pink } = require('../static/colors');
 const { getClanBadge, getEmoji } = require("../util/functions");
 
 module.exports = {
@@ -105,8 +105,10 @@ module.exports = {
         const badgeEmoji = getEmoji(client, badgeName);
         const fameEmoji = getEmoji(client, 'fame');
         const decksRemainingEmoji = getEmoji(client, 'decksRemaining');
+        const slotsRemainingEmoji = getEmoji(client, 'remainingSlots');
+        const slotsRemaining = 50 - participants.filter(p => p.decksUsedToday > 0).length;
 
-        embed.description += `${badgeEmoji} **${name}**\n${fameEmoji} **${fame}**\n${decksRemainingEmoji} **${totalAttacksLeft}**\n`;
+        embed.description += `${badgeEmoji} **${name}**\n${fameEmoji} **${fame}**\n${decksRemainingEmoji} **${totalAttacksLeft}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n`;
 
         if (fourAttacks.length > 0)
             embed.description += `\n**__4 Attacks__**\n${fourAttacks.map(p => `• ${p.name}\n`).join('')}`;
