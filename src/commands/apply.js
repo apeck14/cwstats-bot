@@ -48,7 +48,7 @@ module.exports = {
             else if (b.name === '1000Wins') profileBadges.push('wins-1000'); //1000 wins
             else if (b.name.indexOf('Played') >= 0) profileBadges.push(`years-${b.name[6]}`); //years played
             else if (b.name.indexOf('LadderTop1000') >= 0) profileBadges.push({ name: 'ladder', progress: `#${b.progress}` }); //ladder
-            else if (b.name === 'TopLeague') profileBadges.push(getLeague(b.progress)); //TOP LEAGUE
+            else if (b.name === 'TopLeague' && b.progress >= 5000) profileBadges.push(getLeague(b.progress)); //TOP LEAGUE
             else if (b.name.indexOf('LadderTournamentTop1000') >= 0) profileBadges.push({ name: 'gt', progress: `#${b.progress}` }); //GTs
             else if (b.name === 'Crl20Wins') profileBadges.push({ ...b, name: 'crl' }); //CRL
             else if (b.name === 'Crl20Wins2021') profileBadges.push({ ...b, name: 'crl-2021' }); //CRL2021
