@@ -91,6 +91,11 @@ module.exports = {
                     const y = dy + 105;
 
                     context.fillText(b.progress, x, y);
+                    context.shadowColor = 'black';
+                    context.shadowBlur = 0;
+                    context.shadowOffsetX = 1;
+                    context.shadowOffsetY = 2;
+                    context.fillText(b.progress, x, y); //shadow
                 }
 
                 dx += badgeImg.width - 15;
