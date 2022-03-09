@@ -1,6 +1,9 @@
 const fs = require("fs");
-const mongo = require("./src/util/mongo");
 require('dotenv').config({ debug: true });
+const mongo = require("./src/util/mongo");
+
+const mongo = require("./src/util/mongo");
+mongo.init();
 
 const { Client, Collection, Intents } = require("discord.js");
 const { schedule } = require("node-cron");
@@ -15,10 +18,6 @@ const client = new Client({
 });
 
 client.commands = new Collection();
-
-(async () => {
-    await mongo.init();
-})();
 
 const events = fs.readdirSync("./src/events");
 
