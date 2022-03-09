@@ -200,9 +200,6 @@ module.exports = {
             description: ``,
             thumbnail: {
                 url: 'attachment://playerGraph.png'
-            },
-            image: {
-                url: 'attachment://badges.png'
             }
         }
 
@@ -210,16 +207,26 @@ module.exports = {
         embed.description += `**__Stats__**\n**CW1 War Wins**: ${player.warDayWins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n`; //stats
         embed.description += `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}`; //cards
 
-        return i.editReply({
-            embeds: [embed],
+        const response = {
             files: [{
                 attachment: image,
                 name: 'playerGraph.png'
-            },
-            {
-                attachment: badgeCanvas.toBuffer(),
-                name: 'badges.png'
             }]
-        });
+        };
+
+        if (profileBadges.length > 0) { //if profile badges exist
+            response.files.push({
+                attachment: (profileBadges.length > 0) ? badgeCanvas.toBuffer() : '',
+                name: 'badges.png'
+            })
+
+            embed.image = {
+                url: 'attachment://badges.png'
+            }
+        }
+
+        response.embeds = [embed];
+
+        return i.editReply(response);
     },
 };

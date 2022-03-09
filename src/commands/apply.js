@@ -179,9 +179,6 @@ module.exports = {
             description: ``,
             thumbnail: {
                 url: 'attachment://playerGraph.png'
-            },
-            image: {
-                url: 'attachment://badges.png'
             }
         }
 
@@ -198,16 +195,25 @@ module.exports = {
             }]
         });
 
-        return client.channels.cache.get(applicationsChannelID).send({
+        const response = {
             embeds: [applicationEmbed],
             files: [{
                 attachment: image,
                 name: 'playerGraph.png'
-            },
-            {
+            }]
+        }
+
+        if (profileBadges.length > 0) {
+            response.files.push({
                 attachment: badgeCanvas.toBuffer(),
                 name: 'badges.png'
-            }]
-        });
-    },
-};
+            });
+
+            applicationEmbed.image = {
+                url: 'attachment://badges.png'
+            }
+        }
+
+        return client.channels.cache.get(applicationsChannelID).send(response);
+    }
+}
