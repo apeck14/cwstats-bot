@@ -10,10 +10,6 @@ class MongoBot {
 
         this.db = this.client.db('General');
     }
-
-    isConnected() {
-        return this.client.isConnected();
-    }
 }
 
 module.exports = new MongoBot();

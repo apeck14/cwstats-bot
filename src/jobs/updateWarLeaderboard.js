@@ -4,7 +4,7 @@ const mongo = require('../util/mongo');
 
 (async () => {
 
-    if (!mongo.isConnected()) await mongo.init();
+    await mongo.init();
 
     const db = mongo.db;
     const dailyLb = db.collection('Daily Clan Leaderboard');
