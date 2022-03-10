@@ -59,41 +59,41 @@ module.exports = {
             sortArrOfBadges(profileBadges);
 
             const rows = Math.ceil(profileBadges.length / 5);
-            badgeCanvas = createCanvas(300, rows * 69);
+            badgeCanvas = createCanvas(900, rows * (165 + 15));
             const context = badgeCanvas.getContext('2d');
 
             registerFont('./src/static/fonts/Supercell-Magic.ttf', { family: 'Supercell-Magic' });
-            context.font = `8px Supercell-Magic`;
+            context.font = `17px Supercell-Magic`;
             context.fillStyle = 'white';
 
-            let dx = 0; //distance from left edge
+            let dx = -17; //distance from left edge
             let dy = 0; //distance from top edge
 
             for (let i = 0; i < profileBadges.length; i++) {
                 if (i % 5 === 0 && i !== 0) {
-                    dx = 0;
-                    dy += 64 + 5; //move to next row
+                    dx = -17;
+                    dy += 165 + 15; //move to next row
                 }
 
                 const b = profileBadges[i];
                 const badgeImg = await loadImage(`./src/static/images/profile/${b?.name || b}.png`);
 
-                context.drawImage(badgeImg, dx, dy, 64, 64);
+                context.drawImage(badgeImg, dx, dy, 165, 165);
 
                 if (b instanceof Object) { //write text on badge (GTs/LADDER/CRL/CRL21)
                     const textWidth = context.measureText(b.progress).width;
-                    const x = dx + ((64 - textWidth) / 2);
-                    const y = dy + 53;
+                    const x = dx + ((165 - textWidth) / 2);
+                    const y = dy + 135;
 
                     context.fillText(b.progress, x, y);
                     context.shadowColor = 'black';
                     context.shadowBlur = 0;
-                    context.shadowOffsetX = 1;
-                    context.shadowOffsetY = 1;
+                    context.shadowOffsetX = 2;
+                    context.shadowOffsetY = 2;
                     context.fillText(b.progress, x, y); //shadow
                 }
 
-                dx += 64 - 4;
+                dx += 140;
             }
         }
 
