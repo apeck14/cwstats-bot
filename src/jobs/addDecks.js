@@ -16,19 +16,6 @@ const mongo = require('../util/mongo');
 
     const now = new Date();
 
-    const oldDecks = existingDecks.filter(d => {
-        const deckDate = new Date(d.dateAdded);
-        const diffInDays = (now.getTime() - deckDate.getTime()) / (1000 * 3600 * 24);
-
-        return diffInDays > 10;
-    });
-
-    for (const d of oldDecks) {
-        decks.deleteOne({ _id: d._id });
-    }
-
-    console.log(`Removed ${oldDecks.length} old decks.`);
-
     puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] }).then(async browser => {
         const page = await browser.newPage();
 
@@ -49,10 +36,9 @@ const mongo = require('../util/mongo');
             if (allDecks.length === ratings.length) {
                 let decksAdded = 0;
 
-                const today = new Date();
-                const month = today.getUTCMonth() + 1;
-                const date = today.getUTCDate();
-                const year = today.getUTCFullYear();
+                const month = now.getUTCMonth() + 1;
+                const date = now.getUTCDate();
+                const year = now.getUTCFullYear();
 
                 for (let i = 0; i < allDecks.length; i++) {
                     const deck = {
@@ -84,5 +70,18 @@ const mongo = require('../util/mongo');
         console.log(`Finished! (${totalDecksAdded} decks added)`);
 
         await browser.close();
-    })
+    });
+
+    const oldDecks = existingDecks.filter(d => {
+        const deckDate = new Date(d.dateAdded);
+        const diffInDays = (now.getTime() - deckDate.getTime()) / (1000 * 3600 * 24);
+
+        return diffInDays > 10;
+    });
+
+    for (const d of oldDecks) {
+        decks.deleteOne({ _id: d._id });
+    }
+
+    console.log(`Removed ${oldDecks.length} old decks.`);
 })();
