@@ -61,44 +61,41 @@ module.exports = {
             sortArrOfBadges(profileBadges);
 
             const rows = Math.ceil(profileBadges.length / 5);
-            badgeCanvas = createCanvas(575, rows * 148);
+            badgeCanvas = createCanvas(300, rows * 69);
             const context = badgeCanvas.getContext('2d');
 
             registerFont('./src/static/fonts/Supercell-Magic.ttf', { family: 'Supercell-Magic' });
-            context.font = `14px Supercell-Magic`;
+            context.font = `8px Supercell-Magic`;
             context.fillStyle = 'white';
 
             let dx = 0; //distance from left edge
             let dy = 0; //distance from top edge
 
-            //128 | 5 | 128 | 5 | 128 | 5 | 128 | 5 | 128
-            //10
-
             for (let i = 0; i < profileBadges.length; i++) {
                 if (i % 5 === 0 && i !== 0) {
                     dx = 0;
-                    dy += 148; //move to next row
+                    dy += 64 + 5; //move to next row
                 }
 
                 const b = profileBadges[i];
                 const badgeImg = await loadImage(`./src/static/images/profile/${b?.name || b}.png`);
 
-                context.drawImage(badgeImg, dx, dy, 128, 128);
+                context.drawImage(badgeImg, dx, dy, 64, 64);
 
                 if (b instanceof Object) { //write text on badge (GTs/LADDER/CRL/CRL21)
                     const textWidth = context.measureText(b.progress).width;
-                    const x = dx + ((128 - textWidth) / 2);
-                    const y = dy + 105;
+                    const x = dx + ((64 - textWidth) / 2);
+                    const y = dy + 53;
 
                     context.fillText(b.progress, x, y);
                     context.shadowColor = 'black';
                     context.shadowBlur = 0;
                     context.shadowOffsetX = 1;
-                    context.shadowOffsetY = 2;
+                    context.shadowOffsetY = 1;
                     context.fillText(b.progress, x, y); //shadow
                 }
 
-                dx += badgeImg.width - 15;
+                dx += 64 - 4;
             }
         }
 
