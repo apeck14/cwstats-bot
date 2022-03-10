@@ -19,7 +19,7 @@ module.exports = {
             })
 
         const now = new Date();
-        const minutes = now.getUTCMinutes();
+        const minutes = now.getUTCMinutes() % 30;
 
         const embed = {
             title: '**__Current War Leaderboard__**',
