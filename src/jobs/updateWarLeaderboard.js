@@ -5,6 +5,7 @@ module.exports = {
     expression: '0 30 * * * *', //run every hour at :30
     run: async (client, db) => {
         const dailyLb = db.collection('Daily Clan Leaderboard');
+        console.log('Updating LB...')
 
         //get average fame for top 100 global war clans
         //reduce total api requests by looking at all clans in race

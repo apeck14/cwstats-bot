@@ -8,6 +8,7 @@ module.exports = {
     expression: '0 0 13 * * *', //run daily at 7 am
     run: async (client, db) => {
         const decks = db.collection('Decks');
+        console.log('Adding decks...')
 
         //remove old decks
         const existingDecks = await decks.find({}).toArray();
