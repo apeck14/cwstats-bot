@@ -1,8 +1,6 @@
 const { getPlayer, getClan } = require("../util/api");
 const { pink, green } = require('../static/colors');
-const { getClanBadge, getEmoji, getArenaEmoji, formatTag, hexToRgbA, getLeague, sortArrOfBadges } = require("../util/functions");
-const { getPBRating, getCardsRating, getChallsRating, getCW1Rating } = require("../util/ratings");
-const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
+const { getClanBadge, getEmoji, getArenaEmoji, formatTag, getLeague, sortArrOfBadges } = require("../util/functions");
 const { createCanvas, registerFont, loadImage } = require("canvas");
 
 module.exports = {
@@ -126,61 +124,10 @@ module.exports = {
         const lvl12Cards = player.cards.filter(c => c.maxLevel - c.level === 2).length;
         const lvl11Cards = player.cards.filter(c => c.maxLevel - c.level === 3).length;
 
-        const playerGraph = {
-            type: 'radar',
-            data: {
-                labels: ['PB', 'Cards', 'Challs', 'CW1'],
-                datasets: [{
-                    data: [
-                        getPBRating(player.bestTrophies),
-                        getCardsRating(player.cards),
-                        getChallsRating(player.challengeMaxWins, ccWins, gcWins),
-                        getCW1Rating(player.warDayWins)
-                    ],
-                    borderColor: pink,
-                    backgroundColor: hexToRgbA(pink)
-                }]
-            },
-            options: {
-                scales: {
-                    r: {
-                        angleLines: {
-                            color: 'gray'
-                        },
-                        ticks: {
-                            stepSize: 20,
-                            display: false
-                        },
-                        pointLabels: {
-                            font: {
-                                size: 26,
-                                weight: 900
-                            }
-                        },
-                        min: 0,
-                        max: 100
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        }
-
-        const width = 300;
-        const height = 300;
-        const canvas = new ChartJSNodeCanvas({ width: width, height: height });
-        const image = await canvas.renderToBuffer(playerGraph);
-
         const applicationEmbed = {
             color: pink,
             title: '__New Application!__',
-            description: ``,
-            thumbnail: {
-                url: 'attachment://playerGraph.png'
-            }
+            description: ``
         }
 
         applicationEmbed.description += `${levelEmoji} [**${player.name}**](https://royaleapi.com/player/${formatTag(tag).substr(1)})\n`;
@@ -198,10 +145,7 @@ module.exports = {
 
         const response = {
             embeds: [applicationEmbed],
-            files: [{
-                attachment: image,
-                name: 'playerGraph.png'
-            }]
+            files: []
         }
 
         if (profileBadges.length > 0) {
