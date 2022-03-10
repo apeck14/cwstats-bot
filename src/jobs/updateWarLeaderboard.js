@@ -1,45 +1,40 @@
 const { getGlobalWarLeaderboard, getRiverRace } = require("../util/api");
-const { getAvgFame } = require('../util/raceFunctions');
-const mongo = require('../util/mongo');
+const { getAvgFame } = require('../util/raceFunctions')
 
-(async () => {
+module.exports = {
+    expression: '0 30 * * * *', //run every hour at :30
+    run: async (client, db) => {
+        const dailyLb = db.collection('Daily Clan Leaderboard');
 
-    await mongo.init();
+        //get average fame for top 100 global war clans
+        //reduce total api requests by looking at all clans in race
+        //if clan already has data found from a previous race, dont make an api request
 
-    const db = mongo.db;
-    const dailyLb = db.collection('Daily Clan Leaderboard');
+        await dailyLb.deleteMany({});
 
-    //get average fame for top 100 global war clans
-    //reduce total api requests by looking at all clans in race
-    //if clan already has data found from a previous race, dont make an api request
+        const top100ClanAverages = await getGlobalWarLeaderboard().catch(() => { });
+        if (!top100ClanAverages) return;
 
-    await dailyLb.deleteMany({});
+        for (const c of top100ClanAverages) {
+            if (c.fameAvg) continue; //if fame Avg already set
 
-    const top100ClanAverages = await getGlobalWarLeaderboard().catch(() => { });
-    if (!top100ClanAverages) return;
+            const race = await getRiverRace(c.tag).catch(() => { });
+            if (!race) continue;
 
-    for (const c of top100ClanAverages) {
-        if (c.fameAvg) continue; //if fame Avg already set
+            const isColosseum = race.periodType === "colosseum";
+            const dayOfWeek = race.periodIndex % 7; // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
 
-        const race = await getRiverRace(c.tag).catch(() => { });
-        if (!race || race.periodType === 'training' || race.state === 'matchmaking') continue;
+            for (const cl of race.clans) { //set fameAvg for all clans in race
+                const clan = top100ClanAverages.find(cla => cla.tag === cl.tag);
+                if (!clan || clan.fameAvg) continue;
 
-        const isColosseum = race.periodType === "colosseum";
-        const dayOfWeek = race.periodIndex % 7; // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
-
-        for (const cl of race.clans) { //set fameAvg for all clans in race
-            const clan = top100ClanAverages.find(cla => cla.tag === cl.tag);
-            if (!clan || clan.fameAvg) continue;
-
-            clan.fameAvg = getAvgFame(cl, isColosseum, dayOfWeek);
-            clan.decksRemaining = 200 - cl.participants.reduce((a, b) => a + b.decksUsedToday, 0);
+                clan.fameAvg = getAvgFame(cl, isColosseum, dayOfWeek);
+                clan.decksRemaining = 200 - cl.participants.reduce((a, b) => a + b.decksUsedToday, 0);
+            }
         }
+
+        dailyLb.insertMany(top100ClanAverages);
+
+        console.log('Daily LB updated!')
     }
-
-    const clansToInsert = top100ClanAverages.filter(c => c.fameAvg);
-
-    if (clansToInsert.length > 0)
-        dailyLb.insertMany(clansToInsert);
-
-    console.log('Daily LB updated!');
-})();
+}
