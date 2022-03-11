@@ -45,7 +45,6 @@ for (const job of jobs) { //start all cron jobs
 
 client.login(process.env.TOKEN);
 
-process.on('unhandledRejection', e => {
-    if (client.isReady()) console.error(e);
+process.on('unhandledRejection', () => {
     return;
 });
