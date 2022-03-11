@@ -19,13 +19,14 @@ module.exports = {
             })
 
         const now = new Date();
-        const minutes = now.getUTCMinutes() % 30;
+        const minutes = now.getUTCMinutes();
+        const lastUpdatedMins = (minutes > 30) ? minutes - 30 : minutes;
 
         const embed = {
-            title: '**__Current War Leaderboard__**',
+            title: '**__Global War Leaderboard__**',
             description: '',
             footer: {
-                text: `Last Updated: ${minutes}m ago`
+                text: `Last Updated: ${lastUpdatedMins}m ago`
             },
             thumbnail: {
                 url: 'https://i.imgur.com/VAPR8Jq.png'
