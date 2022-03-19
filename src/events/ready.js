@@ -7,7 +7,7 @@ module.exports = {
     run: async (client, db) => {
         const commandFiles = fs.readdirSync("./src/commands");
 
-        client.user.setActivity('/update');
+        client.user.setActivity(`Need help? | ${client.guilds.cache.size} servers`);
 
         let commandsArray = [];
         commandFiles.forEach((file) => {
