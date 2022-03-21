@@ -8,7 +8,7 @@ module.exports = {
     },
     run: async (i, db, client) => {
         const dailyLb = db.collection('Daily Clan Leaderboard');
-        const top10Clans = await dailyLb.find().sort({ fameAvg: -1 }).limit(10).toArray();
+        const top10Clans = await dailyLb.find().sort({ fameAvg: -1, rank: 1 }).limit(10).toArray();
 
         if (top10Clans.length === 0)
             return i.editReply({
