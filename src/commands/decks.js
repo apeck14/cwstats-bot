@@ -57,7 +57,7 @@ module.exports = {
         const allCards = require('../static/cardInfo.js');
 
         let excludedCards = i.options.getString('exclude-cards')?.split(',')?.map(alias => {
-            alias = alias.trim().replace(/\s+/g, '-').replace(/\./g, '');
+            alias = alias.trim().toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
             const card = allCards.find(c => c.name === alias || c.aliases.includes(alias));
 
             return card?.name || null;
