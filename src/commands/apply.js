@@ -50,6 +50,11 @@ module.exports = {
             else if (b.name.includes('LadderTournamentTop1000')) profileBadges.push({ name: 'gt', progress: `#${b.progress}` }); //GTs
             else if (b.name === 'Crl20Wins2021') profileBadges.push({ ...b, name: 'crl-2021' }); //CRL2021
             else if (b.name.includes('Crl20Wins')) profileBadges.push({ ...b, name: 'crl' }); //CRL
+            else if (b.name === 'ClanWarWins') {
+                if (b.progress >= 100) profileBadges.push('cw1-100')
+                else if (b.progress >= 10) profileBadges.push('cw1-10')
+                else if (b.progress >= 1) profileBadges.push('cw1')
+            }
         }
 
         let badgeCanvas;
