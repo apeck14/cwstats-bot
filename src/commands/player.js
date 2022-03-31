@@ -52,75 +52,75 @@ module.exports = {
         //create profile badges image
         const profileBadges = [];
 
-        for (const b of player?.badges) {
-            if (b.name === 'Classic12Wins') { //ccs
-                if (b.progress < 10) profileBadges.push('cc');
-                else if (b.progress < 100) profileBadges.push('cc-10');
-                else profileBadges.push('cc-100');
-            }
-            else if (b.name === 'Grand12Wins') { //gcs
-                if (b.progress < 10) profileBadges.push('gc');
-                else if (b.progress < 100) profileBadges.push('gc-10');
-                else profileBadges.push('gc-100');
-            }
-            else if (b.name === '1000Wins') profileBadges.push('wins-1000'); //1000 wins
-            else if (b.name.includes('Played')) profileBadges.push(`years-${b.name[6]}`); //years played
-            else if (b.name.includes('LadderTop1000')) profileBadges.push({ name: 'ladder', progress: `#${b.progress}` }); //ladder
-            else if (b.name === 'TopLeague' && b.progress >= 5000) profileBadges.push(getLeague(b.progress)); //TOP LEAGUE
-            else if (b.name.includes('LadderTournamentTop1000')) profileBadges.push({ name: 'gt', progress: `#${b.progress}` }); //GTs
-            else if (b.name === 'Crl20Wins2021') profileBadges.push({ ...b, name: 'crl-2021' }); //CRL2021
-            else if (b.name.includes('Crl20Wins')) profileBadges.push({ ...b, name: 'crl' }); //CRL
-            else if (b.name === 'ClanWarWins') {
-                if (b.progress >= 100) profileBadges.push('cw1-100')
-                else if (b.progress >= 10) profileBadges.push('cw1-10')
-                else if (b.progress >= 1) profileBadges.push('cw1')
-            }
-        }
+        // for (const b of player?.badges) {
+        //     if (b.name === 'Classic12Wins') { //ccs
+        //         if (b.progress < 10) profileBadges.push('cc');
+        //         else if (b.progress < 100) profileBadges.push('cc-10');
+        //         else profileBadges.push('cc-100');
+        //     }
+        //     else if (b.name === 'Grand12Wins') { //gcs
+        //         if (b.progress < 10) profileBadges.push('gc');
+        //         else if (b.progress < 100) profileBadges.push('gc-10');
+        //         else profileBadges.push('gc-100');
+        //     }
+        //     else if (b.name === '1000Wins') profileBadges.push('wins-1000'); //1000 wins
+        //     else if (b.name.includes('Played')) profileBadges.push(`years-${b.name[6]}`); //years played
+        //     else if (b.name.includes('LadderTop1000')) profileBadges.push({ name: 'ladder', progress: `#${b.progress}` }); //ladder
+        //     else if (b.name === 'TopLeague' && b.progress >= 5000) profileBadges.push(getLeague(b.progress)); //TOP LEAGUE
+        //     else if (b.name.includes('LadderTournamentTop1000')) profileBadges.push({ name: 'gt', progress: `#${b.progress}` }); //GTs
+        //     else if (b.name === 'Crl20Wins2021') profileBadges.push({ ...b, name: 'crl-2021' }); //CRL2021
+        //     else if (b.name.includes('Crl20Wins')) profileBadges.push({ ...b, name: 'crl' }); //CRL
+        //     else if (b.name === 'ClanWarWins') {
+        //         if (b.progress >= 100) profileBadges.push('cw1-100')
+        //         else if (b.progress >= 10) profileBadges.push('cw1-10')
+        //         else if (b.progress >= 1) profileBadges.push('cw1')
+        //     }
+        // }
 
-        let badgeCanvas;
+        // let badgeCanvas;
 
-        //create profile badges image
-        if (profileBadges.length > 0) {
-            sortArrOfBadges(profileBadges);
+        // //create profile badges image
+        // if (profileBadges.length > 0) {
+        //     sortArrOfBadges(profileBadges);
 
-            const rows = Math.ceil(profileBadges.length / 5);
-            badgeCanvas = createCanvas(900, rows * (165 + 15));
-            const context = badgeCanvas.getContext('2d');
+        //     const rows = Math.ceil(profileBadges.length / 5);
+        //     badgeCanvas = createCanvas(900, rows * (165 + 15));
+        //     const context = badgeCanvas.getContext('2d');
 
-            registerFont('./src/static/fonts/Supercell-Magic.ttf', { family: 'Supercell-Magic' });
-            context.font = `17px Supercell-Magic`;
-            context.fillStyle = 'white';
+        //     registerFont('./src/static/fonts/Supercell-Magic.ttf', { family: 'Supercell-Magic' });
+        //     context.font = `17px Supercell-Magic`;
+        //     context.fillStyle = 'white';
 
-            let dx = -17; //distance from left edge
-            let dy = 0; //distance from top edge
+        //     let dx = -17; //distance from left edge
+        //     let dy = 0; //distance from top edge
 
-            for (let i = 0; i < profileBadges.length; i++) {
-                if (i % 5 === 0 && i !== 0) {
-                    dx = -17;
-                    dy += 165 + 15; //move to next row
-                }
+        //     for (let i = 0; i < profileBadges.length; i++) {
+        //         if (i % 5 === 0 && i !== 0) {
+        //             dx = -17;
+        //             dy += 165 + 15; //move to next row
+        //         }
 
-                const b = profileBadges[i];
-                const badgeImg = await loadImage(`./src/static/images/profile/${b?.name || b}.png`);
+        //         const b = profileBadges[i];
+        //         const badgeImg = await loadImage(`./src/static/images/profile/${b?.name || b}.png`);
 
-                context.drawImage(badgeImg, dx, dy, 165, 165);
+        //         context.drawImage(badgeImg, dx, dy, 165, 165);
 
-                if (b instanceof Object) { //write text on badge (GTs/LADDER/CRL/CRL21)
-                    const textWidth = context.measureText(b.progress).width;
-                    const x = dx + ((165 - textWidth) / 2);
-                    const y = dy + 135;
+        //         if (b instanceof Object) { //write text on badge (GTs/LADDER/CRL/CRL21)
+        //             const textWidth = context.measureText(b.progress).width;
+        //             const x = dx + ((165 - textWidth) / 2);
+        //             const y = dy + 135;
 
-                    context.fillText(b.progress, x, y);
-                    context.shadowColor = 'black';
-                    context.shadowBlur = 0;
-                    context.shadowOffsetX = 2;
-                    context.shadowOffsetY = 2;
-                    context.fillText(b.progress, x, y); //shadow
-                }
+        //             context.fillText(b.progress, x, y);
+        //             context.shadowColor = 'black';
+        //             context.shadowBlur = 0;
+        //             context.shadowOffsetX = 2;
+        //             context.shadowOffsetY = 2;
+        //             context.fillText(b.progress, x, y); //shadow
+        //         }
 
-                dx += 140;
-            }
-        }
+        //         dx += 140;
+        //     }
+        // }
 
         let clanBadge;
 

@@ -124,7 +124,7 @@ module.exports = [
     },
     {
         name: 'elixir-collector',
-        aliases: ['collector', 'ecollector', 'e-collector', 'ec'],
+        aliases: ['collector', 'ecollector', 'e-collector', 'ec', 'pump'],
         id: 27000007,
         rarity: 'rare'
     },
@@ -332,6 +332,12 @@ module.exports = [
         aliases: ['mm'],
         id: 26000039,
         rarity: 'rare'
+    },
+    {
+        name: 'mighty-miner',
+        aliases: ['mmr', 'mightyminer', 'mminer'],
+        id: 26000065,
+        rarity: 'champion'
     },
     { name: 'miner', aliases: [], id: 26000032, rarity: 'legendary' },
     {
