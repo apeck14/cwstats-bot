@@ -76,7 +76,7 @@ module.exports = {
 			const deckDate = new Date(d.dateAdded)
 			const diffInDays = (now.getTime() - deckDate.getTime()) / (1000 * 3600 * 24)
 
-			return diffInDays > 3
+			return diffInDays >= 3
 		})
 
 		for (const d of oldDecks) {
