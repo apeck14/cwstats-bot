@@ -77,8 +77,6 @@ module.exports = {
 						const timeout = (Math.random() * 8 + 3) * 1000
 						await page.waitForTimeout(timeout)
 					}
-
-					console.log("Added " + c.name)
 				}
 
 				console.log(`Finished! (${totalDecksAdded} decks added)`)
