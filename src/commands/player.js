@@ -56,7 +56,7 @@ module.exports = {
 		})
 
 		const [playerRank, arenaImage] = await Promise.all([
-			getPlayerRanking(player.trophies),
+			getPlayerRanking(player.tag),
 			loadImage(`./src/static/images/arenas/${getArenaEmoji(player.trophies)}.png`),
 		])
 		const canvas = createCanvas(arenaImage.width, arenaImage.height)
