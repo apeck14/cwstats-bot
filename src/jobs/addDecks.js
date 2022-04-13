@@ -5,7 +5,7 @@ const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker")
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 module.exports = {
-	expression: "0 0 13 * * *", //run daily at 7 am
+	expression: "0 0 13 * * *",
 	run: async (client, db) => {
 		const decks = db.collection("Decks")
 		console.log("Adding decks...")
@@ -77,27 +77,34 @@ module.exports = {
 						const timeout = (Math.random() * 8 + 3) * 1000
 						await page.waitForTimeout(timeout)
 					}
+
+					console.log("Added " + c.name)
 				}
 
 				console.log(`Finished! (${totalDecksAdded} decks added)`)
 
 				await browser.close()
 			})
+			.then(async () => {
+				//remove old decks
+				const existingDecks = await decks.find({}).toArray()
 
-		//remove old decks
-		const existingDecks = await decks.find({}).toArray()
+				const oldDecks = existingDecks.filter((d) => {
+					const deckDate = new Date(d.dateAdded)
+					const diffInDays = (now.getTime() - deckDate.getTime()) / (1000 * 3600 * 24)
 
-		const oldDecks = existingDecks.filter((d) => {
-			const deckDate = new Date(d.dateAdded)
-			const diffInDays = (now.getTime() - deckDate.getTime()) / (1000 * 3600 * 24)
+					return diffInDays > 3
+				})
 
-			return diffInDays > 3
-		})
+				for (const d of oldDecks) {
+					decks.deleteOne({ _id: d._id })
+				}
 
-		for (const d of oldDecks) {
-			decks.deleteOne({ _id: d._id })
-		}
-
-		console.log(`Removed ${oldDecks.length} old decks.`)
+				console.log(`Removed ${oldDecks.length} old decks.`)
+			})
+			.catch((err) => {
+				console.log("Error occured while adding decks.")
+				console.error(err)
+			})
 	},
 }
