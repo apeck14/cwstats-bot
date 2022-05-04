@@ -5,7 +5,7 @@ const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker")
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 module.exports = {
-	expression: "0 0 13 * * *",
+	expression: "0 50 2 * * *",
 	run: async (client, db) => {
 		const decks = db.collection("Decks")
 		console.log("Adding decks...")
@@ -93,7 +93,7 @@ module.exports = {
 					const deckDate = new Date(d.dateAdded)
 					const diffInDays = (now.getTime() - deckDate.getTime()) / (1000 * 3600 * 24)
 
-					return diffInDays > 3
+					return diffInDays > 2
 				})
 
 				for (const d of oldDecks) {
