@@ -2,7 +2,7 @@ const { getRiverRace } = require("../util/api")
 const { orange, pink } = require("../static/colors")
 const { getRacePlacements, getAvgFame, getProjFame } = require("../util/raceFunctions")
 const { getClanBadge, getEmoji } = require("../util/functions")
-const { formatStr } = require("../util/formatting")
+const { formatStr, formatTag } = require("../util/formatting")
 
 module.exports = {
 	data: {
@@ -73,7 +73,7 @@ module.exports = {
 			const badgeName = getClanBadge(badgeId, clanScore)
 			const badgeEmoji = getEmoji(client, badgeName)
 
-			if (c.tag === tag) embed.description += `${badgeEmoji} **__${formatStr(name)}__**\n`
+			if (c.tag === formatTag(tag)) embed.description += `${badgeEmoji} **__${formatStr(name)}__**\n`
 			else embed.description += `${badgeEmoji} **${formatStr(name)}**\n`
 		})
 
@@ -88,7 +88,7 @@ module.exports = {
 			const badgeName = getClanBadge(badgeId, clanScore)
 			const badgeEmoji = getEmoji(client, badgeName)
 
-			if (c.tag === tag) embed.description += `${badgeEmoji} **__${formatStr(name)}__**\n`
+			if (c.tag === formatTag(tag)) embed.description += `${badgeEmoji} **__${formatStr(name)}__**\n`
 			else embed.description += `${badgeEmoji} **${formatStr(name)}**\n`
 
 			embed.description += `${fameEmoji} ${c.fame}\n${projectionEmoji} ${getProjFame(
