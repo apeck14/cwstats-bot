@@ -11,8 +11,6 @@ module.exports = {
 		//reduce total api requests by looking at all clans in race
 		//if clan already has data found from a previous race, dont make an api request
 
-		await dailyLb.deleteMany({})
-
 		const { data: top100ClanAverages, error: lbError } = await getWarLeaderboard()
 		if (lbError) return
 
@@ -37,8 +35,10 @@ module.exports = {
 			statistics.updateOne({}, { $set: { lbLastUpdated: Date.now() } })
 		}
 
-		dailyLb.insertMany(top100ClanAverages)
-
-		console.log("Daily LB updated!")
+		if (top100ClanAverages.length > 0) {
+			await dailyLb.deleteMany({})
+			dailyLb.insertMany(top100ClanAverages)
+			console.log("Daily LB updated!")
+		}
 	},
 }
