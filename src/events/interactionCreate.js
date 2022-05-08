@@ -4,6 +4,7 @@ const validate = require("../util/validate.js")
 module.exports = {
 	event: "interactionCreate",
 	run: async (client, db, i) => {
+		console.time()
 		if (i?.type !== "APPLICATION_COMMAND") return
 		if (!i.guild)
 			return i.reply({
@@ -21,6 +22,8 @@ module.exports = {
 			const { error, color, onlyShowToUser } = validate(i, channels, client)
 
 			await i.deferReply()
+
+			console.timeEnd()
 
 			if (error) {
 				return i.editReply({
