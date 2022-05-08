@@ -1,7 +1,8 @@
 const { getPlayer, getClan, getPlayerRanking } = require("../util/api")
 const { pink, green } = require("../static/colors")
-const { getClanBadge, getEmoji, getArenaEmoji, formatTag } = require("../util/functions")
+const { getClanBadge, getEmoji, getArenaEmoji } = require("../util/functions")
 const { createCanvas, registerFont, loadImage } = require("canvas")
+const { formatStr, formatRole, formatTag } = require("../util/formatting")
 registerFont("./src/static/fonts/Supercell-Magic.ttf", { family: "Supercell-Magic" })
 
 module.exports = {
@@ -24,16 +25,17 @@ module.exports = {
 
 		let tag = i.options.getString("tag")
 
-		const player = await getPlayer(tag).catch(async (e) => {
-			if (e?.response?.status === 404) throw "**Player not found.**"
+		const { data: player, error: playerError } = await getPlayer(tag)
 
-			throw e?.response?.statusText || "Unexpected Error."
-		})
+		if (playerError) throw playerError
 
-		const [playerRank, arenaImage] = await Promise.all([
+		const [{ data: playerRank, error: playerRankingError }, arenaImage] = await Promise.all([
 			getPlayerRanking(player.tag),
 			loadImage(`./src/static/images/arenas/${getArenaEmoji(player.trophies)}.png`),
 		])
+
+		if (playerRankingError) throw playerRankingError
+
 		const canvas = createCanvas(arenaImage.width, arenaImage.height)
 		const context = canvas.getContext("2d")
 
@@ -67,7 +69,10 @@ module.exports = {
 			clanBadge = getClanBadge(-1)
 		} else {
 			//get clan badge
-			const clan = await getClan(player.clan.tag)
+			const { data: clan, error: clanError } = await getClan(player.clan.tag)
+
+			if (clanError) throw clanError
+
 			clanBadge = getClanBadge(clan.badgeId, clan.clanWarTrophies)
 		}
 
@@ -96,8 +101,12 @@ module.exports = {
 			},
 		}
 
-		applicationEmbed.description += `${levelEmoji} [**${player.name}**](https://royaleapi.com/player/${formatTag(tag).substr(1)})\n`
-		applicationEmbed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${player.bestTrophies}\n${badgeEmoji} **${player.clan.name}**\n\n` //clan & ladder
+		applicationEmbed.description += `${levelEmoji} [**${formatStr(player.name)}**](https://royaleapi.com/player/${formatTag(tag).substr(
+			1
+		)})\n`
+		applicationEmbed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${
+			player.bestTrophies
+		}\n${badgeEmoji} **${formatStr(player.clan.name)}**${player.role ? ` (${formatRole(player.role)})` : ""}\n\n` //clan & ladder
 		applicationEmbed.description += `**__Stats__**\n**CW1 War Wins**: ${player.warDayWins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
 		applicationEmbed.description += `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}` //cards
 		applicationEmbed.description += `\n\n**Request By**: ${`<@!${i.user.id}>`}`
@@ -106,7 +115,7 @@ module.exports = {
 			embeds: [
 				{
 					color: green,
-					description: `✅ Request sent for **${player.name}**! A Co-Leader will contact you shortly.`,
+					description: `✅ Request sent for **${formatStr(player.name)}**! A Co-Leader will contact you shortly.`,
 				},
 			],
 		})

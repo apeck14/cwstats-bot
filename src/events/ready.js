@@ -1,45 +1,25 @@
-const fs = require("fs");
-const slash = require("../util/slash");
+const fs = require("fs")
+const registerSlashCommands = require("../util/slash")
 
 module.exports = {
-    event: "ready",
-    oneTime: true,
-    run: async (client, db) => {
-        const commandFiles = fs.readdirSync("./src/commands");
+	event: "ready",
+	once: true,
+	run: async (client) => {
+		const commandFiles = fs.readdirSync("./src/commands")
 
-        client.user.setActivity(`Need help? | ${client.guilds.cache.size} servers`);
+		client.user.setActivity(`Need help? | ${client.guilds.cache.size} servers`)
 
-        let commandsArray = [];
-        commandFiles.forEach((file) => {
-            const command = require(`../commands/${file}`);
-            client.commands.set(command.data.name, command);
+		let commandsArray = []
 
-            commandsArray.push(command);
-        });
+		for (const file of commandFiles) {
+			const command = require(`../commands/${file}`)
+			client.commands.set(command.data.name, command)
 
-        const finalArray = commandsArray.map((e) => e.data);
-        slash.register(client.user.id, finalArray);
-        console.log(`${client.user.tag} Started`);
+			commandsArray.push(command)
+		}
 
-        //make sure all current guilds have a spot in database, in case the bot joined while down
-        const guilds = db.collection('Guilds');
-
-        client.guilds.cache.each(async g => {
-            const guildInDb = await guilds.findOne({ guildID: g.id });
-
-            if (!guildInDb) {
-                guilds.insertOne({
-                    guildID: g.id,
-                    channels: {
-                        applyChannelID: null,
-                        applicationsChannelID: null,
-                        commandChannelID: null
-                    },
-                    abbreviations: []
-                });
-
-                console.log(`JOINED GUILD: ${g.name} (${g.id})`);
-            }
-        });
-    },
-};
+		const commandsData = commandsArray.map((e) => e.data)
+		registerSlashCommands(client.user.id, commandsData)
+		console.log(`${client.user.tag} Started`)
+	},
+}

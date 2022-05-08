@@ -1,17 +1,24 @@
-const slash = {
-    register: async (clientId, commands) => {
-        const { REST } = require("@discordjs/rest");
-        const { Routes } = require("discord-api-types/v9");
+const { CLIENT_TOKEN, TEST_GUILD_ID } = require("../../config")
 
-        const rest = new REST({ version: "9" }).setToken(process.env.TOKEN);
+module.exports = registerSlashCommands = async (CLIENT_ID, commands) => {
+	const { REST } = require("@discordjs/rest")
+	const { Routes } = require("discord-api-types/v9")
 
-        try {
-            await rest.put(Routes.applicationCommands(clientId), { body: commands });
-            return console.log(`Loaded Slash Commands`);
-        } catch (error) {
-            return console.log(`Could not load Slash Commands: \n ${error}`);
-        }
-    },
-};
+	const rest = new REST({ version: "9" }).setToken(CLIENT_TOKEN || process.env.CLIENT_TOKEN)
 
-module.exports = slash;
+	try {
+		if (TEST_GUILD_ID) {
+			await rest.put(Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID), {
+				body: commands,
+			})
+			return console.log(`Loaded Guild Slash Commands`)
+		} else {
+			await rest.put(Routes.applicationCommands(CLIENT_ID), {
+				body: commands,
+			})
+			return console.log(`Loaded Slash Commands`)
+		}
+	} catch (error) {
+		return console.log(`Could not load Slash Commands: \n ${error}`)
+	}
+}

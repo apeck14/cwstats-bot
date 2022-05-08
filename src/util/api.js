@@ -1,48 +1,74 @@
 const axios = require("axios")
-const { formatTag } = require("./functions")
+const { CR_API_TOKEN, CR_API_JOB_TOKEN } = require("../../config")
+const { formatTag } = require("./formatting")
 
-const API_TOKEN = process.env.API_TOKEN
-const API_JOB_TOKEN = process.env.API_JOB_TOKEN
+const apiRequest = async (url, apiToken) => {
+	const resp = await axios.get(url, { headers: { Authorization: "Bearer " + apiToken } }).catch((err) => err.response)
+	const { status, data } = resp
 
-module.exports = {
-	getPlayer: async (tag) => {
-		tag = formatTag(tag)
-		const url = `https://proxy.royaleapi.dev/v1/players/%23${tag.substr(1)}`
-		const req = await axios.get(url, { headers: { Authorization: "Bearer " + API_TOKEN } })
+	if (status === 200) return { status, data: data.items || data }
+	if (status === 404) return { status, error: "**Not found.**" }
+	if (status === 429) return { status, error: "**API limit exceeded.** Please try again later." }
+	if (status === 503) return { status, error: ":tools: **Maintenence break.**" }
 
-		return req?.data || req
-	},
-	getClan: async (tag) => {
-		tag = formatTag(tag)
-		const url = `https://proxy.royaleapi.dev/v1/clans/%23${tag.substr(1)}`
-		const req = await axios.get(url, { headers: { Authorization: "Bearer " + API_TOKEN } })
+	return { status, error: "**Unexpected error.** Please try again." }
+}
 
-		return req?.data || req
-	},
-	getRiverRaceLog: () => {},
-	getRiverRace: async (tag) => {
-		tag = formatTag(tag)
-		const url = `https://proxy.royaleapi.dev/v1/clans/%23${tag.substr(1)}/currentriverrace`
-		const req = await axios.get(url, { headers: { Authorization: "Bearer " + API_JOB_TOKEN } })
+exports.getBattleLog = async (tag) => {
+	tag = formatTag(tag).substring(1)
+	const url = `https://proxy.royaleapi.dev/v1/players/%23${tag}/battlelog`
+	const req = await apiRequest(url, CR_API_TOKEN)
+	return req
+}
 
-		return req?.data || req
-	},
-	getGlobalWarLeaderboard: async (limit = 100) => {
-		const url = `https://proxy.royaleapi.dev/v1/locations/global/rankings/clanwars/?limit=${limit}`
-		const req = await axios.get(url, { headers: { Authorization: "Bearer " + API_TOKEN } })
+exports.getCardInfo = async () => {
+	const url = `https://proxy.royaleapi.dev/v1/cards`
+	const req = await apiRequest(url, CR_API_TOKEN)
+	return req
+}
+exports.getClan = async (tag) => {
+	tag = formatTag(tag).substring(1)
+	const url = `https://proxy.royaleapi.dev/v1/clans/%23${tag}`
+	const req = await apiRequest(url, CR_API_TOKEN)
+	return req
+}
 
-		return req?.data?.items || req
-	},
-	getPlayerRanking: async (tag, locationId = "global") => {
-		const url = `https://proxy.royaleapi.dev/v1/locations/${locationId}/rankings/players`
-		const req = await axios.get(url, { headers: { Authorization: "Bearer " + API_TOKEN } })
+exports.getPlayer = async (tag) => {
+	tag = formatTag(tag).substring(1)
+	const url = `https://proxy.royaleapi.dev/v1/players/%23${tag}`
+	const req = await apiRequest(url, CR_API_TOKEN)
+	return req
+}
 
-		if (req?.data?.items) {
-			const player = req.data.items.find((p) => p.tag === tag)
+exports.getPlayerRanking = async (tag, locationId = "global") => {
+	const url = `https://proxy.royaleapi.dev/v1/locations/${locationId}/rankings/players`
+	const req = await apiRequest(url, CR_API_TOKEN)
 
-			return player ? player.rank : false
-		}
+	if (Array.isArray(req.data)) {
+		const player = req.data.find((p) => p.tag === tag)
 
-		return req
-	},
+		return { ...req, data: player ? player.rank : -1 }
+	}
+
+	return req
+}
+
+exports.getRiverRace = async (tag) => {
+	tag = formatTag(tag).substring(1)
+	const url = `https://proxy.royaleapi.dev/v1/clans/%23${tag}/currentriverrace`
+	const req = await apiRequest(url, CR_API_JOB_TOKEN)
+	return req
+}
+
+exports.getWarLeaderboard = async (limit = 100, locationId = "global") => {
+	const url = `https://proxy.royaleapi.dev/v1/locations/${locationId}/rankings/clanwars/?limit=${limit}`
+	const req = await apiRequest(url, CR_API_TOKEN)
+	return req
+}
+
+exports.getChests = async (tag) => {
+	tag = formatTag(tag).substring(1)
+	const url = `https://proxy.royaleapi.dev/v1/players/%23${tag}/upcomingchests`
+	const req = await apiRequest(url, CR_API_TOKEN)
+	return req
 }

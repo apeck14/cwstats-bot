@@ -1,7 +1,8 @@
 const { getPlayer, getClan, getPlayerRanking } = require("../util/api")
 const { orange, pink } = require("../static/colors")
-const { getClanBadge, getEmoji, getArenaEmoji, formatTag } = require("../util/functions")
+const { getClanBadge, getEmoji, getArenaEmoji } = require("../util/functions")
 const { createCanvas, registerFont, loadImage } = require("canvas")
+const { formatTag, formatStr, formatRole } = require("../util/formatting")
 registerFont("./src/static/fonts/Supercell-Magic.ttf", { family: "Supercell-Magic" })
 
 module.exports = {
@@ -49,23 +50,24 @@ module.exports = {
 				})
 		}
 
-		const player = await getPlayer(tag).catch(async (e) => {
-			if (e?.response?.status === 404) throw "**Player not found.**"
+		const { error: playerError, data: player } = await getPlayer(tag)
 
-			return e?.response?.statusText || "Unexpected Error."
-		})
+		if (playerError) throw playerError
 
-		const [playerRank, arenaImage] = await Promise.all([
+		const [{ data: playerRank, error: playerRankingError }, arenaImage] = await Promise.all([
 			getPlayerRanking(player.tag),
 			loadImage(`./src/static/images/arenas/${getArenaEmoji(player.trophies)}.png`),
 		])
+
+		if (playerRankingError) throw playerRankingError
+
 		const canvas = createCanvas(arenaImage.width, arenaImage.height)
 		const context = canvas.getContext("2d")
 
 		context.drawImage(arenaImage, 0, 0, canvas.width, canvas.height)
 
 		//add global rank
-		if (playerRank) {
+		if (playerRank >= 1) {
 			const fontSize = () => {
 				if (playerRank < 10) return 130
 				if (playerRank < 1000) return 115
@@ -92,7 +94,10 @@ module.exports = {
 			clanBadge = getClanBadge(-1)
 		} else {
 			//get clan badge
-			const clan = await getClan(player.clan.tag)
+			const { data: clan, error: clanError } = await getClan(player.clan.tag)
+
+			if (clanError) throw clanError
+
 			clanBadge = getClanBadge(clan.badgeId, clan.clanWarTrophies)
 		}
 
@@ -122,7 +127,9 @@ module.exports = {
 			},
 		}
 
-		embed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${player.bestTrophies}\n${badgeEmoji} **${player.clan.name}**\n\n` //clan & ladder
+		embed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${player.bestTrophies}\n${badgeEmoji} **${formatStr(
+			player.clan.name
+		)}**${player.role ? ` (${formatRole(player.role)})` : ""}\n\n`
 		embed.description += `**__Stats__**\n**CW1 War Wins**: ${player.warDayWins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
 		embed.description += `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}` //cards
 

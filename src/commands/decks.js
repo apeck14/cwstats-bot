@@ -1,255 +1,324 @@
-const { getPlayer } = require("../util/api");
-const { orange, pink } = require('../static/colors');
-const { getEmoji, getArenaEmoji, average, getDeckUrl } = require("../util/functions");
+const { getPlayer } = require("../util/api")
+const { orange, pink } = require("../static/colors")
+const { getEmoji, getArenaEmoji, average, getDeckUrl } = require("../util/functions")
 
 module.exports = {
-    data: {
-        name: 'decks',
-        description: 'Find top deck sets based for any player!',
-        options: [
-            {
-                type: 3,
-                name: 'tag',
-                description: '#PLAYERTAG',
-                required: false
-            },
-            {
-                type: 6,
-                name: 'user',
-                description: 'User to view.',
-                required: false
-            },
-            {
-                type: 3,
-                name: 'exclude-cards',
-                description: 'Cards to exclude (separate card names with \',\')',
-                required: false
-            }
-        ]
-    },
-    run: async (i, db, client) => {
-        const linkedAccounts = db.collection('Linked Accounts');
-        const decks = db.collection('Decks');
+	data: {
+		name: "decks",
+		description: "Find top deck sets based for any player!",
+		options: [
+			{
+				type: 3,
+				name: "tag",
+				description: "#PLAYERTAG",
+				required: false,
+			},
+			{
+				type: 6,
+				name: "user",
+				description: "User to view.",
+				required: false,
+			},
+			{
+				type: 3,
+				name: "exclude-cards",
+				description: "Cards to exclude (separate card names with a comma)",
+				required: false,
+			},
+			{
+				type: 3,
+				name: "include-cards",
+				description: "Cards to include (separate card names with a comma)",
+				required: false,
+			},
+		],
+	},
+	run: async (i, db, client) => {
+		const linkedAccounts = db.collection("Linked Accounts")
+		const decks = db.collection("Decks")
 
-        const user = i.options.getUser('user');
-        const iTag = i.options.getString('tag');
-        let tag;
+		const user = i.options.getUser("user")
+		const iTag = i.options.getString("tag")
 
-        if (!user && !iTag) { //linked account
-            const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id });
+		let tag
 
-            if (linkedAccount?.tag) tag = linkedAccount.tag;
-            else return i.editReply({ embeds: [{ color: orange, description: `**No tag linked!**` }], ephemeral: true });
-        }
-        else if (iTag) tag = iTag; //tag
-        else { //user
-            const linkedAccount = await linkedAccounts.findOne({ discordID: user.id });
+		if (!user && !iTag) {
+			//linked account
+			const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id })
 
-            if (linkedAccount?.tag) tag = linkedAccount.tag;
-            else return i.editReply({ embeds: [{ color: orange, description: `<@!${user.id}> **does not have an account linked.**` }], ephemeral: true });
-        }
+			if (linkedAccount?.tag) tag = linkedAccount.tag
+			else return i.editReply({ embeds: [{ color: orange, description: `**No tag linked!**` }], ephemeral: true })
+		} else if (iTag) tag = iTag //tag
+		else {
+			//user
+			const linkedAccount = await linkedAccounts.findOne({ discordID: user.id })
 
-        const player = await getPlayer(tag).catch(async e => {
-            if (e?.response?.status === 404) throw '**Player not found.**';
-            throw e?.response?.statusText || 'Unexpected Error.';
-        });
+			if (linkedAccount?.tag) tag = linkedAccount.tag
+			else
+				return i.editReply({
+					embeds: [{ color: orange, description: `<@!${user.id}> **does not have an account linked.**` }],
+					ephemeral: true,
+				})
+		}
 
-        const allCards = require('../static/cardInfo.js');
+		const { data: player, error } = await getPlayer(tag)
 
-        let excludedCards = i.options.getString('exclude-cards')?.split(',')?.map(alias => {
-            alias = alias.trim().toLowerCase().replace(/\s+/g, '-').replace(/\./g, '');
-            const card = allCards.find(c => c.name === alias || c.aliases.includes(alias));
+		if (error) throw error
 
-            return card?.name || null;
-        }).filter(c => c); //list of card names that cant be used
+		const allCards = require("../static/cardInfo.js")
 
-        excludedCards = [...new Set(excludedCards)];
+		let excludedCards = i.options
+			.getString("exclude-cards")
+			?.split(",")
+			?.map((alias) => {
+				alias = alias.trim().toLowerCase().replace(/\s+/g, "-").replace(/\./g, "")
+				const card = allCards.find((c) => c.name === alias || c.aliases.includes(alias))
 
-        if (excludedCards.length > 10)
-            return i.editReply({ embeds: [{ color: orange, description: '**You can only exclude up to 10 cards.**' }], ephemeral: true });
+				return card?.name || null
+			})
+			.filter((c) => c) //list of card names that cant be used
 
-        player.cards = player.cards.map(c => ({ //rename all cards, and give level
-            name: c.name.toLowerCase().replace(/\s+/g, '-').replace(/\./g, ''),
-            level: 14 - (c.maxLevel - c.level)
-        }));
+		excludedCards = [...new Set(excludedCards)]
 
-        const cardsThatCanBeUnderLeveled = allCards.filter(c => c.canBeUnderLeveled).map(c => c.name);
+		if (excludedCards.length > 10)
+			return i.editReply({ embeds: [{ color: orange, description: "**You can only exclude up to 10 cards.**" }], ephemeral: true })
 
-        let cardsAvailable = [];
-        let lastLvlAdded;
+		let includedCards = i.options
+			.getString("include-cards")
+			?.split(",")
+			?.map((alias) => {
+				alias = alias.trim().toLowerCase().replace(/\s+/g, "-").replace(/\./g, "")
+				const card = allCards.find((c) => c.name === alias || c.aliases.includes(alias))
 
-        for (let lvl = 14; lvl >= 1; lvl--) { //add cards available for use
-            const sameLevelCards = player.cards.filter(c => c.level === lvl);
+				return card?.name || null
+			})
+			.filter((c) => c && !excludedCards.includes(c)) //list of card names that cant be used
 
-            if (sameLevelCards.length === 0) continue;
+		includedCards = [...new Set(includedCards)]
 
-            //add cards
-            for (const c of sameLevelCards) {
-                if (!cardsAvailable.includes(c.name) && !excludedCards.includes(c.name)) //not already in cardsAvailable & not in excludedCards
-                    cardsAvailable.push(c.name);
-            }
+		if (includedCards.length > 5)
+			return i.editReply({ embeds: [{ color: orange, description: "**You can only include up to 5 cards.**" }], ephemeral: true })
 
-            //check for usable underleveled cards
-            for (const c of cardsThatCanBeUnderLeveled) {
-                const card = player.cards.find(ca => ca.name === c);
+		player.cards = player.cards.map((c) => ({
+			//rename all cards, and give level
+			name: c.name.toLowerCase().replace(/\s+/g, "-").replace(/\./g, ""),
+			level: 14 - (c.maxLevel - c.level),
+		}))
 
-                if (!card || cardsAvailable.includes(c) || excludedCards.includes(c)) continue;
+		const cardsThatCanBeUnderLeveled = allCards.filter((c) => c.canBeUnderLeveled).map((c) => c.name)
 
-                if (lvl - card.level <= 2) //add card if 2 levels or less below current lvl
-                    cardsAvailable.push(c);
-            }
+		let cardsAvailable = []
+		let lastLvlAdded
 
-            lastLvlAdded = lvl;
+		for (let lvl = 14; lvl >= 1; lvl--) {
+			//add cards available for use
+			const sameLevelCards = player.cards.filter((c) => c.level === lvl)
 
-            if (cardsAvailable.length >= 32) break;
-        }
+			if (sameLevelCards.length === 0) continue
 
-        if (cardsAvailable.length < 32) //less than 32 cards unlocked
-            return i.editReply({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] });
+			//add cards
+			for (const c of sameLevelCards) {
+				if (!cardsAvailable.includes(c.name) && !excludedCards.includes(c.name))
+					//not already in cardsAvailable & not in excludedCards
+					cardsAvailable.push(c.name)
+			}
 
-        let allDecks = (await decks.find({}).toArray()).sort((a, b) => {
-            if (b.rating === a.rating) return new Date(a.dateAdded) - new Date(b.dateAdded);
-            return b.rating - a.rating;
-        });
+			//check for usable underleveled cards
+			for (const c of cardsThatCanBeUnderLeveled) {
+				const card = player.cards.find((ca) => ca.name === c)
 
-        if (cardsAvailable.length >= 80) allDecks = allDecks.slice(0, (allDecks.length > 200) ? 200 : allDecks.length);
+				if (!card || cardsAvailable.includes(c) || excludedCards.includes(c)) continue
 
-        const deckSetRating = deckSetArr => {
-            const sum = deckSetArr.reduce((a, b) => a + b.rating, 0)
-            return sum / deckSetArr.length;
-        }
+				if (lvl - card.level <= 2)
+					//add card if 2 levels or less below current lvl
+					cardsAvailable.push(c)
+			}
 
-        const allCardsAvailable = deckObj => {
-            return deckObj.cards.every(c => cardsAvailable.includes(c));
-        }
+			lastLvlAdded = lvl
 
-        const shareCards = (deck1, deck2, deck3, deck4) => {
-            let cards;
+			if (cardsAvailable.length >= 32) break
+		}
 
-            if (deck4) cards = deck1.cards.concat(deck2.cards, deck3.cards, deck4.cards);
-            else if (deck3) cards = deck1.cards.concat(deck2.cards, deck3.cards);
-            else cards = deck1.cards.concat(deck2.cards);
+		if (cardsAvailable.length < 32)
+			//less than 32 cards unlocked
+			return i.editReply({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] })
 
-            return cards.length !== new Set(cards).size;
-        }
+		let allDecks = (await decks.find({}).toArray()).sort((a, b) => {
+			if (b.rating === a.rating) return new Date(a.dateAdded) - new Date(b.dateAdded)
+			return b.rating - a.rating
+		})
 
-        const deckSets = [];
+		const deckSetRating = (deckSetArr) => {
+			const sum = deckSetArr.reduce((a, b) => a + b.rating, 0)
+			return sum / deckSetArr.length
+		}
 
-        while (deckSets.length < 2) {
-            for (let i = 0, len = allDecks.length; i < len - 3; i++) {
-                const deck1 = allDecks[i];
-                if (deckSets.length === 2 && deck1.rating * 4 <= deckSetRating(deckSets[1])) break;
-                if (!allCardsAvailable(deck1)) continue;
+		const allCardsAvailable = (deckObj) => {
+			return deckObj.cards.every((c) => cardsAvailable.includes(c))
+		}
 
-                for (let x = i + 1; x < len - 2; x++) {
-                    const deck2 = allDecks[x];
-                    if (deckSets.length === 2 && deck1.rating + (deck2.rating * 3) <= deckSetRating(deckSets[1])) break;
-                    if (!allCardsAvailable(deck2)) continue;
-                    if (shareCards(deck1, deck2)) continue;
+		const shareCards = (deck1, deck2, deck3, deck4) => {
+			let cards
 
-                    for (let y = x + 1; y < len - 1; y++) {
-                        const deck3 = allDecks[y];
-                        if (deckSets.length === 2 && (deck1.rating + deck2.rating) + (deck3.rating * 2) <= deckSetRating(deckSets[1])) break;
-                        if (!allCardsAvailable(deck3)) continue;
-                        if (shareCards(deck1, deck2, deck3)) continue;
+			if (deck4) cards = deck1.cards.concat(deck2.cards, deck3.cards, deck4.cards)
+			else if (deck3) cards = deck1.cards.concat(deck2.cards, deck3.cards)
+			else cards = deck1.cards.concat(deck2.cards)
 
-                        for (let z = y + 1; z < len; z++) {
-                            const deck4 = allDecks[z];
-                            if (deckSets.length === 2 && (deck1.rating + deck2.rating + deck3.rating + deck4.rating) <= deckSetRating(deckSets[1])) break;
-                            if (!allCardsAvailable(deck4)) continue;
-                            if (shareCards(deck1, deck2, deck3, deck4)) continue;
+			return cards.length !== new Set(cards).size
+		}
 
-                            //add to deckSets if higher rated
-                            if (deckSets.length === 0) deckSets.push([deck1, deck2, deck3, deck4]);
-                            else if (deckSets.length === 1) {
-                                const isHigherThan = deckSetRating([deck1, deck2, deck3, deck4]) > deckSetRating(deckSets[0]);
-                                if (isHigherThan) deckSets.unshift([deck1, deck2, deck3, deck4]); //add to front
-                                else deckSets.push([deck1, deck2, deck3, deck4]); //add to end
-                            }
-                            else if (deckSets.length === 2) {
-                                const [deckSet1Rat, deckSet2Rat, deckSetRat] = [deckSetRating(deckSets[0]), deckSetRating(deckSets[1]), deckSetRating([deck1, deck2, deck3, deck4])];
+		const containsAllIncludedCards = (deck1, deck2, deck3, deck4) => {
+			//return true if all of ...includedCards exist in any of the 4 decks
+			for (const c of includedCards) {
+				if (!deck1.cards.includes(c) && !deck2.cards.includes(c) && !deck3.cards.includes(c) && !deck4.cards.includes(c))
+					return false
+			}
 
-                                if (deckSetRat > deckSet1Rat) {
-                                    deckSets.pop();
-                                    deckSets.unshift([deck1, deck2, deck3, deck4]);
-                                }
-                                else if (deckSetRat > deckSet2Rat) {
-                                    deckSets.pop();
-                                    deckSets.push([deck1, deck2, deck3, deck4]);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            //add more cards to cardsAvailable
-            if (deckSets.length < 2) {
-                lastLvlAdded--;
+			return true
+		}
 
-                const newCardsToAdd = player.cards.filter(c => c.level === lastLvlAdded && !excludedCards.includes(c.name)).map(c => c.name);
+		const deckSets = []
 
-                if (newCardsToAdd.length > 0)
-                    cardsAvailable = cardsAvailable.concat(newCardsToAdd);
-            }
+		while (deckSets.length < 2) {
+			for (let i = 0, len = allDecks.length; i < len - 3; i++) {
+				const deck1 = allDecks[i]
+				if (deckSets.length === 2 && deck1.rating * 4 <= deckSetRating(deckSets[1])) break
+				if (!allCardsAvailable(deck1)) continue
 
-            if (cardsAvailable.length >= 80)
-                allDecks = allDecks.slice(0, (allDecks.length > 200) ? 200 : allDecks.length);
+				for (let x = i + 1; x < len - 2; x++) {
+					const deck2 = allDecks[x]
+					if (deckSets.length === 2 && deck1.rating + deck2.rating * 3 <= deckSetRating(deckSets[1])) break
+					if (!allCardsAvailable(deck2)) continue
+					if (shareCards(deck1, deck2)) continue
 
-            if (lastLvlAdded <= 0) break;
-        }
+					for (let y = x + 1; y < len - 1; y++) {
+						const deck3 = allDecks[y]
+						if (deckSets.length === 2 && deck1.rating + deck2.rating + deck3.rating * 2 <= deckSetRating(deckSets[1])) break
+						if (!allCardsAvailable(deck3)) continue
+						if (shareCards(deck1, deck2, deck3)) continue
 
-        if (deckSets.length === 0) //no deck sets found
-            return i.editReply({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] });
+						for (let z = y + 1; z < len; z++) {
+							const deck4 = allDecks[z]
+							if (
+								deckSets.length === 2 &&
+								deck1.rating + deck2.rating + deck3.rating + deck4.rating <= deckSetRating(deckSets[1])
+							)
+								break
+							if (!containsAllIncludedCards(deck1, deck2, deck3, deck4)) continue
+							if (!allCardsAvailable(deck4)) continue
+							if (shareCards(deck1, deck2, deck3, deck4)) continue
 
-        const getAvgCardLvl = (deckSet) => {
-            let sum = 0;
+							//add to deckSets if higher rated
+							if (deckSets.length === 0) deckSets.push([deck1, deck2, deck3, deck4])
+							else if (deckSets.length === 1) {
+								const isHigherThan = deckSetRating([deck1, deck2, deck3, deck4]) > deckSetRating(deckSets[0])
+								if (isHigherThan) deckSets.unshift([deck1, deck2, deck3, deck4]) //add to front
+								else deckSets.push([deck1, deck2, deck3, deck4]) //add to end
+							} else if (deckSets.length === 2) {
+								const [deckSet1Rat, deckSet2Rat, deckSetRat] = [
+									deckSetRating(deckSets[0]),
+									deckSetRating(deckSets[1]),
+									deckSetRating([deck1, deck2, deck3, deck4]),
+								]
 
-            for (const d of deckSet) {
-                for (const c of d.cards) {
-                    const card = player.cards.find(ca => ca.name === c);
-                    sum += card.level;
-                }
-            }
+								if (deckSetRat > deckSet1Rat) {
+									deckSets.pop()
+									deckSets.unshift([deck1, deck2, deck3, deck4])
+								} else if (deckSetRat > deckSet2Rat) {
+									deckSets.pop()
+									deckSets.push([deck1, deck2, deck3, deck4])
+								}
+							}
+						}
+					}
+				}
+			}
+			//add more cards to cardsAvailable
+			if (deckSets.length < 2) {
+				lastLvlAdded--
 
-            return sum / 32;
-        }
+				const newCardsToAdd = player.cards
+					.filter((c) => c.level === lastLvlAdded && !excludedCards.includes(c.name))
+					.map((c) => c.name)
 
-        deckSets.sort((a, b) => {
-            const avgRatingA = deckSetRating(a);
-            const avgRatingB = deckSetRating(b);
-            const avgLvlA = getAvgCardLvl(a);
-            const avgLvlB = getAvgCardLvl(b);
+				if (newCardsToAdd.length > 0) cardsAvailable = cardsAvailable.concat(newCardsToAdd)
+			}
 
-            if (avgRatingA === avgRatingB) {
-                if (avgLvlA === avgLvlB) return average(a.map(d => new Date(d.dateAdded).getTime())) - average(b.map(d => new Date(d.dateAdded).getTime()));
-                return avgLvlB - avgLvlA;
-            }
-            return avgRatingB - avgRatingA;
-        });
+			if (lastLvlAdded <= 0) break
+		}
 
-        const embed = {
-            title: `${getEmoji(client, getArenaEmoji(player.bestTrophies))} ${player.name} | ${player.tag}`,
-            description: ``,
-            color: pink,
-            footer: {
-                text: 'Deck ratings are calculated from win % and usage rate'
-            }
-        }
+		if (deckSets.length === 0) {
+			if (includedCards.length > 0)
+				return i.editReply({
+					embeds: [{ color: orange, description: `**No deck sets found.** Try removing the search parameters..` }],
+				})
 
-        //excluded cards
-        if (excludedCards.length > 0)
-            embed.description += `**Excluded Cards**: ${excludedCards.map(c => getEmoji(client, c.replace(/-/g, '_'))).join('')}\n\n`;
+			//no deck sets found
+			return i.editReply({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] })
+		}
 
-        //best deck set
-        embed.description += `**__Best War Deck Set__**\nRating: **${deckSetRating(deckSets[0]).toFixed(1)}**\nAvg. Level: **${getAvgCardLvl(deckSets[0]).toFixed(1)}**\n`;
-        embed.description += `${deckSets[0].map(d => `[**Copy**](${getDeckUrl(d.cards)}): ${d.cards.map(c => getEmoji(client, c.replace(/-/g, '_'))).join('')}\n`).join('')}`;
+		const getAvgCardLvl = (deckSet) => {
+			let sum = 0
 
-        //alternative
-        if (deckSets.length === 2) {
-            embed.description += `\n\n**__Alternative__**\nRating: **${deckSetRating(deckSets[1]).toFixed(1)}**\nAvg. Level: **${getAvgCardLvl(deckSets[1]).toFixed(1)}**\n`;
-            embed.description += `${deckSets[1].map(d => `[**Copy**](${getDeckUrl(d.cards)}): ${d.cards.map(c => getEmoji(client, c.replace(/-/g, '_'))).join('')}\n`).join('')}`;
-        }
+			for (const d of deckSet) {
+				for (const c of d.cards) {
+					const card = player.cards.find((ca) => ca.name === c)
+					sum += card.level
+				}
+			}
 
-        return i.editReply({ embeds: [embed] });
-    }
-};
+			return sum / 32
+		}
+
+		deckSets.sort((a, b) => {
+			const avgRatingA = deckSetRating(a)
+			const avgRatingB = deckSetRating(b)
+			const avgLvlA = getAvgCardLvl(a)
+			const avgLvlB = getAvgCardLvl(b)
+
+			if (avgRatingA === avgRatingB) {
+				if (avgLvlA === avgLvlB)
+					return average(a.map((d) => new Date(d.dateAdded).getTime())) - average(b.map((d) => new Date(d.dateAdded).getTime()))
+				return avgLvlB - avgLvlA
+			}
+			return avgRatingB - avgRatingA
+		})
+
+		const embed = {
+			title: `${getEmoji(client, getArenaEmoji(player.bestTrophies))} ${player.name} | ${player.tag}`,
+			description: ``,
+			color: pink,
+			footer: {
+				text: "Deck ratings are calculated from win % and usage rate",
+			},
+		}
+
+		//included cards
+		if (includedCards.length > 0)
+			embed.description += `**Included Cards**: ${includedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("")}`
+
+		//excluded cards
+		if (excludedCards.length > 0)
+			embed.description += `\n**Excluded Cards**: ${excludedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("")}`
+
+		//best deck set
+		embed.description += `\n\n**__Best War Deck Set__**\nRating: **${deckSetRating(deckSets[0]).toFixed(
+			1
+		)}**\nAvg. Level: **${getAvgCardLvl(deckSets[0]).toFixed(1)}**\n`
+		embed.description += `${deckSets[0]
+			.map((d) => `[**Copy**](${getDeckUrl(d.cards)}): ${d.cards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("")}\n`)
+			.join("")}`
+
+		//alternative
+		if (deckSets.length === 2) {
+			embed.description += `\n\n**__Alternative__**\nRating: **${deckSetRating(deckSets[1]).toFixed(
+				1
+			)}**\nAvg. Level: **${getAvgCardLvl(deckSets[1]).toFixed(1)}**\n`
+			embed.description += `${deckSets[1]
+				.map((d) => `[**Copy**](${getDeckUrl(d.cards)}): ${d.cards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("")}\n`)
+				.join("")}`
+		}
+
+		return i.editReply({ embeds: [embed] })
+	},
+}
