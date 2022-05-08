@@ -2,10 +2,11 @@ const { getWarLeaderboard, getRiverRace } = require("../util/api")
 const { getAvgFame } = require("../util/raceFunctions")
 
 module.exports = {
-	expression: "0 0 * * * *", //run every hour at :30
+	expression: "0 35 * * * *", //run every hour at :35
 	run: async (client, db) => {
 		const dailyLb = db.collection("Daily Clan Leaderboard")
 		const statistics = db.collection("Statistics")
+		console.log("Updating lb...")
 
 		//get average fame for top 100 global war clans
 		//reduce total api requests by looking at all clans in race
