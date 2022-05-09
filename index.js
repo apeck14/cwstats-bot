@@ -13,3 +13,8 @@ process.on("unhandledRejection", (err) => {
 	console.log("---UNHANDLED REJECION---")
 	console.error(err)
 })
+
+process.on("uncaughtException", (err) => {
+	console.log("---UNCAUGHT EXCEPTION---")
+	console.error(err)
+})

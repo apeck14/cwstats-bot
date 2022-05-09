@@ -15,7 +15,7 @@ module.exports = {
 		],
 		userPermissions: ["MANAGE_GUILD"],
 	},
-	run: async (i, db, client) => {
+	run: async (i, db) => {
 		const guilds = db.collection("Guilds")
 		const statistics = db.collection("Statistics")
 		const { abbreviations } = await guilds.findOne({ guildID: i.channel.guild.id })

@@ -6,7 +6,7 @@ module.exports = {
 		description: "Reset all bot settings to default.",
 		userPermissions: ["ADMINISTRATOR"],
 	},
-	run: async (i, db, client) => {
+	run: async (i, db) => {
 		const guilds = db.collection("Guilds")
 
 		await guilds.updateOne(

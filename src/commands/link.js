@@ -15,7 +15,7 @@ module.exports = {
 			},
 		],
 	},
-	run: async (i, db, client) => {
+	run: async (i, db) => {
 		const linkedAccounts = db.collection("Linked Accounts")
 
 		const tag = formatTag(i.options.getString("tag"))

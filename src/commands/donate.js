@@ -3,7 +3,7 @@ module.exports = {
 		name: "donate",
 		description: "Donate to support CW2 Stats",
 	},
-	run: async (i, db, client) => {
+	run: async (i) => {
 		const row = {
 			components: [
 				{

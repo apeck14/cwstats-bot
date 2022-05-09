@@ -42,7 +42,7 @@ module.exports = {
 		context.drawImage(arenaImage, 0, 0, canvas.width, canvas.height)
 
 		//add global rank
-		if (playerRank) {
+		if (playerRank > -1) {
 			const fontSize = () => {
 				if (playerRank < 10) return 130
 				if (playerRank < 1000) return 115
