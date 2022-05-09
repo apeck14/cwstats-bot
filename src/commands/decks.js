@@ -148,6 +148,8 @@ module.exports = {
 			return b.rating - a.rating
 		})
 
+		if (cardsAvailable.length >= 50) allDecks = allDecks.slice(0, allDecks.length > 300 ? 300 : allDecks.length)
+
 		const deckSetRating = (deckSetArr) => {
 			const sum = deckSetArr.reduce((a, b) => a + b.rating, 0)
 			return sum / deckSetArr.length
