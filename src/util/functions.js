@@ -170,4 +170,14 @@ module.exports = {
 			return aIndex - bIndex
 		})
 	},
+	errorMsg: (i, message) => {
+		i.editReply({
+			embeds: [
+				{
+					color: red,
+					description: message,
+				},
+			],
+		})
+	},
 }
