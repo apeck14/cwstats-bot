@@ -1,5 +1,6 @@
 const allCards = require("../static/cardInfo")
 const badges = require("../static/badges.js")
+const { red } = require("../static/colors")
 
 module.exports = {
 	getClanBadge: (badgeId, trophyCount, returnEmojiPath = true) => {
