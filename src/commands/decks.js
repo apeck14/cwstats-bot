@@ -3,6 +3,7 @@ const { orange, pink } = require("../static/colors")
 const { getEmoji, getArenaEmoji, average, getDeckUrl } = require("../util/functions")
 
 module.exports = {
+	disabled: true,
 	data: {
 		name: "decks",
 		description: "Find top deck sets based for any player!",

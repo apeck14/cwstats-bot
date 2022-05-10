@@ -4,7 +4,6 @@ const validate = require("../util/validate.js")
 module.exports = {
 	event: "interactionCreate",
 	run: async (client, db, i) => {
-		console.time()
 		if (i?.type !== "APPLICATION_COMMAND") return
 		if (!i.guild)
 			return i.reply({
@@ -23,8 +22,6 @@ module.exports = {
 
 			await i.deferReply()
 
-			console.timeEnd()
-
 			if (error) {
 				return i.editReply({
 					embeds: [
@@ -37,7 +34,21 @@ module.exports = {
 				})
 			}
 
-			await i.client.commands.get(i.commandName).run(i, db, client)
+			const { disabled, run } = i.client.commands.get(i.commandName)
+
+			if (disabled) {
+				return i.editReply({
+					embeds: [
+						{
+							description: ":tools: **This command has been temporarily disabled**.",
+							color: orange,
+						},
+					],
+					ephemeral: onlyShowToUser,
+				})
+			}
+
+			run(i, db, client)
 		} catch (e) {
 			if (e instanceof Error && client.isReady()) {
 				console.log("---UNEXPECTED INTERACTION ERROR---")
