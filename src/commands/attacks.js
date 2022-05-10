@@ -1,6 +1,6 @@
 const { getRiverRace, getClan } = require("../util/api")
 const { orange, pink } = require("../static/colors")
-const { getClanBadge, getEmoji } = require("../util/functions")
+const { getClanBadge, getEmoji, errorMsg } = require("../util/functions")
 const { formatStr } = require("../util/formatting")
 
 module.exports = {
@@ -38,7 +38,7 @@ module.exports = {
 
 		const { data: race, error: raceError } = await getRiverRace(tag)
 
-		if (raceError) throw raceError
+		if (raceError) return errorMsg(i, raceError)
 
 		if (race.state === "matchmaking")
 			return i.editReply({
@@ -61,7 +61,7 @@ module.exports = {
 
 		const { data: clan, error: clanError } = await getClan(tag)
 
-		if (clanError) throw clanError
+		if (clanError) return errorMsg(i, clanError)
 
 		const dayOfWeek = race.periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
 

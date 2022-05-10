@@ -1,6 +1,6 @@
 const { getPlayer } = require("../util/api")
 const { orange, pink } = require("../static/colors")
-const { getEmoji, getArenaEmoji, average, getDeckUrl } = require("../util/functions")
+const { getEmoji, getArenaEmoji, average, getDeckUrl, errorMsg } = require("../util/functions")
 
 module.exports = {
 	disabled: true,
@@ -64,7 +64,7 @@ module.exports = {
 
 		const { data: player, error } = await getPlayer(tag)
 
-		if (error) throw error
+		if (error) return errorMsg(i, error)
 
 		const allCards = require("../static/cardInfo.js")
 

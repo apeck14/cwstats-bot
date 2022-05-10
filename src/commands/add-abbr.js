@@ -1,6 +1,6 @@
 const { getClan } = require("../util/api")
 const { green } = require("../static/colors")
-const { getClanBadge, getEmoji } = require("../util/functions")
+const { getClanBadge, getEmoji, errorMsg } = require("../util/functions")
 const { formatTag, formatStr } = require("../util/formatting")
 
 module.exports = {
@@ -31,19 +31,22 @@ module.exports = {
 		const abbreviation = i.options.getString("abbr")
 		const tag = i.options.getString("tag")
 
-		if (abbreviations.length >= 15) throw "**Up to 15 abbreviations can be set.** Remove an existing abbreviation and try again."
+		if (abbreviations.length >= 15)
+			return errorMsg(i, "**Up to 15 abbreviations can be set.** Remove an existing abbreviation and try again.")
 
-		if (!abbreviation.match(/^[0-9a-zA-Z]+$/)) throw "**Abbreviation must be alphanumeric.**"
+		if (!abbreviation.match(/^[0-9a-zA-Z]+$/)) return errorMsg(i, "**Abbreviation must be alphanumeric.**")
 
-		if (abbreviation.length > 5) throw "**Abbreviation cannot be larger than 5 characters.**"
+		if (abbreviation.length > 5) return errorMsg(i, "**Abbreviation cannot be larger than 5 characters.**")
 
-		if (abbreviations.find((a) => a.abbr === abbreviation)) throw "**This abbreviation is already in use.** Remove it and try again."
+		if (abbreviations.find((a) => a.abbr === abbreviation))
+			return errorMsg(i, "**This abbreviation is already in use.** Remove it and try again.")
 
-		if (abbreviations.find((a) => a.tag === formatTag(tag))) throw "**This clan is already in use.** Remove it and try again."
+		if (abbreviations.find((a) => a.tag === formatTag(tag)))
+			return errorMsg(i, "**This clan is already in use.** Remove it and try again.")
 
 		const { data: clan, error } = await getClan(tag)
 
-		if (error) throw error
+		if (error) return errorMsg(i, error)
 
 		statistics.updateOne({}, { $inc: { totalAbbreviations: 1 } })
 		await guilds.updateOne(

@@ -1,6 +1,6 @@
 const { getPlayer, getClan, getPlayerRanking } = require("../util/api")
 const { orange, pink } = require("../static/colors")
-const { getClanBadge, getEmoji, getArenaEmoji } = require("../util/functions")
+const { getClanBadge, getEmoji, getArenaEmoji, errorMsg } = require("../util/functions")
 const { createCanvas, registerFont, loadImage } = require("canvas")
 const { formatTag, formatStr, formatRole } = require("../util/formatting")
 registerFont("./src/static/fonts/Supercell-Magic.ttf", { family: "Supercell-Magic" })
@@ -52,14 +52,14 @@ module.exports = {
 
 		const { error: playerError, data: player } = await getPlayer(tag)
 
-		if (playerError) throw playerError
+		if (playerError) return errorMsg(i, playerError)
 
 		const [{ data: playerRank, error: playerRankingError }, arenaImage] = await Promise.all([
 			getPlayerRanking(player.tag),
 			loadImage(`./src/static/images/arenas/${getArenaEmoji(player.trophies)}.png`),
 		])
 
-		if (playerRankingError) throw playerRankingError
+		if (playerRankingError) return errorMsg(i, playerRankingError)
 
 		const canvas = createCanvas(arenaImage.width, arenaImage.height)
 		const context = canvas.getContext("2d")
@@ -96,7 +96,7 @@ module.exports = {
 			//get clan badge
 			const { data: clan, error: clanError } = await getClan(player.clan.tag)
 
-			if (clanError) throw clanError
+			if (clanError) return errorMsg(i, clanError)
 
 			clanBadge = getClanBadge(clan.badgeId, clan.clanWarTrophies)
 		}

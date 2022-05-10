@@ -1,6 +1,7 @@
 const { getPlayer } = require("../util/api")
 const { green, orange } = require("../static/colors")
 const { formatStr, formatTag } = require("../util/formatting")
+const { errorMsg } = require("../util/functions")
 
 module.exports = {
 	data: {
@@ -22,7 +23,7 @@ module.exports = {
 
 		const { data: player, error } = await getPlayer(tag)
 
-		if (error) throw error
+		if (error) return errorMsg(i, error)
 
 		const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id })
 

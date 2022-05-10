@@ -1,7 +1,7 @@
 const { getRiverRace } = require("../util/api")
 const { orange, pink } = require("../static/colors")
 const { getRacePlacements, getAvgFame, getProjFame } = require("../util/raceFunctions")
-const { getClanBadge, getEmoji } = require("../util/functions")
+const { getClanBadge, getEmoji, errorMsg } = require("../util/functions")
 const { formatStr, formatTag } = require("../util/formatting")
 
 module.exports = {
@@ -29,7 +29,7 @@ module.exports = {
 
 		const { data: race, error } = await getRiverRace(tag)
 
-		if (error) throw error
+		if (error) return errorMsg(i, error)
 
 		if (race.state === "matchmaking")
 			return i.editReply({ embeds: [{ description: ":mag: **Matchmaking is underway!**", color: orange }] })
