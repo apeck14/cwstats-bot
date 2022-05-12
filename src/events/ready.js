@@ -19,6 +19,7 @@ module.exports = {
 		}
 
 		try {
+			console.log(client.guilds.cache)
 			client.guilds.cache.each(async (g) => {
 				const redrumExists = await g.members.fetch("379717576118239232")
 				const jaybirdExists = await g.members.fetch("767423046511886367")
