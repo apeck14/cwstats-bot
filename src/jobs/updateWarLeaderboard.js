@@ -4,7 +4,7 @@ const { getAvgFame } = require("../util/raceFunctions")
 const locations = require("../static/locations")
 
 module.exports = {
-	expression: "0 35 * * * *", //run every hour at :35
+	expression: "0 50 * * * *", //run every hour at :35
 	run: async (client, db) => {
 		const dailyLb = db.collection("Daily Clan Leaderboard")
 		const statistics = db.collection("Statistics")
@@ -23,9 +23,9 @@ module.exports = {
 
 		console.log("Updating daily lb...")
 
-		const lbIDs = locations.filter((l) => l.isAdded).map((l) => l.id)
+		const lbIDs = locations.filter((l) => l.isAdded || l.name === "Global").map((l) => l.id)
 
-		const lbPromises = lbIDs.map((id) => getWarLeaderboard(20, id))
+		const lbPromises = lbIDs.map((id) => getWarLeaderboard(id === "global" ? 100 : 20, id))
 		const allLbs = await Promise.all(lbPromises)
 
 		const { data: allGlobalRankedClans, error: allGlobalRankedError } = await getWarLeaderboard(1000)
