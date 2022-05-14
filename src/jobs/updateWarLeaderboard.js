@@ -52,12 +52,11 @@ module.exports = {
 				clan.decksRemaining = 200 - cl.participants.reduce((a, b) => a + b.decksUsedToday, 0)
 				clan.rank = allGlobalRankedClans.find((cla) => cla.tag === cl.tag).rank || "N/A"
 			}
-
-			statistics.updateOne({}, { $set: { lbLastUpdated: Date.now() } })
 		}
 
 		if (allClans.length > 0) {
 			await dailyLb.deleteMany({})
+			statistics.updateOne({}, { $set: { lbLastUpdated: Date.now() } })
 			console.log("Current lb deleted!")
 			dailyLb.insertMany(allClans)
 			console.log("Daily LB updated!")
