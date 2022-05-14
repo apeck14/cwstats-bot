@@ -1,44 +1,65 @@
+const { uniqBy } = require("lodash")
 const { getWarLeaderboard, getRiverRace } = require("../util/api")
 const { getAvgFame } = require("../util/raceFunctions")
+const locations = require("../static/locations")
 
 module.exports = {
 	expression: "0 35 * * * *", //run every hour at :35
 	run: async (client, db) => {
 		const dailyLb = db.collection("Daily Clan Leaderboard")
 		const statistics = db.collection("Statistics")
-		console.log("Updating lb...")
+
+		//top 100 global
+		//top 20 local
+		//France
+		//Germany
+		//United States
+		//Turkey
+		//Spain
 
 		//get average fame for top 100 global war clans
 		//reduce total api requests by looking at all clans in race
 		//if clan already has data found from a previous race, dont make an api request
 
-		const { data: top100ClanAverages, error: lbError } = await getWarLeaderboard()
-		if (lbError) return
+		console.log("Updating daily lb...")
 
-		for (const c of top100ClanAverages) {
+		const lbIDs = locations.filter((l) => l.isAdded).map((l) => l.id)
+
+		const lbPromises = lbIDs.map((id) => getWarLeaderboard(20, id))
+		const allLbs = await Promise.all(lbPromises)
+
+		const { data: allGlobalRankedClans, error: allGlobalRankedError } = await getWarLeaderboard(1000)
+
+		if (allLbs.some((lb) => lb.error) || allGlobalRankedError) return console.log("Error while updating leaderboard!")
+
+		const allClans = uniqBy(allLbs.map((lb) => lb.data).flat(), "tag")
+
+		for (const c of allClans) {
 			if (c.fameAvg) continue //if fame Avg already set
 
-			const { data: race, error: raceError } = await getRiverRace(c.tag)
-			if (raceError) continue
+			const { data: race, error } = await getRiverRace(c.tag)
+			if (error) continue
 
 			const isColosseum = race.periodType === "colosseum"
 			const dayOfWeek = race.periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
 
 			for (const cl of race.clans) {
 				//set fameAvg for all clans in race
-				const clan = top100ClanAverages.find((cla) => cla.tag === cl.tag)
+				const clan = allClans.find((cla) => cla.tag === cl.tag)
 				if (!clan || clan.fameAvg) continue
 
 				clan.fameAvg = getAvgFame(cl, isColosseum, dayOfWeek)
 				clan.decksRemaining = 200 - cl.participants.reduce((a, b) => a + b.decksUsedToday, 0)
+				clan.rank = allGlobalRankedClans.find((cla) => cla.tag === cl.tag).rank || "N/A"
 			}
 
 			statistics.updateOne({}, { $set: { lbLastUpdated: Date.now() } })
 		}
 
-		if (top100ClanAverages.length > 0) {
+		if (allClans.length > 0) {
 			await dailyLb.deleteMany({})
-			dailyLb.insertMany(top100ClanAverages)
+			console.log("Current lb deleted!")
+			dailyLb.insertMany(allClans)
 			console.log("Daily LB updated!")
 		}
 	},
