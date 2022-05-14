@@ -23,7 +23,7 @@ module.exports = {
 		],
 	},
 	run: async (i, db, client) => {
-		const dailyLb = db.collection("Daily Clan Leaderboard Test")
+		const dailyLb = db.collection("Daily Clan Leaderboard")
 		const statistics = db.collection("Statistics")
 		const iName = i.options.getString("location")
 		const leaderboard = await dailyLb
