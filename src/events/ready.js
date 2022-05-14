@@ -18,16 +18,6 @@ module.exports = {
 			commandsArray.push(command)
 		}
 
-		// try {
-		// 	client.guilds.cache.each(async (g) => {
-		// 		const redrumExists = await g.members.fetch("379717576118239232")
-		// 		const jaybirdExists = await g.members.fetch("767423046511886367")
-		// 		if (redrumExists || jaybirdExists) console.log(g.name)
-		// 	})
-		// } catch (err) {
-		// 	console.log(err)
-		// }
-
 		const commandsData = commandsArray.map((e) => e.data)
 		registerSlashCommands(client.user.id, commandsData)
 		console.log(`${client.user.tag} Started`)
