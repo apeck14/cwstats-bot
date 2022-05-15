@@ -18,7 +18,8 @@ module.exports = {
 					.map((l) => ({
 						name: l.name,
 						value: l.name,
-					})),
+					}))
+					.sort((a, b) => b.name - a.name),
 			},
 		],
 	},
