@@ -5,7 +5,7 @@ const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker")
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 module.exports = {
-	expression: "0 0 10 * * *", //run every day at 10 UTC
+	expression: "0 20 4 * * *", //run every day at 4:20 UTC
 	run: async (client, db) => {
 		const decks = db.collection("Decks")
 		console.log("Adding decks...")
@@ -28,7 +28,7 @@ module.exports = {
 
 				for await (const c of allCards) {
 					//loop through all cards
-					const url = `https://royaleapi.com/decks/popular?time=7d&inc=${c.name}&players=PvP&type=NormalBattle&size=20&sort=rating&min_elixir=1&max_elixir=9&mode=digest`
+					const url = `https://royaleapi.com/decks/popular?time=14d&sort=rating&size=20&players=PvP&min_trophies=6300&max_trophies=10000&min_elixir=1&max_elixir=9&min_cycle_elixir=4&max_cycle_elixir=28&mode=digest&type=Ladder&inc=${c.name}&&global_exclude=false`
 
 					await page.goto(url)
 
