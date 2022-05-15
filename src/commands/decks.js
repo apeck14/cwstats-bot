@@ -1,9 +1,10 @@
 const { getPlayer } = require("../util/api")
 const { orange, pink } = require("../static/colors")
 const { getEmoji, getArenaEmoji, average, getDeckUrl, errorMsg } = require("../util/functions")
+const allCards = require("../static/cardInfo.js")
+const { filter } = require("lodash")
 
 module.exports = {
-	disabled: true,
 	data: {
 		name: "decks",
 		description: "Find top deck sets based for any player!",
@@ -65,8 +66,6 @@ module.exports = {
 		const { data: player, error } = await getPlayer(tag)
 
 		if (error) return errorMsg(i, error)
-
-		const allCards = require("../static/cardInfo.js")
 
 		let excludedCards = i.options
 			.getString("exclude-cards")
@@ -152,22 +151,31 @@ module.exports = {
 		if (cardsAvailable.length >= 50) allDecks = allDecks.slice(0, allDecks.length > 300 ? 300 : allDecks.length)
 
 		const deckSetRating = (deckSetArr) => {
-			const sum = deckSetArr.reduce((a, b) => a + b.rating, 0)
+			let sum = 0
+			for (let i = 0; i < deckSetArr.length; i++) {
+				sum += deckSetArr[i].rating
+			}
+
 			return sum / deckSetArr.length
 		}
 
 		const allCardsAvailable = (deckObj) => {
-			return deckObj.cards.every((c) => cardsAvailable.includes(c))
+			for (let i = 0; i < deckObj.cards.length; i++) {
+				if (!cardsAvailable.includes(deckObj.cards[i])) return false
+			}
+
+			return true
 		}
 
-		const shareCards = (deck1, deck2, deck3, deck4) => {
-			let cards
-
-			if (deck4) cards = deck1.cards.concat(deck2.cards, deck3.cards, deck4.cards)
-			else if (deck3) cards = deck1.cards.concat(deck2.cards, deck3.cards)
-			else cards = deck1.cards.concat(deck2.cards)
-
-			return cards.length !== new Set(cards).size
+		const shareCards = (...decks) => {
+			const unique = new Set()
+			for (const deck of decks) {
+				for (const card of deck.cards) {
+					if (unique.has(card)) return true
+					unique.add(card)
+				}
+			}
+			return false
 		}
 
 		const containsAllIncludedCards = (deck1, deck2, deck3, deck4) => {
@@ -183,32 +191,30 @@ module.exports = {
 		const deckSets = []
 
 		while (deckSets.length < 2) {
-			for (let i = 0, len = allDecks.length; i < len - 3; i++) {
-				const deck1 = allDecks[i]
+			const tempAllDecks = filter(allDecks, allCardsAvailable)
+
+			for (let i = 0, len = tempAllDecks.length; i < len - 3; i++) {
+				const deck1 = tempAllDecks[i]
 				if (deckSets.length === 2 && deck1.rating * 4 <= deckSetRating(deckSets[1])) break
-				if (!allCardsAvailable(deck1)) continue
 
 				for (let x = i + 1; x < len - 2; x++) {
-					const deck2 = allDecks[x]
+					const deck2 = tempAllDecks[x]
 					if (deckSets.length === 2 && deck1.rating + deck2.rating * 3 <= deckSetRating(deckSets[1])) break
-					if (!allCardsAvailable(deck2)) continue
 					if (shareCards(deck1, deck2)) continue
 
 					for (let y = x + 1; y < len - 1; y++) {
-						const deck3 = allDecks[y]
+						const deck3 = tempAllDecks[y]
 						if (deckSets.length === 2 && deck1.rating + deck2.rating + deck3.rating * 2 <= deckSetRating(deckSets[1])) break
-						if (!allCardsAvailable(deck3)) continue
 						if (shareCards(deck1, deck2, deck3)) continue
 
 						for (let z = y + 1; z < len; z++) {
-							const deck4 = allDecks[z]
+							const deck4 = tempAllDecks[z]
 							if (
 								deckSets.length === 2 &&
 								deck1.rating + deck2.rating + deck3.rating + deck4.rating <= deckSetRating(deckSets[1])
 							)
 								break
 							if (!containsAllIncludedCards(deck1, deck2, deck3, deck4)) continue
-							if (!allCardsAvailable(deck4)) continue
 							if (shareCards(deck1, deck2, deck3, deck4)) continue
 
 							//add to deckSets if higher rated
@@ -244,7 +250,7 @@ module.exports = {
 					.filter((c) => c.level === lastLvlAdded && !excludedCards.includes(c.name))
 					.map((c) => c.name)
 
-				if (newCardsToAdd.length > 0) cardsAvailable = cardsAvailable.concat(newCardsToAdd)
+				if (newCardsToAdd.length > 0) cardsAvailable.push(...newCardsToAdd)
 			}
 
 			if (lastLvlAdded <= 0) break
