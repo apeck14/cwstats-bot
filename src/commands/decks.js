@@ -5,6 +5,7 @@ const allCards = require("../static/cardInfo.js")
 const { filter } = require("lodash")
 
 module.exports = {
+	disabled: true,
 	data: {
 		name: "decks",
 		description: "Find top deck sets based for any player!",
