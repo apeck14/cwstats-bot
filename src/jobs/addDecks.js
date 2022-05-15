@@ -5,7 +5,7 @@ const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker")
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 module.exports = {
-	expression: "0 45 15 * * *", //run every day at 4:20 UTC
+	expression: "0 25 21 * * *", //run every day at 4:25 UTC
 	run: async (client, db) => {
 		const decks = db.collection("Decks")
 		console.log("Adding decks...")
