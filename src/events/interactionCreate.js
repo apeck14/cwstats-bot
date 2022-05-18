@@ -1,4 +1,4 @@
-const { orange, red } = require("../static/colors.js")
+const { orange } = require("../static/colors.js")
 const validate = require("../util/validate.js")
 
 module.exports = {
@@ -16,14 +16,14 @@ module.exports = {
 			})
 
 		try {
+			await i.deferReply()
+
 			const guilds = db.collection("Guilds")
 			const { channels } = await guilds.findOne({ guildID: i.guildId })
 			const { error, color, onlyShowToUser } = validate(i, channels, client)
 
-			await i.deferReply()
-
 			if (error) {
-				return i.editReply({
+				return await i.editReply({
 					embeds: [
 						{
 							description: error,
@@ -37,7 +37,7 @@ module.exports = {
 			const { disabled, run } = i.client.commands.get(i.commandName)
 
 			if (disabled) {
-				return i.editReply({
+				return await i.editReply({
 					embeds: [
 						{
 							description: ":tools: **This command has been temporarily disabled**.",
@@ -48,28 +48,9 @@ module.exports = {
 				})
 			}
 
-			run(i, db, client)
+			await run(i, db, client)
 		} catch (e) {
-			if (e instanceof Error && client.isReady()) {
-				console.log("---UNEXPECTED INTERACTION ERROR---")
-				console.log("Command:", i?.commandName)
-				console.log("User:", `${i?.user.username}#${i?.user.discriminator}`)
-				console.log("Guild:", `${i?.guild.name} (${i?.guild.id})`)
-				console.log("Options:", i?.options?._hoistedOptions.map((o) => `\n${o.name}: ${o.value}`).join(""))
-				console.log(e)
-			}
-
-			const errEmbed = {
-				description: typeof e === "string" ? e : `**Unexpected error.**`,
-				color: red,
-				footer: {
-					text: typeof e === "string" ? "" : "If this problem persists, join the Support Server.",
-				},
-			}
-
-			if (i?.replied || i?.deferred) return i.editReply({ embeds: [errEmbed], ephemeral: true })
-
-			return i.reply({ embeds: [errEmbed], ephemeral: true })
+			console.log(e)
 		}
 	},
 }
