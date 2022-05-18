@@ -30,7 +30,7 @@ module.exports = {
 			return i.editReply({
 				embeds: [
 					{
-						description: "Abbreviation does not exist.",
+						description: "**Abbreviation does not exist.**",
 						color: orange,
 					},
 				],
@@ -115,9 +115,7 @@ module.exports = {
 			title: `**__Remaining Attacks__**`,
 			description: "",
 			author: {
-				name: `Week ${race.sectionIndex + 1} | ${dayOfWeek < 3 ? "Training" : "War"} Day ${
-					dayOfWeek < 3 ? dayOfWeek + 1 : dayOfWeek - 2
-				}`,
+				name: `Week ${race.sectionIndex + 1} | ${dayOfWeek < 3 ? "Training" : "War"} Day ${dayOfWeek < 3 ? dayOfWeek + 1 : dayOfWeek - 2}`,
 			},
 			footer: {
 				text: showFooter ? `* = Not in clan` : ``,
@@ -135,10 +133,8 @@ module.exports = {
 			name
 		)}**\n${fameEmoji} **${fame}**\n${decksRemainingEmoji} **${totalAttacksLeft}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n`
 
-		if (fourAttacks.length > 0)
-			embed.description += `\n**__4 Attacks__**\n${fourAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
-		if (threeAttacks.length > 0)
-			embed.description += `\n**__3 Attacks__**\n${threeAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
+		if (fourAttacks.length > 0) embed.description += `\n**__4 Attacks__**\n${fourAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
+		if (threeAttacks.length > 0) embed.description += `\n**__3 Attacks__**\n${threeAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
 		if (twoAttacks.length > 0) embed.description += `\n**__2 Attacks__**\n${twoAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
 		if (oneAttack.length > 0) embed.description += `\n**__1 Attack__**\n${oneAttack.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
 
