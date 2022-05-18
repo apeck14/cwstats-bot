@@ -7,7 +7,7 @@ module.exports = {
 	run: async (client, db, i) => {
 		if (i?.type !== "APPLICATION_COMMAND") return
 		if (!i.guild)
-			return i.reply({
+			return await i.reply({
 				embeds: [
 					{
 						description: `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=280576&scope=bot%20applications.commands) me to a server to use my commands!**`,
