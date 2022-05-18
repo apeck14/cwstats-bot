@@ -33,7 +33,10 @@ module.exports = {
 			if (c.fameAvg) continue //if fame Avg already set
 
 			const { data: race, error } = await getRiverRace(c.tag)
-			if (error) continue
+			if (error) {
+				console.log(error)
+				continue
+			}
 
 			const isColosseum = race.periodType === "colosseum"
 			const dayOfWeek = race.periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
