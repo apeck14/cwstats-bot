@@ -1,5 +1,6 @@
 const { orange } = require("../static/colors.js")
 const validate = require("../util/validate.js")
+const guildCreate = require("./guildCreate")
 
 module.exports = {
 	event: "interactionCreate",
@@ -19,8 +20,19 @@ module.exports = {
 			await i.deferReply()
 
 			const guilds = db.collection("Guilds")
-			const { channels } = await guilds.findOne({ guildID: i.guildId })
-			const { error, color, onlyShowToUser } = validate(i, channels, client)
+			let guildExists = await guilds.findOne({ guildID: i.guildId })
+
+			if (!guildExists) {
+				await guildCreate.run(client, db, i.member.guild)
+
+				guildExists = await guilds.findOne({ guildID: i.guildId })
+
+				if (!guildExists) return console.log("Guild not in database, and could not be added.")
+
+				console.log(`Guild not found, but updated! ${i.member.guild.id}`)
+			}
+
+			const { error, color, onlyShowToUser } = validate(i, guildExists.channels, client)
 
 			if (error) {
 				return await i.editReply({

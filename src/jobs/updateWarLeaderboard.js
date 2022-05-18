@@ -11,11 +11,6 @@ module.exports = {
 
 		//top 100 global
 		//top 20 local
-		//France
-		//Germany
-		//United States
-		//Turkey
-		//Spain
 
 		//get average fame for top 100 global war clans
 		//reduce total api requests by looking at all clans in race
