@@ -48,7 +48,7 @@ module.exports = {
 
 				clan.fameAvg = getAvgFame(cl, isColosseum, dayOfWeek)
 				clan.decksRemaining = 200 - cl.participants.reduce((a, b) => a + b.decksUsedToday, 0)
-				clan.rank = allGlobalRankedClans.find((cla) => cla.tag === cl.tag).rank || "N/A"
+				clan.rank = allGlobalRankedClans.find((cla) => cla.tag === cl.tag)?.rank || "N/A"
 			}
 		}
 
