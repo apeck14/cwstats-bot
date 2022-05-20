@@ -36,7 +36,7 @@ module.exports = {
 			const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id })
 
 			if (linkedAccount?.tag) tag = linkedAccount.tag
-			else return i.editReply({ embeds: [{ color: orange, description: `**No tag linked!**` }], ephemeral: true })
+			else return i.editReply({ embeds: [{ color: orange, description: `**No tag linked!** Use **/link** to link your tag.` }], ephemeral: true })
 		} else if (iTag) tag = iTag //tag
 		else {
 			//user
@@ -127,9 +127,9 @@ module.exports = {
 			},
 		}
 
-		embed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${player.bestTrophies}\n${badgeEmoji} **${formatStr(
-			player.clan.name
-		)}**${player.role ? ` (${formatRole(player.role)})` : ""}\n\n`
+		embed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${player.bestTrophies}\n${badgeEmoji} **${formatStr(player.clan.name)}**${
+			player.role ? ` (${formatRole(player.role)})` : ""
+		}\n\n`
 		embed.description += `**__Stats__**\n**CW1 War Wins**: ${player.warDayWins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
 		embed.description += `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}` //cards
 

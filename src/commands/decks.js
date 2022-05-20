@@ -50,7 +50,7 @@ module.exports = {
 			const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id })
 
 			if (linkedAccount?.tag) tag = linkedAccount.tag
-			else return i.editReply({ embeds: [{ color: orange, description: `**No tag linked!**` }], ephemeral: true })
+			else return i.editReply({ embeds: [{ color: orange, description: `**No tag linked!** Use **/link** to link your tag.` }], ephemeral: true })
 		} else if (iTag) tag = iTag //tag
 		else {
 			//user
@@ -81,8 +81,7 @@ module.exports = {
 
 		excludedCards = [...new Set(excludedCards)]
 
-		if (excludedCards.length > 10)
-			return i.editReply({ embeds: [{ color: orange, description: "**You can only exclude up to 10 cards.**" }], ephemeral: true })
+		if (excludedCards.length > 10) return i.editReply({ embeds: [{ color: orange, description: "**You can only exclude up to 10 cards.**" }], ephemeral: true })
 
 		let includedCards = i.options
 			.getString("include-cards")
@@ -97,8 +96,7 @@ module.exports = {
 
 		includedCards = [...new Set(includedCards)]
 
-		if (includedCards.length > 10)
-			return i.editReply({ embeds: [{ color: orange, description: "**You can only include up to 10 cards.**" }], ephemeral: true })
+		if (includedCards.length > 10) return i.editReply({ embeds: [{ color: orange, description: "**You can only include up to 10 cards.**" }], ephemeral: true })
 
 		player.cards = player.cards.map((c) => ({
 			//rename all cards, and give level
@@ -177,8 +175,7 @@ module.exports = {
 		const containsAllIncludedCards = (deck1, deck2, deck3, deck4) => {
 			//return true if all of ...includedCards exist in any of the 4 decks
 			for (const c of includedCards) {
-				if (!deck1.cards.includes(c) && !deck2.cards.includes(c) && !deck3.cards.includes(c) && !deck4.cards.includes(c))
-					return false
+				if (!deck1.cards.includes(c) && !deck2.cards.includes(c) && !deck3.cards.includes(c) && !deck4.cards.includes(c)) return false
 			}
 
 			return true
@@ -217,9 +214,7 @@ module.exports = {
 
 			lastLvlAdded--
 
-			const newCardsToAdd = player.cards
-				.filter((c) => c.level === lastLvlAdded && !cardsAvailable.includes(c.name) && !excludedCards.includes(c.name))
-				.map((c) => c.name)
+			const newCardsToAdd = player.cards.filter((c) => c.level === lastLvlAdded && !cardsAvailable.includes(c.name) && !excludedCards.includes(c.name)).map((c) => c.name)
 
 			cardsAvailable.push(...newCardsToAdd)
 
@@ -263,19 +258,12 @@ module.exports = {
 		embed.description += `\n**Excluded Cards**: ${excludedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("") || "None"}`
 
 		//best deck set
-		embed.description += `\n\n**__Best War Deck Set__**\nRating: **${deckSetRating(deckSet).toFixed(
-			1
-		)}**\nAvg. Level: **${getAvgCardLvl(deckSet).toFixed(1)}**\n`
+		embed.description += `\n\n**__Best War Deck Set__**\nRating: **${deckSetRating(deckSet).toFixed(1)}**\nAvg. Level: **${getAvgCardLvl(deckSet).toFixed(1)}**\n`
 
 		const copyEmoji = getEmoji(client, "copy")
 
 		embed.description += `${deckSet
-			.map(
-				(d) =>
-					`[**Copy**](${getDeckUrl(d.cards)})${copyEmoji}: ${d.cards
-						.map((c) => getEmoji(client, c.replace(/-/g, "_")))
-						.join("")}\n`
-			)
+			.map((d) => `[**Copy**](${getDeckUrl(d.cards)})${copyEmoji}: ${d.cards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("")}\n`)
 			.join("")}`
 
 		return i.editReply({ embeds: [embed] })
