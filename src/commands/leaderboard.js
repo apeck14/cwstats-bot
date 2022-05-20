@@ -2,6 +2,7 @@ const { pink, orange } = require("../static/colors")
 const { formatStr } = require("../util/formatting")
 const { getEmoji, getClanBadge } = require("../util/functions")
 const locations = require("../static/locations")
+const { isNumber } = require("lodash")
 
 module.exports = {
 	data: {
@@ -11,7 +12,7 @@ module.exports = {
 			{
 				type: 3,
 				name: "location",
-				description: "Select a local leaderboard",
+				description: "Filter by location",
 				required: false,
 				choices: locations
 					.filter((l) => l.isAdded)
@@ -21,24 +22,36 @@ module.exports = {
 					}))
 					.sort((a, b) => b.name - a.name),
 			},
+			{
+				type: 3,
+				name: "league",
+				description: "Filter by league",
+				required: false,
+				choices: [
+					{ name: "4000+", value: "4000+" },
+					{ name: "5000+", value: "5000+" },
+				],
+			},
 		],
 	},
 	run: async (i, db, client) => {
 		const dailyLb = db.collection("Daily Clan Leaderboard")
 		const statistics = db.collection("Statistics")
 		const iName = i.options.getString("location")
-		const leaderboard = await dailyLb
-			.find(iName ? { "location.name": iName } : {})
-			.sort({ fameAvg: -1, rank: 1 })
-			.limit(10)
-			.toArray()
+		const maxTrophies = parseInt(i.options.getString("league")?.slice(0, -1)) + 1000
+
+		const query = {}
+		if (iName) query["location.name"] = iName
+		if (maxTrophies) query["clanScore"] = { $lt: maxTrophies, $gte: maxTrophies - 1000 }
+
+		const leaderboard = await dailyLb.find(query).sort({ fameAvg: -1, rank: 1 }).limit(10).toArray()
 
 		if (leaderboard.length === 0)
 			return i.editReply({
 				embeds: [
 					{
 						color: orange,
-						description: "**No data to show!** Try again when war has begun!",
+						description: "**No clans found!**",
 					},
 				],
 			})
@@ -69,9 +82,9 @@ module.exports = {
 			const badgeEmoji = getEmoji(client, badgeName)
 
 			embed.description += `**${i + 1}. ${badgeEmoji} [${formatStr(clan.name)}](${url})**\n`
-			embed.description += `${fameAvgEmoji} **${clan.fameAvg.toFixed(1)}** ${decksRemainingEmoji} ${
-				clan.decksRemaining
-			} :earth_americas: #${clan.rank}\n`
+			embed.description += `${fameAvgEmoji} **${clan.fameAvg.toFixed(1)}** ${decksRemainingEmoji} ${clan.decksRemaining} :earth_americas: ${
+				isNumber(clan.rank) ? `#${clan.rank}` : clan.rank
+			}\n`
 		}
 
 		return i.editReply({ embeds: [embed] })
