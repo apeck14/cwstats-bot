@@ -38,7 +38,10 @@ module.exports = {
 		const dailyLb = db.collection("Daily Clan Leaderboard")
 		const statistics = db.collection("Statistics")
 		const iName = i.options.getString("location")
-		const maxTrophies = parseInt(i.options.getString("league")?.slice(0, -1)) + 1000
+		const iLeague = i.options.getString("league")
+
+		const location = locations.find((l) => l.name === iName)
+		const maxTrophies = parseInt(iLeague?.slice(0, -1)) + 1000
 
 		const query = {}
 		if (iName) query["location.name"] = iName
@@ -61,7 +64,7 @@ module.exports = {
 		const diffInMins = Math.round((now - lbLastUpdated) / 1000 / 60)
 
 		const embed = {
-			title: `**__${iName ?? "Global"} War Leaderboard__**`,
+			title: `**__Daily War Leaderboard__**`,
 			description: "",
 			footer: {
 				text: `Last Updated: ${diffInMins}m ago`,
@@ -74,6 +77,9 @@ module.exports = {
 
 		const fameAvgEmoji = getEmoji(client, "fameAvg")
 		const decksRemainingEmoji = getEmoji(client, "decksRemaining")
+
+		embed.description += `**Location**: ${location?.key || "Global"} ${location?.flagEmoji || ":earth_americas:"}\n`
+		embed.description += `**League**: ${maxTrophies ? `${(maxTrophies - 1000) / 1000}k` : "All"}\n\n`
 
 		for (let i = 0; i < leaderboard.length; i++) {
 			const clan = leaderboard[i]
