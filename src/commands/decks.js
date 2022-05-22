@@ -220,7 +220,7 @@ module.exports = {
 				}
 				return b[sortBy] - a[sortBy]
 			})
-			.slice(0, 50)
+			.slice(0, 20)
 
 		if (allDeckSets.length === 0) {
 			if (includedCards.length > 0 || excludedCards.length > 0)
@@ -274,7 +274,7 @@ module.exports = {
 					description,
 					color: pink,
 					footer: {
-						text: `${i + 1} of ${allDeckSets.length} results`,
+						text: `${i + 1}/${allDeckSets.length} of many results`,
 					},
 				})
 			}
