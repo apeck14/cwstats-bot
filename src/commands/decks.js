@@ -16,7 +16,7 @@ const allCards = require("../static/cardInfo.js")
 const { MessageActionRow } = require("discord.js")
 
 module.exports = {
-	disabled: false,
+	disabled: true,
 	data: {
 		name: "decks",
 		description: "Find top deck sets based for any player!",
