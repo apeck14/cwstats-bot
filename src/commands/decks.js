@@ -1,8 +1,19 @@
 const { getPlayer } = require("../util/api")
 const { orange, pink } = require("../static/colors")
-const { getEmoji, getArenaEmoji, getDeckUrl, errorMsg } = require("../util/functions")
+const {
+	getEmoji,
+	getArenaEmoji,
+	getDeckUrl,
+	errorMsg,
+	hasDuplicateCard,
+	deckSetAvgLvl,
+	deckSetAvgDeckRating,
+	deckSetScore,
+	allIncludedCardsInSet,
+	hasLockedCard,
+} = require("../util/functions")
 const allCards = require("../static/cardInfo.js")
-const { filter } = require("lodash")
+const { MessageActionRow } = require("discord.js")
 
 module.exports = {
 	disabled: false,
@@ -34,6 +45,17 @@ module.exports = {
 				description: "Cards to include (separate card names with a comma)",
 				required: false,
 			},
+			{
+				type: 3,
+				name: "sort-by",
+				description: "Filter decks in order by...",
+				required: false,
+				choices: [
+					{ name: "Recommended (Default)", value: "score" },
+					{ name: "Rating", value: "avgRating" },
+					{ name: "Card Level", value: "avgCardLvl" },
+				],
+			},
 		],
 	},
 	run: async (i, db, client) => {
@@ -64,39 +86,42 @@ module.exports = {
 				})
 		}
 
-		const { data: player, error } = await getPlayer(tag)
+		const excludedCards = [
+			...new Set(
+				i.options
+					.getString("exclude-cards")
+					?.split(",")
+					?.map((alias) => {
+						alias = alias.trim().toLowerCase().replace(/\s+/g, "-").replace(/\./g, "")
+						const card = allCards.find((c) => c.name === alias || c.aliases.includes(alias))
 
-		if (error) return errorMsg(i, error)
-
-		let excludedCards = i.options
-			.getString("exclude-cards")
-			?.split(",")
-			?.map((alias) => {
-				alias = alias.trim().toLowerCase().replace(/\s+/g, "-").replace(/\./g, "")
-				const card = allCards.find((c) => c.name === alias || c.aliases.includes(alias))
-
-				return card?.name || null
-			})
-			.filter((c) => c) //list of card names that cant be used
-
-		excludedCards = [...new Set(excludedCards)]
+						return card?.name || null
+					})
+					.filter((c) => c)
+			),
+		]
 
 		if (excludedCards.length > 10) return i.editReply({ embeds: [{ color: orange, description: "**You can only exclude up to 10 cards.**" }], ephemeral: true })
 
-		let includedCards = i.options
-			.getString("include-cards")
-			?.split(",")
-			?.map((alias) => {
-				alias = alias.trim().toLowerCase().replace(/\s+/g, "-").replace(/\./g, "")
-				const card = allCards.find((c) => c.name === alias || c.aliases.includes(alias))
+		const includedCards = [
+			...new Set(
+				i.options
+					.getString("include-cards")
+					?.split(",")
+					?.map((alias) => {
+						alias = alias.trim().toLowerCase().replace(/\s+/g, "-").replace(/\./g, "")
+						const card = allCards.find((c) => c.name === alias || c.aliases.includes(alias))
 
-				return card?.name || null
-			})
-			.filter((c) => c && !excludedCards.includes(c)) //list of card names that cant be used
-
-		includedCards = [...new Set(includedCards)]
+						return card?.name || null
+					})
+					.filter((c) => c && !excludedCards.includes(c))
+			),
+		]
 
 		if (includedCards.length > 10) return i.editReply({ embeds: [{ color: orange, description: "**You can only include up to 10 cards.**" }], ephemeral: true })
+
+		const { data: player, error } = await getPlayer(tag)
+		if (error) return errorMsg(i, error)
 
 		player.cards = player.cards.map((c) => ({
 			//rename all cards, and give level
@@ -104,168 +129,196 @@ module.exports = {
 			level: 14 - (c.maxLevel - c.level),
 		}))
 
-		const cardsThatCanBeUnderLeveled = allCards.filter((c) => c.canBeUnderLeveled).map((c) => c.name)
+		//query all decks that don't contain excluded cards
+		let allDecks = await decks
+			.find({ cards: { $nin: excludedCards } })
+			.sort({ rating: -1 })
+			.toArray()
 
-		let cardsAvailable = []
-		let lastLvlAdded
+		const playerCardsSet = new Set(player.cards.map((c) => c.name))
 
-		for (let lvl = 14; lvl >= 1; lvl--) {
-			//add cards available for use
-			const sameLevelCards = player.cards.filter((c) => c.level === lvl)
+		allDecks = allDecks.filter((d) => !hasLockedCard(d.cards, playerCardsSet))
 
-			if (sameLevelCards.length === 0) continue
-
-			//add cards
-			for (const c of sameLevelCards) {
-				if (!cardsAvailable.includes(c.name) && !excludedCards.includes(c.name))
-					//not already in cardsAvailable & not in excludedCards
-					cardsAvailable.push(c.name)
-			}
-
-			//check for usable underleveled cards
-			for (const c of cardsThatCanBeUnderLeveled) {
-				const card = player.cards.find((ca) => ca.name === c)
-
-				if (!card || cardsAvailable.includes(c) || excludedCards.includes(c)) continue
-
-				if (lvl - card.level <= 2)
-					//add card if 2 levels or less below current lvl
-					cardsAvailable.push(c)
-			}
-
-			lastLvlAdded = lvl
-
-			if (cardsAvailable.length >= 32) break
-		}
-
-		if (cardsAvailable.length < 32)
-			//less than 32 cards unlocked
-			return i.editReply({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] })
-
-		let allDecks = await decks.find({}).sort({ rating: -1, dateAdded: 1 }).toArray()
-
-		const deckSetRating = (deckSetArr) => {
-			let sum = 0
-			for (let i = 0; i < deckSetArr.length; i++) {
-				sum += deckSetArr[i].rating
-			}
-
-			return sum / deckSetArr.length
-		}
-
-		const allCardsAvailable = (deckObj) => {
-			for (let i = 0; i < deckObj.cards.length; i++) {
-				if (!cardsAvailable.includes(deckObj.cards[i])) return false
-			}
-
-			return true
-		}
-
-		const shareCards = (...decks) => {
-			const unique = new Set()
-			for (const deck of decks) {
-				for (const card of deck.cards) {
-					if (unique.has(card)) return true
-					unique.add(card)
-				}
-			}
-			return false
-		}
-
-		const containsAllIncludedCards = (deck1, deck2, deck3, deck4) => {
-			//return true if all of ...includedCards exist in any of the 4 decks
-			for (const c of includedCards) {
-				if (!deck1.cards.includes(c) && !deck2.cards.includes(c) && !deck3.cards.includes(c) && !deck4.cards.includes(c)) return false
-			}
-
-			return true
-		}
-
-		const deckSet = []
-
-		main: while (deckSet.length === 0) {
-			const tempAllDecks = filter(allDecks, allCardsAvailable)
-
-			for (let i = 0, len = tempAllDecks.length; i < len - 3; i++) {
-				const deck1 = tempAllDecks[i]
-
-				for (let x = i + 1; x < len - 2; x++) {
-					const deck2 = tempAllDecks[x]
-
-					if (shareCards(deck1, deck2)) continue
-
-					for (let y = x + 1; y < len - 1; y++) {
-						const deck3 = tempAllDecks[y]
-
-						if (shareCards(deck1, deck2, deck3)) continue
-
-						for (let z = y + 1; z < len; z++) {
-							const deck4 = tempAllDecks[z]
-
-							if (shareCards(deck1, deck2, deck3, deck4)) continue
-							if (!containsAllIncludedCards(deck1, deck2, deck3, deck4)) continue
-
-							deckSet.push(deck1, deck2, deck3, deck4)
-							break main
-						}
+		function findNextUnique(deckSet, remainingDecks) {
+			for (let i = 0; i < remainingDecks.length; i++) {
+				const deckCards = remainingDecks[i].cards
+				if (!hasDuplicateCard(deckSet.cards, deckCards)) {
+					return {
+						cards: new Set([...Array.from(deckSet.cards), ...deckCards]),
+						decks: [...deckSet.decks, remainingDecks[i]],
+						lastIndex: i,
 					}
 				}
 			}
-
-			lastLvlAdded--
-
-			const newCardsToAdd = player.cards.filter((c) => c.level === lastLvlAdded && !cardsAvailable.includes(c.name) && !excludedCards.includes(c.name)).map((c) => c.name)
-
-			cardsAvailable.push(...newCardsToAdd)
-
-			if (lastLvlAdded <= 0) break main
 		}
 
-		if (deckSet.length === 0) {
-			if (includedCards.length > 0)
+		function findUniques() {
+			const unqiueDeckCombos = []
+
+			for (let i = 0; i < allDecks.length; i++) {
+				const deckSet = {
+					cards: new Set(allDecks[i].cards),
+					decks: [allDecks[i]],
+					lastIndex: 0,
+				}
+
+				for (let k = i + 1; k < allDecks.length - (4 - deckSet.decks.length) && deckSet.decks.length < 4; k++) {
+					const nextUnique = findNextUnique(deckSet, allDecks.slice(k))
+
+					if (!nextUnique) continue
+
+					deckSet.cards = nextUnique.cards
+					deckSet.decks = nextUnique.decks
+					deckSet.lastIndex = nextUnique.lastIndex
+					k = nextUnique.lastIndex
+				}
+
+				if (deckSet.decks.length === 4) unqiueDeckCombos.push(deckSet.decks)
+			}
+
+			return unqiueDeckCombos
+		}
+
+		let allDeckSets = findUniques()
+
+		for (let i = 0; i < allDeckSets.length; i++) {
+			//check if all includedCards are in deck set
+			if (!allIncludedCardsInSet(allDeckSets[i], includedCards)) {
+				allDeckSets.splice(i--, 1) //remove deck set
+				continue
+			}
+
+			allDeckSets[i].score = deckSetScore(allDeckSets[i], player.cards)
+			allDeckSets[i].avgCardLvl = deckSetAvgLvl(
+				[...allDeckSets[i][0].cards, ...allDeckSets[i][1].cards, ...allDeckSets[i][2].cards, ...allDeckSets[i][3].cards],
+				player.cards
+			)
+			allDeckSets[i].avgRating = deckSetAvgDeckRating(allDeckSets[i])
+		}
+
+		const sortBy = i.options.getString("sort-by") || "score"
+		const priority = ["score", "avgCardLvl", "avgRating"]
+		const nextPriority = (last = []) => {
+			for (let i = 0; i < priority.length; i++) {
+				if (!last.includes(priority[i])) return priority[i]
+			}
+		}
+
+		allDeckSets = allDeckSets
+			.sort((a, b) => {
+				if (a[sortBy] === b[sortBy]) {
+					const secondPriority = nextPriority([sortBy])
+
+					if (a[nextPriority] === b[nextPriority]) {
+						const lastPriority = nextPriority([sortBy, nextPriority])
+						return b[lastPriority] - a[lastPriority]
+					}
+
+					return b[secondPriority] - a[secondPriority]
+				}
+				return b[sortBy] - a[sortBy]
+			})
+			.slice(0, 100)
+
+		if (allDeckSets.length === 0) {
+			if (includedCards.length > 0 || excludedCards.length > 0)
 				return i.editReply({
-					embeds: [{ color: orange, description: `**No deck sets found.** Try changing the search parameters.` }],
+					embeds: [{ color: orange, description: `**No deck sets found.** Try changing search parameters.` }],
 				})
 
 			//no deck sets found
 			return i.editReply({ embeds: [{ color: orange, description: `**No deck sets found.** More cards need to be unlocked.` }] })
 		}
 
-		const getAvgCardLvl = (deckSet) => {
-			let sum = 0
-
-			for (const d of deckSet) {
-				for (const c of d.cards) {
-					const card = player.cards.find((ca) => ca.name === c)
-					sum += card.level
-				}
-			}
-
-			return sum / 32
-		}
-
-		const embed = {
-			title: `${getEmoji(client, getArenaEmoji(player.bestTrophies))} ${player.name} | ${player.tag}`,
-			description: ``,
-			color: pink,
-			footer: {
-				text: "Deck ratings are calculated from win % and usage rate",
-			},
-		}
-
-		embed.description += `**Included Cards**: ${includedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("") || "None"}`
-
-		embed.description += `\n**Excluded Cards**: ${excludedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("") || "None"}`
-
-		//best deck set
-		embed.description += `\n\n**__Best War Deck Set__**\nRating: **${deckSetRating(deckSet).toFixed(1)}**\nAvg. Level: **${getAvgCardLvl(deckSet).toFixed(1)}**\n`
-
+		//create and send pagination embed
+		const leagueEmoji = getEmoji(client, getArenaEmoji(player.bestTrophies))
 		const copyEmoji = getEmoji(client, "copy")
+		const sortByStr = () => {
+			if (sortBy === "avgCardLvl") return "Card Level"
+			if (sortBy === "avgRating") return "Rating"
+			return "Recommended"
+		}
 
-		embed.description += `${deckSet
-			.map((d) => `[**Copy**](${getDeckUrl(d.cards)})${copyEmoji}: ${d.cards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("")}\n`)
-			.join("")}`
+		const deckSetEmbeds = allDeckSets.map((ds, index) => {
+			let description = `**Included Cards**: ${includedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("") || "None"}`
+			description += `\n**Excluded Cards**: ${excludedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("") || "None"}`
+			description += `\n**Sort By**: ${sortByStr()}`
+			description += `\n\n**__Deck Set__**\nRating: **${ds.avgRating.toFixed(1)}**\nAvg. Level: **${ds.avgCardLvl.toFixed(1)}**\n`
+			description += `${ds.map((d) => `[**Copy**](${getDeckUrl(d.cards)})${copyEmoji}: ${d.cards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("")}\n`).join("")}`
 
-		return i.editReply({ embeds: [embed] })
+			return {
+				title: `${leagueEmoji} ${player.name} | ${player.tag}`,
+				description,
+				color: pink,
+				footer: {
+					text: `${index + 1} of ${allDeckSets.length} results`,
+				},
+			}
+		})
+
+		const row = new MessageActionRow().addComponents([
+			{
+				type: "BUTTON",
+				customId: "prev",
+				emoji: { name: "◀️" },
+				style: "PRIMARY",
+				disabled: true,
+			},
+			{
+				type: "BUTTON",
+				customId: "next",
+				emoji: { name: "▶️" },
+				style: "PRIMARY",
+				disabled: deckSetEmbeds.length < 2,
+			},
+		])
+
+		let index = 0
+
+		let data = {
+			embeds: [deckSetEmbeds[index]],
+			components: [row],
+			fetchReply: true,
+		}
+
+		const msg = await i.editReply(data)
+
+		const col = msg.createMessageComponentCollector({
+			filter: (int) => int.user.id === i.user.id,
+			idle: 20000,
+		})
+
+		col.on("collect", (i) => {
+			if (i.customId === "prev") index--
+			else if (i.customId === "next") index++
+
+			row.setComponents(
+				{
+					type: "BUTTON",
+					customId: "prev",
+					emoji: { name: "◀️" },
+					style: "PRIMARY",
+					disabled: index === 0,
+				},
+				{
+					type: "BUTTON",
+					customId: "next",
+					emoji: { name: "▶️" },
+					style: "PRIMARY",
+					disabled: deckSetEmbeds.length < index + 1,
+				}
+			)
+
+			i.update({
+				components: [row],
+				embeds: [deckSetEmbeds[index]],
+			})
+		})
+
+		col.on("end", () => {
+			i.editReply({
+				components: [],
+			})
+		})
 	},
 }
