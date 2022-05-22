@@ -51,7 +51,7 @@ const getEmoji = (client, emojiName) => {
 		"878397282461024287",
 		"878396465817460757",
 	]
-	const emoji = client.emojis.cache.find((e) => ownerIds.includes(e.guild.ownerId) && e.name === emojiName)
+	const emoji = client.emojis.cache.find((e) => e.name === emojiName && ownerIds.includes(e.guild.ownerId))
 
 	return `<:${emoji.name}:${emoji.id}>`
 }

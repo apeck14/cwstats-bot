@@ -235,22 +235,39 @@ module.exports = {
 		//create and send pagination embed
 		const leagueEmoji = getEmoji(client, getArenaEmoji(player.bestTrophies))
 		const copyEmoji = getEmoji(client, "copy")
-		const sortByStr = () => {
-			if (sortBy === "avgCardLvl") return "Card Level"
-			if (sortBy === "avgRating") return "Rating"
-			return "Recommended"
+		const sortByStr = sortBy === "score" ? "Recommended" : sortBy === "avgCardLvl" ? "Card Level" : "Rating"
+
+		const emojiStr = (cards) => {
+			let str = ""
+			for (let i = 0; i < cards.length; i++) {
+				str += getEmoji(client, cards[i].replace(/-/g, "_"))
+			}
+			return str || "None"
+		}
+
+		const deckSetStr = (deckSet) => {
+			let str = ""
+			for (let i = 0; i < deckSet.length; i++) {
+				str += `[**Copy**](${getDeckUrl(deckSet[i].cards)})${copyEmoji}: `
+
+				for (let x = 0; x < deckSet[i].cards.length; x++) {
+					str += getEmoji(client, deckSet[i].cards[x].replace(/-/g, "_"))
+				}
+
+				str += "\n"
+			}
+
+			return str
 		}
 
 		const createEmbeds = (deckSets) => {
 			const embeds = []
 			for (let i = 0; i < deckSets.length; i++) {
-				let description = `**Included Cards**: ${includedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("") || "None"}`
-				description += `\n**Excluded Cards**: ${excludedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("") || "None"}`
-				description += `\n**Sort By**: ${sortByStr()}`
+				let description = `**Included Cards**: ${emojiStr(includedCards)}`
+				description += `\n**Excluded Cards**: ${emojiStr(excludedCards)}`
+				description += `\n**Sort By**: ${sortByStr}`
 				description += `\n\n**__Deck Set__**\nRating: **${deckSets[i].avgRating.toFixed(1)}**\nAvg. Level: **${deckSets[i].avgCardLvl.toFixed(1)}**\n`
-				description += `${deckSets[i]
-					.map((d) => `[**Copy**](${getDeckUrl(d.cards)})${copyEmoji}: ${d.cards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("")}\n`)
-					.join("")}`
+				description += deckSetStr(deckSets[i])
 
 				embeds.push({
 					title: `${leagueEmoji} ${player.name} | ${player.tag}`,
@@ -264,7 +281,9 @@ module.exports = {
 
 			return embeds
 		}
+		console.time()
 		const deckSetEmbeds = createEmbeds(allDeckSets)
+		console.timeEnd()
 
 		console.timeEnd("After DB Query")
 
