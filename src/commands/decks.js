@@ -220,7 +220,7 @@ module.exports = {
 				}
 				return b[sortBy] - a[sortBy]
 			})
-			.slice(0, 100)
+			.slice(0, 50)
 
 		if (allDeckSets.length === 0) {
 			if (includedCards.length > 0 || excludedCards.length > 0)
@@ -241,22 +241,30 @@ module.exports = {
 			return "Recommended"
 		}
 
-		const deckSetEmbeds = allDeckSets.map((ds, index) => {
-			let description = `**Included Cards**: ${includedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("") || "None"}`
-			description += `\n**Excluded Cards**: ${excludedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("") || "None"}`
-			description += `\n**Sort By**: ${sortByStr()}`
-			description += `\n\n**__Deck Set__**\nRating: **${ds.avgRating.toFixed(1)}**\nAvg. Level: **${ds.avgCardLvl.toFixed(1)}**\n`
-			description += `${ds.map((d) => `[**Copy**](${getDeckUrl(d.cards)})${copyEmoji}: ${d.cards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("")}\n`).join("")}`
+		const createEmbeds = (deckSets) => {
+			const embeds = []
+			for (let i = 0; i < deckSets.length; i++) {
+				let description = `**Included Cards**: ${includedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("") || "None"}`
+				description += `\n**Excluded Cards**: ${excludedCards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("") || "None"}`
+				description += `\n**Sort By**: ${sortByStr()}`
+				description += `\n\n**__Deck Set__**\nRating: **${deckSets[i].avgRating.toFixed(1)}**\nAvg. Level: **${deckSets[i].avgCardLvl.toFixed(1)}**\n`
+				description += `${deckSets[i]
+					.map((d) => `[**Copy**](${getDeckUrl(d.cards)})${copyEmoji}: ${d.cards.map((c) => getEmoji(client, c.replace(/-/g, "_"))).join("")}\n`)
+					.join("")}`
 
-			return {
-				title: `${leagueEmoji} ${player.name} | ${player.tag}`,
-				description,
-				color: pink,
-				footer: {
-					text: `${index + 1} of ${allDeckSets.length} results`,
-				},
+				embeds.push({
+					title: `${leagueEmoji} ${player.name} | ${player.tag}`,
+					description,
+					color: pink,
+					footer: {
+						text: `${i + 1} of ${allDeckSets.length} results`,
+					},
+				})
 			}
-		})
+
+			return embeds
+		}
+		const deckSetEmbeds = createEmbeds(allDeckSets)
 
 		console.timeEnd("After DB Query")
 
