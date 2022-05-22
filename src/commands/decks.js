@@ -135,6 +135,8 @@ module.exports = {
 			.sort({ rating: -1 })
 			.toArray()
 
+		console.time("After DB Query")
+
 		const playerCardsSet = new Set(player.cards.map((c) => c.name))
 
 		allDecks = allDecks.filter((d) => !hasLockedCard(d.cards, playerCardsSet))
@@ -255,6 +257,8 @@ module.exports = {
 				},
 			}
 		})
+
+		console.timeEnd("After DB Query")
 
 		const row = new MessageActionRow().addComponents([
 			{
