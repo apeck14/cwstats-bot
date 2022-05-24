@@ -17,7 +17,6 @@ const initializeEvents = (mongo, client) => {
 	}
 
 	console.log("DiscordJS Events Initalized!")
-	return client
 }
 
 const initializeCronJobs = (mongo, client) => {
@@ -34,18 +33,18 @@ const initializeCronJobs = (mongo, client) => {
 	}
 
 	console.log("Cron Jobs Initialized!")
-	return client
 }
 
-const initializeClient = async () => {
+const initializeClient = () => {
 	const client = new Client({
-		intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
+		intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
 	})
 
-	client.commands = new Collection()
-	await client.login(CLIENT_TOKEN)
-
 	console.log("Client Initialized!")
+
+	client.commands = new Collection()
+	client.login(CLIENT_TOKEN)
+
 	return client
 }
 

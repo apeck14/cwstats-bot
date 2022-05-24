@@ -5,16 +5,16 @@ const { initializeCronJobs, initializeEvents, initializeClient } = require("./sr
 
 mongo.init()
 
-initializeClient()
-	.then((client) => initializeCronJobs(mongo, client))
-	.then((client) => initializeEvents(mongo, client))
+const client = initializeClient()
+initializeCronJobs(mongo, client)
+initializeEvents(mongo, client)
 
 process.on("unhandledRejection", (err) => {
 	console.log("---UNHANDLED REJECION---")
-	console.log(err)
+	console.error(err)
 })
 
 process.on("uncaughtException", (err) => {
 	console.log("---UNCAUGHT EXCEPTION---")
-	console.log(err)
+	console.error(err)
 })
