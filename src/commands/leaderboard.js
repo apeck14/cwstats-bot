@@ -75,8 +75,8 @@ module.exports = {
 			color: pink,
 		}
 
-		const fameAvgEmoji = getEmoji(client, "fameAvg")
-		const decksRemainingEmoji = getEmoji(client, "decksRemaining")
+		const fameAvgEmoji = getEmoji("fameAvg")
+		const decksRemainingEmoji = getEmoji("decksRemaining")
 
 		embed.description += `**Location**: ${location?.key || "Global"} ${location?.flagEmoji || ":earth_americas:"}\n`
 		embed.description += `**League**: ${maxTrophies ? `${(maxTrophies - 1000) / 1000}k` : "All"}\n\n`
@@ -85,7 +85,7 @@ module.exports = {
 			const clan = leaderboard[i]
 			const url = `https://www.cwstats.com/clans/${clan.tag.substring(1)}/riverrace`
 			const badgeName = getClanBadge(clan.badgeId, clan.clanScore)
-			const badgeEmoji = getEmoji(client, badgeName)
+			const badgeEmoji = getEmoji(badgeName)
 
 			embed.description += `**${i + 1}. ${badgeEmoji} [${formatStr(clan.name)}](${url})**\n`
 			embed.description += `${fameAvgEmoji} **${clan.fameAvg.toFixed(1)}** ${decksRemainingEmoji} ${clan.decksRemaining} :earth_americas: ${

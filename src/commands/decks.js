@@ -16,7 +16,7 @@ const allCards = require("../static/cardInfo.js")
 const { MessageActionRow } = require("discord.js")
 
 module.exports = {
-	disabled: true,
+	disabled: false,
 	data: {
 		name: "decks",
 		description: "Find top deck sets based for any player!",
@@ -58,7 +58,7 @@ module.exports = {
 			},
 		],
 	},
-	run: async (i, db, client) => {
+	run: async (i, db) => {
 		const linkedAccounts = db.collection("Linked Accounts")
 		const decks = db.collection("Decks")
 
@@ -134,8 +134,6 @@ module.exports = {
 			.find({ cards: { $nin: excludedCards } })
 			.sort({ rating: -1 })
 			.toArray()
-
-		console.time("After DB Query")
 
 		const playerCardsSet = new Set(player.cards.map((c) => c.name))
 
@@ -233,15 +231,16 @@ module.exports = {
 		}
 
 		//create and send pagination embed
-		const leagueEmoji = getEmoji(client, getArenaEmoji(player.bestTrophies))
-		const copyEmoji = getEmoji(client, "copy")
+		const leagueEmoji = getEmoji(getArenaEmoji(player.bestTrophies))
+		const copyEmoji = getEmoji("copy")
 		const sortByStr = sortBy === "score" ? "Recommended" : sortBy === "avgCardLvl" ? "Card Level" : "Rating"
 
 		const emojiStr = (cards) => {
 			let str = ""
 			for (let i = 0; i < cards.length; i++) {
-				str += getEmoji(client, cards[i].replace(/-/g, "_"))
+				str += getEmoji(cards[i].replace(/-/g, "_"))
 			}
+
 			return str || "None"
 		}
 
@@ -251,7 +250,7 @@ module.exports = {
 				str += `[**Copy**](${getDeckUrl(deckSet[i].cards)})${copyEmoji}: `
 
 				for (let x = 0; x < deckSet[i].cards.length; x++) {
-					str += getEmoji(client, deckSet[i].cards[x].replace(/-/g, "_"))
+					str += getEmoji(deckSet[i].cards[x].replace(/-/g, "_"))
 				}
 
 				str += "\n"
@@ -263,29 +262,22 @@ module.exports = {
 		const createEmbeds = (deckSets) => {
 			const embeds = []
 			for (let i = 0; i < deckSets.length; i++) {
-				let description = `**Included Cards**: ${emojiStr(includedCards)}`
-				description += `\n**Excluded Cards**: ${emojiStr(excludedCards)}`
-				description += `\n**Sort By**: ${sortByStr}`
-				description += `\n\n**__Deck Set__**\nRating: **${deckSets[i].avgRating.toFixed(1)}**\nAvg. Level: **${deckSets[i].avgCardLvl.toFixed(1)}**\n`
-				description += deckSetStr(deckSets[i])
-
 				embeds.push({
 					title: `${leagueEmoji} ${player.name} | ${player.tag}`,
-					description,
+					description: `**Included Cards**: ${emojiStr(includedCards)}\n**Excluded Cards**: ${emojiStr(
+						excludedCards
+					)}\n**Sort By**: ${sortByStr}\n\n**__Deck Set__**\nRating: **${deckSets[i].avgRating.toFixed(1)}**\nAvg. Level: **${deckSets[i].avgCardLvl.toFixed(1)}**\n
+				${deckSetStr(deckSets[i])}`,
 					color: pink,
 					footer: {
-						text: `${i + 1}/${allDeckSets.length} of many results`,
+						text: `${i + 1}/${allDeckSets.length}${allDeckSets.length >= 20 ? " of many results" : ""}`,
 					},
 				})
 			}
 
 			return embeds
 		}
-		console.time()
 		const deckSetEmbeds = createEmbeds(allDeckSets)
-		console.timeEnd()
-
-		console.timeEnd("After DB Query")
 
 		const row = new MessageActionRow().addComponents([
 			{

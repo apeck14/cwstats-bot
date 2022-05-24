@@ -101,14 +101,14 @@ module.exports = {
 			clanBadge = getClanBadge(clan.badgeId, clan.clanWarTrophies)
 		}
 
-		const badgeEmoji = getEmoji(client, clanBadge)
-		const levelEmoji = getEmoji(client, `level${player.expLevel}`)
-		const ladderEmoji = getEmoji(client, getArenaEmoji(player.trophies))
-		const pbEmoji = getEmoji(client, getArenaEmoji(player.bestTrophies))
-		const level14 = getEmoji(client, "level14c")
-		const level13 = getEmoji(client, `level13`)
-		const level12 = getEmoji(client, `level12`)
-		const level11 = getEmoji(client, `level11`)
+		const badgeEmoji = getEmoji(clanBadge)
+		const levelEmoji = getEmoji(`level${player.expLevel}`)
+		const ladderEmoji = getEmoji(getArenaEmoji(player.trophies))
+		const pbEmoji = getEmoji(getArenaEmoji(player.bestTrophies))
+		const level14 = getEmoji("level14c")
+		const level13 = getEmoji(`level13`)
+		const level12 = getEmoji(`level12`)
+		const level11 = getEmoji(`level11`)
 
 		const ccWins = player.badges.find((b) => b.name === "Classic12Wins")?.progress || 0
 		const gcWins = player.badges.find((b) => b.name === "Grand12Wins")?.progress || 0

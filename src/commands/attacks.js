@@ -123,10 +123,10 @@ module.exports = {
 		}
 
 		const badgeName = getClanBadge(badgeId, clanWarTrophies)
-		const badgeEmoji = getEmoji(client, badgeName)
-		const fameEmoji = getEmoji(client, "fame")
-		const decksRemainingEmoji = getEmoji(client, "decksRemaining")
-		const slotsRemainingEmoji = getEmoji(client, "remainingSlots")
+		const badgeEmoji = getEmoji(badgeName)
+		const fameEmoji = getEmoji("fame")
+		const decksRemainingEmoji = getEmoji("decksRemaining")
+		const slotsRemainingEmoji = getEmoji("remainingSlots")
 		const slotsRemaining = 50 - participants.filter((p) => p.decksUsedToday > 0).length
 
 		embed.description += `${badgeEmoji} **${formatStr(

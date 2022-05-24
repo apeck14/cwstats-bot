@@ -31,18 +31,15 @@ module.exports = {
 		const abbreviation = i.options.getString("abbr")
 		const tag = i.options.getString("tag")
 
-		if (abbreviations.length >= 15)
-			return errorMsg(i, "**Up to 15 abbreviations can be set.** Remove an existing abbreviation and try again.")
+		if (abbreviations.length >= 15) return errorMsg(i, "**Up to 15 abbreviations can be set.** Remove an existing abbreviation and try again.")
 
 		if (!abbreviation.match(/^[0-9a-zA-Z]+$/)) return errorMsg(i, "**Abbreviation must be alphanumeric.**")
 
 		if (abbreviation.length > 5) return errorMsg(i, "**Abbreviation cannot be larger than 5 characters.**")
 
-		if (abbreviations.find((a) => a.abbr === abbreviation))
-			return errorMsg(i, "**This abbreviation is already in use.** Remove it and try again.")
+		if (abbreviations.find((a) => a.abbr === abbreviation)) return errorMsg(i, "**This abbreviation is already in use.** Remove it and try again.")
 
-		if (abbreviations.find((a) => a.tag === formatTag(tag)))
-			return errorMsg(i, "**This clan is already in use.** Remove it and try again.")
+		if (abbreviations.find((a) => a.tag === formatTag(tag))) return errorMsg(i, "**This clan is already in use.** Remove it and try again.")
 
 		const { data: clan, error } = await getClan(tag)
 
@@ -63,15 +60,13 @@ module.exports = {
 		)
 
 		const badgeName = getClanBadge(clan.badgeId, clan.clanWarTrophies)
-		const badgeEmoji = getEmoji(client, badgeName)
+		const badgeEmoji = getEmoji(badgeName)
 
 		return i.editReply({
 			embeds: [
 				{
 					title: "✅ Abbreviation Set!",
-					description: `**Clan**: ${badgeEmoji} ${formatStr(clan.name)}\n**Tag**: ${
-						clan.tag
-					}\n**Abbreviation**: \`${abbreviation}\``,
+					description: `**Clan**: ${badgeEmoji} ${formatStr(clan.name)}\n**Tag**: ${clan.tag}\n**Abbreviation**: \`${abbreviation}\``,
 					color: green,
 				},
 			],

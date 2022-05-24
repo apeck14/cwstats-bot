@@ -1,6 +1,7 @@
 const allCards = require("../static/cardInfo")
 const badges = require("../static/badges.js")
 const { red } = require("../static/colors")
+const allEmojis = require("../../allEmojis.json")
 
 const getClanBadge = (badgeId, trophyCount, returnEmojiPath = true) => {
 	if (badgeId === -1 || badgeId === null) return "no_clan" //no clan
@@ -39,21 +40,8 @@ const getClanBadge = (badgeId, trophyCount, returnEmojiPath = true) => {
 
 	return `${badgeName}_${league}`
 }
-const getEmoji = (client, emojiName) => {
-	const ownerIds = [
-		"493245767448789023",
-		"878013634851258428",
-		"878025564538146816",
-		"878031332817645681",
-		"878030152691499028",
-		"878395655121436682",
-		"878394839950061630",
-		"878397282461024287",
-		"878396465817460757",
-	]
-	const emoji = client.emojis.cache.find((e) => e.name === emojiName && ownerIds.includes(e.guild.ownerId))
-
-	return `<:${emoji.name}:${emoji.id}>`
+const getEmoji = (emojiName) => {
+	return allEmojis[emojiName]
 }
 const getArenaEmoji = (pb) => {
 	if (pb >= 8000) return "arena24"
@@ -97,8 +85,10 @@ const getLeague = (pb) => {
 const getDeckUrl = (cards) => {
 	let url = "https://link.clashroyale.com/deck/en?deck="
 
-	for (const c of cards) {
-		url += `${allCards.find((ca) => ca.name === c).id};`
+	for (let i = 0; i < cards.length; i++) {
+		for (let x = 0; x < allCards.length; x++) {
+			if (allCards[x].name === cards[i]) url += `${allCards[x].id};`
+		}
 	}
 
 	return url.substring(0, url.length - 1)

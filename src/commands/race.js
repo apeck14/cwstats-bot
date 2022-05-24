@@ -31,10 +31,8 @@ module.exports = {
 
 		if (error) return errorMsg(i, error)
 
-		if (race.state === "matchmaking")
-			return i.editReply({ embeds: [{ description: ":mag: **Matchmaking is underway!**", color: orange }] })
-		if (!race.clans || !race.clans.length)
-			return i.editReply({ embeds: [{ description: "**Clan is not in a river race.**", color: orange }] })
+		if (race.state === "matchmaking") return i.editReply({ embeds: [{ description: ":mag: **Matchmaking is underway!**", color: orange }] })
+		if (!race.clans || !race.clans.length) return i.editReply({ embeds: [{ description: "**Clan is not in a river race.**", color: orange }] })
 
 		const isColosseum = race.periodType === "colosseum"
 		const dayOfWeek = race.periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
@@ -50,9 +48,7 @@ module.exports = {
 				text: isColosseum ? "Missed attacks negatively affect fame/atk" : "",
 			},
 			author: {
-				name: `Week ${race.sectionIndex + 1} | ${dayOfWeek < 3 ? "Training" : "War"} Day ${
-					dayOfWeek < 3 ? dayOfWeek + 1 : dayOfWeek - 2
-				}`,
+				name: `Week ${race.sectionIndex + 1} | ${dayOfWeek < 3 ? "Training" : "War"} Day ${dayOfWeek < 3 ? dayOfWeek + 1 : dayOfWeek - 2}`,
 			},
 			url: `https://www.cwstats.com/clans/${race.clan.tag.substring(1)}/riverrace`,
 		}
@@ -61,17 +57,17 @@ module.exports = {
 		const clansStillWarring = placements.filter((c) => !c.crossedFinishLine)
 		const clansCrossedFinishLine = placements.filter((c) => c.crossedFinishLine)
 
-		const fameEmoji = getEmoji(client, "fame")
-		const fameAvgEmoji = getEmoji(client, "fameAvg")
-		const decksRemainingEmoji = getEmoji(client, "decksRemaining")
-		const projectionEmoji = getEmoji(client, "projection")
+		const fameEmoji = getEmoji("fame")
+		const fameAvgEmoji = getEmoji("fameAvg")
+		const decksRemainingEmoji = getEmoji("decksRemaining")
+		const projectionEmoji = getEmoji("projection")
 
 		clansCrossedFinishLine.forEach((c) => {
 			const clan = race.clans.find((cl) => cl.tag === c.tag)
 			const { name, badgeId, clanScore } = clan
 
 			const badgeName = getClanBadge(badgeId, clanScore)
-			const badgeEmoji = getEmoji(client, badgeName)
+			const badgeEmoji = getEmoji(badgeName)
 
 			if (c.tag === formatTag(tag)) embed.description += `${badgeEmoji} **__${formatStr(name)}__**\n`
 			else embed.description += `${badgeEmoji} **${formatStr(name)}**\n`
@@ -86,7 +82,7 @@ module.exports = {
 			const decksRemaining = 200 - participants.reduce((a, b) => a + b.decksUsedToday, 0)
 
 			const badgeName = getClanBadge(badgeId, clanScore)
-			const badgeEmoji = getEmoji(client, badgeName)
+			const badgeEmoji = getEmoji(badgeName)
 
 			if (c.tag === formatTag(tag)) embed.description += `${badgeEmoji} **__${formatStr(name)}__**\n`
 			else embed.description += `${badgeEmoji} **${formatStr(name)}**\n`
