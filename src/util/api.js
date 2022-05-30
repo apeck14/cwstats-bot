@@ -40,19 +40,6 @@ exports.getPlayer = async (tag) => {
 	return req
 }
 
-exports.getPlayerRanking = async (tag, locationId = "global") => {
-	const url = `https://proxy.royaleapi.dev/v1/locations/${locationId}/rankings/players`
-	const req = await apiRequest(url, CR_API_TOKEN)
-
-	if (Array.isArray(req.data)) {
-		const player = req.data.find((p) => p.tag === tag)
-
-		return { ...req, data: player ? player.rank : -1 }
-	}
-
-	return req
-}
-
 exports.getRiverRace = async (tag) => {
 	tag = formatTag(tag).substring(1)
 	const url = `https://proxy.royaleapi.dev/v1/clans/%23${tag}/currentriverrace`

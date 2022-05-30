@@ -1,4 +1,4 @@
-const { getPlayer, getClan, getPlayerRanking } = require("../util/api")
+const { getPlayer, getClan } = require("../util/api")
 const { pink, green } = require("../static/colors")
 const { getClanBadge, getEmoji, getArenaEmoji, errorMsg } = require("../util/functions")
 const { createCanvas, registerFont, loadImage } = require("canvas")
@@ -29,12 +29,8 @@ module.exports = {
 
 		if (playerError) return errorMsg(i, playerError)
 
-		const [{ data: playerRank, error: playerRankingError }, arenaImage] = await Promise.all([
-			getPlayerRanking(player.tag),
-			loadImage(`./src/static/images/arenas/${getArenaEmoji(player.trophies)}.png`),
-		])
-
-		if (playerRankingError) return errorMsg(i, playerRankingError)
+		const playerRank = player.leagueStatistics?.currentSeason?.rank
+		const arenaImage = await loadImage(`./src/static/images/arenas/${getArenaEmoji(player.trophies)}.png`)
 
 		const canvas = createCanvas(arenaImage.width, arenaImage.height)
 		const context = canvas.getContext("2d")
