@@ -91,7 +91,7 @@ module.exports = {
 				clan,
 				isColosseum,
 				dayOfWeek
-			)}\n${decksRemainingEmoji} ${decksRemaining}\n${fameAvgEmoji} **${getAvgFame(clan, isColosseum, dayOfWeek).toFixed(1)}**\n`
+			)}\n${decksRemainingEmoji} ${decksRemaining}\n${fameAvgEmoji} **${getAvgFame(clan, isColosseum, dayOfWeek).toFixed(2)}**\n`
 		}
 
 		return i.editReply({ embeds: [embed] })
