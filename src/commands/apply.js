@@ -83,6 +83,7 @@ module.exports = {
 
 		const ccWins = player.badges.find((b) => b.name === "Classic12Wins")?.progress || 0
 		const gcWins = player.badges.find((b) => b.name === "Grand12Wins")?.progress || 0
+		const cw2Wins = player.badges.find((b) => b.name === "ClanWarWins")?.progress || 0
 		const lvl14Cards = player.cards.filter((c) => c.maxLevel - c.level === 0).length
 		const lvl13Cards = player.cards.filter((c) => c.maxLevel - c.level === 1).length
 		const lvl12Cards = player.cards.filter((c) => c.maxLevel - c.level === 2).length
@@ -101,7 +102,7 @@ module.exports = {
 		applicationEmbed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${player.bestTrophies}\n${badgeEmoji} **${formatStr(player.clan.name)}**${
 			player.role ? ` (${formatRole(player.role)})` : ""
 		}\n\n` //clan & ladder
-		applicationEmbed.description += `**__Stats__**\n**CW1 War Wins**: ${player.warDayWins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
+		applicationEmbed.description += `**__Stats__**\n**CW1 Wins**: ${player.warDayWins}\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
 		applicationEmbed.description += `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}` //cards
 		applicationEmbed.description += `\n\n**Request By**: ${`<@!${i.user.id}>`}`
 
