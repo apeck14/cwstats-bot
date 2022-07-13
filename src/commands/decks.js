@@ -266,8 +266,9 @@ module.exports = {
 					title: `${leagueEmoji} ${player.name} | ${player.tag}`,
 					description: `**Included Cards**: ${emojiStr(includedCards)}\n**Excluded Cards**: ${emojiStr(
 						excludedCards
-					)}\n**Sort By**: ${sortByStr}\n\n**__Deck Set__**\nRating: **${deckSets[i].avgRating.toFixed(1)}**\nAvg. Level: **${deckSets[i].avgCardLvl.toFixed(1)}**\n
-				${deckSetStr(deckSets[i])}`,
+					)}\n**Sort By**: ${sortByStr}\n\n**__Deck Set__**\nRating: **${deckSets[i].avgRating.toFixed(1)}**\nAvg. Level: **${deckSets[i].avgCardLvl.toFixed(
+						1
+					)}**\n${deckSetStr(deckSets[i])}`,
 					color: pink,
 					footer: {
 						text: `${i + 1}/${allDeckSets.length}${allDeckSets.length >= 20 ? " of many results" : ""}`,
