@@ -41,11 +41,12 @@ module.exports = {
 		const iLeague = i.options.getString("league")
 
 		const location = locations.find((l) => l.name === iName)
-		const maxTrophies = parseInt(iLeague?.slice(0, -1)) + 1000
+		const trophies = parseInt(iLeague?.slice(0, -1))
+		const maxTrophies = trophies === 5000 ? 10000 : trophies + 1000
 
 		const query = {}
 		if (iName) query["location.name"] = iName
-		if (maxTrophies) query["clanScore"] = { $lt: maxTrophies, $gte: maxTrophies - 1000 }
+		if (maxTrophies) query["clanScore"] = { $lt: maxTrophies, $gte: trophies }
 
 		const leaderboard = await dailyLb.find(query).sort({ fameAvg: -1, rank: 1 }).limit(10).toArray()
 
@@ -79,7 +80,7 @@ module.exports = {
 		const decksRemainingEmoji = getEmoji("decksRemaining")
 
 		embed.description += `**Location**: ${location?.key || "Global"} ${location?.flagEmoji || ":earth_americas:"}\n`
-		embed.description += `**League**: ${maxTrophies ? `${(maxTrophies - 1000) / 1000}k` : "All"}\n\n`
+		embed.description += `**League**: ${trophies ? `${trophies / 1000}k` : "All"}\n\n`
 
 		for (let i = 0; i < leaderboard.length; i++) {
 			const clan = leaderboard[i]
