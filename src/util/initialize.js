@@ -2,6 +2,7 @@ const { schedule } = require("node-cron")
 const fs = require("fs")
 const { Client, Intents, Collection } = require("discord.js")
 const { CLIENT_TOKEN } = require("../../config")
+const { AutoPoster } = require("topgg-autoposter")
 
 const events = fs.readdirSync("src/events")
 const jobs = fs.readdirSync("src/jobs")
@@ -44,6 +45,8 @@ const initializeClient = () => {
 
 	client.commands = new Collection()
 	client.login(CLIENT_TOKEN)
+
+	AutoPoster("topggtoken", client)
 
 	return client
 }
