@@ -66,7 +66,8 @@ module.exports = {
 			const options = i.options._hoistedOptions.length > 0 ? `\n${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}` : "*None*"
 
 			logToSupportServer(client, {
-				description: `**Command**: ${i.commandName}\n**User**: ${i.user.username}#${i.user.discriminator} (${i.user.id})\n**Guild**: ${i.member.guild.name} (${i.member.guild.id})\n\n**Options**: ${options}\n**Deferred**: ${i.deferred}\n**Replied**: ${i.replied}`,
+				title: `/${i.commandName}`,
+				description: `**User**: ${i.user.username}#${i.user.discriminator} (${i.user.id})\n**Guild**: ${i.member.guild.name} (${i.member.guild.id})\n\n**Options**: ${options}\n\n**Deferred**: ${i.deferred}\n**Replied**: ${i.replied}`,
 				color: pink,
 			})
 		} catch (e) {
