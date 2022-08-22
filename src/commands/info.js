@@ -8,7 +8,6 @@ module.exports = {
 	},
 	run: async (i, db, client) => {
 		const guilds = db.collection("Guilds")
-		const statistics = db.collection("Statistics")
 
 		const { abbreviations, channels } = await guilds.findOne({ guildID: i.channel.guild.id })
 		const { commandChannelID, applyChannelID, applicationsChannelID } = channels
