@@ -10,7 +10,7 @@ module.exports = {
 			guilds.deleteOne({ guildID: guild.id })
 		}
 
-		logToSupportServer({
+		logToSupportServer(client, {
 			title: "__Left Server!__",
 			description: `**Name**: ${guild.name}\n**ID**: ${guild.id}\n**Members**: ${guild.memberCount}`,
 			color: red,

@@ -16,7 +16,7 @@ module.exports = {
 			abbreviations: [],
 		})
 
-		logToSupportServer({
+		logToSupportServer(client, {
 			title: "__Joined Server!__",
 			description: `**Name**: ${guild.name}\n**ID**: ${guild.id}\n**Members**: ${guild.memberCount}`,
 			color: green,
