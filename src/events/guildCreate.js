@@ -1,4 +1,5 @@
 const { green } = require("../static/colors")
+const { logToSupportServer } = require("../util/logging")
 
 module.exports = {
 	event: "guildCreate",
@@ -15,22 +16,13 @@ module.exports = {
 			abbreviations: [],
 		})
 
-		try {
-			//send log message to support server
-			client.channels.cache.get("947608454456016896").send({
-				embeds: [
-					{
-						title: "__Joined Server!__",
-						description: `**Name**: ${guild.name}\n**ID**: ${guild.id}\n**Members**: ${guild.memberCount}`,
-						color: green,
-						thumbnail: {
-							url: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`,
-						},
-					},
-				],
-			})
-		} catch {
-			console.log("Error sending join embed to Support Server")
-		}
+		logToSupportServer({
+			title: "__Joined Server!__",
+			description: `**Name**: ${guild.name}\n**ID**: ${guild.id}\n**Members**: ${guild.memberCount}`,
+			color: green,
+			thumbnail: {
+				url: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`,
+			},
+		})
 	},
 }

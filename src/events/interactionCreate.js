@@ -1,4 +1,5 @@
-const { orange } = require("../static/colors.js")
+const { orange, red, pink } = require("../static/colors.js")
+const { logToSupportServer } = require("../util/logging.js")
 const validate = require("../util/validate.js")
 const guildCreate = require("./guildCreate")
 
@@ -61,8 +62,21 @@ module.exports = {
 			}
 
 			await run(i, db, client)
+
+			const options = i.options._hoistedOptions.length > 0 ? `\n${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}` : "*None*"
+
+			logToSupportServer({
+				description: `**Command**: ${i.commandName}\n**User**: ${i.user.username}#${i.user.discriminator} (${i.user.id})\n**Guild**: ${i.member.guild.name} (${i.member.guild.id})\n\n**Options**: ${options}\n**Deferred**: ${i.deferred}\n**Replied**: ${i.replied}`,
+				color: pink,
+			})
 		} catch (e) {
 			console.log(e)
+
+			logToSupportServer({
+				description: `**${e.name}**: ${e.message}`,
+				color: red,
+			})
+
 			return
 		}
 	},
