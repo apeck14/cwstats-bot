@@ -7,8 +7,6 @@ module.exports = {
 			const guilds = db.collection("Guilds")
 
 			guilds.deleteOne({ guildID: guild.id })
-
-			console.log(`LEFT GUILD: ${guild.name} (${guild.id})`)
 		}
 
 		try {
