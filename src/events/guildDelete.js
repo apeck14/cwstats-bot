@@ -14,8 +14,8 @@ module.exports = {
 			client.channels.cache.get("947608454456016896").send({
 				embeds: [
 					{
-						title: "Left Server!",
-						description: `Name: ${guild.name}\nID: ${guild.id}\nMembers: ${guild.memberCount}`,
+						title: "__Left Server!__",
+						description: `**Name**: ${guild.name}\n**ID**: ${guild.id}\n**Members**: ${guild.memberCount}`,
 						color: red,
 						thumbnail: {
 							url: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`,
