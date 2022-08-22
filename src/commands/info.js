@@ -4,13 +4,12 @@ const { formatStr } = require("../util/formatting")
 module.exports = {
 	data: {
 		name: "info",
-		description: "View bot & server stats, and abbreviations.",
+		description: "View server stats and abbreviations.",
 	},
 	run: async (i, db, client) => {
 		const guilds = db.collection("Guilds")
 		const statistics = db.collection("Statistics")
 
-		const { commandsUsed, totalAbbreviations } = (await statistics.find({}).toArray())[0]
 		const { abbreviations, channels } = await guilds.findOne({ guildID: i.channel.guild.id })
 		const { commandChannelID, applyChannelID, applicationsChannelID } = channels
 		const cmdChnl = commandChannelID ? `<#${commandChannelID}>` : "N/A"
@@ -25,7 +24,6 @@ module.exports = {
 			},
 		}
 
-		embed.description += `**__Bot Info__**\n**Servers**: ${client.guilds.cache.size}\n**Commands Used**: ${commandsUsed}\n**Total Abbreviations**: ${totalAbbreviations}\n\n`
 		embed.description += `**__Server Info__**\n**Command Channel**: ${cmdChnl}\n**Apply Channel**: ${applyChnl}\n**Applications Channel**: ${appChnl}`
 
 		if (abbreviations?.length > 0)
