@@ -1,4 +1,4 @@
-const { green } = require("../static/colors")
+const { red } = require("../static/colors")
 
 module.exports = {
 	event: "guildDelete",
@@ -18,7 +18,7 @@ module.exports = {
 					{
 						title: "Left Server!",
 						description: `Name: ${guild.name}\nID: ${guild.id}\nMembers: ${guild.memberCount}`,
-						color: green,
+						color: red,
 						thumbnail: {
 							url: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`,
 						},
