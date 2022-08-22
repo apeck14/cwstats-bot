@@ -2,6 +2,8 @@ const { uniqBy } = require("lodash")
 const { getWarLeaderboard, getRiverRace } = require("../util/api")
 const { getAvgFame } = require("../util/raceFunctions")
 const locations = require("../static/locations")
+const { logToSupportServer } = require("../util/logging")
+const { green } = require("../static/colors")
 
 module.exports = {
 	expression: "0 50 * * * *", //run every hour at :35
@@ -15,8 +17,6 @@ module.exports = {
 		//get average fame for top 100 global war clans
 		//reduce total api requests by looking at all clans in race
 		//if clan already has data found from a previous race, dont make an api request
-
-		console.log("Updating daily lb...")
 
 		const lbIDs = locations.filter((l) => l.isAdded || l.name === "Global").map((l) => l.id)
 
@@ -33,10 +33,8 @@ module.exports = {
 			if (c.fameAvg) continue //if fame Avg already set
 
 			const { data: race, error } = await getRiverRace(c.tag)
-			if (error) {
-				console.log(error)
-				continue
-			}
+
+			if (error) continue
 
 			const isColosseum = race.periodType === "colosseum"
 			const dayOfWeek = race.periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
@@ -59,5 +57,10 @@ module.exports = {
 			dailyLb.insertMany(allClans)
 			console.log("Daily LB updated!")
 		}
+
+		logToSupportServer(client, {
+			description: "**Daily leaderboard updated!**",
+			color: green,
+		})
 	},
 }

@@ -1,14 +1,17 @@
 const puppeteer = require("puppeteer-extra")
 const StealthPlugin = require("puppeteer-extra-plugin-stealth")
-puppeteer.use(StealthPlugin())
 const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker")
+const { logToSupportServer } = require("../util/logging")
+const { red, green } = require("../static/colors")
+const allCards = require("../static/cardInfo")
+
+puppeteer.use(StealthPlugin())
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 module.exports = {
 	expression: "0 48 5 * * *", //run once a day
 	run: async (client, db) => {
 		const decks = db.collection("Decks")
-		console.log("Adding decks...")
 
 		const now = new Date()
 
@@ -22,10 +25,6 @@ module.exports = {
 
 				await page.setDefaultNavigationTimeout(0)
 
-				const allCards = require("../static/cardInfo")
-
-				let totalDecksAdded = 0
-
 				for await (const c of allCards) {
 					//loop through all cards
 					const url = `https://royaleapi.com/decks/popular?time=14d&sort=rating&size=20&players=PvP&min_trophies=6300&max_trophies=10000&min_elixir=1&max_elixir=9&min_cycle_elixir=4&max_cycle_elixir=28&mode=digest&type=Ladder&inc=${c.name}&&global_exclude=false`
@@ -36,8 +35,6 @@ module.exports = {
 					const ratings = await page.$$("table.stats td:nth-child(1)")
 
 					if (allDecks.length === ratings.length) {
-						let decksAdded = 0
-
 						const month = now.getUTCMonth() + 1
 						const date = now.getUTCDate()
 						const year = now.getUTCFullYear()
@@ -65,11 +62,8 @@ module.exports = {
 								)
 							} else {
 								await decks.insertOne(deck)
-								decksAdded++
 							}
 						}
-
-						totalDecksAdded += decksAdded
 					}
 
 					if (allCards.findIndex((ca) => c.name === ca.name) !== allCards.length - 1) {
@@ -81,7 +75,10 @@ module.exports = {
 					console.log("Added " + c.name)
 				}
 
-				console.log(`Finished! (${totalDecksAdded} decks added)`)
+				logToSupportServer(client, {
+					description: "**Decks successfully updated!**",
+					color: green,
+				})
 
 				await browser.close()
 			})
@@ -99,12 +96,13 @@ module.exports = {
 				for (const d of oldDecks) {
 					decks.deleteOne({ _id: d._id })
 				}
-
-				console.log(`Removed ${oldDecks.length} old decks.`)
 			})
-			.catch((err) => {
-				console.log("Error occured while adding decks.")
-				console.error(err)
+			.catch((e) => {
+				logToSupportServer(client, {
+					title: "Error while updating decks...",
+					description: `**${e.name}**: ${e.message}`,
+					color: red,
+				})
 			})
 	},
 }
