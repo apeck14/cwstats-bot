@@ -61,6 +61,11 @@ module.exports = {
 				})
 			}
 
+			//if a user @'s themselves
+			if (i.options._hoistedOptions.find((o) => o.type === "USER")?.value === i.user.id) {
+				await i.followUp(`:white_check_mark: **No need to @ yourself since you have a tag linked!**`)
+			}
+
 			await run(i, db, client)
 
 			const options = i.options._hoistedOptions.length > 0 ? `\n${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}` : "*None*"
