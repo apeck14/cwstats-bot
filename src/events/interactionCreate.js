@@ -18,8 +18,6 @@ module.exports = {
 					],
 				})
 
-			await i.deferReply()
-
 			const guilds = db.collection("Guilds")
 			let guildExists = await guilds.findOne({ guildID: i.guildId })
 
@@ -36,7 +34,7 @@ module.exports = {
 			const { error, color, onlyShowToUser } = validate(i, guildExists.channels, client)
 
 			if (error) {
-				return await i.editReply({
+				return await i.reply({
 					embeds: [
 						{
 							description: error,
@@ -50,7 +48,7 @@ module.exports = {
 			const { disabled, run } = i.client.commands.get(i.commandName)
 
 			if (disabled) {
-				return await i.editReply({
+				return await i.reply({
 					embeds: [
 						{
 							description: ":tools: **This command has been temporarily disabled**.",
@@ -60,6 +58,8 @@ module.exports = {
 					ephemeral: onlyShowToUser,
 				})
 			}
+
+			await i.deferReply()
 
 			//if a user @'s themselves
 			if (i.options._hoistedOptions.find((o) => o.type === "USER")?.value === i.user.id) {
