@@ -72,6 +72,7 @@ module.exports = {
 			})
 		} catch (e) {
 			console.log(e)
+			console.log(i)
 
 			logToSupportServer(client, {
 				description: `**${e.name}**: ${e.message}`,
