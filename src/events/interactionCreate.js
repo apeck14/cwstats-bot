@@ -61,11 +61,6 @@ module.exports = {
 
 			await i.deferReply()
 
-			//if a user @'s themselves
-			if (i.options._hoistedOptions.find((o) => o.type === "USER")?.value === i.user.id) {
-				await i.followUp(`:white_check_mark: **Use /link to avoid repetitive entry of yourself!**`)
-			}
-
 			await run(i, db, client)
 
 			const options = i.options._hoistedOptions.length > 0 ? `\n${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}` : "*None*"
