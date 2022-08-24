@@ -63,7 +63,7 @@ module.exports = {
 
 			//if a user @'s themselves
 			if (i.options._hoistedOptions.find((o) => o.type === "USER")?.value === i.user.id) {
-				await i.followUp(`:white_check_mark: **No need to @ yourself since you have a tag linked!**`)
+				await i.followUp(`:white_check_mark: **Use /link to avoid repetitive entry of yourself!**`)
 			}
 
 			await run(i, db, client)
