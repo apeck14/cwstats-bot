@@ -27,7 +27,7 @@ module.exports = {
 
 				for await (const c of allCards) {
 					//loop through all cards
-					const url = `https://royaleapi.com/decks/popular?time=7d&sort=rating&size=20&players=PvP&min_trophies=0&max_trophies=10000&min_elixir=1&max_elixir=9&min_cycle_elixir=4&max_cycle_elixir=28&mode=detail&type=GC&win_count=8&inc=${c.name}&&global_exclude=false`
+					const url = `https://royaleapi.com/decks/popular?time=7d&sort=rating&size=20&players=PvP&min_trophies=0&max_trophies=10000&min_elixir=1&max_elixir=9&min_cycle_elixir=4&max_cycle_elixir=28&mode=digest&type=GC&win_count=8&inc=${c.name}&&global_exclude=false`
 
 					await page.goto(url)
 
