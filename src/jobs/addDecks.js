@@ -9,7 +9,7 @@ puppeteer.use(StealthPlugin())
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
 
 module.exports = {
-	expression: "0 0 2 * * *", //run once a day
+	expression: "0 15 16 * * *", //run once a day
 	run: async (client, db) => {
 		const decks = db.collection("Decks")
 
