@@ -1,10 +1,13 @@
 const fs = require("fs")
 const registerSlashCommands = require("../util/slash")
+const blacklist = require("../static/blacklistGuilds")
 
 module.exports = {
 	event: "ready",
 	once: true,
 	run: async (client) => {
+		console.log(`${client.user.tag} Started`)
+
 		const commandFiles = fs.readdirSync("./src/commands")
 
 		client.user.setActivity(`Need help? | ${client.guilds.cache.size} servers`)
@@ -20,7 +23,6 @@ module.exports = {
 
 		const commandsData = commandsArray.map((e) => e.data)
 		registerSlashCommands(client.user.id, commandsData)
-		console.log(`${client.user.tag} Started`)
 
 		const emojis = {}
 		const ownerIds = [
@@ -46,13 +48,13 @@ module.exports = {
 			}
 		})
 
+		//leave blacklisted servers
+		for (const id of blacklist) {
+			const g = bot.guilds.cache.get(id)
+
+			if (g) g.leave()
+		}
+
 		console.log("allEmojis.json successfully written!")
-
-		//loop through guilds
-		// client.guilds.cache.each(async (g) => {
-		// 	const members = await g.members.fetch()
-
-		// 	if (members.get("767423046511886367") || members.get("174620158076125184") || members.get("379717576118239232")) console.log(`${g.name} ${g.id}`)
-		// })
 	},
 }
