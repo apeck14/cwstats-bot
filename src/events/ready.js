@@ -52,6 +52,8 @@ module.exports = {
 		for (const id of blacklist) {
 			const g = bot.guilds.cache.get(id)
 
+			consoel.log(g)
+
 			if (g) g.leave()
 		}
 
