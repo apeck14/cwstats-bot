@@ -50,7 +50,7 @@ module.exports = {
 
 		//leave blacklisted servers
 		for (const id of blacklist) {
-			const g = bot.guilds.cache.get(id)
+			const g = client.guilds.cache.get(id)
 
 			consoel.log(g)
 
