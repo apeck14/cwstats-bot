@@ -52,8 +52,6 @@ module.exports = {
 		for (const id of blacklist) {
 			const g = client.guilds.cache.get(id)
 
-			console.log(g)
-
 			if (g) g.leave()
 		}
 
