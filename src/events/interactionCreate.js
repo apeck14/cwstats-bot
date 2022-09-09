@@ -2,6 +2,7 @@ const { orange, red, pink } = require("../static/colors.js")
 const { logToSupportServer } = require("../util/logging.js")
 const validate = require("../util/validate.js")
 const guildCreate = require("./guildCreate")
+const { BLACKLIST_USERS } = require("../static/blacklist")
 
 module.exports = {
 	event: "interactionCreate",
@@ -17,6 +18,7 @@ module.exports = {
 						},
 					],
 				})
+			if (BLACKLIST_USERS.includes(i.user.id)) return
 
 			const guilds = db.collection("Guilds")
 			let guildExists = await guilds.findOne({ guildID: i.guildId })

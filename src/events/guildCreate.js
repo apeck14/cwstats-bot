@@ -1,11 +1,11 @@
 const { green } = require("../static/colors")
 const { logToSupportServer } = require("../util/logging")
-const blacklist = require("../static/blacklistGuilds")
+const { BLACKLIST_GUILDS } = require("../static/blacklist")
 
 module.exports = {
 	event: "guildCreate",
 	run: async (client, db, guild) => {
-		if (blacklist.includes(guild.id)) {
+		if (BLACKLIST_GUILDS.includes(guild.id)) {
 			guild.leave()
 			return
 		}

@@ -1,6 +1,6 @@
 const fs = require("fs")
 const registerSlashCommands = require("../util/slash")
-const blacklist = require("../static/blacklistGuilds")
+const { BLACKLIST_GUILDS } = require("../static/blacklist")
 
 module.exports = {
 	event: "ready",
@@ -49,7 +49,7 @@ module.exports = {
 		})
 
 		//leave blacklisted servers
-		for (const id of blacklist) {
+		for (const id of BLACKLIST_GUILDS) {
 			const g = client.guilds.cache.get(id)
 
 			if (g) g.leave()
