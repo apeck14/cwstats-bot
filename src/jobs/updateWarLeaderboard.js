@@ -20,14 +20,14 @@ module.exports = {
 
 		const lbIDs = locations.filter((l) => l.isAdded || l.name === "Global").map((l) => l.id)
 
-		const lbPromises = lbIDs.map((id) => getWarLeaderboard(id === "global" ? 100 : 20, id))
+		const lbPromises = lbIDs.map((id) => getWarLeaderboard(id === "global" ? 100 : 30, id))
 		const allLbs = await Promise.all(lbPromises)
 
 		const { data: allGlobalRankedClans, error: allGlobalRankedError } = await getWarLeaderboard(1000)
 
 		if (allLbs.some((lb) => lb.error) || allGlobalRankedError) return console.log("Error while updating leaderboard!")
 
-		const allClans = uniqBy(allLbs.map((lb) => lb.data).flat(), "tag")
+		const allClans = uniqBy(allLbs.map((lb) => lb.data).flat(), "tag").filter((c) => c.clanScore >= 4000)
 
 		for (const c of allClans) {
 			if (c.fameAvg) continue //if fame Avg already set
@@ -41,6 +41,8 @@ module.exports = {
 
 			for (const cl of race.clans) {
 				//set fameAvg for all clans in race
+				if (cl.clanScore < 4000) continue
+
 				const clan = allClans.find((cla) => cla.tag === cl.tag)
 				if (!clan || clan.fameAvg) continue
 
