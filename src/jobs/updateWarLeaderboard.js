@@ -6,7 +6,7 @@ const { logToSupportServer } = require("../util/logging")
 const { green } = require("../static/colors")
 
 module.exports = {
-	expression: "0 50 * * * *", //run every hour at :35
+	expression: "*/30 * * * *", //every 30 mins
 	run: async (client, db) => {
 		const dailyLb = db.collection("Daily Clan Leaderboard")
 		const statistics = db.collection("Statistics")
