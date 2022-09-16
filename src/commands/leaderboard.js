@@ -80,7 +80,7 @@ module.exports = {
 		const decksRemainingEmoji = getEmoji("decksRemaining")
 
 		embed.description += `**Location**: ${location?.key || "Global"} ${location?.flagEmoji || ":earth_americas:"}\n`
-		embed.description += `**League**: ${trophies ? `${trophies / 1000}k` : "All"}\n\n`
+		embed.description += `**League**: ${trophies ? `${trophies / 1000}k` : "All (4k+)"}\n\n`
 
 		for (let i = 0; i < leaderboard.length; i++) {
 			const clan = leaderboard[i]
