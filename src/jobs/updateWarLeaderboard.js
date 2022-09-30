@@ -12,7 +12,7 @@ module.exports = {
 		const statistics = db.collection("Statistics")
 
 		//top 100 global
-		//top 20 local
+		//top 50 local
 
 		//get average fame for top 100 global war clans
 		//reduce total api requests by looking at all clans in race
@@ -20,7 +20,7 @@ module.exports = {
 
 		const lbIDs = locations.filter((l) => l.isAdded || l.name === "Global").map((l) => l.id)
 
-		const lbPromises = lbIDs.map((id) => getWarLeaderboard(id === "global" ? 100 : 30, id))
+		const lbPromises = lbIDs.map((id) => getWarLeaderboard(id === "global" ? 100 : 50, id))
 		const allLbs = await Promise.all(lbPromises)
 
 		const { data: allGlobalRankedClans, error: allGlobalRankedError } = await getWarLeaderboard(1000)
