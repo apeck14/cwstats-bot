@@ -33,7 +33,13 @@ module.exports = {
 				discordName: i.user.username,
 				discordID: i.user.id,
 				tag: tag,
+				savedClans: [],
+				savedPlayers: [tag],
 			})
+
+			return i.editReply({ embeds: [{ color: green, description: `✅ Account linked to **${formatStr(player.name)}**!` }] })
+		} else if (!linkedAccount.tag) {
+			await linkedAccounts.updateOne({ discordID: i.user.id }, { $set: { tag: tag } })
 
 			return i.editReply({ embeds: [{ color: green, description: `✅ Account linked to **${formatStr(player.name)}**!` }] })
 		}
