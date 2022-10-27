@@ -155,8 +155,8 @@ const deckSetAvgDeckRating = (deckSetArr) => {
 const deckSetScore = (deckSetArr, playerCards) => {
 	const avgCardLvl = deckSetAvgLvl([...deckSetArr[0].cards, ...deckSetArr[1].cards, ...deckSetArr[2].cards, ...deckSetArr[3].cards], playerCards)
 	const avgRating = deckSetAvgDeckRating(deckSetArr)
-	const cardLvlWeight = 0.975
-	const ratingWeight = 0.025
+	const cardLvlWeight = 0.98
+	const ratingWeight = 0.02
 
 	return avgCardLvl * cardLvlWeight + avgRating * ratingWeight
 }

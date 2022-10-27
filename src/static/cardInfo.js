@@ -348,6 +348,7 @@ module.exports = [
 	},
 	{ name: "minions", aliases: [], id: 26000005, rarity: "common" },
 	{ name: "mirror", aliases: [], id: 28000006, rarity: "epic" },
+	{ name: "monk", aliases: [], id: 26000077, rarity: "champion" },
 	{ name: "mortar", aliases: [], id: 27000002, rarity: "common" },
 	{
 		name: "mother-witch",
@@ -368,6 +369,7 @@ module.exports = [
 		rarity: "legendary",
 	},
 	{ name: "pekka", aliases: ["pekka"], id: 26000004, rarity: "epic" },
+	{ name: "phoenix", aliases: [], id: 26000087, rarity: "legendary" },
 	{ name: "poison", aliases: [], id: 28000009, rarity: "epic" },
 	{ name: "prince", aliases: [], id: 26000016, rarity: "epic" },
 	{ name: "princess", aliases: [], id: 26000026, rarity: "legendary" },
