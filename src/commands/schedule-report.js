@@ -49,8 +49,6 @@ module.exports = {
 		const iChannel = i.options.getChannel("channel")
 
 		const guild = await guilds.findOne({ guildID: i.channel.guild.id })
-		const { channels } = guild
-		const { reportChannelID } = channels
 
 		let tag = i.options.getString("tag")
 		const abbr = guild?.abbreviations?.find((a) => a.abbr === tag)
