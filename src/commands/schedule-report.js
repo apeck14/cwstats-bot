@@ -62,7 +62,7 @@ module.exports = {
 			})
 		}
 
-		const reportChannelPermissions = client.channels.cache.get(reportChannelID).permissionsFor(client.user).toArray()
+		const reportChannelPermissions = client.channels.cache.get(iChannel.id).permissionsFor(client.user).toArray()
 		const requiredPerms = ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS", "USE_EXTERNAL_EMOJIS"]
 		const missingPerms = requiredPerms.filter((p) => !reportChannelPermissions.includes(p))
 
