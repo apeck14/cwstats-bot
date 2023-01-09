@@ -1,6 +1,6 @@
 const { orange, red, pink } = require("../static/colors.js")
 const { logToSupportServer } = require("../util/logging.js")
-const validate = require("../util/validate.js")
+const { validate } = require("../util/validate.js")
 const guildCreate = require("./guildCreate")
 const { BLACKLIST_USERS } = require("../static/blacklist")
 

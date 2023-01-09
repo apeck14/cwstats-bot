@@ -1,9 +1,7 @@
 const { orange, red } = require("../static/colors")
 
 const permissionsToStrList = (requiredPerms, missingPerms) => {
-	return requiredPerms
-		.map((p) => (missingPerms.includes(p) ? `❌ \`${p}\`\n`.replace("-", " ") : `✅ \`${p}\`\n`.replace("-", " ")))
-		.join("")
+	return requiredPerms.map((p) => (missingPerms.includes(p) ? `❌ \`${p}\`\n`.replace("_", " ") : `✅ \`${p}\`\n`.replace("_", " "))).join("")
 }
 
 const checkPermissions = (i, channels, client) => {
@@ -22,7 +20,7 @@ const checkPermissions = (i, channels, client) => {
 	} else {
 		if (!i.member.permissions.has(command.data.userPermissions || [])) {
 			const permissionList = command.data.userPermissions
-				.map((c) => (i.member.permissions.has(c) ? `✅ \`${c}\`\n`.replace("-", " ") : `❌ \`${c}\`\n`.replace("-", " ")))
+				.map((c) => (i.member.permissions.has(c) ? `✅ \`${c}\`\n`.replace("_", " ") : `❌ \`${c}\`\n`.replace("_", " ")))
 				.join("")
 
 			return { error: `You don't have **permission(s)** to use this command.\n\n${permissionList}` }
@@ -48,8 +46,7 @@ const validate = (i, channels, client) => {
 	const response = { color: orange, onlyShowToUser: true }
 
 	if (i.commandName === "apply") {
-		if (applyChannelID !== i.channel.id)
-			return { ...response, error: `You can only use this command in the set **apply channel**! (<#${applyChannelID}>)` }
+		if (applyChannelID !== i.channel.id) return { ...response, error: `You can only use this command in the set **apply channel**! (<#${applyChannelID}>)` }
 		else if (!applyChannelID) return { ...response, error: "**No apply channel set.**" }
 		else if (!applicationsChannelID) return { ...response, error: "**No applications channel set.**" }
 	} else {
@@ -64,4 +61,4 @@ const validate = (i, channels, client) => {
 	return {}
 }
 
-module.exports = validate
+module.exports = { validate, permissionsToStrList }
