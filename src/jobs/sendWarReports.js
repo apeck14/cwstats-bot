@@ -45,7 +45,7 @@ module.exports = {
 
 				if (missingPerms.length > 0) continue
 
-				if (race.periodType !== "warDay" && race.periodType !== "colosseum") {
+				if (race.periodType === "training") {
 					client.channels.cache.get(reportChannelID).send({
 						embeds: [
 							{
