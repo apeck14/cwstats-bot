@@ -11,7 +11,6 @@ const client = initializeClient()
 initializeCronJobs(mongo, client)
 initializeEvents(mongo, client)
 
-console.log(process.env.TOPGG_TOKEN)
 try {
     AutoPoster(process.env.TOPGG_TOKEN, client)
 } catch (err) {
