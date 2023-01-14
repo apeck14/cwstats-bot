@@ -11,7 +11,9 @@ const client = initializeClient()
 initializeCronJobs(mongo, client)
 initializeEvents(mongo, client)
 
-AutoPoster(process.env.TOPGG_TOKEN, client)
+console.log(process.env.TOPGG_TOKEN)
+
+//AutoPoster(process.env.TOPGG_TOKEN, client)
 
 process.on("unhandledRejection", (err) => {
 	console.log("---UNHANDLED REJECION---")
