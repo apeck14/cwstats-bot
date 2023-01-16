@@ -21,17 +21,21 @@ module.exports = {
 						value: l.name,
 					}))
 					.sort((a, b) => b.name - a.name),
-			},
-			{
+			}, {
 				type: 3,
 				name: "league",
 				description: "Filter by league",
 				required: false,
 				choices: [
-					{ name: "4000+", value: "4000+" },
-					{ name: "5000+", value: "5000+" },
+					{
+						name: "4000+",
+						value: "4000+"
+					}, {
+						name: "5000+",
+						value: "5000+"
+					}
 				],
-			},
+			}
 		],
 	},
 	run: async (i, db, client) => {
@@ -46,19 +50,28 @@ module.exports = {
 
 		const query = {}
 		if (iName) query["location.name"] = iName
-		if (maxTrophies) query["clanScore"] = { $lt: maxTrophies, $gte: trophies }
+		if (maxTrophies) {
+			query["clanScore"] = {
+				$lt: maxTrophies,
+				$gte: trophies
+			}
+		}
 
-		const leaderboard = await dailyLb.find(query).sort({ fameAvg: -1, rank: 1 }).limit(10).toArray()
+		const leaderboard = await dailyLb.find(query).sort({
+			fameAvg: -1,
+			rank: 1
+		}).limit(10).toArray()
 
-		if (leaderboard.length === 0)
+		if (leaderboard.length === 0) {
 			return i.editReply({
 				embeds: [
 					{
 						color: orange,
 						description: "**No clans found!**",
-					},
+					}
 				],
 			})
+		}
 
 		const { lbLastUpdated } = (await statistics.find({}).toArray())[0]
 		const now = Date.now()
@@ -94,6 +107,8 @@ module.exports = {
 			}\n`
 		}
 
-		return i.editReply({ embeds: [embed] })
+		return i.editReply({
+			embeds: [embed]
+		})
 	},
 }

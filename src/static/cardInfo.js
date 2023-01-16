@@ -5,11 +5,25 @@ module.exports = [
 		id: 26000072,
 		rarity: "champion",
 	},
-	{ name: "archers", aliases: [], id: 26000001, rarity: "common" },
-	{ name: "arrows", aliases: [], id: 28000001, rarity: "common" },
+	{
+		name: "archers",
+		aliases: [],
+		id: 26000001,
+		rarity: "common"
+	},
+	{
+		name: "arrows",
+		aliases: [],
+		id: 28000001,
+		rarity: "common"
+	},
 	{
 		name: "baby-dragon",
-		aliases: ["bdrag", "baby-d", "bd"],
+		aliases: [
+			"bdrag",
+			"baby-d",
+			"bd"
+		],
 		id: 26000015,
 		rarity: "epic",
 	},
@@ -19,7 +33,12 @@ module.exports = [
 		id: 26000006,
 		rarity: "epic",
 	},
-	{ name: "bandit", aliases: [], id: 26000046, rarity: "legendary" },
+	{
+		name: "bandit",
+		aliases: [],
+		id: 26000046,
+		rarity: "legendary"
+	},
 	{
 		name: "barbarian-barrel",
 		aliases: ["barb-barrel", "bb"],
@@ -38,7 +57,12 @@ module.exports = [
 		id: 26000008,
 		rarity: "common",
 	},
-	{ name: "bats", aliases: [], id: 26000049, rarity: "common" },
+	{
+		name: "bats",
+		aliases: [],
+		id: 26000049,
+		rarity: "common"
+	},
 	{
 		name: "battle-healer",
 		aliases: ["healer"],
@@ -57,9 +81,24 @@ module.exports = [
 		id: 27000004,
 		rarity: "rare",
 	},
-	{ name: "bomber", aliases: [], id: 26000013, rarity: "common" },
-	{ name: "bowler", aliases: [], id: 26000034, rarity: "epic" },
-	{ name: "cannon", aliases: [], id: 27000000, rarity: "common" },
+	{
+		name: "bomber",
+		aliases: [],
+		id: 26000013,
+		rarity: "common"
+	},
+	{
+		name: "bowler",
+		aliases: [],
+		id: 26000034,
+		rarity: "epic"
+	},
+	{
+		name: "cannon",
+		aliases: [],
+		id: 27000000,
+		rarity: "common"
+	},
 	{
 		name: "cannon-cart",
 		aliases: ["cart", "cc"],
@@ -92,7 +131,12 @@ module.exports = [
 	},
 	{
 		name: "electro-dragon",
-		aliases: ["edrag", "electro-drag", "e-drag", "ed"],
+		aliases: [
+			"edrag",
+			"electro-drag",
+			"e-drag",
+			"ed"
+		],
 		id: 26000063,
 		rarity: "epic",
 	},
@@ -104,26 +148,44 @@ module.exports = [
 	},
 	{
 		name: "electro-spirit",
-		aliases: ["espirit", "e-spirit", "es"],
+		aliases: [
+			"espirit",
+			"e-spirit",
+			"es"
+		],
 		canBeUnderLeveled: true,
 		id: 26000084,
 		rarity: "common",
 	},
 	{
 		name: "electro-wizard",
-		aliases: ["ewiz", "e-wiz", "ew"],
+		aliases: [
+			"ewiz",
+			"e-wiz",
+			"ew"
+		],
 		id: 26000042,
 		rarity: "legendary",
 	},
 	{
 		name: "elite-barbarians",
-		aliases: ["ebarbs", "e-barbs", "eb"],
+		aliases: [
+			"ebarbs",
+			"e-barbs",
+			"eb"
+		],
 		id: 26000043,
 		rarity: "common",
 	},
 	{
 		name: "elixir-collector",
-		aliases: ["collector", "ecollector", "e-collector", "ec", "pump"],
+		aliases: [
+			"collector",
+			"ecollector",
+			"e-collector",
+			"ec",
+			"pump"
+		],
 		id: 27000007,
 		rarity: "rare",
 	},
@@ -141,7 +203,11 @@ module.exports = [
 	},
 	{
 		name: "fire-spirit",
-		aliases: ["fspirit", "f-spirit", "fs"],
+		aliases: [
+			"fspirit",
+			"f-spirit",
+			"fs"
+		],
 		id: 26000031,
 		rarity: "common",
 	},
@@ -165,7 +231,11 @@ module.exports = [
 	},
 	{
 		name: "flying-machine",
-		aliases: ["fmachine", "f-machine", "fm"],
+		aliases: [
+			"fmachine",
+			"f-machine",
+			"fm"
+		],
 		id: 26000057,
 		rarity: "rare",
 	},
@@ -176,8 +246,18 @@ module.exports = [
 		id: 28000005,
 		rarity: "epic",
 	},
-	{ name: "furnace", aliases: [], id: 27000010, rarity: "rare" },
-	{ name: "giant", aliases: [], id: 26000003, rarity: "rare" },
+	{
+		name: "furnace",
+		aliases: [],
+		id: 27000010,
+		rarity: "rare"
+	},
+	{
+		name: "giant",
+		aliases: [],
+		id: 26000003,
+		rarity: "rare"
+	},
 	{
 		name: "giant-skeleton",
 		aliases: ["giant-skelly", "gs"],
@@ -192,37 +272,64 @@ module.exports = [
 	},
 	{
 		name: "goblin-barrel",
-		aliases: ["gobbarrel", "gob-barrel", "gb"],
+		aliases: [
+			"gobbarrel",
+			"gob-barrel",
+			"gb"
+		],
 		id: 28000004,
 		rarity: "epic",
 	},
 	{
 		name: "goblin-cage",
-		aliases: ["cage", "gobcage", "gob-cage", "gc"],
+		aliases: [
+			"cage",
+			"gobcage",
+			"gob-cage",
+			"gc"
+		],
 		id: 27000012,
 		rarity: "rare",
 	},
 	{
 		name: "goblin-drill",
-		aliases: ["drill", "gobdrill", "gob-drill", "gd"],
+		aliases: [
+			"drill",
+			"gobdrill",
+			"gob-drill",
+			"gd"
+		],
 		id: 27000013,
 		rarity: "epic",
 	},
 	{
 		name: "goblin-gang",
-		aliases: ["gang", "gobgang", "gob-gang"],
+		aliases: [
+			"gang",
+			"gobgang",
+			"gob-gang"
+		],
 		id: 26000041,
 		rarity: "common",
 	},
 	{
 		name: "goblin-giant",
-		aliases: ["gobgiant", "gob-giant", "ggiant", "g-giant"],
+		aliases: [
+			"gobgiant",
+			"gob-giant",
+			"ggiant",
+			"g-giant"
+		],
 		id: 26000060,
 		rarity: "epic",
 	},
 	{
 		name: "goblin-hut",
-		aliases: ["gobhut", "gob-hut", "gh"],
+		aliases: [
+			"gobhut",
+			"gob-hut",
+			"gh"
+		],
 		id: 27000001,
 		rarity: "rare",
 	},
@@ -234,21 +341,39 @@ module.exports = [
 	},
 	{
 		name: "golden-knight",
-		aliases: ["g-knight", "gknight", "gk"],
+		aliases: [
+			"g-knight",
+			"gknight",
+			"gk"
+		],
 		id: 26000074,
 		rarity: "champion",
 	},
-	{ name: "golem", aliases: [], id: 26000009, rarity: "epic" },
+	{
+		name: "golem",
+		aliases: [],
+		id: 26000009,
+		rarity: "epic"
+	},
 	{
 		name: "graveyard",
 		aliases: ["gy"],
 		id: 28000010,
 		rarity: "legendary",
 	},
-	{ name: "guards", aliases: [], id: 26000025, rarity: "epic" },
+	{
+		name: "guards",
+		aliases: [],
+		id: 26000025,
+		rarity: "epic"
+	},
 	{
 		name: "heal-spirit",
-		aliases: ["h-spirit", "hspirit", "hs"],
+		aliases: [
+			"h-spirit",
+			"hspirit",
+			"hs"
+		],
 		id: 28000016,
 		rarity: "rare",
 	},
@@ -258,35 +383,64 @@ module.exports = [
 		id: 26000021,
 		rarity: "rare",
 	},
-	{ name: "hunter", aliases: [], id: 26000044, rarity: "epic" },
+	{
+		name: "hunter",
+		aliases: [],
+		id: 26000044,
+		rarity: "epic"
+	},
 	{
 		name: "ice-golem",
-		aliases: ["i-golem", "igolem", "ig"],
+		aliases: [
+			"i-golem",
+			"igolem",
+			"ig"
+		],
 		id: 26000038,
 		rarity: "rare",
 	},
 	{
 		name: "ice-spirit",
-		aliases: ["i-spirit", "ispirit", "is"],
+		aliases: [
+			"i-spirit",
+			"ispirit",
+			"is"
+		],
 		canBeUnderLeveled: true,
 		id: 26000030,
 		rarity: "common",
 	},
 	{
 		name: "ice-wizard",
-		aliases: ["icewiz", "ice-wiz", "iwiz", "i-wiz", "iw"],
+		aliases: [
+			"icewiz",
+			"ice-wiz",
+			"iwiz",
+			"i-wiz",
+			"iw"
+		],
 		id: 26000023,
 		rarity: "legendary",
 	},
 	{
 		name: "inferno-dragon",
-		aliases: ["idrag", "i-drag", "infernodrag", "inferno-drag", "id"],
+		aliases: [
+			"idrag",
+			"i-drag",
+			"infernodrag",
+			"inferno-drag",
+			"id"
+		],
 		id: 26000037,
 		rarity: "legendary",
 	},
 	{
 		name: "inferno-tower",
-		aliases: ["itower", "i-tower", "it"],
+		aliases: [
+			"itower",
+			"i-tower",
+			"it"
+		],
 		id: 27000003,
 		rarity: "rare",
 	},
@@ -298,11 +452,20 @@ module.exports = [
 	},
 	{
 		name: "lava-hound",
-		aliases: ["hound", "lava", "lh"],
+		aliases: [
+			"hound",
+			"lava",
+			"lh"
+		],
 		id: 26000029,
 		rarity: "legendary",
 	},
-	{ name: "lightning", aliases: [], id: 28000007, rarity: "epic" },
+	{
+		name: "lightning",
+		aliases: [],
+		id: 28000007,
+		rarity: "epic"
+	},
 	{
 		name: "lumberjack",
 		aliases: ["ljack", "lj"],
@@ -311,7 +474,11 @@ module.exports = [
 	},
 	{
 		name: "magic-archer",
-		aliases: ["march", "marcher", "ma"],
+		aliases: [
+			"march",
+			"marcher",
+			"ma"
+		],
 		id: 26000062,
 		rarity: "legendary",
 	},
@@ -329,14 +496,27 @@ module.exports = [
 	},
 	{
 		name: "mighty-miner",
-		aliases: ["mmr", "mightyminer", "mminer"],
+		aliases: [
+			"mmr",
+			"mightyminer",
+			"mminer"
+		],
 		id: 26000065,
 		rarity: "champion",
 	},
-	{ name: "miner", aliases: [], id: 26000032, rarity: "legendary" },
+	{
+		name: "miner",
+		aliases: [],
+		id: 26000032,
+		rarity: "legendary"
+	},
 	{
 		name: "mini-pekka",
-		aliases: ["minipekka", "mini-pekka", "mp"],
+		aliases: [
+			"minipekka",
+			"mini-pekka",
+			"mp"
+		],
 		id: 26000018,
 		rarity: "rare",
 	},
@@ -346,10 +526,30 @@ module.exports = [
 		id: 26000022,
 		rarity: "common",
 	},
-	{ name: "minions", aliases: [], id: 26000005, rarity: "common" },
-	{ name: "mirror", aliases: [], id: 28000006, rarity: "epic" },
-	{ name: "monk", aliases: [], id: 26000077, rarity: "champion" },
-	{ name: "mortar", aliases: [], id: 27000002, rarity: "common" },
+	{
+		name: "minions",
+		aliases: [],
+		id: 26000005,
+		rarity: "common"
+	},
+	{
+		name: "mirror",
+		aliases: [],
+		id: 28000006,
+		rarity: "epic"
+	},
+	{
+		name: "monk",
+		aliases: [],
+		id: 26000077,
+		rarity: "champion"
+	},
+	{
+		name: "mortar",
+		aliases: [],
+		id: 27000002,
+		rarity: "common"
+	},
 	{
 		name: "mother-witch",
 		aliases: ["mw"],
@@ -368,11 +568,36 @@ module.exports = [
 		id: 26000048,
 		rarity: "legendary",
 	},
-	{ name: "pekka", aliases: ["pekka"], id: 26000004, rarity: "epic" },
-	{ name: "phoenix", aliases: [], id: 26000087, rarity: "legendary" },
-	{ name: "poison", aliases: [], id: 28000009, rarity: "epic" },
-	{ name: "prince", aliases: [], id: 26000016, rarity: "epic" },
-	{ name: "princess", aliases: [], id: 26000026, rarity: "legendary" },
+	{
+		name: "pekka",
+		aliases: ["pekka"],
+		id: 26000004,
+		rarity: "epic"
+	},
+	{
+		name: "phoenix",
+		aliases: [],
+		id: 26000087,
+		rarity: "legendary"
+	},
+	{
+		name: "poison",
+		aliases: [],
+		id: 28000009,
+		rarity: "epic"
+	},
+	{
+		name: "prince",
+		aliases: [],
+		id: 26000016,
+		rarity: "epic"
+	},
+	{
+		name: "princess",
+		aliases: [],
+		id: 26000026,
+		rarity: "legendary"
+	},
 	{
 		name: "rage",
 		aliases: [],
@@ -380,9 +605,24 @@ module.exports = [
 		id: 28000002,
 		rarity: "epic",
 	},
-	{ name: "ram-rider", aliases: [], id: 26000051, rarity: "legendary" },
-	{ name: "rascals", aliases: [], id: 26000053, rarity: "common" },
-	{ name: "rocket", aliases: [], id: 28000003, rarity: "rare" },
+	{
+		name: "ram-rider",
+		aliases: [],
+		id: 26000051,
+		rarity: "legendary"
+	},
+	{
+		name: "rascals",
+		aliases: [],
+		id: 26000053,
+		rarity: "common"
+	},
+	{
+		name: "rocket",
+		aliases: [],
+		id: 28000003,
+		rarity: "rare"
+	},
 	{
 		name: "royal-delivery",
 		aliases: ["delivery", "rd"],
@@ -403,7 +643,11 @@ module.exports = [
 	},
 	{
 		name: "royal-hogs",
-		aliases: ["pigs", "hogs", "rh"],
+		aliases: [
+			"pigs",
+			"hogs",
+			"rh"
+		],
 		id: 26000059,
 		rarity: "rare",
 	},
@@ -421,19 +665,36 @@ module.exports = [
 	},
 	{
 		name: "skeleton-barrel",
-		aliases: ["skellybarrel", "skelly-barrel", "sbarrel", "s-barrel", "sb"],
+		aliases: [
+			"skellybarrel",
+			"skelly-barrel",
+			"sbarrel",
+			"s-barrel",
+			"sb"
+		],
 		id: 26000056,
 		rarity: "common",
 	},
 	{
 		name: "skeleton-dragons",
-		aliases: ["skeletondrags", "skeleton-drags", "skellydrags", "skelly-drags", "sd"],
+		aliases: [
+			"skeletondrags",
+			"skeleton-drags",
+			"skellydrags",
+			"skelly-drags",
+			"sd"
+		],
 		id: 26000080,
 		rarity: "common",
 	},
 	{
 		name: "skeleton-king",
-		aliases: ["king", "skellyking", "skelly-king", "sk"],
+		aliases: [
+			"king",
+			"skellyking",
+			"skelly-king",
+			"sk"
+		],
 		id: 26000069,
 		rarity: "champion",
 	},
@@ -444,14 +705,30 @@ module.exports = [
 		id: 26000010,
 		rarity: "common",
 	},
-	{ name: "sparky", aliases: [], id: 26000033, rarity: "legendary" },
+	{
+		name: "sparky",
+		aliases: [],
+		id: 26000033,
+		rarity: "legendary"
+	},
 	{
 		name: "spear-goblins",
-		aliases: ["speargobs", "spear-gobs", "sgobs", "s-gobs", "sg"],
+		aliases: [
+			"speargobs",
+			"spear-gobs",
+			"sgobs",
+			"s-gobs",
+			"sg"
+		],
 		id: 26000019,
 		rarity: "common",
 	},
-	{ name: "tesla", aliases: [], id: 27000006, rarity: "common" },
+	{
+		name: "tesla",
+		aliases: [],
+		id: 27000006,
+		rarity: "common"
+	},
 	{
 		name: "the-log",
 		aliases: ["log"],
@@ -460,7 +737,12 @@ module.exports = [
 	},
 	{
 		name: "three-musketeers",
-		aliases: ["threemusks", "three-musks", "3m", "tm"],
+		aliases: [
+			"threemusks",
+			"three-musks",
+			"3m",
+			"tm"
+		],
 		id: 26000028,
 		rarity: "rare",
 	},
@@ -489,9 +771,34 @@ module.exports = [
 		id: 26000058,
 		rarity: "epic",
 	},
-	{ name: "witch", aliases: [], id: 26000007, rarity: "epic" },
-	{ name: "wizard", aliases: ["wiz"], id: 26000017, rarity: "rare" },
-	{ name: "x-bow", aliases: ["xbow"], id: 27000008, rarity: "epic" },
-	{ name: "zap", aliases: [], id: 28000008, rarity: "common" },
-	{ name: "zappies", aliases: [], id: 26000052, rarity: "rare" },
+	{
+		name: "witch",
+		aliases: [],
+		id: 26000007,
+		rarity: "epic"
+	},
+	{
+		name: "wizard",
+		aliases: ["wiz"],
+		id: 26000017,
+		rarity: "rare"
+	},
+	{
+		name: "x-bow",
+		aliases: ["xbow"],
+		id: 27000008,
+		rarity: "epic"
+	},
+	{
+		name: "zap",
+		aliases: [],
+		id: 28000008,
+		rarity: "common"
+	},
+	{
+		name: "zappies",
+		aliases: [],
+		id: 26000052,
+		rarity: "rare"
+	}
 ]

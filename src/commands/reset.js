@@ -10,10 +10,12 @@ module.exports = {
 		const guilds = db.collection("Guilds")
 
 		await guilds.updateOne(
-			{ guildID: i.channel.guild.id },
+			{
+				guildID: i.channel.guild.id
+			},
 			{
 				$set: {
-					abbreviations: [],
+					"abbreviations": [],
 					"channels.applyChannelID": null,
 					"channels.applicationsChannelID": null,
 					"channels.commandChannelID": null,
@@ -26,7 +28,7 @@ module.exports = {
 				{
 					color: green,
 					description: `✅ All bot settings successfully reset to **default**!`,
-				},
+				}
 			],
 		})
 	},

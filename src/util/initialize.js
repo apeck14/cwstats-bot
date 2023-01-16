@@ -9,11 +9,12 @@ const jobs = fs.readdirSync("src/jobs")
 const initializeEvents = (mongo, client) => {
 	for (const event of events) {
 		const eventFile = require(`../events/${event}`)
-		if (eventFile.once) {
+		if (eventFile.once)
 			client.once(eventFile.event, (...args) => eventFile.run(client, mongo.db, ...args))
-		} else {
+
+		else
 			client.on(eventFile.event, (...args) => eventFile.run(client, mongo.db, ...args))
-		}
+
 	}
 
 	console.log("DiscordJS Events Initalized!")
@@ -26,7 +27,8 @@ const initializeCronJobs = (mongo, client) => {
 			const jobFile = require(`../jobs/${job}`)
 			const newJob = schedule(jobFile.expression, () => jobFile.run(client, mongo.db))
 			newJob.start()
-		} catch (e) {
+		}
+		catch (e) {
 			console.log(e)
 			continue
 		}
@@ -37,7 +39,12 @@ const initializeCronJobs = (mongo, client) => {
 
 const initializeClient = () => {
 	const client = new Client({
-		intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
+		intents: [
+			Intents.FLAGS.GUILDS,
+			Intents.FLAGS.GUILD_MESSAGES,
+			Intents.FLAGS.GUILD_MESSAGE_TYPING,
+			Intents.FLAGS.GUILD_MESSAGE_REACTIONS
+		],
 	})
 
 	console.log("Client Initialized!")
@@ -48,4 +55,8 @@ const initializeClient = () => {
 	return client
 }
 
-module.exports = { initializeEvents, initializeCronJobs, initializeClient }
+module.exports = {
+	initializeEvents,
+	initializeCronJobs,
+	initializeClient
+}

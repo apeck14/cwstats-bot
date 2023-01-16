@@ -23,13 +23,13 @@
 	"optionalDependencies": {
 		"bufferutil": "^4.0.3"
 	},
-    "devDependencies": {
-		"eslint": "^8.31.0",
+	"devDependencies": {
+		"eslint": "^8.32.0",
 		"eslint-plugin-promise": "^6.1.1",
 		"eslint-plugin-sonarjs": "^0.18.0",
 		"eslint-plugin-unicorn": "^45.0.2"
 	},
-    "engineStrict": true,
+	"engineStrict": true,
 	"engines": {
 		"node": ">= 16.9.0"
 	}

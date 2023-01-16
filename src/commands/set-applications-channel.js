@@ -11,28 +11,45 @@ module.exports = {
 				description: "Set channel where applications will be posted.",
 				required: true,
 				channel_types: [0], //text channels only
-			},
+			}
 		],
 		userPermissions: ["MANAGE_GUILD"],
 	},
 	run: async (i, db) => {
 		const guilds = db.collection("Guilds")
 
-		const { channels } = await guilds.findOne({ guildID: i.channel.guild.id })
+		const { channels } = await guilds.findOne({
+			guildID: i.channel.guild.id
+		})
 		const { applicationsChannelID } = channels
 
 		const channel = i.options.getChannel("channel")
 
-		if (channel.id === applicationsChannelID)
-			return i.editReply({ embeds: [{ color: orange, description: `**This channel is already set!**` }] })
+		if (channel.id === applicationsChannelID) {
+			return i.editReply({
+				embeds: [
+					{
+						color: orange,
+						description: `**This channel is already set!**`
+					}
+				]
+			})
+		}
 
-		guilds.updateOne({ guildID: i.channel.guild.id }, { $set: { "channels.applicationsChannelID": channel.id } })
+		guilds.updateOne({
+			guildID: i.channel.guild.id
+		}, {
+			$set: {
+				"channels.applicationsChannelID": channel.id
+			}
+		})
+
 		return i.editReply({
 			embeds: [
 				{
 					color: green,
 					description: `✅ **Applications** channel now set to <#${channel.id}>!`,
-				},
+				}
 			],
 		})
 	},

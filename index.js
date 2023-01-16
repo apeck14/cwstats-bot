@@ -12,10 +12,11 @@ initializeCronJobs(mongo, client)
 initializeEvents(mongo, client)
 
 try {
-    AutoPoster(process.env.TOPGG_TOKEN, client)
-} catch (err) {
-    console.log("TOPGG ERROR")
-    console.log(err)
+	AutoPoster(process.env.TOPGG_TOKEN, client)
+}
+catch (err) {
+	console.log("TOPGG ERROR")
+	console.log(err)
 }
 
 process.on("unhandledRejection", (err) => {

@@ -54,7 +54,11 @@ module.exports = {
 
 		if (allClans.length > 0) {
 			await dailyLb.deleteMany({})
-			statistics.updateOne({}, { $set: { lbLastUpdated: Date.now() } })
+			statistics.updateOne({}, {
+				$set: {
+					lbLastUpdated: Date.now()
+				}
+			})
 			console.log("Current lb deleted!")
 			dailyLb.insertMany(allClans)
 			console.log("Daily LB updated!")

@@ -7,6 +7,7 @@ module.exports = {
 	run: async (client, db, guild) => {
 		if (BLACKLIST_GUILDS.includes(guild.id)) {
 			guild.leave()
+
 			return
 		}
 

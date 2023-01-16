@@ -11,7 +11,7 @@ module.exports = {
 					style: 5,
 					type: 2,
 					url: "https://paypal.me/cw2stats",
-				},
+				}
 			],
 			type: 1,
 		}
@@ -26,7 +26,7 @@ module.exports = {
 					thumbnail: {
 						url: "https://w7.pngwing.com/pngs/875/329/png-transparent-paypal-logo-e-commerce-payment-system-paypal-blue-angle-company.png",
 					},
-				},
+				}
 			],
 			components: [row],
 		})

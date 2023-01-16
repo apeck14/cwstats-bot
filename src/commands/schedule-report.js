@@ -37,7 +37,7 @@ module.exports = {
 				required: true,
 				min_value: 0,
 				max_value: 59,
-			},
+			}
 		],
 		userPermissions: ["MANAGE_GUILD"],
 	},
@@ -48,7 +48,9 @@ module.exports = {
 		const iMinute = i.options.getInteger("minute")
 		const iChannel = i.options.getChannel("channel")
 
-		const guild = await guilds.findOne({ guildID: i.channel.guild.id })
+		const guild = await guilds.findOne({
+			guildID: i.channel.guild.id
+		})
 
 		let tag = i.options.getString("tag")
 		const abbr = guild?.abbreviations?.find((a) => a.abbr === tag)
@@ -56,12 +58,22 @@ module.exports = {
 		if (abbr) tag = abbr.tag
 		else if (tag.length < 5) {
 			return i.editReply({
-				embeds: [{ description: "**Abbreviation does not exist.**", color: orange }],
+				embeds: [
+					{
+						description: "**Abbreviation does not exist.**",
+						color: orange
+					}
+				],
 			})
 		}
 
 		const reportChannelPermissions = client.channels.cache.get(iChannel.id).permissionsFor(client.user).toArray()
-		const requiredPerms = ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS", "USE_EXTERNAL_EMOJIS"]
+		const requiredPerms = [
+			"VIEW_CHANNEL",
+			"SEND_MESSAGES",
+			"EMBED_LINKS",
+			"USE_EXTERNAL_EMOJIS"
+		]
 		const missingPerms = requiredPerms.filter((p) => !reportChannelPermissions.includes(p))
 
 		if (missingPerms.length > 0) {
@@ -70,7 +82,7 @@ module.exports = {
 					{
 						description: `**Missing Permissions in** <#${iChannel.id}>:\n` + permissionsToStrList(requiredPerms, missingPerms),
 						color: red,
-					},
+					}
 				],
 			})
 		}
@@ -86,7 +98,7 @@ module.exports = {
 
 		guilds.updateOne(guild, {
 			$set: {
-				warReport: {
+				"warReport": {
 					enabled: true,
 					clanTag: formatTag(tag),
 					scheduledReportTimeHHMM: HHMM,
@@ -107,7 +119,7 @@ module.exports = {
 					footer: {
 						text: "Use /toggle-report to disable war report at any time.",
 					},
-				},
+				}
 			],
 		})
 	},

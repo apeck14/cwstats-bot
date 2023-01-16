@@ -9,7 +9,12 @@ const checkPermissions = (i, channels, client) => {
 	const { applicationsChannelID } = channels
 	if (i.commandName === "apply") {
 		const applicationsChannelPermissions = client.channels.cache.get(applicationsChannelID).permissionsFor(client.user).toArray()
-		const requiredPerms = ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS", "USE_EXTERNAL_EMOJIS"]
+		const requiredPerms = [
+			"VIEW_CHANNEL",
+			"SEND_MESSAGES",
+			"EMBED_LINKS",
+			"USE_EXTERNAL_EMOJIS"
+		]
 		const missingPerms = requiredPerms.filter((p) => !applicationsChannelPermissions.includes(p))
 
 		if (missingPerms.length > 0) {
@@ -17,13 +22,16 @@ const checkPermissions = (i, channels, client) => {
 				error: `**Missing permissions in** <#${applicationsChannelID}>.\n\n${permissionsToStrList(requiredPerms, missingPerms)}`,
 			}
 		}
-	} else {
+	}
+	else {
 		if (!i.member.permissions.has(command.data.userPermissions || [])) {
 			const permissionList = command.data.userPermissions
 				.map((c) => (i.member.permissions.has(c) ? `✅ \`${c}\`\n`.replace("_", " ") : `❌ \`${c}\`\n`.replace("_", " ")))
 				.join("")
 
-			return { error: `You don't have **permission(s)** to use this command.\n\n${permissionList}` }
+			return {
+				error: `You don't have **permission(s)** to use this command.\n\n${permissionList}`
+			}
 		}
 
 		const channelPermissions = client.channels.cache.get(i.channelId).permissionsFor(client.user).toArray()
@@ -43,22 +51,54 @@ const checkPermissions = (i, channels, client) => {
 const validate = (i, channels, client) => {
 	const { applyChannelID, applicationsChannelID, commandChannelID } = channels
 
-	const response = { color: orange, onlyShowToUser: true }
+	const response = {
+		color: orange,
+		onlyShowToUser: true
+	}
 
 	if (i.commandName === "apply") {
-		if (applyChannelID !== i.channel.id) return { ...response, error: `You can only use this command in the set **apply channel**! (<#${applyChannelID}>)` }
-		else if (!applyChannelID) return { ...response, error: "**No apply channel set.**" }
-		else if (!applicationsChannelID) return { ...response, error: "**No applications channel set.**" }
-	} else {
-		if (commandChannelID && commandChannelID !== i.channel.id)
-			return { ...response, error: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)` }
+		if (applyChannelID !== i.channel.id) {
+			return {
+				...response,
+				error: `You can only use this command in the set **apply channel**! (<#${applyChannelID}>)`
+			}
+		}
+		else if (!applyChannelID) {
+			return {
+				...response,
+				error: "**No apply channel set.**"
+			}
+		}
+		else if (!applicationsChannelID) {
+			return {
+				...response,
+				error: "**No applications channel set.**"
+			}
+		}
+	}
+	else {
+		if (commandChannelID && commandChannelID !== i.channel.id) {
+			return {
+				...response,
+				error: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`
+			}
+		}
 	}
 
 	const { error } = checkPermissions(i, channels, client)
 
-	if (error) return { ...response, color: red, error }
+	if (error) {
+		return {
+			...response,
+			color: red,
+			error
+		}
+	}
 
 	return {}
 }
 
-module.exports = { validate, permissionsToStrList }
+module.exports = {
+	validate,
+	permissionsToStrList
+}

@@ -3,7 +3,9 @@ const { orange, pink } = require("../static/colors")
 const { getClanBadge, getEmoji, getArenaEmoji, errorMsg } = require("../util/functions")
 const { createCanvas, registerFont, loadImage } = require("canvas")
 const { formatTag, formatStr, formatRole } = require("../util/formatting")
-registerFont("./src/static/fonts/Supercell-Magic.ttf", { family: "Supercell-Magic" })
+registerFont("./src/static/fonts/Supercell-Magic.ttf", {
+	family: "Supercell-Magic"
+})
 
 module.exports = {
 	data: {
@@ -15,13 +17,12 @@ module.exports = {
 				name: "tag",
 				description: "#PLAYERTAG",
 				required: false,
-			},
-			{
+			}, {
 				type: 6,
 				name: "user",
 				description: "User to view.",
 				required: false,
-			},
+			}
 		],
 	},
 	run: async (i, db) => {
@@ -33,21 +34,42 @@ module.exports = {
 
 		if (!user && !iTag) {
 			//linked account
-			const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id })
+			const linkedAccount = await linkedAccounts.findOne({
+				discordID: i.user.id
+			})
 
 			if (linkedAccount?.tag) tag = linkedAccount.tag
-			else return i.editReply({ embeds: [{ color: orange, description: `**No tag linked!** Use **/link** to link your tag.` }], ephemeral: true })
-		} else if (iTag) tag = iTag //tag
+			else {
+				return i.editReply({
+					embeds: [
+						{
+							color: orange,
+							description: `**No tag linked!** Use **/link** to link your tag.`
+						}
+					],
+					ephemeral: true
+				})
+			}
+		}
+		else if (iTag) tag = iTag //tag
 		else {
 			//user
-			const linkedAccount = await linkedAccounts.findOne({ discordID: user.id })
+			const linkedAccount = await linkedAccounts.findOne({
+				discordID: user.id
+			})
 
 			if (linkedAccount?.tag) tag = linkedAccount.tag
-			else
+			else {
 				return i.editReply({
-					embeds: [{ color: orange, description: `<@!${user.id}> **does not have an account linked.**` }],
+					embeds: [
+						{
+							color: orange,
+							description: `<@!${user.id}> **does not have an account linked.**`
+						}
+					],
 					ephemeral: true,
 				})
+			}
 		}
 
 		const { error: playerError, data: player } = await getPlayer(tag)
@@ -67,6 +89,7 @@ module.exports = {
 			const fontSize = () => {
 				if (playerRank < 10) return 130
 				if (playerRank < 1000) return 115
+
 				return 90
 			}
 
@@ -86,9 +109,12 @@ module.exports = {
 		let clanBadge
 
 		if (!player.clan) {
-			player.clan = { name: "None" }
+			player.clan = {
+				name: "None"
+			}
 			clanBadge = getClanBadge(-1)
-		} else {
+		}
+		else {
 			//get clan badge
 			const { data: clan, error: clanError } = await getClan(player.clan.tag)
 
@@ -136,7 +162,7 @@ module.exports = {
 				{
 					attachment: canvas.toBuffer(),
 					name: "arena.png",
-				},
+				}
 			],
 		})
 	},

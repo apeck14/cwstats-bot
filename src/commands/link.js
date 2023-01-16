@@ -13,7 +13,7 @@ module.exports = {
 				name: "tag",
 				description: "#PLAYERTAG",
 				required: true,
-			},
+			}
 		],
 	},
 	run: async (i, db) => {
@@ -25,7 +25,9 @@ module.exports = {
 
 		if (error) return errorMsg(i, error)
 
-		const linkedAccount = await linkedAccounts.findOne({ discordID: i.user.id })
+		const linkedAccount = await linkedAccounts.findOne({
+			discordID: i.user.id
+		})
 
 		//if user doesn't already have a linked account
 		if (!linkedAccount) {
@@ -37,16 +39,46 @@ module.exports = {
 				savedPlayers: [tag],
 			})
 
-			return i.editReply({ embeds: [{ color: green, description: `✅ Account linked to **${formatStr(player.name)}**!` }] })
-		} else if (!linkedAccount.tag) {
-			await linkedAccounts.updateOne({ discordID: i.user.id }, { $set: { tag: tag } })
+			return i.editReply({
+				embeds: [
+					{
+						color: green,
+						description: `✅ Account linked to **${formatStr(player.name)}**!`
+					}
+				]
+			})
+		}
+		else if (!linkedAccount.tag) {
+			await linkedAccounts.updateOne({
+				discordID: i.user.id
+			}, {
+				$set: {
+					tag: tag
+				}
+			})
 
-			return i.editReply({ embeds: [{ color: green, description: `✅ Account linked to **${formatStr(player.name)}**!` }] })
+			return i.editReply({
+				embeds: [
+					{
+						color: green,
+						description: `✅ Account linked to **${formatStr(player.name)}**!`
+					}
+				]
+			})
 		}
 		//already linked to that tag
 		else if (linkedAccount.tag === tag) {
-			return i.editReply({ embeds: [{ color: orange, description: "**You have already linked that ID!**" }], ephemeral: true })
+			return i.editReply({
+				embeds: [
+					{
+						color: orange,
+						description: "**You have already linked that ID!**"
+					}
+				],
+				ephemeral: true
+			})
 		}
+
 		//already linked, send confirmation embed to update to new tag
 		else {
 			const row = {
@@ -56,13 +88,12 @@ module.exports = {
 						label: "Yes",
 						style: 3,
 						type: 2,
-					},
-					{
+					}, {
 						custom_id: "no",
 						label: "No",
 						style: 4,
 						type: 2,
-					},
+					}
 				],
 				type: 1,
 			}
@@ -73,7 +104,7 @@ module.exports = {
 					{
 						color: green,
 						description: `Are you sure you want to link your account to a new ID?\n\n**Old ID:** ${linkedAccount.tag}\n**New ID:** ${tag}`,
-					},
+					}
 				],
 				components: [row],
 			})
@@ -82,14 +113,28 @@ module.exports = {
 				return int.user.id === i.user.id
 			}
 
-			const collector = i.channel.createMessageComponentCollector({ filter: iFilter, time: 10000 })
+			const collector = i.channel.createMessageComponentCollector({
+				filter: iFilter,
+				time: 10000
+			})
 
 			collector.on("collect", async (int) => {
 				if (int.customId === "yes") {
-					await linkedAccounts.updateOne({ discordID: int.user.id }, { $set: { tag: tag } })
+					await linkedAccounts.updateOne({
+						discordID: int.user.id
+					}, {
+						$set: {
+							tag: tag
+						}
+					})
 
 					return int.update({
-						embeds: [{ color: green, description: `✅ Updated! Account linked to **${formatStr(player.name)}**.` }],
+						embeds: [
+							{
+								color: green,
+								description: `✅ Updated! Account linked to **${formatStr(player.name)}**.`
+							}
+						],
 						components: [],
 					})
 				}

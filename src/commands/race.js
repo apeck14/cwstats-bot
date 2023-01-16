@@ -14,25 +14,54 @@ module.exports = {
 				name: "tag",
 				description: "#CLANTAG or abbreviation",
 				required: true,
-			},
+			}
 		],
 	},
 	run: async (i, db, client) => {
 		const guilds = db.collection("Guilds")
-		const { abbreviations } = await guilds.findOne({ guildID: i.channel.guild.id })
+		const { abbreviations } = await guilds.findOne({
+			guildID: i.channel.guild.id
+		})
 
 		let tag = i.options.getString("tag")
 		const abbr = abbreviations?.find((a) => a.abbr === tag)
 
 		if (abbr) tag = abbr.tag
-		else if (tag.length < 5) return i.editReply({ embeds: [{ description: "**Abbreviation does not exist.**", color: orange }] })
+		else if (tag.length < 5) {
+			return i.editReply({
+				embeds: [
+					{
+						description: "**Abbreviation does not exist.**",
+						color: orange
+					}
+				]
+			})
+		}
 
 		const { data: race, error } = await getRiverRace(tag)
 
 		if (error) return errorMsg(i, error)
 
-		if (race.state === "matchmaking") return i.editReply({ embeds: [{ description: ":mag: **Matchmaking is underway!**", color: orange }] })
-		if (!race.clans || !race.clans.length) return i.editReply({ embeds: [{ description: "**Clan is not in a river race.**", color: orange }] })
+		if (race.state === "matchmaking") {
+			return i.editReply({
+				embeds: [
+					{
+						description: ":mag: **Matchmaking is underway!**",
+						color: orange
+					}
+				]
+			})
+		}
+		if (!race.clans || !race.clans.length) {
+			return i.editReply({
+				embeds: [
+					{
+						description: "**Clan is not in a river race.**",
+						color: orange
+					}
+				]
+			})
+		}
 
 		const isColosseum = race.periodType === "colosseum"
 		const dayOfWeek = race.periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
@@ -94,6 +123,8 @@ module.exports = {
 			)}\n${decksRemainingEmoji} ${decksRemaining}\n${fameAvgEmoji} **${getAvgFame(clan, isColosseum, dayOfWeek).toFixed(2)}**\n`
 		}
 
-		return i.editReply({ embeds: [embed] })
+		return i.editReply({
+			embeds: [embed]
+		})
 	},
 }

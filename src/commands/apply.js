@@ -3,7 +3,9 @@ const { pink, green } = require("../static/colors")
 const { getClanBadge, getEmoji, getArenaEmoji, errorMsg } = require("../util/functions")
 const { createCanvas, registerFont, loadImage } = require("canvas")
 const { formatStr, formatRole, formatTag } = require("../util/formatting")
-registerFont("./src/static/fonts/Supercell-Magic.ttf", { family: "Supercell-Magic" })
+registerFont("./src/static/fonts/Supercell-Magic.ttf", {
+	family: "Supercell-Magic"
+})
 
 module.exports = {
 	data: {
@@ -15,12 +17,14 @@ module.exports = {
 				name: "tag",
 				description: "#PLAYERTAG",
 				required: true,
-			},
+			}
 		],
 	},
 	run: async (i, db, client) => {
 		const guilds = db.collection("Guilds")
-		const { channels } = await guilds.findOne({ guildID: i.channel.guild.id })
+		const { channels } = await guilds.findOne({
+			guildID: i.channel.guild.id
+		})
 		const { applicationsChannelID } = channels
 
 		let tag = i.options.getString("tag")
@@ -42,6 +46,7 @@ module.exports = {
 			const fontSize = () => {
 				if (playerRank < 10) return 130
 				if (playerRank < 1000) return 115
+
 				return 90
 			}
 
@@ -61,9 +66,12 @@ module.exports = {
 		let clanBadge
 
 		if (!player.clan) {
-			player.clan = { name: "None" }
+			player.clan = {
+				name: "None"
+			}
 			clanBadge = getClanBadge(-1)
-		} else {
+		}
+		else {
 			//get clan badge
 			const { data: clan, error: clanError } = await getClan(player.clan.tag)
 
@@ -111,7 +119,7 @@ module.exports = {
 				{
 					color: green,
 					description: `✅ Request sent for **${formatStr(player.name)}**! A Co-Leader will contact you shortly.`,
-				},
+				}
 			],
 		})
 
@@ -121,7 +129,7 @@ module.exports = {
 				{
 					attachment: canvas.toBuffer(),
 					name: "arena.png",
-				},
+				}
 			],
 		})
 	},

@@ -9,24 +9,29 @@ module.exports = {
 	run: async (client, db, i) => {
 		try {
 			if (i?.type !== "APPLICATION_COMMAND") return
-			if (!i.guild)
+			if (!i.guild) {
 				return await i.reply({
 					embeds: [
 						{
 							description: `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=280576&scope=bot%20applications.commands) me to a server to use my commands!**`,
 							color: orange,
-						},
+						}
 					],
 				})
+			}
 			if (BLACKLIST_USERS.includes(i.user.id)) return
 
 			const guilds = db.collection("Guilds")
-			let guildExists = await guilds.findOne({ guildID: i.guildId })
+			let guildExists = await guilds.findOne({
+				guildID: i.guildId
+			})
 
 			if (!guildExists) {
 				await guildCreate.run(client, db, i.member.guild)
 
-				guildExists = await guilds.findOne({ guildID: i.guildId })
+				guildExists = await guilds.findOne({
+					guildID: i.guildId
+				})
 
 				if (!guildExists) return console.log("Guild not in database, and could not be added.")
 
@@ -41,7 +46,7 @@ module.exports = {
 						{
 							description: error,
 							color: color,
-						},
+						}
 					],
 					ephemeral: onlyShowToUser,
 				})
@@ -55,7 +60,7 @@ module.exports = {
 						{
 							description: ":tools: **This command has been temporarily disabled**.",
 							color: orange,
-						},
+						}
 					],
 					ephemeral: onlyShowToUser,
 				})
@@ -72,7 +77,8 @@ module.exports = {
 				description: `**User**: ${i.user.username}#${i.user.discriminator} (${i.user.id})\n**Guild**: ${i.member.guild.name} (${i.member.guild.id})\n\n**Options**: ${options}\n\n**Deferred**: ${i.deferred}\n**Replied**: ${i.replied}`,
 				color: pink,
 			})
-		} catch (e) {
+		}
+		catch (e) {
 			console.log(e)
 			console.log(i)
 

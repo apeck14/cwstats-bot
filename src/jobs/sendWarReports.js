@@ -40,7 +40,12 @@ module.exports = {
 				const { reportChannelID } = channels
 
 				const reportChannelPermissions = client.channels.cache.get(reportChannelID).permissionsFor(client.user).toArray()
-				const requiredPerms = ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS", "USE_EXTERNAL_EMOJIS"]
+				const requiredPerms = [
+					"VIEW_CHANNEL",
+					"SEND_MESSAGES",
+					"EMBED_LINKS",
+					"USE_EXTERNAL_EMOJIS"
+				]
 				const missingPerms = requiredPerms.filter((p) => !reportChannelPermissions.includes(p))
 
 				if (missingPerms.length > 0) continue
@@ -52,7 +57,7 @@ module.exports = {
 								color: red,
 								title: `__Daily War Report__`,
 								description: "No race data found! Use **/schedule-report** to update the scheduled time. Make sure the time is right *before* war day reset.",
-							},
+							}
 						],
 					})
 					continue
@@ -106,13 +111,15 @@ module.exports = {
 							showFooter = true
 						}
 						threeAttacks.push(p)
-					} else if (p.decksUsedToday === 2) {
+					}
+					else if (p.decksUsedToday === 2) {
 						if (!inClan) {
 							p.name += "*"
 							showFooter = true
 						}
 						twoAttacks.push(p)
-					} else if (p.decksUsedToday === 3) {
+					}
+					else if (p.decksUsedToday === 3) {
 						if (!inClan) {
 							p.name += "*"
 							showFooter = true
@@ -132,11 +139,16 @@ module.exports = {
 				if (oneAttack.length > 0) embed.description += `\n**__1 Attack__**\n${oneAttack.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
 
 				if (showFooter) {
-					embed.footer = { text: "* = Not in clan" }
+					embed.footer = {
+						text: "* = Not in clan"
+					}
 				}
 
-				client.channels.cache.get(reportChannelID).send({ embeds: [embed] })
-			} catch (err) {
+				client.channels.cache.get(reportChannelID).send({
+					embeds: [embed]
+				})
+			}
+			catch (err) {
 				console.log(err)
 				continue
 			}

@@ -3,7 +3,10 @@ const { URI } = require("../../config")
 
 class MongoBot {
 	constructor() {
-		this.client = new MongoClient(URI, { useUnifiedTopology: true, useNewUrlParser: true })
+		this.client = new MongoClient(URI, {
+			useUnifiedTopology: true,
+			useNewUrlParser: true
+		})
 	}
 	async init() {
 		await this.client.connect()

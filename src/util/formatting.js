@@ -14,7 +14,12 @@ const formatTag = (tag) => {
 
 const formatRole = (role) => {
 	if (role === "coLeader") return "Co-Leader"
+
 	return `${role[0].toUpperCase()}${role.slice(1)}`
 }
 
-module.exports = { formatStr, formatTag, formatRole }
+module.exports = {
+	formatStr,
+	formatTag,
+	formatRole
+}

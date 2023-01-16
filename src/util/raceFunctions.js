@@ -3,7 +3,11 @@ module.exports = {
 		// return [{tag: '', fame: 0, placement: 0, crossedFinishLine: true}]
 		const fameAccessor = isColosseum ? "fame" : "periodPoints"
 		const boatAccessor = isColosseum ? "periodPoints" : "fame"
-		const newRace = race.map((c) => ({ tag: c.tag, fame: c[fameAccessor], placement: Infinity }))
+		const newRace = race.map((c) => ({
+			tag: c.tag,
+			fame: c[fameAccessor],
+			placement: Infinity
+		}))
 
 		const clansWithPointsSorted = newRace.filter((cl) => cl.fame > 0).sort((a, b) => b.fame - a.fame)
 
@@ -25,9 +29,8 @@ module.exports = {
 				if (nextClan.fame === clan.fame) clansWithSameFame.push(nextClan.tag)
 			}
 
-			for (const c of clansWithSameFame) {
+			for (const c of clansWithSameFame)
 				newRace.find((cl) => c === cl.tag).placement = place
-			}
 
 			i += clansWithSameFame.length - 1
 			place += clansWithSameFame.length
@@ -45,10 +48,12 @@ module.exports = {
 
 		if (isColosseum) {
 			if (attacksCompletedToday === 0 && battleDaysCompleted() === 0) return 0
+
 			return currentFame / (attacksCompletedToday + 200 * battleDaysCompleted())
 		}
 
 		if (attacksCompletedToday === 0) return 0
+
 		return currentFame / attacksCompletedToday
 	},
 	getProjFame: (clan, isColosseum, dayOfWeek) => {
@@ -78,6 +83,7 @@ module.exports = {
 			if (isColosseum) {
 				const battleDaysComp = battleDaysCompleted()
 				maxPossibleFame += 45000 * (3 - battleDaysComp)
+
 				return maxPossibleFame > 180000 ? 180000 : maxPossibleFame
 			}
 

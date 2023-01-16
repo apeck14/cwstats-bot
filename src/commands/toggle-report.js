@@ -10,11 +10,12 @@ module.exports = {
 	run: async (i, db, client) => {
 		const guilds = db.collection("Guilds")
 
-		const guild = await guilds.findOne({ guildID: i.channel.guild.id })
+		const guild = await guilds.findOne({
+			guildID: i.channel.guild.id
+		})
 
-		if (!guild.warReport) {
+		if (!guild.warReport)
 			return errorMsg(i, "❌ You must schedule a daily war report first. Use **/schedule-report**.")
-		}
 
 		const { enabled } = guild.warReport
 
@@ -29,7 +30,7 @@ module.exports = {
 				{
 					description: `✅ Daily war report successfully **${!enabled ? "enabled" : "disabled"}**!`,
 					color: green,
-				},
+				}
 			],
 		})
 	},

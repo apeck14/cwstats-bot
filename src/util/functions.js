@@ -22,7 +22,8 @@ const getClanBadge = (badgeId, trophyCount, returnEmojiPath = true) => {
 		else if (trophyCount >= 400) league = "bronze3"
 		else if (trophyCount >= 200) league = "bronze2"
 		else league = "bronze1"
-	} else {
+	}
+	else {
 		//file path
 		if (trophyCount >= 5000) league = "legendary-3"
 		else if (trophyCount >= 4000) league = "legendary-2"
@@ -86,9 +87,9 @@ const getDeckUrl = (cards) => {
 	let url = "https://link.clashroyale.com/deck/en?deck="
 
 	for (let i = 0; i < cards.length; i++) {
-		for (let x = 0; x < allCards.length; x++) {
+		for (let x = 0; x < allCards.length; x++)
 			if (allCards[x].name === cards[i]) url += `${allCards[x].id};`
-		}
+
 	}
 
 	return url.substring(0, url.length - 1)
@@ -99,13 +100,25 @@ const hexToRgbA = (hex) => {
 		let c = hex.substring(1).split("")
 
 		if (c.length == 3) {
-			c = [c[0], c[0], c[1], c[1], c[2], c[2]]
+			c = [
+				c[0],
+				c[0],
+				c[1],
+				c[1],
+				c[2],
+				c[2]
+			]
 		}
 
 		c = "0x" + c.join("")
 
-		return "rgba(" + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(",") + ",0.25)"
+		return "rgba(" + [
+			(c >> 16) & 255,
+			(c >> 8) & 255,
+			c & 255
+		].join(",") + ",0.25)"
 	}
+
 	return "rgba(255, 255, 255, 0.25)" //transparent white
 }
 const errorMsg = (i, message) => {
@@ -114,21 +127,20 @@ const errorMsg = (i, message) => {
 			{
 				color: red,
 				description: message,
-			},
+			}
 		],
 	})
 }
 const hasDuplicateCard = (existingCards, newCards) => {
-	for (let i = 0; i < newCards.length; i++) {
+	for (let i = 0; i < newCards.length; i++)
 		if (existingCards.has(newCards[i])) return true
-	}
 
 	return false
 }
 const hasLockedCard = (cards, playerCardsSet) => {
-	for (let i = 0; i < cards.length; i++) {
+	for (let i = 0; i < cards.length; i++)
 		if (!playerCardsSet.has(cards[i])) return true
-	}
+
 	return false
 }
 const deckSetAvgLvl = (deckSetCards, playerCards) => {
@@ -146,14 +158,18 @@ const deckSetAvgDeckRating = (deckSetArr) => {
 	if (deckSetArr.length === 0) return 0
 
 	let sum = 0
-	for (let i = 0; i < deckSetArr.length; i++) {
+	for (let i = 0; i < deckSetArr.length; i++)
 		sum += deckSetArr[i].rating
-	}
 
 	return sum / deckSetArr.length
 }
 const deckSetScore = (deckSetArr, playerCards) => {
-	const avgCardLvl = deckSetAvgLvl([...deckSetArr[0].cards, ...deckSetArr[1].cards, ...deckSetArr[2].cards, ...deckSetArr[3].cards], playerCards)
+	const avgCardLvl = deckSetAvgLvl([
+		...deckSetArr[0].cards,
+		...deckSetArr[1].cards,
+		...deckSetArr[2].cards,
+		...deckSetArr[3].cards
+	], playerCards)
 	const avgRating = deckSetAvgDeckRating(deckSetArr)
 	const cardLvlWeight = 0.98
 	const ratingWeight = 0.02
@@ -162,10 +178,16 @@ const deckSetScore = (deckSetArr, playerCards) => {
 }
 const allIncludedCardsInSet = (deckSetArr, includedCardsArr) => {
 	for (let i = 0; i < includedCardsArr.length; i++) {
-		const deckSetCards = new Set([...deckSetArr[0].cards, ...deckSetArr[1].cards, ...deckSetArr[2].cards, ...deckSetArr[3].cards])
+		const deckSetCards = new Set([
+			...deckSetArr[0].cards,
+			...deckSetArr[1].cards,
+			...deckSetArr[2].cards,
+			...deckSetArr[3].cards
+		])
 
 		if (!deckSetCards.has(includedCardsArr[i])) return false
 	}
+
 	return true
 }
 

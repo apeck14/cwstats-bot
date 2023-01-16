@@ -13,20 +13,21 @@ module.exports = {
 				name: "tag",
 				description: "#CLANTAG",
 				required: true,
-			},
-			{
+			}, {
 				type: 3,
 				name: "abbr",
 				description: "Select abbreviation (alphanumeric)",
 				required: true,
-			},
+			}
 		],
 		userPermissions: ["MANAGE_GUILD"],
 	},
 	run: async (i, db, client) => {
 		const guilds = db.collection("Guilds")
 		const statistics = db.collection("Statistics")
-		const { abbreviations } = await guilds.findOne({ guildID: i.channel.guild.id })
+		const { abbreviations } = await guilds.findOne({
+			guildID: i.channel.guild.id
+		})
 
 		const abbreviation = i.options.getString("abbr")
 		const tag = i.options.getString("tag")
@@ -45,9 +46,15 @@ module.exports = {
 
 		if (error) return errorMsg(i, error)
 
-		statistics.updateOne({}, { $inc: { totalAbbreviations: 1 } })
+		statistics.updateOne({}, {
+			$inc: {
+				totalAbbreviations: 1
+			}
+		})
 		await guilds.updateOne(
-			{ guildID: i.channel.guild.id },
+			{
+				guildID: i.channel.guild.id
+			},
 			{
 				$push: {
 					abbreviations: {
@@ -68,7 +75,7 @@ module.exports = {
 					title: "✅ Abbreviation Set!",
 					description: `**Clan**: ${badgeEmoji} ${formatStr(clan.name)}\n**Tag**: ${clan.tag}\n**Abbreviation**: \`${abbreviation}\``,
 					color: green,
-				},
+				}
 			],
 		})
 	},

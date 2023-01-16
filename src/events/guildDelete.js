@@ -7,7 +7,9 @@ module.exports = {
 		if (guild.available && client.isReady()) {
 			const guilds = db.collection("Guilds")
 
-			guilds.deleteOne({ guildID: guild.id })
+			guilds.deleteOne({
+				guildID: guild.id
+			})
 		}
 
 		logToSupportServer(client, {

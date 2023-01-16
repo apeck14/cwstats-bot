@@ -5,4 +5,11 @@ const URI = process.env.URI
 const CR_API_TOKEN = process.env.CR_API_TOKEN
 const CR_API_JOB_TOKEN = process.env.CR_API_JOB_TOKEN
 
-module.exports = { CLIENT_TOKEN, CLIENT_ID, TEST_GUILD_ID, URI, CR_API_JOB_TOKEN, CR_API_TOKEN }
+module.exports = {
+	CLIENT_TOKEN,
+	CLIENT_ID,
+	TEST_GUILD_ID,
+	URI,
+	CR_API_JOB_TOKEN,
+	CR_API_TOKEN
+}

@@ -13,7 +13,7 @@ module.exports = {
 				name: "tag",
 				description: "#CLANTAG or abbreviation",
 				required: true,
-			},
+			}
 		],
 	},
 	run: async (i, db, client) => {
@@ -26,38 +26,41 @@ module.exports = {
 		const abbr = abbreviations?.find((a) => a.abbr === tag)
 
 		if (abbr) tag = abbr.tag
-		else if (tag.length < 5)
+		else if (tag.length < 5) {
 			return i.editReply({
 				embeds: [
 					{
 						description: "**Abbreviation does not exist.**",
 						color: orange,
-					},
+					}
 				],
 			})
+		}
 
 		const { data: race, error: raceError } = await getRiverRace(tag)
 
 		if (raceError) return errorMsg(i, raceError)
 
-		if (race.state === "matchmaking")
+		if (race.state === "matchmaking") {
 			return i.editReply({
 				embeds: [
 					{
 						description: ":mag: **Matchmaking is underway!**",
 						color: orange,
-					},
+					}
 				],
 			})
-		if (!race.clans || race.clans.length <= 1)
+		}
+		if (!race.clans || race.clans.length <= 1) {
 			return i.editReply({
 				embeds: [
 					{
 						description: "**Clan is not in a river race.**",
 						color: orange,
-					},
+					}
 				],
 			})
+		}
 
 		const { data: clan, error: clanError } = await getClan(tag)
 
@@ -90,13 +93,15 @@ module.exports = {
 					showFooter = true
 				}
 				threeAttacks.push(p)
-			} else if (p.decksUsedToday === 2) {
+			}
+			else if (p.decksUsedToday === 2) {
 				if (!inClan) {
 					p.name += "*"
 					showFooter = true
 				}
 				twoAttacks.push(p)
-			} else if (p.decksUsedToday === 3) {
+			}
+			else if (p.decksUsedToday === 3) {
 				if (!inClan) {
 					p.name += "*"
 					showFooter = true
@@ -138,6 +143,8 @@ module.exports = {
 		if (twoAttacks.length > 0) embed.description += `\n**__2 Attacks__**\n${twoAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
 		if (oneAttack.length > 0) embed.description += `\n**__1 Attack__**\n${oneAttack.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
 
-		return i.editReply({ embeds: [embed] })
+		return i.editReply({
+			embeds: [embed]
+		})
 	},
 }

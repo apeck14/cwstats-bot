@@ -5,10 +5,13 @@ const logToSupportServer = (client, embed) => {
 		client.channels.cache.get(SUPPORT_SERVER_ID).send({
 			embeds: [embed],
 		})
-	} catch (e) {
+	}
+	catch (e) {
 		console.log("Error sending embed to Support Server")
 		console.log(e)
 	}
 }
 
-module.exports = { logToSupportServer }
+module.exports = {
+	logToSupportServer
+}
