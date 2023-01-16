@@ -404,6 +404,8 @@ module.exports = [
 		key: "RU",
 		name: "Russia",
 		isCountry: true,
+        isAdded: true,
+        flagEmoji: ":flag_ru:"
 	},
 	{ id: 57000194, key: "RW", name: "Rwanda", isCountry: true },
 	{
