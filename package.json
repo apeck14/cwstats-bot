@@ -13,7 +13,7 @@
 	"dependencies": {
 		"axios": "^0.26.0",
 		"canvas": "^2.9.0",
-		"discord.js": "^13.6.0",
+		"discord.js": "^14.7.1",
 		"dotenv": "^16.0.0",
 		"lodash": "^4.17.21",
 		"mongodb": "^4.3.1",
@@ -22,5 +22,15 @@
 	},
 	"optionalDependencies": {
 		"bufferutil": "^4.0.3"
+	},
+    "devDependencies": {
+		"eslint": "^8.31.0",
+		"eslint-plugin-promise": "^6.1.1",
+		"eslint-plugin-sonarjs": "^0.18.0",
+		"eslint-plugin-unicorn": "^45.0.2"
+	},
+    "engineStrict": true,
+	"engines": {
+		"node": ">= 16.9.0"
 	}
 }
