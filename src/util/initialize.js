@@ -16,6 +16,8 @@ const initializeEvents = (mongo, client) => {
 	}
 
 	console.log("DiscordJS Events Initalized!")
+
+	return client
 }
 
 const initializeCronJobs = (mongo, client) => {
@@ -33,6 +35,8 @@ const initializeCronJobs = (mongo, client) => {
 	}
 
 	console.log("Cron Jobs Initialized!")
+
+	return client
 }
 
 const initializeClient = async () => {

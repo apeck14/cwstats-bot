@@ -6,17 +6,15 @@ const { initializeCronJobs, initializeEvents, initializeClient } = require("./sr
 
 mongo.init()
 
-const client = initializeClient()
-initializeCronJobs(mongo, client)
-initializeEvents(mongo, client)
+initializeClient()
+	.then((client) => initializeCronJobs(mongo, client))
+	.then((client) => {
+		initializeEvents(mongo, client)
+		AutoPoster(process.env.TOPGG_TOKEN, client)
 
-try {
-	AutoPoster(process.env.TOPGG_TOKEN, client)
-}
-catch (err) {
-	console.log("TOPGG ERROR")
-	console.log(err)
-}
+		return client
+	})
+	.catch(e => console.log(e))
 
 process.on("unhandledRejection", (err) => {
 	console.log("---UNHANDLED REJECION---")
