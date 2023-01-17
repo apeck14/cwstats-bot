@@ -1,8 +1,9 @@
+const { PermissionFlagsBits } = require("discord.js")
 const { green, orange, red } = require("../static/colors")
 const { getClan } = require("../util/api")
 const { formatTag, formatStr } = require("../util/formatting")
 const { errorMsg, getClanBadge, getEmoji } = require("../util/functions")
-const { permissionsToStrList } = require("../util/validate")
+const { missingPermissionsToStr } = require("../util/validate")
 
 module.exports = {
 	data: {
@@ -49,7 +50,7 @@ module.exports = {
 		const iChannel = i.options.getChannel("channel")
 
 		const guild = await guilds.findOne({
-			guildID: i.channel.guild.id
+			guildID: i.guildId
 		})
 
 		let tag = i.options.getString("tag")
@@ -67,20 +68,19 @@ module.exports = {
 			})
 		}
 
-		const reportChannelPermissions = client.channels.cache.get(iChannel.id).permissionsFor(client.user).toArray()
-		const requiredPerms = [
-			"VIEW_CHANNEL",
-			"SEND_MESSAGES",
-			"EMBED_LINKS",
-			"USE_EXTERNAL_EMOJIS"
+		const reportChannelPermissions = client.channels.cache.get(iChannel.id).permissionsFor(client.user)
+		const requiredFlags = [
+			PermissionFlagsBits.ViewChannel,
+			PermissionFlagsBits.SendMessages,
+			PermissionFlagsBits.EmbedLinks,
+			PermissionFlagsBits.UseExternalEmojis
 		]
-		const missingPerms = requiredPerms.filter((p) => !reportChannelPermissions.includes(p))
 
-		if (missingPerms.length > 0) {
+		if (!reportChannelPermissions.has(requiredFlags)) {
 			return i.editReply({
 				embeds: [
 					{
-						description: `**Missing Permissions in** <#${iChannel.id}>:\n` + permissionsToStrList(requiredPerms, missingPerms),
+						description: `**Missing Permissions in** <#${iChannel.id}>:\n` + missingPermissionsToStr(reportChannelPermissions, requiredFlags),
 						color: red,
 					}
 				],
@@ -114,7 +114,7 @@ module.exports = {
 			embeds: [
 				{
 					title: "✅ Daily War Report Set!",
-					description: `**Clan**: ${badgeEmoji} ${formatStr(clan.name)}\n**Tag**: ${clan.tag}\n**UTC Time**: ${HHMM}:00 (Fri-Mon)\n**Channel:**: <#${iChannel.id}>`,
+					description: `**Clan**: ${badgeEmoji} ${formatStr(clan.name)}\n**Tag**: ${clan.tag}\n**UTC Time**: ${HHMM}:00 (Fri-Mon)\n**Channel**: <#${iChannel.id}>`,
 					color: green,
 					footer: {
 						text: "Use /toggle-report to disable war report at any time.",

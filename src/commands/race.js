@@ -20,7 +20,7 @@ module.exports = {
 	run: async (i, db, client) => {
 		const guilds = db.collection("Guilds")
 		const { abbreviations } = await guilds.findOne({
-			guildID: i.channel.guild.id
+			guildID: i.guildId
 		})
 
 		let tag = i.options.getString("tag")
@@ -103,7 +103,7 @@ module.exports = {
 		})
 
 		for (const c of clansStillWarring) {
-			embed.description += `\n${c.placement === Infinity ? "" : `**${c.placement}.**`}`
+			embed.description += c.placement === Infinity ? "\n" : `\n**${c.placement}.**`
 
 			const clan = race.clans.find((cl) => cl.tag === c.tag)
 			const { name, badgeId, clanScore, participants } = clan

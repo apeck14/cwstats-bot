@@ -19,7 +19,7 @@ module.exports = {
 		const guilds = db.collection("Guilds")
 		const statistics = db.collection("Statistics")
 		const { abbreviations } = await guilds.findOne({
-			guildID: i.channel.guild.id
+			guildID: i.guildId
 		})
 
 		const abbreviation = i.options.getString("abbr")
@@ -43,7 +43,7 @@ module.exports = {
 			}
 		})
 		await guilds.updateOne({
-			guildID: i.channel.guild.id
+			guildID: i.guildId
 		}, {
 			$pull: {
 				abbreviations: {

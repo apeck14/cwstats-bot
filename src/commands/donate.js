@@ -22,7 +22,7 @@ module.exports = {
 					title: "Donate with PayPal",
 					description:
 						"CW Stats strives to aid all competitive war clans with game-changing data & stats! All proceeds help expand the capabilities of the bot & website.",
-					color: "#3b7bbf",
+					color: 0x3b7bbf,
 					thumbnail: {
 						url: "https://w7.pngwing.com/pngs/875/329/png-transparent-paypal-logo-e-commerce-payment-system-paypal-blue-angle-company.png",
 					},

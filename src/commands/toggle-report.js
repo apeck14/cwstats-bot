@@ -11,7 +11,7 @@ module.exports = {
 		const guilds = db.collection("Guilds")
 
 		const guild = await guilds.findOne({
-			guildID: i.channel.guild.id
+			guildID: i.guildId
 		})
 
 		if (!guild.warReport)

@@ -23,7 +23,7 @@ module.exports = {
 	run: async (i, db, client) => {
 		const guilds = db.collection("Guilds")
 		const { channels } = await guilds.findOne({
-			guildID: i.channel.guild.id
+			guildID: i.guildId
 		})
 		const { applicationsChannelID } = channels
 
@@ -112,7 +112,7 @@ module.exports = {
 		}\n\n` //clan & ladder
 		applicationEmbed.description += `**__Stats__**\n**CW1 Wins**: ${player.warDayWins}\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
 		applicationEmbed.description += `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}` //cards
-		applicationEmbed.description += `\n\n**Request By**: ${`<@!${i.user.id}>`}`
+		applicationEmbed.description += `\n\n**Request By**: <@!${i.user.id}>`
 
 		i.editReply({
 			embeds: [

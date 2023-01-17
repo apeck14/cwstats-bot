@@ -1,6 +1,6 @@
 const { schedule } = require("node-cron")
 const fs = require("fs")
-const { Client, Intents, Collection } = require("discord.js")
+const { Client, GatewayIntentBits, Collection } = require("discord.js")
 const { CLIENT_TOKEN } = require("../../config")
 
 const events = fs.readdirSync("src/events")
@@ -11,10 +11,8 @@ const initializeEvents = (mongo, client) => {
 		const eventFile = require(`../events/${event}`)
 		if (eventFile.once)
 			client.once(eventFile.event, (...args) => eventFile.run(client, mongo.db, ...args))
-
-		else
+		 else
 			client.on(eventFile.event, (...args) => eventFile.run(client, mongo.db, ...args))
-
 	}
 
 	console.log("DiscordJS Events Initalized!")
@@ -37,20 +35,21 @@ const initializeCronJobs = (mongo, client) => {
 	console.log("Cron Jobs Initialized!")
 }
 
-const initializeClient = () => {
+const initializeClient = async () => {
 	const client = new Client({
 		intents: [
-			Intents.FLAGS.GUILDS,
-			Intents.FLAGS.GUILD_MESSAGES,
-			Intents.FLAGS.GUILD_MESSAGE_TYPING,
-			Intents.FLAGS.GUILD_MESSAGE_REACTIONS
+			GatewayIntentBits.Guilds,
+			GatewayIntentBits.GuildMembers,
+			GatewayIntentBits.GuildMessages,
+			GatewayIntentBits.GuildMessageTyping,
+			GatewayIntentBits.GuildMessageReactions
 		],
 	})
 
-	console.log("Client Initialized!")
-
 	client.commands = new Collection()
-	client.login(CLIENT_TOKEN)
+	await client.login(CLIENT_TOKEN)
+
+	console.log("Client Initialized!")
 
 	return client
 }

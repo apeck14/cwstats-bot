@@ -2,7 +2,6 @@ const { pink, orange } = require("../static/colors")
 const { formatStr } = require("../util/formatting")
 const { getEmoji, getClanBadge } = require("../util/functions")
 const locations = require("../static/locations")
-const { isNumber } = require("lodash")
 
 module.exports = {
 	data: {
@@ -102,9 +101,8 @@ module.exports = {
 			const badgeEmoji = getEmoji(badgeName)
 
 			embed.description += `**${i + 1}. ${badgeEmoji} [${formatStr(clan.name)}](${url})**\n`
-			embed.description += `${fameAvgEmoji} **${clan.fameAvg.toFixed(2)}** ${decksRemainingEmoji} ${clan.decksRemaining} :earth_americas: ${
-				isNumber(clan.rank) ? `#${clan.rank}` : clan.rank
-			}\n`
+			embed.description += `${fameAvgEmoji} **${clan.fameAvg.toFixed(2)}** ${decksRemainingEmoji} ${clan.decksRemaining} :earth_americas: `
+			embed.description += Number.isInteger(clan.rank) ? `#${clan.rank}\n` : `${clan.rank}\n`
 		}
 
 		return i.editReply({

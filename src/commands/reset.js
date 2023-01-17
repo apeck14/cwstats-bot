@@ -11,7 +11,7 @@ module.exports = {
 
 		await guilds.updateOne(
 			{
-				guildID: i.channel.guild.id
+				guildID: i.guildId
 			},
 			{
 				$set: {
@@ -19,7 +19,11 @@ module.exports = {
 					"channels.applyChannelID": null,
 					"channels.applicationsChannelID": null,
 					"channels.commandChannelID": null,
+					"channels.reportChannelID": null,
 				},
+				$unset: {
+					warReport: ""
+				}
 			}
 		)
 

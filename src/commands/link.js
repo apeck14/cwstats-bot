@@ -99,7 +99,7 @@ module.exports = {
 			}
 
 			//send confirmatiom embed
-			await i.editReply({
+			const confEmbed = await i.editReply({
 				embeds: [
 					{
 						color: green,
@@ -113,7 +113,7 @@ module.exports = {
 				return int.user.id === i.user.id
 			}
 
-			const collector = i.channel.createMessageComponentCollector({
+			const collector = confEmbed.createMessageComponentCollector({
 				filter: iFilter,
 				time: 10000
 			})

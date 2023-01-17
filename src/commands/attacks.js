@@ -19,7 +19,7 @@ module.exports = {
 	run: async (i, db, client) => {
 		const guilds = db.collection("Guilds")
 		const { abbreviations } = await guilds.findOne({
-			guildID: i.channel.guild.id,
+			guildID: i.guildId,
 		})
 
 		let tag = i.options.getString("tag")
@@ -138,10 +138,22 @@ module.exports = {
 			name
 		)}**\n${fameEmoji} **${fame}**\n${decksRemainingEmoji} **${totalAttacksLeft}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n`
 
-		if (fourAttacks.length > 0) embed.description += `\n**__4 Attacks__**\n${fourAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
-		if (threeAttacks.length > 0) embed.description += `\n**__3 Attacks__**\n${threeAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
-		if (twoAttacks.length > 0) embed.description += `\n**__2 Attacks__**\n${twoAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
-		if (oneAttack.length > 0) embed.description += `\n**__1 Attack__**\n${oneAttack.map((p) => `• ${formatStr(p.name)}\n`).join("")}`
+		if (fourAttacks.length > 0) {
+			embed.description += `\n**__4 Attacks__**\n`
+			embed.description += fourAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")
+		}
+		if (threeAttacks.length > 0) {
+			embed.description += `\n**__3 Attacks__**\n`
+			embed.description += threeAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")
+		}
+		if (twoAttacks.length > 0) {
+			embed.description += `\n**__2 Attacks__**\n`
+			embed.description += twoAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")
+		}
+		if (oneAttack.length > 0) {
+			embed.description += `\n**__1 Attack__**\n`
+			embed.description += oneAttack.map((p) => `• ${formatStr(p.name)}\n`).join("")
+		}
 
 		return i.editReply({
 			embeds: [embed]

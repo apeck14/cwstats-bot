@@ -19,7 +19,7 @@ module.exports = {
 		const guilds = db.collection("Guilds")
 
 		const { channels } = await guilds.findOne({
-			guildID: i.channel.guild.id
+			guildID: i.guildId
 		})
 		const { applyChannelID } = channels
 
@@ -37,7 +37,7 @@ module.exports = {
 		}
 
 		guilds.updateOne({
-			guildID: i.channel.guild.id
+			guildID: i.guildId
 		}, {
 			$set: {
 				"channels.applyChannelID": channel.id
