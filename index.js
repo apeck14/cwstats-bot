@@ -8,12 +8,8 @@ mongo.init()
 
 initializeClient()
 	.then((client) => initializeCronJobs(mongo, client))
-	.then((client) => {
-		initializeEvents(mongo, client)
-		AutoPoster(process.env.TOPGG_TOKEN, client)
-
-		return client
-	})
+	.then((client) => initializeEvents(mongo, client))
+	.then((client) => AutoPoster(process.env.TOPGG_TOKEN, client))
 	.catch(e => console.log(e))
 
 process.on("unhandledRejection", (err) => {
