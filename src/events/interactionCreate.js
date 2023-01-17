@@ -74,6 +74,7 @@ module.exports = {
 		}
 		catch (e) {
 			console.log(e)
+			console.log(e?.requestBody?.json)
 
 			return
 		}
