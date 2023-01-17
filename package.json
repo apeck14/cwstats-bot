@@ -4,7 +4,7 @@
 	"description": "Discord bot to track everything CW related!",
 	"main": "index.js",
 	"scripts": {
-		"clean": "del node_modules",
+		"clean": "rm -rf node_modules",
 		"reinstall": "npm run clean && npm install"
 	},
 	"keywords": [],
