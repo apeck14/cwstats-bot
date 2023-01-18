@@ -1,4 +1,5 @@
-const { orange } = require("../static/colors.js")
+const { orange, pink } = require("../static/colors.js")
+const { logToSupportServer } = require("../util/logging.js")
 const { validate } = require("../util/validate.js")
 const guildCreate = require("./guildCreate")
 
@@ -71,6 +72,21 @@ module.exports = {
 				await i.followUp(`:white_check_mark: **No need to @ yourself since you have a tag linked!**`)
 
 			run(i, db, client)
+
+			const hasOptions = i.options._hoistedOptions.length > 0
+			let options = "*None*"
+
+			if (hasOptions)
+				options = "\n" + i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")
+
+			const { username, discriminator, id } = i.user
+			const { guild } = i.member
+
+			logToSupportServer(client, {
+				title: `__/${i.commandName}__`,
+				description: `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})\n\n**Options**: ${options}\n\n**Deferred**: ${i.deferred}\n**Replied**: ${i.replied}`,
+				color: pink,
+			})
 		}
 		catch (e) {
 			console.log(e)
