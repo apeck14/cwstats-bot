@@ -1,3 +1,4 @@
+const { BLACKLIST_USERS } = require("../static/blacklist.js")
 const { orange, pink } = require("../static/colors.js")
 const { logToSupportServer } = require("../util/logging.js")
 const { validate } = require("../util/validate.js")
@@ -8,6 +9,8 @@ module.exports = {
 	run: async (client, db, i) => {
 		try {
 			if (!i || !i.isCommand()) return
+
+			if (BLACKLIST_USERS.includes(i.user.id)) return
 
 			if (!i.guild) {
 				return i.reply({
