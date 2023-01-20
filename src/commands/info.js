@@ -27,7 +27,8 @@ module.exports = {
 
 		if (warReport) {
 			const { enabled, clanTag, scheduledReportTimeHHMM } = warReport
-		    embed.description += `**__War Report__**\n**Enabled**: ${enabled}\n**Time**: ${scheduledReportTimeHHMM} (UTC)\n**Clan Tag**: ${clanTag}\n\n`
+			const enabledStr = enabled ? "Yes" : "No"
+		    embed.description += `**__War Report__**\n**Enabled**: ${enabledStr}\n**Time**: ${scheduledReportTimeHHMM} (UTC)\n**Clan Tag**: ${clanTag}\n\n`
 		}
 
 		if (abbreviations?.length > 0) {
