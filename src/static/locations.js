@@ -698,6 +698,8 @@ module.exports = [
 		key: "IN",
 		name: "India",
 		isCountry: true,
+		isAdded: true,
+		flagEmoji: ":flag_in:",
 	},
 	{
 		id: 57000114,
@@ -1521,7 +1523,9 @@ module.exports = [
 		id: 57000248,
 		key: "GB",
 		name: "United Kingdom",
-		isCountry: true
+		isCountry: true,
+		isAdded: true,
+		flagEmoji: ":flag_gb:",
 	},
 	{
 		id: 57000249,
