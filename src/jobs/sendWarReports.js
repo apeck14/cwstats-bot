@@ -29,7 +29,7 @@ module.exports = {
 
 		for (const g of guildsToSendReport) {
 			try {
-				const raceRes = guildsRaceData.find((res) => res.data?.clan?.tag === g.warReport?.clanTag)
+				const raceRes = guildsRaceData.find((res) => res.data?.clan?.tag === g.warReport.clanTag)
 				const { data: race, error } = raceRes || {}
 
 				if (error || !race) continue
