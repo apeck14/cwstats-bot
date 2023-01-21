@@ -49,7 +49,8 @@ module.exports = {
 					PermissionFlagsBits.ViewChannel,
 					PermissionFlagsBits.SendMessages,
 					PermissionFlagsBits.EmbedLinks,
-					PermissionFlagsBits.UseExternalEmojis
+					PermissionFlagsBits.UseExternalEmojis,
+					PermissionFlagsBits.AttachFiles
 				]
 
 				if (!reportChannelPermissions.has(requiredFlags)) continue
