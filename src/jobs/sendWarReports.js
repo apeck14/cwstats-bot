@@ -32,7 +32,10 @@ module.exports = {
 				const raceRes = guildsRaceData.find((res) => res.data?.clan?.tag === g.warReport.clanTag)
 				const { data: race, error } = raceRes || {}
 
-				if (error || !race) continue
+				if (error || !race) {
+					console.log(error || "Attempted to send war report, no race found.")
+					continue
+				}
 
 				const clanRes = guildsClanData.find((res) => res.data.tag === g.warReport.clanTag)
 				const { data: clan, error: clanError } = clanRes || {}
