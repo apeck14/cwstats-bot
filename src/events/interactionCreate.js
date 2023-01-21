@@ -8,7 +8,7 @@ module.exports = {
 	event: "interactionCreate",
 	run: async (client, db, i) => {
 		try {
-			if (!i || !i.isCommand()) return
+			if (!i || !i.isChatInputCommand()) return
 
 			if (BLACKLIST_USERS.includes(i.user.id)) return
 
@@ -22,8 +22,6 @@ module.exports = {
 					],
 				})
 			}
-
-			await i.deferReply()
 
 			const guilds = db.collection("Guilds")
 			let guildExists = await guilds.findOne({
@@ -39,22 +37,24 @@ module.exports = {
 
 				if (!guildExists) return console.log("Guild not in database, and could not be added.")
 
-				console.log(`Guild not found, but updated! ${i.member.guild.id}`)
+				console.log(`Guild not found, but updated! ${i.guildId}`)
 			}
 
 			const { error, color, onlyShowToUser } = validate(i, guildExists.channels, client)
 
 			if (error) {
-				return i.editReply({
+				return i.reply({
 					embeds: [
 						{
 							description: error,
-							color: color,
+							color,
 						}
 					],
-					ephemeral: onlyShowToUser,
+					ephemeral: onlyShowToUser
 				})
 			}
+
+			await i.deferReply()
 
 			const { disabled, run } = i.client.commands.get(i.commandName)
 
@@ -65,13 +65,12 @@ module.exports = {
 							description: ":tools: **This command has been temporarily disabled**.",
 							color: orange,
 						}
-					],
-					ephemeral: onlyShowToUser,
+					]
 				})
 			}
 
-			//if a user @'s themselves
-			if (i.options._hoistedOptions.find((o) => o.type === "USER")?.value === i.user.id)
+			//if a user @'s themselves send reminder above embed response
+			if (i.options._hoistedOptions.find((o) => o.name === "user")?.value === i.user.id)
 				await i.followUp(`:white_check_mark: **No need to @ yourself since you have a tag linked!**`)
 
 			run(i, db, client)
@@ -94,8 +93,6 @@ module.exports = {
 		catch (e) {
 			console.log(e)
 			console.log(e?.requestBody?.json)
-
-			return
 		}
 	},
 }

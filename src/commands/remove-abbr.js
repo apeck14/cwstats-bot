@@ -32,8 +32,7 @@ module.exports = {
 						description: `\`${abbreviation}\` **is not a set abbreivation.**`,
 						color: red
 					}
-				],
-				ephemeral: true,
+				]
 			})
 		}
 

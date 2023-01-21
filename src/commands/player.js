@@ -46,8 +46,7 @@ module.exports = {
 							color: orange,
 							description: `**No tag linked!** Use **/link** to link your tag.`
 						}
-					],
-					ephemeral: true
+					]
 				})
 			}
 		}
@@ -66,8 +65,7 @@ module.exports = {
 							color: orange,
 							description: `<@!${user.id}> **does not have an account linked.**`
 						}
-					],
-					ephemeral: true,
+					]
 				})
 			}
 		}

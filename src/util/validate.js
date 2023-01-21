@@ -51,37 +51,36 @@ const checkPermissions = (i, channels, client) => {
 const validate = (i, channels, client) => {
 	const { applyChannelID, applicationsChannelID, commandChannelID } = channels
 
-	const response = {
-		color: orange,
-		onlyShowToUser: true
-	}
+	const color = orange
+	let onlyShowToUser = false
 
 	if (i.commandName === "apply") {
-		if (applyChannelID !== i.channelId) {
-			return {
-				...response,
-				error: `You can only use this command in the set **apply channel**! (<#${applyChannelID}>)`
-			}
+		let error = ""
+
+		if (!applyChannelID)
+			error = "**No apply channel set.**"
+
+		else if (applyChannelID !== i.channelId) {
+			error = `You can only use this command in the set **apply channel**! (<#${applyChannelID}>)`
+			onlyShowToUser = true
 		}
-		else if (!applyChannelID) {
-			return {
-				...response,
-				error: "**No apply channel set.**"
-			}
+
+		else if (!applicationsChannelID)
+			error = "**No applications channel set.**"
+
+		return {
+			color,
+			error,
+			onlyShowToUser
 		}
-		else if (!applicationsChannelID) {
-			return {
-				...response,
-				error: "**No applications channel set.**"
-			}
-		}
+
 	}
-	else {
-		if (commandChannelID && commandChannelID !== i.channel.id) {
-			return {
-				...response,
-				error: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`
-			}
+
+	if (commandChannelID && commandChannelID !== i.channel.id) {
+		return {
+			color,
+			error: `You can only use this command in the set **command channel**! (<#${commandChannelID}>)`,
+			onlyShowToUser: true
 		}
 	}
 
@@ -89,9 +88,9 @@ const validate = (i, channels, client) => {
 
 	if (error) {
 		return {
-			...response,
 			color: red,
-			error
+			error,
+			onlyShowToUser
 		}
 	}
 

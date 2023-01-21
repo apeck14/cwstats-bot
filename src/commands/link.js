@@ -74,8 +74,7 @@ module.exports = {
 						color: orange,
 						description: "**You have already linked that ID!**"
 					}
-				],
-				ephemeral: true
+				]
 			})
 		}
 
