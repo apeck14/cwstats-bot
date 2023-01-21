@@ -29,19 +29,6 @@ module.exports = {
 
 		for (const g of guildsToSendReport) {
 			try {
-				const raceRes = guildsRaceData.find((res) => res.data?.clan?.tag === g.warReport.clanTag)
-				const { data: race, error } = raceRes || {}
-
-				if (error || !race) {
-					console.log(error || "Attempted to send war report, no race found.")
-					continue
-				}
-
-				const clanRes = guildsClanData.find((res) => res.data.tag === g.warReport.clanTag)
-				const { data: clan, error: clanError } = clanRes || {}
-
-				if (clanError || !clan) continue
-
 				const { channels } = g
 				const { reportChannelID } = channels
 
@@ -58,13 +45,44 @@ module.exports = {
 
 				if (!reportChannelPermissions.has(requiredFlags)) continue
 
+				const raceRes = guildsRaceData.find((res) => res.data?.clan?.tag === g.warReport.clanTag)
+				const { data: race, error } = raceRes || {}
+
+				const clanRes = guildsClanData.find((res) => res.data?.tag === g.warReport.clanTag)
+				const { data: clan, error: clanError } = clanRes || {}
+
+				const thumbnail = {
+					url: "https://i.imgur.com/VAPR8Jq.png"
+				}
+
+				const title = "__Daily War Report__"
+
+				if (error || !race || clanError || !clan) {
+					const errMsg = error?.error || clanError?.error || "**Unexpected error.**"
+					const description = errMsg.slice(0, errMsg.lastIndexOf("*") + 1)
+
+					reportChannel.send({
+						embeds: [
+							{
+								color: red,
+								title,
+								thumbnail,
+								description
+							}
+						],
+					})
+
+					continue
+				}
+
 				if (race.periodType === "training") {
 					reportChannel.send({
 						embeds: [
 							{
 								color: red,
-								title: `__Daily War Report__`,
-								description: "**No active race!**",
+								description: "**Cannot send war report on training days!**",
+								title,
+								thumbnail
 							}
 						],
 					})
@@ -75,11 +93,9 @@ module.exports = {
 				const dayOfWeek = race.periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
 
 				const embed = {
+					title,
+					thumbnail,
 					color: pink,
-					title: `__Daily War Report__`,
-					thumbnail: {
-						url: "https://i.imgur.com/VAPR8Jq.png",
-					},
 					author: {
 						name: `Week ${race.sectionIndex + 1} Day ${dayOfWeek < 3 ? dayOfWeek + 1 : dayOfWeek - 2}`,
 					},
@@ -101,7 +117,6 @@ module.exports = {
 				embed.description += `\n${decksRemainingEmoji} ${decksRemaining}\n`
 
 				//remaining attacks
-
 				const inClan = (p) => clan.memberList.find(m => m.tag === p.tag)
 				const inClanOrHasFame = (p) => {
 					return inClan(p) || p.fame > 0
