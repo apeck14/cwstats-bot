@@ -1,6 +1,8 @@
 const fs = require("fs")
 const registerSlashCommands = require("../util/slash")
 const { BLACKLIST_GUILDS } = require("../static/blacklist")
+const { logToSupportServer } = require("../util/logging")
+const { orange } = require("../static/colors")
 
 module.exports = {
 	event: "ready",
@@ -56,5 +58,10 @@ module.exports = {
 		}
 
 		console.log("allEmojis.json successfully written!")
+
+		logToSupportServer(client, {
+			color: orange,
+			title: "Bot restarted!"
+		})
 	},
 }
