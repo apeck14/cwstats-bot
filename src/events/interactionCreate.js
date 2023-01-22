@@ -73,7 +73,7 @@ module.exports = {
 			if (i.options._hoistedOptions.find((o) => o.name === "user")?.value === i.user.id)
 				await i.followUp(`:white_check_mark: **No need to @ yourself since you have a tag linked!**`)
 
-			run(i, db, client)
+			await run(i, db, client)
 
 			const hasOptions = i.options._hoistedOptions.length > 0
 			let options = "*None*"
