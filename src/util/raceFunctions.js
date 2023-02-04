@@ -41,15 +41,13 @@ module.exports = {
 	getAvgFame: (clan, isColosseum, dayOfWeek) => {
 		const attacksCompletedToday = clan.participants.reduce((a, b) => a + b.decksUsedToday, 0)
 		const currentFame = isColosseum ? clan.fame : clan.periodPoints
-		const battleDaysCompleted = () => {
-			if (!isColosseum || dayOfWeek <= 3) return 0
-			else return dayOfWeek - 3
-		}
+		const isTraining = dayOfWeek <= 3
+		const battleDaysCompleted = !isColosseum || isTraining ? 0 : dayOfWeek - 3
 
 		if (isColosseum) {
-			if (attacksCompletedToday === 0 && battleDaysCompleted() === 0) return 0
+			if (attacksCompletedToday === 0 && battleDaysCompleted === 0) return 0
 
-			return currentFame / (attacksCompletedToday + 200 * battleDaysCompleted())
+			return currentFame / (attacksCompletedToday + 200 * battleDaysCompleted)
 		}
 
 		if (attacksCompletedToday === 0) return 0
