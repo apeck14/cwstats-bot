@@ -32,7 +32,6 @@ module.exports = {
 		//if user doesn't already have a linked account
 		if (!linkedAccount) {
 			await linkedAccounts.insertOne({
-				discordName: i.user.username,
 				discordID: i.user.id,
 				tag,
 				savedClans: [],
