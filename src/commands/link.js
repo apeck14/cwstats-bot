@@ -34,9 +34,14 @@ module.exports = {
 			await linkedAccounts.insertOne({
 				discordName: i.user.username,
 				discordID: i.user.id,
-				tag: tag,
+				tag,
 				savedClans: [],
-				savedPlayers: [tag],
+				savedPlayers: [
+					{
+						name: player.name,
+						tag
+					}
+				],
 			})
 
 			return i.editReply({
@@ -54,6 +59,12 @@ module.exports = {
 			}, {
 				$set: {
 					tag: tag
+				},
+				$push: {
+					savedPlayers: {
+						name: player.name,
+						tag
+					}
 				}
 			})
 
@@ -78,7 +89,7 @@ module.exports = {
 			})
 		}
 
-		//already linked, send confirmation embed to update to new tag
+		//already linked to antoher tag, send confirmation embed to update to new tag
 		else {
 			const row = {
 				components: [
@@ -123,7 +134,13 @@ module.exports = {
 						discordID: int.user.id
 					}, {
 						$set: {
-							tag: tag
+							tag
+						},
+						$push: {
+							savedPlayers: {
+								name: player.name,
+								tag
+							}
 						}
 					})
 
