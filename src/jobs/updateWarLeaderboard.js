@@ -20,7 +20,7 @@ module.exports = {
 
 		const lbIDs = locations.filter((l) => l.isAdded || l.name === "Global").map((l) => l.id)
 
-		const lbPromises = lbIDs.map((id) => getWarLeaderboard(id === "global" ? 100 : 50, id))
+		const lbPromises = lbIDs.map((id) => getWarLeaderboard(id === "global" ? 100 : 75, id))
 		const allLbs = await Promise.all(lbPromises)
 
 		const { data: allGlobalRankedClans, error: allGlobalRankedError } = await getWarLeaderboard(1000)
