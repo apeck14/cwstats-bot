@@ -29,7 +29,6 @@ module.exports = {
 			discordID: i.user.id
 		})
 
-		//if user doesn't already have a linked account
 		if (!linkedAccount) {
 			await linkedAccounts.insertOne({
 				discordID: i.user.id,
