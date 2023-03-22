@@ -38,6 +38,9 @@ module.exports = {
 				//set fameAvg for all clans in race
 				if (cl.clanScore < 4000) continue
 
+				const clan = clanAverages.find(c => c.tag === cl.tag)
+				if (clan) continue
+
 				const globalClanRank = allGlobalRankedClans.findIndex((cla) => cla.tag === cl.tag)
 
 				if (cl.tag === c.tag) {
@@ -51,9 +54,6 @@ module.exports = {
 				}
 
 				if (globalClanRank === -1) continue
-
-				const clan = clanAverages.find(c => c.tag === cl.tag)
-				if (clan) continue
 
 				clanAverages.push({
 					...allGlobalRankedClans[globalClanRank],
