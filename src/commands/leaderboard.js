@@ -76,8 +76,14 @@ module.exports = {
 		const now = Date.now()
 		const diffInMins = Math.round((now - lbLastUpdated) / 1000 / 60)
 
+		let embedUrl = `https://www.cwstats.com/leaderboard/daily/${location?.key || "global"}`
+
+		if (trophies === 4000) embedUrl += `?league=4000`
+		else if (trophies === 5000) embedUrl += `?league=5000`
+
 		const embed = {
 			title: `**__Daily War Leaderboard__**`,
+			url: embedUrl,
 			description: "",
 			footer: {
 				text: `Last Updated: ${diffInMins}m ago`,
