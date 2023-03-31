@@ -96,7 +96,7 @@ module.exports = {
 
 		for (let i = 0; i < leaderboard.length; i++) {
 			const clan = leaderboard[i]
-			const url = `https://www.cwstats.com/clans/${clan.tag.substring(1)}/riverrace`
+			const url = `https://www.cwstats.com/clan/${clan.tag.substring(1)}/race`
 			const badgeName = getClanBadge(clan.badgeId, clan.clanScore)
 			const badgeEmoji = getEmoji(badgeName)
 

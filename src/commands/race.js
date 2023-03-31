@@ -79,7 +79,7 @@ module.exports = {
 			author: {
 				name: `Week ${race.sectionIndex + 1} | ${dayOfWeek < 3 ? "Training" : "War"} Day ${dayOfWeek < 3 ? dayOfWeek + 1 : dayOfWeek - 2}`,
 			},
-			url: `https://www.cwstats.com/clans/${race.clan.tag.substring(1)}/riverrace`,
+			url: `https://www.cwstats.com/clan/${race.clan.tag.substring(1)}/race`,
 		}
 
 		const placements = getRacePlacements(race.clans, isColosseum)
