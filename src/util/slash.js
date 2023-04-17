@@ -2,27 +2,28 @@ const { CLIENT_TOKEN, TEST_GUILD_ID } = require("../../config")
 const { REST, Routes } = require("discord.js")
 
 const registerSlashCommands = async (CLIENT_ID, commands) => {
-	const rest = new REST({
-		version: "10"
-	}).setToken(CLIENT_TOKEN)
+  const rest = new REST({
+    version: "10",
+  }).setToken(CLIENT_TOKEN)
 
-	try {
-		if (TEST_GUILD_ID) {
-			await rest.put(Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID), {
-				body: commands,
-			})
-			console.log(`Loaded Guild Slash Commands`)
-		}
-		else {
-			await rest.put(Routes.applicationCommands(CLIENT_ID), {
-				body: commands,
-			})
-			console.log(`Loaded Slash Commands`)
-		}
-	}
-	catch (error) {
-		console.log(`Could not load Slash Commands: \n ${error}`)
-	}
+  try {
+    if (TEST_GUILD_ID) {
+      await rest.put(
+        Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID),
+        {
+          body: commands,
+        }
+      )
+      console.log(`Loaded Guild Slash Commands`)
+    } else {
+      await rest.put(Routes.applicationCommands(CLIENT_ID), {
+        body: commands,
+      })
+      console.log(`Loaded Slash Commands`)
+    }
+  } catch (error) {
+    console.log(`Could not load Slash Commands: \n ${error}`)
+  }
 }
 
 module.exports = registerSlashCommands

@@ -7,58 +7,63 @@ const events = fs.readdirSync("src/events")
 const jobs = fs.readdirSync("src/jobs")
 
 const initializeEvents = (mongo, client) => {
-	for (const event of events) {
-		const eventFile = require(`../events/${event}`)
-		if (eventFile.once)
-			client.once(eventFile.event, (...args) => eventFile.run(client, mongo.db, ...args))
-		 else
-			client.on(eventFile.event, (...args) => eventFile.run(client, mongo.db, ...args))
-	}
+  for (const event of events) {
+    const eventFile = require(`../events/${event}`)
+    if (eventFile.once)
+      client.once(eventFile.event, (...args) =>
+        eventFile.run(client, mongo.db, ...args)
+      )
+    else
+      client.on(eventFile.event, (...args) =>
+        eventFile.run(client, mongo.db, ...args)
+      )
+  }
 
-	console.log("DiscordJS Events Initalized!")
+  console.log("DiscordJS Events Initalized!")
 
-	return client
+  return client
 }
 
 const initializeCronJobs = (mongo, client) => {
-	for (const job of jobs) {
-		try {
-			require.resolve(`../jobs/${job}`)
-			const jobFile = require(`../jobs/${job}`)
-			const newJob = schedule(jobFile.expression, () => jobFile.run(client, mongo.db))
-			newJob.start()
-		}
-		catch (e) {
-			console.log(e)
-			continue
-		}
-	}
+  for (const job of jobs) {
+    try {
+      require.resolve(`../jobs/${job}`)
+      const jobFile = require(`../jobs/${job}`)
+      const newJob = schedule(jobFile.expression, () =>
+        jobFile.run(client, mongo.db)
+      )
+      newJob.start()
+    } catch (e) {
+      console.log(e)
+      continue
+    }
+  }
 
-	console.log("Cron Jobs Initialized!")
+  console.log("Cron Jobs Initialized!")
 
-	return client
+  return client
 }
 
 const initializeClient = async () => {
-	const client = new Client({
-		intents: [
-			GatewayIntentBits.Guilds,
-			GatewayIntentBits.GuildMessages,
-			GatewayIntentBits.GuildMessageTyping,
-			GatewayIntentBits.GuildMessageReactions
-		],
-	})
+  const client = new Client({
+    intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.GuildMessageTyping,
+      GatewayIntentBits.GuildMessageReactions,
+    ],
+  })
 
-	client.commands = new Collection()
-	await client.login(CLIENT_TOKEN)
+  client.commands = new Collection()
+  await client.login(CLIENT_TOKEN)
 
-	console.log("Client Initialized!")
+  console.log("Client Initialized!")
 
-	return client
+  return client
 }
 
 module.exports = {
-	initializeEvents,
-	initializeCronJobs,
-	initializeClient
+  initializeEvents,
+  initializeCronJobs,
+  initializeClient,
 }
