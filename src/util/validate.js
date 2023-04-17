@@ -52,7 +52,10 @@ const checkPermissions = (i, channels, client) => {
       "toggle-report",
     ]
 
-    if (ADMIN_COMMANDS.includes(i.commandName)) {
+    if (
+      i.user.id !== "493245767448789023" &&
+      ADMIN_COMMANDS.includes(i.commandName)
+    ) {
       const isAdmin = i.member.permissions.has(
         PermissionsBitField.Flags.ManageGuild
       )
