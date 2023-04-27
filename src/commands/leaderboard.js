@@ -120,7 +120,7 @@ module.exports = {
 
       embed.description += `**${i + 1}. ${badgeEmoji} [${formatStr(
         clan.name
-      )}](${url})**`
+      )}](${url})**\n`
       embed.description += `${fameAvgEmoji} **${clan.fameAvg.toFixed(
         2
       )}** ${decksRemainingEmoji} ${clan.decksRemaining} :earth_americas: `
