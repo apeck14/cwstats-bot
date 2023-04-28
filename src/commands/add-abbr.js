@@ -24,7 +24,6 @@ module.exports = {
   },
   run: async (i, db, client) => {
     const guilds = db.collection("Guilds")
-    const statistics = db.collection("Statistics")
     const { abbreviations } = await guilds.findOne({
       guildID: i.guildId,
     })
@@ -60,14 +59,6 @@ module.exports = {
 
     if (error) return errorMsg(i, error)
 
-    statistics.updateOne(
-      {},
-      {
-        $inc: {
-          totalAbbreviations: 1,
-        },
-      }
-    )
     await guilds.updateOne(
       {
         guildID: i.guildId,
