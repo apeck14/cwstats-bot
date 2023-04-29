@@ -191,17 +191,21 @@ module.exports = {
       title: `**${name}** (${tag})`,
     }
 
-    let description = `${badgeEmoji} **${formatStr(clanName)}**\n\n`
+    let description = `${badgeEmoji} **${formatStr(clanName)}**\n`
 
     if (duelDecks.length > 0) {
-      description += `**__Duels__** ${duelEmoji}\n`
+      description += `\n**__Duels__** ${duelEmoji}\n`
 
       for (let i = 0; i < duelDecks.length; i++) {
         let duelStr = `**${i + 1}.** `
 
         for (const c of duelDecks[i].cards) {
           const emoji = getEmoji(
-            c.toLowerCase().replace(/\s+/g, "_").replace(/\./g, "")
+            c
+              .toLowerCase()
+              .replace(/\s+/g, "_")
+              .replace(/\./g, "")
+              .replace(/-/g, "_")
           )
 
           duelStr += emoji
@@ -222,7 +226,11 @@ module.exports = {
 
         for (const c of singleDecks[i].cards) {
           const emoji = getEmoji(
-            c.toLowerCase().replace(/\s+/g, "_").replace(/\./g, "")
+            c
+              .toLowerCase()
+              .replace(/\s+/g, "_")
+              .replace(/\./g, "")
+              .replace(/-/g, "_")
           )
 
           str += emoji
@@ -329,6 +337,7 @@ module.exports = {
           embed.description += remainingWinCons
             .filter((c) => c.level === nextWinConLvl)
             .map((c) => getEmoji(c.name.replace(/-/g, "_")))
+            .join("")
         }
       }
 
@@ -348,6 +357,7 @@ module.exports = {
           embed.description += remainingSpells
             .filter((c) => c.level === nextSpellLvl)
             .map((c) => getEmoji(c.name.replace(/-/g, "_")))
+            .join("")
         }
       }
 
