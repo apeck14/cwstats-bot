@@ -5,6 +5,7 @@ const { formatStr } = require("../util/formatting")
 
 const { diceCoefficient } = require("string-comparison")
 const cardInfo = require("../static/cardInfo")
+const specialGamemodes = require("../static/specialGamemodes")
 
 module.exports = {
   data: {
@@ -151,7 +152,7 @@ module.exports = {
         let emoji = "normal"
 
         if (m.gameMode.name !== "CW_Battle_1v1") {
-          const modeExists = specialGameModes.find(
+          const modeExists = specialGamemodes.find(
             (gm) => gm.name === m.gameMode.name
           )
 
