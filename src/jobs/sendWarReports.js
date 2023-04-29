@@ -40,6 +40,8 @@ module.exports = {
 
         const reportChannel = client.channels.cache.get(reportChannelID)
 
+        if (!reportChannel) continue
+
         const reportChannelPermissions = reportChannel?.permissionsFor(
           client.user
         )
