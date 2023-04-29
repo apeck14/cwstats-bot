@@ -16,6 +16,7 @@ module.exports = [
     aliases: [],
     id: 28000001,
     rarity: "common",
+    spell: true,
   },
   {
     name: "baby-dragon",
@@ -28,6 +29,7 @@ module.exports = [
     aliases: ["loon"],
     id: 26000006,
     rarity: "epic",
+    winCon: true,
   },
   {
     name: "bandit",
@@ -40,6 +42,7 @@ module.exports = [
     aliases: ["barb-barrel", "bb"],
     id: 28000015,
     rarity: "epic",
+    spell: true,
   },
   {
     name: "barbarian-hut",
@@ -70,6 +73,7 @@ module.exports = [
     aliases: ["br"],
     id: 26000036,
     rarity: "rare",
+    winCon: true,
   },
   {
     name: "bomb-tower",
@@ -106,6 +110,7 @@ module.exports = [
     aliases: [],
     id: 28000013,
     rarity: "epic",
+    spell: true,
   },
   {
     name: "dark-prince",
@@ -124,6 +129,7 @@ module.exports = [
     aliases: ["quake", "eq"],
     id: 28000014,
     rarity: "rare",
+    spell: true,
   },
   {
     name: "electro-dragon",
@@ -136,6 +142,7 @@ module.exports = [
     aliases: ["egiant", "e-giant"],
     id: 26000085,
     rarity: "epic",
+    winCon: true,
   },
   {
     name: "electro-spirit",
@@ -167,6 +174,7 @@ module.exports = [
     aliases: ["egolem", "e-golem"],
     id: 26000067,
     rarity: "rare",
+    winCon: true,
   },
   {
     name: "executioner",
@@ -185,6 +193,7 @@ module.exports = [
     aliases: ["fball", "fb"],
     id: 28000000,
     rarity: "rare",
+    spell: true,
   },
   {
     name: "firecracker",
@@ -210,6 +219,7 @@ module.exports = [
     canBeUnderLeveled: true,
     id: 28000005,
     rarity: "epic",
+    spell: true,
   },
   {
     name: "furnace",
@@ -222,6 +232,7 @@ module.exports = [
     aliases: [],
     id: 26000003,
     rarity: "rare",
+    winCon: true,
   },
   {
     name: "giant-skeleton",
@@ -234,12 +245,14 @@ module.exports = [
     aliases: ["snowball"],
     id: 28000017,
     rarity: "common",
+    spell: true,
   },
   {
     name: "goblin-barrel",
     aliases: ["gobbarrel", "gob-barrel", "gb"],
     id: 28000004,
     rarity: "epic",
+    winCon: true,
   },
   {
     name: "goblin-cage",
@@ -252,6 +265,7 @@ module.exports = [
     aliases: ["drill", "gobdrill", "gob-drill", "gd"],
     id: 27000013,
     rarity: "epic",
+    winCon: true,
   },
   {
     name: "goblin-gang",
@@ -264,6 +278,7 @@ module.exports = [
     aliases: ["gobgiant", "gob-giant", "ggiant", "g-giant"],
     id: 26000060,
     rarity: "epic",
+    winCon: true,
   },
   {
     name: "goblin-hut",
@@ -288,12 +303,14 @@ module.exports = [
     aliases: [],
     id: 26000009,
     rarity: "epic",
+    winCon: true,
   },
   {
     name: "graveyard",
     aliases: ["gy"],
     id: 28000010,
     rarity: "legendary",
+    winCon: true,
   },
   {
     name: "guards",
@@ -312,6 +329,7 @@ module.exports = [
     aliases: ["hog", "hr"],
     id: 26000021,
     rarity: "rare",
+    winCon: true,
   },
   {
     name: "hunter",
@@ -361,12 +379,14 @@ module.exports = [
     aliases: ["hound", "lava", "lh"],
     id: 26000029,
     rarity: "legendary",
+    winCon: true,
   },
   {
     name: "lightning",
     aliases: [],
     id: 28000007,
     rarity: "epic",
+    spell: true,
   },
   {
     name: "lumberjack",
@@ -385,6 +405,7 @@ module.exports = [
     aliases: ["mk"],
     id: 26000055,
     rarity: "legendary",
+    winCon: true,
   },
   {
     name: "mega-minion",
@@ -403,6 +424,7 @@ module.exports = [
     aliases: [],
     id: 26000032,
     rarity: "legendary",
+    winCon: true,
   },
   {
     name: "mini-pekka",
@@ -429,16 +451,11 @@ module.exports = [
     rarity: "epic",
   },
   {
-    name: "monk",
-    aliases: [],
-    id: 26000077,
-    rarity: "champion",
-  },
-  {
     name: "mortar",
     aliases: [],
     id: 27000002,
     rarity: "common",
+    winCon: true,
   },
   {
     name: "mother-witch",
@@ -465,16 +482,11 @@ module.exports = [
     rarity: "epic",
   },
   {
-    name: "phoenix",
-    aliases: [],
-    id: 26000087,
-    rarity: "legendary",
-  },
-  {
     name: "poison",
     aliases: [],
     id: 28000009,
     rarity: "epic",
+    spell: true,
   },
   {
     name: "prince",
@@ -494,12 +506,14 @@ module.exports = [
     canBeUnderLeveled: true,
     id: 28000002,
     rarity: "epic",
+    spell: true,
   },
   {
     name: "ram-rider",
     aliases: [],
     id: 26000051,
     rarity: "legendary",
+    winCon: true,
   },
   {
     name: "rascals",
@@ -512,6 +526,7 @@ module.exports = [
     aliases: [],
     id: 28000003,
     rarity: "rare",
+    spell: true,
   },
   {
     name: "royal-delivery",
@@ -530,18 +545,21 @@ module.exports = [
     aliases: ["rg"],
     id: 26000024,
     rarity: "common",
+    winCon: true,
   },
   {
     name: "royal-hogs",
     aliases: ["pigs", "hogs", "rh"],
     id: 26000059,
     rarity: "rare",
+    winCon: true,
   },
   {
     name: "royal-recruits",
     aliases: ["recruits", "rr"],
     id: 26000047,
     rarity: "common",
+    winCon: true,
   },
   {
     name: "skeleton-army",
@@ -554,6 +572,7 @@ module.exports = [
     aliases: ["skellybarrel", "skelly-barrel", "sbarrel", "s-barrel", "sb"],
     id: 26000056,
     rarity: "common",
+    winCon: true,
   },
   {
     name: "skeleton-dragons",
@@ -585,6 +604,7 @@ module.exports = [
     aliases: [],
     id: 26000033,
     rarity: "legendary",
+    winCon: true,
   },
   {
     name: "spear-goblins",
@@ -603,12 +623,14 @@ module.exports = [
     aliases: ["log"],
     id: 28000011,
     rarity: "legendary",
+    spell: true,
   },
   {
     name: "three-musketeers",
     aliases: ["threemusks", "three-musks", "3m", "tm"],
     id: 26000028,
     rarity: "rare",
+    winCon: true,
   },
   {
     name: "tombstone",
@@ -622,6 +644,7 @@ module.exports = [
     canBeUnderLeveled: true,
     id: 28000012,
     rarity: "epic",
+    spell: true,
   },
   {
     name: "valkyrie",
@@ -634,6 +657,7 @@ module.exports = [
     aliases: ["wb"],
     id: 26000058,
     rarity: "epic",
+    winCon: true,
   },
   {
     name: "witch",
@@ -652,12 +676,14 @@ module.exports = [
     aliases: ["xbow"],
     id: 27000008,
     rarity: "epic",
+    winCon: true,
   },
   {
     name: "zap",
     aliases: [],
     id: 28000008,
     rarity: "common",
+    spell: true,
   },
   {
     name: "zappies",
