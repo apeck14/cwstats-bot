@@ -63,7 +63,9 @@ exports.getClan = async (tag) => {
 }
 
 exports.searchClans = async (query) => {
-  const url = `https://proxy.royaleapi.dev/v1/clans?name=${query}`
+  const url = `https://proxy.royaleapi.dev/v1/clans?name=${encodeURIComponent(
+    query
+  )}`
 
   return await apiRequest(url, CR_API_TOKEN)
 }
