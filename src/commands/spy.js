@@ -45,7 +45,10 @@ module.exports = {
         const { data, error } = await getBattleLog(iTag)
 
         if (data.length === 0 || error) {
-          const msg = data.length === 0 ? "**Player tag not found.**" : error
+          const msg =
+            data.length === 0
+              ? "**Invalid tag, or no recent battles found for this player.**"
+              : error
 
           return errorMsg(i, msg)
         }
@@ -87,7 +90,15 @@ module.exports = {
         const player = clan.memberList.find((p) => p.name === bestMatch.member)
 
         const { data, error } = await getBattleLog(player.tag)
-        if (error) return errorMsg(i, error)
+
+        if (data.length === 0 || error) {
+          const msg =
+            data.length === 0
+              ? "**No recent battles found for this player.**"
+              : error
+
+          return errorMsg(i, msg)
+        }
 
         log = data
       } else {
