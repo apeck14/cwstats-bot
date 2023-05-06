@@ -110,7 +110,7 @@ const validate = (i, channels, client) => {
     }
   }
 
-  if (!commandChannelIDs.includes(channelId)) {
+  if (commandChannelIDs.length > 0 && !commandChannelIDs.includes(channelId)) {
     return {
       color,
       error: `You can only use this command in a set **command channel**!`,
