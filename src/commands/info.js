@@ -12,13 +12,7 @@ module.exports = {
     const { abbreviations, channels, warReport } = await guilds.findOne({
       guildID: i.guildId,
     })
-    const {
-      commandChannelID,
-      applyChannelID,
-      applicationsChannelID,
-      reportChannelID,
-    } = channels
-    const cmdChnl = commandChannelID ? `<#${commandChannelID}>` : "N/A"
+    const { applyChannelID, applicationsChannelID, reportChannelID } = channels
     const applyChnl = applyChannelID ? `<#${applyChannelID}>` : "N/A"
     const appChnl = applicationsChannelID
       ? `<#${applicationsChannelID}>`
@@ -30,7 +24,7 @@ module.exports = {
       color: pink,
     }
 
-    embed.description += `**__Channels__**\n**Commands**: ${cmdChnl}\n**Apply**: ${applyChnl}\n**Applications**: ${appChnl}\n**War Report**: ${reportChnl}\n\n`
+    embed.description += `**__Channels__**\n**Apply**: ${applyChnl}\n**Applications**: ${appChnl}\n**War Report**: ${reportChnl}\n\n`
 
     if (warReport) {
       const { enabled, clanTag, scheduledReportTimeHHMM } = warReport

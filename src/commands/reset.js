@@ -1,6 +1,7 @@
 const { green } = require("../static/colors")
 
 module.exports = {
+  disabled: true,
   data: {
     name: "reset",
     description: "Reset all bot settings to default.",
@@ -17,7 +18,7 @@ module.exports = {
           abbreviations: [],
           "channels.applyChannelID": null,
           "channels.applicationsChannelID": null,
-          "channels.commandChannelID": null,
+          "channels.commandChannelIDs": [],
           "channels.reportChannelID": null,
         },
         $unset: {

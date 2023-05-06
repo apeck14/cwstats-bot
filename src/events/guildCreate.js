@@ -11,7 +11,7 @@ module.exports = {
       channels: {
         applyChannelID: null,
         applicationsChannelID: null,
-        commandChannelID: null,
+        commandChannelIDs: [],
         reportChannelID: null,
       },
       abbreviations: [],

@@ -1,6 +1,7 @@
 const { green, orange } = require("../static/colors")
 
 module.exports = {
+  disabled: true,
   data: {
     name: "set-command-channel",
     description: "Set command channel.",
