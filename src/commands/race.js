@@ -17,29 +17,49 @@ module.exports = {
         type: 3,
         name: "tag",
         description: "#CLANTAG or abbreviation",
-        required: true,
+        required: false,
       },
     ],
   },
   run: async (i, db, client) => {
     const guilds = db.collection("Guilds")
-    const { abbreviations } = await guilds.findOne({
+    const { abbreviations, defaultClan } = await guilds.findOne({
       guildID: i.guildId,
     })
 
     let tag = i.options.getString("tag")
-    const abbr = abbreviations?.find((a) => a.abbr === tag)
 
-    if (abbr) tag = abbr.tag
-    else if (tag.length < 5) {
-      return i.editReply({
-        embeds: [
-          {
-            description: "**Abbreviation does not exist.**",
-            color: orange,
-          },
-        ],
-      })
+    //default clan
+    if (!tag) {
+      if (defaultClan?.tag) tag = defaultClan?.tag
+      else
+        return i.editReply({
+          embeds: [
+            {
+              description:
+                "**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me).",
+              color: orange,
+            },
+          ],
+        })
+    } else {
+      //abbreviation
+      const UPPERCASE_ABBR = tag.toUpperCase()
+      const abbr = abbreviations?.find(
+        (a) => a.abbr.toUpperCase() === UPPERCASE_ABBR
+      )
+
+      if (abbr) tag = abbr.tag
+      else if (tag.length < 5) {
+        return i.editReply({
+          embeds: [
+            {
+              description: "**Abbreviation does not exist.**",
+              color: orange,
+            },
+          ],
+        })
+      }
     }
 
     const { data: race, error } = await getRiverRace(tag)

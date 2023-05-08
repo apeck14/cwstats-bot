@@ -1,5 +1,5 @@
 const { getPlayer, getClan } = require("../util/api")
-const { pink, green } = require("../static/colors")
+const { pink, green, orange } = require("../static/colors")
 const {
   getClanBadge,
   getEmoji,
@@ -31,6 +31,22 @@ module.exports = {
       guildID: i.guildId,
     })
     const { applicationsChannelID } = channels
+
+    const APPLICATIONS_CHANNEL = client.channels.cache.get(
+      applicationsChannelID
+    )
+
+    if (!APPLICATIONS_CHANNEL) {
+      return i.editReply({
+        embeds: [
+          {
+            color: orange,
+            description:
+              "The set **applications** channel has been deleted. Please set the new channel [here](https://www.cwstats.com).",
+          },
+        ],
+      })
+    }
 
     let tag = i.options.getString("tag")
 
@@ -149,7 +165,7 @@ module.exports = {
       ],
     })
 
-    return client.channels.cache.get(applicationsChannelID).send({
+    return APPLICATIONS_CHANNEL.send({
       embeds: [applicationEmbed],
       files: [
         {
