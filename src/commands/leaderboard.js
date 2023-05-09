@@ -6,12 +6,44 @@ const locations = require("../static/locations")
 module.exports = {
   data: {
     name: "leaderboard",
-    description: "View current avg. fame leaderboard from top war clans.",
+    name_localizations: {
+      de: "bestenliste",
+      fr: "classement",
+      "es-ES": "clasificación",
+      tr: "lider-tablosu",
+      it: "classifica",
+      nl: "klassement",
+    },
+    description: "View the current daily war leaderboard.",
+    description_localizations: {
+      de: "Die aktuelle tägliche Kriegs-Bestenliste anzeigen.",
+      fr: "Afficher le classement quotidien des guerres en cours.",
+      "es-ES": "Ver la clasificación diaria de guerra actual.",
+      tr: "Güncel günlük savaş liderlik tablosunu görüntüleyin.",
+      it: "Visualizza la classifica giornaliera delle guerre in corso.",
+      nl: "Bekijk het huidige dagelijkse oorlogsleiderbord.",
+    },
     options: [
       {
         type: 3,
         name: "location",
+        name_localizations: {
+          de: "standort",
+          fr: "emplacement",
+          "es-ES": "ubicación",
+          tr: "konum",
+          it: "posizione",
+          nl: "locatie",
+        },
         description: "Filter by location",
+        description_localizations: {
+          de: "Nach Standort filtern",
+          fr: "Filtrer par emplacement",
+          "es-ES": "Filtrar por ubicación",
+          tr: "Konuma göre filtrele",
+          it: "Filtra per posizione",
+          nl: "Filteren op locatie",
+        },
         required: false,
         choices: locations
           .filter((l) => l.isAdded)

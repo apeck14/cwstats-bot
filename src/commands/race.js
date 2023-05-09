@@ -11,12 +11,44 @@ const { formatStr, formatTag } = require("../util/formatting")
 module.exports = {
   data: {
     name: "race",
-    description: "View river race stats & projections.",
+    name_localizations: {
+      de: "rennen",
+      fr: "course",
+      "es-ES": "carrera",
+      tr: "yarış",
+      it: "corsa",
+      nl: "race",
+    },
+    description: "View current river race stats and projections.",
+    description_localizations: {
+      de: "Aktuelle Flussrennen-Statistiken und Prognosen anzeigen.",
+      fr: "Afficher les statistiques et les projections de la course sur la rivière en cours.",
+      "es-ES": "Ver estadísticas y proyecciones de la carrera fluvial actual.",
+      tr: "Mevcut nehir yarışı istatistiklerini ve projeksiyonlarını görüntüleyin.",
+      it: "Visualizza le statistiche e le previsioni della gara fluviale in corso.",
+      nl: "Bekijk de huidige rivier race statistieken en projecties.",
+    },
     options: [
       {
         type: 3,
         name: "tag",
-        description: "#CLANTAG or abbreviation",
+        name_localizations: {
+          de: "kennzeichnung",
+          fr: "balise",
+          "es-ES": "etiqueta",
+          tr: "etiket",
+          it: "tag",
+          nl: "tag",
+        },
+        description: "Clan tag (#ABC123) or abbreviation",
+        description_localizations: {
+          de: "Clan-Tag (#ABC123) oder Abkürzung",
+          fr: "Tag du clan (#ABC123) ou abréviation",
+          "es-ES": "Etiqueta del clan (#ABC123) o abreviatura",
+          tr: "Klan etiketi (#ABC123) veya kısaltma",
+          it: "Tag del clan (#ABC123) o abbreviazione",
+          nl: "Clan tag (#ABC123) of afkorting",
+        },
         required: false,
       },
     ],

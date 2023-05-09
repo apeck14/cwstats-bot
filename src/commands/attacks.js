@@ -6,12 +6,44 @@ const { formatStr } = require("../util/formatting")
 module.exports = {
   data: {
     name: "attacks",
-    description: "View remaining attacks.",
+    name_localizations: {
+      de: "angriffe",
+      fr: "attaques",
+      "es-ES": "ataques",
+      tr: "saldırılar",
+      it: "attacchi",
+      nl: "aanvallen",
+    },
+    description: "View players with remaining attacks.",
+    description_localizations: {
+      de: "Spieler mit verbleibenden Angriffen anzeigen.",
+      fr: "Afficher les joueurs ayant encore des attaques.",
+      "es-ES": "Ver jugadores con ataques restantes.",
+      tr: "Kalan saldırıları olan oyuncuları görüntüleyin.",
+      it: "Visualizza i giocatori con attacchi rimanenti.",
+      nl: "Bekijk spelers met resterende aanvallen.",
+    },
     options: [
       {
         type: 3,
         name: "tag",
-        description: "#CLANTAG or abbreviation",
+        name_localizations: {
+          de: "kennzeichnung",
+          fr: "balise",
+          "es-ES": "etiqueta",
+          tr: "etiket",
+          it: "tag",
+          nl: "tag",
+        },
+        description: "Clan tag (#ABC123) or abbreviation",
+        description_localizations: {
+          de: "Clan-Tag (#ABC123) oder Abkürzung",
+          fr: "Tag du clan (#ABC123) ou abréviation",
+          "es-ES": "Etiqueta del clan (#ABC123) o abreviatura",
+          tr: "Klan etiketi (#ABC123) veya kısaltma",
+          it: "Tag del clan (#ABC123) o abbreviazione",
+          nl: "Clan tag (#ABC123) of afkorting",
+        },
         required: false,
       },
     ],

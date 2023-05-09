@@ -1,7 +1,23 @@
 module.exports = {
   data: {
     name: "donate",
-    description: "Donate to support CW2 Stats",
+    name_localizations: {
+      de: "spenden",
+      fr: "faire-un-don",
+      "es-ES": "donar",
+      tr: "bağış-yap",
+      it: "dona",
+      nl: "doneren",
+    },
+    description: "Donate to support CW2Stats.",
+    description_localizations: {
+      de: "Spenden Sie, um CWStats zu unterstützen.",
+      fr: "Faites un don pour soutenir CWStats.",
+      "es-ES": "Donar para apoyar a CWStats.",
+      tr: "CWStats'i desteklemek için bağış yapın.",
+      it: "Dona per sostenere CWStats.",
+      nl: "Doneer om CWStats te ondersteunen.",
+    },
   },
   run: async (i) => {
     const row = {

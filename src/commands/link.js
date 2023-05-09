@@ -6,12 +6,44 @@ const { errorMsg } = require("../util/functions")
 module.exports = {
   data: {
     name: "link",
-    description: "Link your CR account to Discord.",
+    name_localizations: {
+      de: "verbinden",
+      fr: "lier",
+      "es-ES": "enlazar",
+      tr: "bağlantı",
+      it: "collega",
+      nl: "koppelen",
+    },
+    description: "Link your Clash Royale account to Discord.",
+    description_localizations: {
+      de: "Verknüpfe dein Clash Royale-Konto mit Discord.",
+      fr: "Liez votre compte Clash Royale à Discord.",
+      "es-ES": "Vincula tu cuenta de Clash Royale con Discord.",
+      tr: "Clash Royale hesabınızı Discord ile bağlayın.",
+      it: "Collega il tuo account Clash Royale a Discord.",
+      nl: "Koppel uw Clash Royale-account aan Discord.",
+    },
     options: [
       {
         type: 3,
         name: "tag",
-        description: "#PLAYERTAG",
+        name_localizations: {
+          de: "kennzeichnung",
+          fr: "balise",
+          "es-ES": "etiqueta",
+          tr: "etiket",
+          it: "tag",
+          nl: "tag",
+        },
+        description: "Player tag (#ABC123)",
+        description_localizations: {
+          de: "Spielertag (#ABC123)",
+          fr: "Tag du joueur (#ABC123)",
+          "es-ES": "Etiqueta del jugador (#ABC123)",
+          tr: "Oyuncu etiketi (#ABC123)",
+          it: "Tag del giocatore (#ABC123)",
+          nl: "Spelertag (#ABC123)",
+        },
         required: true,
       },
     ],

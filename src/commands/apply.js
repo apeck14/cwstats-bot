@@ -15,12 +15,44 @@ registerFont("./src/static/fonts/Supercell-Magic.ttf", {
 module.exports = {
   data: {
     name: "apply",
+    name_localizations: {
+      de: "bewerben",
+      fr: "postuler",
+      "es-ES": "solicitar",
+      tr: "başvur",
+      it: "applica",
+      nl: "solliciteren",
+    },
     description: "Apply to join the clan.",
+    description_localizations: {
+      de: "Bewerben Sie sich, um dem Clan beizutreten.",
+      fr: "Postulez pour rejoindre le clan.",
+      "es-ES": "Solicita unirte al clan.",
+      tr: "Klana katılmak için başvurun.",
+      it: "Richiedi di unirti al clan.",
+      nl: "Solliciteer om lid te worden van de clan.",
+    },
     options: [
       {
         type: 3,
         name: "tag",
-        description: "#PLAYERTAG",
+        name_localizations: {
+          de: "kennzeichnung",
+          fr: "balise",
+          "es-ES": "etiqueta",
+          tr: "etiket",
+          it: "tag",
+          nl: "tag",
+        },
+        description: "Player tag (#ABC123)",
+        description_localizations: {
+          de: "Spielertag (#ABC123)",
+          fr: "Tag du joueur (#ABC123)",
+          "es-ES": "Etiqueta del jugador (#ABC123)",
+          tr: "Oyuncu etiketi (#ABC123)",
+          it: "Tag del giocatore (#ABC123)",
+          nl: "Spelertag (#ABC123)",
+        },
         required: true,
       },
     ],
