@@ -16,15 +16,14 @@ module.exports = {
       it: "pianifica-rapporto",
       nl: "rapport-plannen",
     },
-    description: "Set daily war report clan, channel and time (UTC).",
+    description: "Schedule a daily war report!",
     description_localizations: {
-      de: "Legen Sie täglichen Kriegsbericht-Clan, Kanal und Zeit (UTC) fest.",
-      fr: "Définissez le clan, la chaîne et l'heure (UTC) du rapport de guerre quotidien.",
-      "es-ES":
-        "Establecer clan de informe de guerra diario, canal y hora (UTC).",
-      tr: "Günlük savaş raporu klanını, kanalını ve zamanını (UTC) belirleyin.",
-      it: "Imposta clan, canale e ora (UTC) del rapporto di guerra giornaliero.",
-      nl: "Stel dagelijks oorlogsrapport clan, kanaal en tijd (UTC) in.",
+      de: "Planen Sie einen täglichen Kriegsbericht!",
+      fr: "Planifiez un rapport de guerre quotidien!",
+      "es-ES": "¡Programe un informe de guerra diario!",
+      tr: "Günlük savaş raporu planlayın!",
+      it: "Pianifica un rapporto di guerra giornaliero!",
+      nl: "Plan een dagelijks oorlogsrapport!",
     },
     options: [
       {
