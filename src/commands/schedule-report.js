@@ -134,18 +134,38 @@ module.exports = {
     })
 
     let tag = i.options.getString("tag")
-    const abbr = guild?.abbreviations?.find((a) => a.abbr === tag)
 
-    if (abbr) tag = abbr.tag
-    else if (tag.length < 5) {
-      return i.editReply({
-        embeds: [
-          {
-            description: "**Abbreviation does not exist.**",
-            color: orange,
-          },
-        ],
-      })
+    //default clan
+    if (!tag) {
+      if (guild?.defaultClan?.tag) tag = guild.defaultClan.tag
+      else
+        return i.editReply({
+          embeds: [
+            {
+              description:
+                "**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me).",
+              color: orange,
+            },
+          ],
+        })
+    } else {
+      //abbreviation
+      const UPPERCASE_ABBR = tag.toUpperCase()
+      const abbr = guild?.abbreviations?.find(
+        (a) => a.abbr.toUpperCase() === UPPERCASE_ABBR
+      )
+
+      if (abbr) tag = abbr.tag
+      else if (tag.length < 5) {
+        return i.editReply({
+          embeds: [
+            {
+              description: "**Abbreviation does not exist.**",
+              color: orange,
+            },
+          ],
+        })
+      }
     }
 
     const reportChannelPermissions = client.channels.cache
@@ -207,9 +227,6 @@ module.exports = {
             iChannel.id
           }>`,
           color: green,
-          footer: {
-            text: "Use /toggle-report to disable war report at any time.",
-          },
         },
       ],
     })

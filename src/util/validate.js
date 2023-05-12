@@ -41,16 +41,7 @@ const checkPermissions = (i, channels, client) => {
       }
     }
   } else {
-    const ADMIN_COMMANDS = [
-      "add-abbr",
-      "remove-abbr",
-      "reset",
-      "schedule-report",
-      "set-applications-channel",
-      "set-apply-channel",
-      "set-command-channel",
-      "toggle-report",
-    ]
+    const ADMIN_COMMANDS = ["schedule-report"]
 
     if (
       i.user.id !== "493245767448789023" &&
