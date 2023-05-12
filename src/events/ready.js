@@ -52,9 +52,13 @@ module.exports = {
 
     console.log("allEmojis.json successfully written!")
 
-    logToSupportServer(client, {
-      color: orange,
-      title: "Bot restarted!",
-    })
+    logToSupportServer(
+      client,
+      {
+        color: orange,
+        title: "Bot restarted!",
+      },
+      false
+    )
   },
 }

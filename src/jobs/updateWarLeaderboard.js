@@ -92,9 +92,13 @@ module.exports = {
       console.log("Daily LB updated!")
     }
 
-    logToSupportServer(client, {
-      description: "**Daily leaderboard updated!**",
-      color: green,
-    })
+    logToSupportServer(
+      client,
+      {
+        description: "**Daily leaderboard updated!**",
+        color: green,
+      },
+      false
+    )
   },
 }
