@@ -46,7 +46,7 @@ module.exports = {
           it: "Tag del clan (#ABC123) o abbreviazione",
           nl: "Clan tag (#ABC123) of afkorting",
         },
-        required: true,
+        required: false,
       },
       {
         type: 7,
