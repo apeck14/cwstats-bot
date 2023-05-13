@@ -36,20 +36,17 @@ module.exports = {
       thumbnail: {
         url: "https://i.imgur.com/VAPR8Jq.png",
       },
+      footer: {
+        text: "Manage abbreviations @ cwstats.com/me",
+      },
     }
 
     if (abbreviations?.length > 0) {
       abbreviations.sort((a, b) => a.abbr.localeCompare(b.abbr))
 
       embed.description = `${abbreviations
-        .map((a) => `\n• \`${a.abbr}\`: **${formatStr(a.name)}**`)
+        .map((a) => `\n• **${a.abbr}**: ${formatStr(a.name)}`)
         .join("")}`
-    }
-
-    const abbreviationsRemaining = 15 - abbreviations.length
-
-    if (abbreviationsRemaining > 0) {
-      embed.description += `\n\nYou have **${abbreviationsRemaining}** abbreviations remaining.`
     }
 
     return i.editReply({
