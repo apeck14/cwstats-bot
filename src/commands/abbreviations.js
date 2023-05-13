@@ -34,7 +34,7 @@ module.exports = {
       description: "*None*",
       color: pink,
       thumbnail: {
-        url: "https://i.imgur.com/VAPR8Jq.png",
+        url: i.guild.iconURL() || "https://i.imgur.com/VAPR8Jq.png",
       },
       footer: {
         text: "Manage abbreviations @ cwstats.com/me",
