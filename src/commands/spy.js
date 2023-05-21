@@ -1,7 +1,7 @@
 const { getPlayer, getClan, getBattleLog, searchClans } = require("../util/api")
 const { orange, pink } = require("../static/colors")
 const { getClanBadge, getEmoji, errorMsg } = require("../util/functions")
-const { formatStr } = require("../util/formatting")
+const { formatStr, formatTag } = require("../util/formatting")
 
 const { diceCoefficient } = require("string-comparison")
 const cardInfo = require("../static/cardInfo")
@@ -103,10 +103,18 @@ module.exports = {
       const iPlayerSearch = i.options.getString("player-search")
 
       let log = []
-      let clanBadge
+      let opponent = {
+        name: "Not Found",
+        tag: "#",
+        clan: {
+          name: "",
+          tag: "",
+          badge: "no_clan",
+        },
+      }
 
       if (iTag) {
-        const { data, error } = await getBattleLog(iTag)
+        let { data, error } = await getBattleLog(iTag)
 
         if (data.length === 0 || error) {
           const msg =
@@ -117,12 +125,51 @@ module.exports = {
           return errorMsg(i, msg)
         }
 
+        const formattedTag = formatTag(iTag)
+
+        opponent.tag = formattedTag
+
+        const lastMatch = data[0].team.find((p) => p.tag === formattedTag)
+
+        if (lastMatch.clan) {
+          opponent.name = lastMatch.name
+          opponent.clan.name = lastMatch.clan.name
+          opponent.clan.tag = lastMatch.clan.tag
+        } else {
+          //loop through log to find clan data
+          for (const m of data) {
+            if (opponent.clan.name) break
+
+            const opp = m.team.find((p) => p.tag === formattedTag)
+
+            if (opp.clan) {
+              opponent.name = opp.name
+              opponent.clan.name = opp.clan.name
+              opponent.clan.tag = opp.clan.tag
+            }
+          }
+
+          if (!opponent.clan.name) {
+            const { data: player, error: playerError } = await getPlayer(
+              formattedTag
+            )
+
+            if (playerError) {
+              return errorMsg(i, "Error while retrieving player data.")
+            }
+
+            opponent.name = player.name
+            opponent.clan.name = player.clan.name
+            opponent.clan.tag = player.clan.tag
+          }
+        }
+
         const { data: clan, error: clanError } = await getClan(
-          data[0].team[0].clan.tag
+          opponent.clan.tag
         )
         if (clanError) return errorMsg(i, clanError)
 
-        clanBadge = getClanBadge(clan.badgeId, clan.clanWarTrophies)
+        opponent.clan.badge = getClanBadge(clan.badgeId, clan.clanWarTrophies)
         log = data
       } else if (iClanSearch && iPlayerSearch) {
         const { data: clans, error: clanSearchError } = await searchClans(
@@ -135,7 +182,11 @@ module.exports = {
         const { data: clan, error: clanError } = await getClan(clans[0].tag)
         if (clanError) return errorMsg(i, clanError)
 
-        clanBadge = getClanBadge(clan.badgeId, clan.clanWarTrophies)
+        opponent.clan = {
+          name: clan.name,
+          tag: clan.tag,
+          badge: getClanBadge(clan.badgeId, clan.clanWarTrophies),
+        }
 
         const bestMatchSorted = diceCoefficient.sortMatch(
           iPlayerSearch,
@@ -152,6 +203,9 @@ module.exports = {
         }
 
         const player = clan.memberList.find((p) => p.name === bestMatch.member)
+
+        opponent.name = player.name
+        opponent.tag = player.tag
 
         const { data, error } = await getBattleLog(player.tag)
 
@@ -256,21 +310,18 @@ module.exports = {
         index++
       }
 
-      const { name, tag } = log[0].team[0]
-      const clanName = log[0].team[0].clan.name
-
-      const badgeEmoji = getEmoji(clanBadge)
+      const badgeEmoji = getEmoji(opponent.clan.badge)
       const duelEmoji = getEmoji("duel")
 
       const embed = {
         color: pink,
-        title: `**${name}** (${tag})`,
+        title: `**${opponent.name}** (${opponent.tag})`,
       }
 
-      let description = `${badgeEmoji} **${formatStr(clanName)}**\n`
+      let description = `${badgeEmoji} **${formatStr(opponent.clan.name)}**\n`
 
       if (duelDecks.length > 0) {
-        description += `\n**__Duels__** ${duelEmoji}\n`
+        description += `\n**__Duel__** ${duelEmoji}\n`
 
         for (let i = 0; i < duelDecks.length; i++) {
           let duelStr = `**${i + 1}.** `
