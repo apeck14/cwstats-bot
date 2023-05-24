@@ -1,10 +1,9 @@
 const { getPlayer, getClan, getBattleLog, searchClans } = require("../util/api")
-const { orange, pink } = require("../static/colors")
+const { pink } = require("../static/colors")
 const { getClanBadge, getEmoji, errorMsg } = require("../util/functions")
 const { formatStr, formatTag } = require("../util/formatting")
 
 const { diceCoefficient } = require("string-comparison")
-const cardInfo = require("../static/cardInfo")
 const specialGamemodes = require("../static/specialGamemodes")
 
 module.exports = {
@@ -226,8 +225,8 @@ module.exports = {
         )
       }
 
-      const duelDecks = [] // { emoji: "", cards: [] }
-      const singleDecks = [] // { emoji: "", cards: [] }
+      let duelDecks = [] // { emoji: "", cards: [] }
+      let singleDecks = [] // { emoji: "", cards: [] }
       let duelSet = false //if most recent duel has already been set direct other duel decks to singleDecks
       let index = 0
 
@@ -254,6 +253,14 @@ module.exports = {
 
             singleDecks.push({ emoji, cards: deck })
           } else {
+            //remove from single decks if already added
+            for (let i = 0; i < singleDecks.length; i++) {
+              const d = singleDecks[i]
+
+              if (sharesCards(d.cards, deck)) {
+                singleDecks.splice(i, 1)
+              }
+            }
             duelDecks.push({ emoji, cards: deck })
           }
         } else {
@@ -372,126 +379,17 @@ module.exports = {
         description += `\n**${
           4 - duelDecks.length - singleDecks.length
         }** deck(s) not found.`
+
+        embed.footer = {
+          text: "Battle logs only contain last 25 matches.",
+        }
       }
 
       embed.description = description
 
-      await i.editReply({
+      return i.editReply({
         embeds: [embed],
       })
-
-      if (duelDecks.length + singleDecks.length < 4) {
-        const embed = {
-          title: "__Opponent Card Data__",
-          description:
-            "Use the data below to help predict your oppponent's remaining deck(s)!",
-          color: pink,
-        }
-
-        const winCons = cardInfo.filter((c) => c.winCon)
-        const spells = cardInfo.filter((c) => c.spell)
-
-        const { data: player, error: playerError } = await getPlayer(tag)
-        if (playerError)
-          return i.followUp({
-            embeds: {
-              color: orange,
-              description: "**Error while gathering player card data.**",
-            },
-          })
-
-        const cards = player.cards.map((c) => ({
-          name: c.name.toLowerCase().replace(/\s+/g, "-").replace(/\./g, ""),
-          level: 14 - (c.maxLevel - c.level),
-        }))
-
-        const remainingWinCons = []
-        const remainingSpells = []
-
-        const usedCards = []
-
-        for (const d of duelDecks)
-          usedCards.push(
-            ...d.cards.map((c) =>
-              c.toLowerCase().replace(/\s+/g, "-").replace(/\./g, "")
-            )
-          )
-        for (const d of singleDecks)
-          usedCards.push(
-            ...d.cards.map((c) =>
-              c.toLowerCase().replace(/\s+/g, "-").replace(/\./g, "")
-            )
-          )
-
-        for (const c of cards) {
-          if (usedCards.includes(c.name)) continue
-
-          if (winCons.find((ca) => ca.name === c.name)) remainingWinCons.push(c)
-          else if (spells.find((ca) => ca.name === c.name))
-            remainingSpells.push(c)
-        }
-
-        let bestWinConLvl = -1
-        let nextWinConLvl = -1
-        let bestSpellLvl = -1
-        let nextSpellLvl = -1
-
-        for (const c of remainingWinCons) {
-          if (c.level > bestWinConLvl) bestWinConLvl = c.level
-          else if (c.level > nextWinConLvl && c.level !== bestWinConLvl)
-            nextWinConLvl = c.level
-        }
-
-        for (const c of remainingSpells) {
-          if (c.level > bestSpellLvl) bestSpellLvl = c.level
-          else if (c.level > nextSpellLvl && c.level !== bestSpellLvl)
-            nextSpellLvl = c.level
-        }
-
-        embed.description += `\n\n**__Best Remaining Win-Cons__**\n`
-        if (bestWinConLvl === -1) embed.description += "**All win-cons used.**"
-        else {
-          embed.description += `**Level ${bestWinConLvl}**:\n`
-          embed.description += remainingWinCons
-            .filter((c) => c.level === bestWinConLvl)
-            .map((c) => getEmoji(c.name.replace(/-/g, "_")))
-            .join("")
-
-          embed.description += `\n`
-
-          if (nextWinConLvl !== -1) {
-            embed.description += `**Level ${nextWinConLvl}**:\n`
-            embed.description += remainingWinCons
-              .filter((c) => c.level === nextWinConLvl)
-              .map((c) => getEmoji(c.name.replace(/-/g, "_")))
-              .join("")
-          }
-        }
-
-        embed.description += `\n\n**__Best Remaining Spells__**\n`
-        if (bestSpellLvl === -1) embed.description += "**All spells used.**"
-        else {
-          embed.description += `**Level ${bestSpellLvl}**:\n`
-          embed.description += remainingSpells
-            .filter((c) => c.level === bestSpellLvl)
-            .map((c) => getEmoji(c.name.replace(/-/g, "_")))
-            .join("")
-
-          embed.description += `\n`
-
-          if (nextSpellLvl !== -1) {
-            embed.description += `**Level ${nextSpellLvl}**:\n`
-            embed.description += remainingSpells
-              .filter((c) => c.level === nextSpellLvl)
-              .map((c) => getEmoji(c.name.replace(/-/g, "_")))
-              .join("")
-          }
-        }
-
-        i.followUp({
-          embeds: [embed],
-        })
-      } else return
     } catch {
       console.log("SPY ERROR DATA:")
       console.log(i?.options?._hoistedOptions || i?.options)
