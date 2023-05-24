@@ -171,9 +171,15 @@ module.exports = {
         opponent.clan.badge = getClanBadge(clan.badgeId, clan.clanWarTrophies)
         log = data
       } else if (iClanSearch && iPlayerSearch) {
-        const { data: clans, error: clanSearchError } = await searchClans(
+        let { data: clans, error: clanSearchError } = await searchClans(
           iClanSearch
         )
+
+        const indeces = clans.length > 10 ? 10 : clans.length
+
+        clans = clans
+          .slice(0, indeces)
+          .sort((a, b) => b.clanWarTrophies - a.clanWarTrophies)
 
         if (clanSearchError) return errorMsg(i, clanSearchError)
         if (clans.length === 0) return errorMsg(i, "**No clans found.**")
