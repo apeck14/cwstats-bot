@@ -150,9 +150,9 @@ module.exports = {
       const badgeName = getClanBadge(clan.badgeId, clan.clanScore)
       const badgeEmoji = getEmoji(badgeName)
 
-      embed.description += `**${i + 1}. ${badgeEmoji} [${formatStr(
+      embed.description += `${i + 1}. ${badgeEmoji} [**${formatStr(
         clan.name
-      )}](${url})**\n`
+      )}**](${url})\n`
       embed.description += `${fameAvgEmoji} **${clan.fameAvg.toFixed(
         2
       )}** ${decksRemainingEmoji} ${clan.decksRemaining} :earth_americas: `

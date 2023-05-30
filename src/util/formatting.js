@@ -1,5 +1,5 @@
 const formatStr = (clanName) => {
-  return clanName.replaceAll("*", "\\*").replaceAll("_", "\\_")
+  return clanName.replaceAll("*", "∗").replaceAll("_", "\\_")
 }
 
 const formatTag = (tag) => {
