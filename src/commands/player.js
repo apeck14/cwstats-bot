@@ -1,5 +1,5 @@
 const { getPlayer, getClan } = require("../util/api")
-const { orange, pink } = require("../static/colors")
+const { pink, green, orange } = require("../static/colors")
 const {
   getClanBadge,
   getEmoji,
@@ -7,30 +7,31 @@ const {
   errorMsg,
 } = require("../util/functions")
 const { createCanvas, registerFont, loadImage } = require("canvas")
-const { formatTag, formatStr, formatRole } = require("../util/formatting")
+const { formatRole, formatTag, formatStr } = require("../util/formatting")
+const { formatStr } = require("discord.js")
 registerFont("./src/static/fonts/Supercell-Magic.ttf", {
   family: "Supercell-Magic",
 })
 
 module.exports = {
   data: {
-    name: "player",
+    name: "apply",
     name_localizations: {
-      de: "spieler",
-      fr: "joueur",
-      "es-ES": "jugador",
-      tr: "oyuncu",
-      it: "giocatore",
-      nl: "speler",
+      de: "bewerben",
+      fr: "postuler",
+      "es-ES": "solicitar",
+      tr: "başvur",
+      it: "applica",
+      nl: "solliciteren",
     },
-    description: "View player stats.",
+    description: "Apply to join the clan.",
     description_localizations: {
-      de: "Spielerstatistiken anzeigen.",
-      fr: "Afficher les statistiques du joueur.",
-      "es-ES": "Ver estadísticas del jugador.",
-      tr: "Oyuncu istatistiklerini görüntüleyin.",
-      it: "Visualizza le statistiche del giocatore.",
-      nl: "Bekijk spelersstatistieken.",
+      de: "Bewerben Sie sich, um dem Clan beizutreten.",
+      fr: "Postulez pour rejoindre le clan.",
+      "es-ES": "Solicita unirte al clan.",
+      tr: "Klana katılmak için başvurun.",
+      it: "Richiedi di unirti al clan.",
+      nl: "Solliciteer om lid te worden van de clan.",
     },
     options: [
       {
@@ -53,77 +54,36 @@ module.exports = {
           it: "Tag del giocatore (#ABC123)",
           nl: "Spelertag (#ABC123)",
         },
-        required: false,
-      },
-      {
-        type: 6,
-        name: "user",
-        name_localizations: {
-          de: "benutzer",
-          fr: "utilisateur",
-          "es-ES": "usuario",
-          tr: "kullanıcı",
-          it: "utente",
-          nl: "gebruiker",
-        },
-        description: "Select a Discord user",
-        description_localizations: {
-          de: "Wähle einen Discord-Benutzer",
-          fr: "Sélectionnez un utilisateur Discord",
-          "es-ES": "Seleccionar un usuario de Discord",
-          tr: "Bir Discord kullanıcısı seçin",
-          it: "Seleziona un utente Discord",
-          nl: "Selecteer een Discord-gebruiker",
-        },
-        required: false,
+        required: true,
       },
     ],
   },
-  run: async (i, db) => {
-    const linkedAccounts = db.collection("Linked Accounts")
+  run: async (i, db, client) => {
+    const guilds = db.collection("Guilds")
+    const { channels } = await guilds.findOne({
+      guildID: i.guildId,
+    })
+    const { applicationsChannelID } = channels
 
-    const user = i.options.getUser("user")
-    const iTag = i.options.getString("tag")
-    let tag
+    const APPLICATIONS_CHANNEL = client.channels.cache.get(
+      applicationsChannelID
+    )
 
-    if (!user && !iTag) {
-      //linked account
-      const linkedAccount = await linkedAccounts.findOne({
-        discordID: i.user.id,
+    if (!APPLICATIONS_CHANNEL) {
+      return i.editReply({
+        embeds: [
+          {
+            color: orange,
+            description:
+              "The set **applications** channel has been deleted. Please set the new channel [here](https://www.cwstats.com).",
+          },
+        ],
       })
-
-      if (linkedAccount?.tag) tag = linkedAccount.tag
-      else {
-        return i.editReply({
-          embeds: [
-            {
-              color: orange,
-              description: `**No tag linked!** Use **/link** to link your tag.`,
-            },
-          ],
-        })
-      }
-    } else if (iTag) tag = iTag //tag
-    else {
-      //user
-      const linkedAccount = await linkedAccounts.findOne({
-        discordID: user.id,
-      })
-
-      if (linkedAccount?.tag) tag = linkedAccount.tag
-      else {
-        return i.editReply({
-          embeds: [
-            {
-              color: orange,
-              description: `<@!${user.id}> **does not have an account linked.**`,
-            },
-          ],
-        })
-      }
     }
 
-    const { error: playerError, data: player } = await getPlayer(tag)
+    let tag = i.options.getString("tag")
+
+    const { data: player, error: playerError } = await getPlayer(tag)
 
     if (playerError) return errorMsg(i, playerError)
 
@@ -138,7 +98,7 @@ module.exports = {
     context.drawImage(arenaImage, 0, 0, canvas.width, canvas.height)
 
     //add global rank
-    if (playerRank >= 1) {
+    if (playerRank > -1) {
       const fontSize = () => {
         if (playerRank < 10) return 130
         if (playerRank < 1000) return 115
@@ -206,26 +166,40 @@ module.exports = {
       (c) => c.maxLevel - c.level === 2
     ).length
 
-    const embed = {
+    const applicationEmbed = {
       color: pink,
-      url: `https://royaleapi.com/player/${formatTag(tag).substring(1)}`,
-      title: `${levelEmoji} **${player.name}**`,
+      title: "__New Application!__",
       description: ``,
       thumbnail: {
         url: "attachment://arena.png",
       },
     }
 
-    embed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${
-      player.bestTrophies
-    }\n${badgeEmoji} **${formatStr(player.clan.name)}**${
-      player.role ? ` (${formatRole(player.role)})` : ""
-    }\n\n`
-    embed.description += `**__Stats__**\n**CW1 Wins**: ${player.warDayWins}\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
-    embed.description += `**__Cards__**\n${level15}: ${lvl15Cards}\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}` //cards
+    applicationEmbed.description += `${levelEmoji} [**${formatStr(
+      player.name
+    )}**](https://royaleapi.com/player/${formatTag(tag).substr(1)})\n`
+    applicationEmbed.description += `${ladderEmoji} **${
+      player.trophies
+    }** / ${pbEmoji} ${player.bestTrophies}\n${badgeEmoji} **${formatStr(
+      player.clan.name
+    )}**${player.role ? ` (${formatRole(player.role)})` : ""}\n\n` //clan & ladder
+    applicationEmbed.description += `**__Stats__**\n**CW1 Wins**: ${player.warDayWins}\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
+    applicationEmbed.description += `**__Cards__**\n${level15}: ${lvl15Cards}\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}` //cards
+    applicationEmbed.description += `\n\n**Request By**: <@!${i.user.id}>`
 
-    return i.editReply({
-      embeds: [embed],
+    i.editReply({
+      embeds: [
+        {
+          color: green,
+          description: `✅ Request sent for **${formatStr(
+            player.name
+          )}**! A Co-Leader will contact you shortly.`,
+        },
+      ],
+    })
+
+    return APPLICATIONS_CHANNEL.send({
+      embeds: [applicationEmbed],
       files: [
         {
           attachment: canvas.toBuffer(),
