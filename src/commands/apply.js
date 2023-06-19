@@ -7,7 +7,7 @@ const {
   errorMsg,
 } = require("../util/functions")
 const { createCanvas, registerFont, loadImage } = require("canvas")
-const { formatStr, formatRole, formatTag } = require("../util/formatting")
+const { formatRole, formatTag, formatStr } = require("../util/formatting")
 registerFont("./src/static/fonts/Supercell-Magic.ttf", {
   family: "Supercell-Magic",
 })
@@ -141,10 +141,10 @@ module.exports = {
     const levelEmoji = getEmoji(`level${player.expLevel}`)
     const ladderEmoji = getEmoji(getArenaEmoji(player.trophies))
     const pbEmoji = getEmoji(getArenaEmoji(player.bestTrophies))
+    const level15 = getEmoji("level15")
     const level14 = getEmoji("level14")
-    const level13 = getEmoji(`level13`)
-    const level12 = getEmoji(`level12`)
-    const level11 = getEmoji(`level11`)
+    const level13 = getEmoji("level13")
+    const level12 = getEmoji("level12")
 
     const ccWins =
       player.badges.find((b) => b.name === "Classic12Wins")?.progress || 0
@@ -152,6 +152,9 @@ module.exports = {
       player.badges.find((b) => b.name === "Grand12Wins")?.progress || 0
     const cw2Wins =
       player.badges.find((b) => b.name === "ClanWarWins")?.progress || 0
+    const lvl15Cards = player.cards.filter(
+      (c) => c.maxLevel - c.level === -1
+    ).length
     const lvl14Cards = player.cards.filter(
       (c) => c.maxLevel - c.level === 0
     ).length
@@ -160,9 +163,6 @@ module.exports = {
     ).length
     const lvl12Cards = player.cards.filter(
       (c) => c.maxLevel - c.level === 2
-    ).length
-    const lvl11Cards = player.cards.filter(
-      (c) => c.maxLevel - c.level === 3
     ).length
 
     const applicationEmbed = {
@@ -183,7 +183,7 @@ module.exports = {
       player.clan.name
     )}**${player.role ? ` (${formatRole(player.role)})` : ""}\n\n` //clan & ladder
     applicationEmbed.description += `**__Stats__**\n**CW1 Wins**: ${player.warDayWins}\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
-    applicationEmbed.description += `**__Cards__**\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}\n${level11}: ${lvl11Cards}` //cards
+    applicationEmbed.description += `**__Cards__**\n${level15}: ${lvl15Cards}\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}` //cards
     applicationEmbed.description += `\n\n**Request By**: <@!${i.user.id}>`
 
     i.editReply({
