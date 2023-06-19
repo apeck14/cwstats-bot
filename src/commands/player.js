@@ -8,7 +8,6 @@ const {
 } = require("../util/functions")
 const { createCanvas, registerFont, loadImage } = require("canvas")
 const { formatRole, formatTag, formatStr } = require("../util/formatting")
-const { formatStr } = require("discord.js")
 registerFont("./src/static/fonts/Supercell-Magic.ttf", {
   family: "Supercell-Magic",
 })
