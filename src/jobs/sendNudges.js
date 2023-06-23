@@ -87,7 +87,7 @@ module.exports = {
           continue
         }
 
-        let nudgeMessage = "## Daily nudge!\n"
+        let nudgeMessage = "## __Scheduled nudge!__\n"
 
         const badgeName = getClanBadge(clan.badgeId, clan.clanWarTrophies)
         const badgeEmoji = getEmoji(badgeName)

@@ -41,7 +41,7 @@ const checkPermissions = (i, channels, client) => {
       }
     }
   } else {
-    const ADMIN_COMMANDS = ["schedule-report"]
+    const ADMIN_COMMANDS = ["schedule-report", "nudge"]
 
     if (
       i.user.id !== "493245767448789023" &&
