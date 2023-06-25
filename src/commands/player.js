@@ -7,7 +7,7 @@ const {
   errorMsg,
 } = require("../util/functions")
 const { createCanvas, registerFont, loadImage } = require("canvas")
-const { formatTag, formatStr, formatRole } = require("../util/formatting")
+const { formatTag, formatRole, formatStr } = require("../util/formatting")
 registerFont("./src/static/fonts/Supercell-Magic.ttf", {
   family: "Supercell-Magic",
 })
@@ -180,6 +180,7 @@ module.exports = {
 
     const badgeEmoji = getEmoji(clanBadge)
     const levelEmoji = getEmoji(`level${player.expLevel}`)
+    const polMedalsEmoji = getEmoji("polmedals")
     const ladderEmoji = getEmoji(getArenaEmoji(player.trophies))
     const pbEmoji = getEmoji(getArenaEmoji(player.bestTrophies))
     const level15 = getEmoji("level15")
@@ -220,8 +221,36 @@ module.exports = {
       player.bestTrophies
     }\n${badgeEmoji} **${formatStr(player.clan.name)}**${
       player.role ? ` (${formatRole(player.role)})` : ""
-    }\n\n`
-    embed.description += `**__Stats__**\n**CW1 Wins**: ${player.warDayWins}\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
+    }`
+
+    const {
+      currentPathOfLegendSeasonResult: currentPOL,
+      bestPathOfLegendSeasonResult: bestPOL,
+    } = player
+
+    // POL
+    if (currentPOL.leagueNumber === 10 || bestPOL.leagueNumber === 10) {
+      embed.description += `\n\n**__POL__**\n`
+      embed.description += `**Current Season**: ${polMedalsEmoji} **${
+        currentPOL.trophies
+      }**${currentPOL.rank ? ` (#${currentPOL.rank})` : ""}`
+
+      embed.description += `\n**Best Season**: `
+
+      if (bestPOL.leagueNumber === 10)
+        embed.description += `${polMedalsEmoji} **${bestPOL.trophies}**${
+          bestPOL.rank ? ` (#${bestPOL.rank})` : ""
+        }`
+      else embed.description += "None"
+    }
+
+    embed.description += `\n\n**__Stats__**\n**Legacy PB**: ${
+      player.legacyTrophyRoadHighScore || "None"
+    }\n**CW1 Wins**: ${
+      player.warDayWins
+    }\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${
+      player.challengeMaxWins
+    }\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
     embed.description += `**__Cards__**\n${level15}: ${lvl15Cards}\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}` //cards
 
     return i.editReply({

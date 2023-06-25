@@ -139,6 +139,7 @@ module.exports = {
 
     const badgeEmoji = getEmoji(clanBadge)
     const levelEmoji = getEmoji(`level${player.expLevel}`)
+    const polMedalsEmoji = getEmoji("polmedals")
     const ladderEmoji = getEmoji(getArenaEmoji(player.trophies))
     const pbEmoji = getEmoji(getArenaEmoji(player.bestTrophies))
     const level15 = getEmoji("level15")
@@ -176,13 +177,41 @@ module.exports = {
 
     applicationEmbed.description += `${levelEmoji} [**${formatStr(
       player.name
-    )}**](https://royaleapi.com/player/${formatTag(tag).substr(1)})\n`
+    )}**](https://royaleapi.com/player/${formatTag(tag).substring(1)})\n`
     applicationEmbed.description += `${ladderEmoji} **${
       player.trophies
     }** / ${pbEmoji} ${player.bestTrophies}\n${badgeEmoji} **${formatStr(
       player.clan.name
-    )}**${player.role ? ` (${formatRole(player.role)})` : ""}\n\n` //clan & ladder
-    applicationEmbed.description += `**__Stats__**\n**CW1 Wins**: ${player.warDayWins}\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${player.challengeMaxWins}\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
+    )}**${player.role ? ` (${formatRole(player.role)})` : ""}` //clan & ladder
+
+    const {
+      currentPathOfLegendSeasonResult: currentPOL,
+      bestPathOfLegendSeasonResult: bestPOL,
+    } = player
+
+    // POL
+    if (currentPOL.leagueNumber === 10 || bestPOL.leagueNumber === 10) {
+      applicationEmbed.description += `\n\n**__POL__**\n`
+      applicationEmbed.description += `**Current Season**: ${polMedalsEmoji} **${
+        currentPOL.trophies
+      }**${currentPOL.rank ? ` (#${currentPOL.rank})` : ""}`
+
+      applicationEmbed.description += `\n**Best Season**: `
+
+      if (bestPOL.leagueNumber === 10)
+        applicationEmbed.description += `${polMedalsEmoji} **${
+          bestPOL.trophies
+        }**${bestPOL.rank ? ` (#${bestPOL.rank})` : ""}`
+      else applicationEmbed.description += "None"
+    }
+
+    applicationEmbed.description += `\n\n**__Stats__**\n**Legacy PB**: ${
+      player.legacyTrophyRoadHighScore || "None"
+    }\n**CW1 Wins**: ${
+      player.warDayWins
+    }\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${
+      player.challengeMaxWins
+    }\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` //stats
     applicationEmbed.description += `**__Cards__**\n${level15}: ${lvl15Cards}\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}` //cards
     applicationEmbed.description += `\n\n**Request By**: <@!${i.user.id}>`
 
