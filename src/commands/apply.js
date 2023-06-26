@@ -192,9 +192,7 @@ module.exports = {
     // POL
     if (currentPOL.leagueNumber === 10 || bestPOL.leagueNumber === 10) {
       applicationEmbed.description += `\n\n**__POL__**\n`
-      applicationEmbed.description += `**Current Season**: ${polMedalsEmoji} **${
-        currentPOL.trophies
-      }**${currentPOL.rank ? ` (#${currentPOL.rank})` : ""}`
+      applicationEmbed.description += `**Current Season**: ${polMedalsEmoji} **${currentPOL.trophies}**`
 
       applicationEmbed.description += `\n**Best Season**: `
 
