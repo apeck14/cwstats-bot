@@ -1,7 +1,7 @@
 const { getPlayer, getClan, getBattleLog, searchClans } = require("../util/api")
 const { pink } = require("../static/colors")
 const { getClanBadge, getEmoji, errorMsg } = require("../util/functions")
-const { formatStr, formatTag } = require("../util/formatting")
+const { formatTag, formatStr } = require("../util/formatting")
 
 const { diceCoefficient } = require("string-comparison")
 const specialGamemodes = require("../static/specialGamemodes")
@@ -290,7 +290,10 @@ module.exports = {
         if (m.type === "riverRacePvP") {
           const deck = []
 
-          for (const c of m.team[0].cards) deck.push(c.name)
+          for (const c of m.team[0].cards) {
+            const cardName = `${c.name}${c.evolutionLevel ? " Evo" : ""}`
+            deck.push(cardName)
+          }
 
           let emoji = "normal"
 
@@ -312,7 +315,10 @@ module.exports = {
           for (const r of rounds) {
             const deck = []
 
-            for (const c of r.cards) deck.push(c.name)
+            for (const c of r.cards) {
+              const cardName = `${c.name}${c.evolutionLevel ? " Evo" : ""}`
+              deck.push(cardName)
+            }
 
             addDeck(deck)
           }
