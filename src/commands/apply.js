@@ -90,7 +90,7 @@ module.exports = {
     addPlayer(db, {
       tag: player.tag,
       name: player.name,
-      clanName: player.clan.name,
+      clanName: player?.clan?.name || "",
     })
 
     const playerRank = player.leagueStatistics?.currentSeason?.rank
