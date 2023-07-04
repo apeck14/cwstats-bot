@@ -1,4 +1,4 @@
-const { getPlayer } = require("../util/api")
+const { getPlayer, addPlayer } = require("../util/api")
 const { green, orange } = require("../static/colors")
 const { formatStr, formatTag } = require("../util/formatting")
 const { errorMsg } = require("../util/functions")
@@ -56,6 +56,13 @@ module.exports = {
     const { data: player, error } = await getPlayer(tag)
 
     if (error) return errorMsg(i, error)
+
+    //add player for website searching
+    addPlayer(db, {
+      tag: player.tag,
+      name: player.name,
+      clanName: player.clan.name,
+    })
 
     const linkedAccount = await linkedAccounts.findOne({
       discordID: i.user.id,

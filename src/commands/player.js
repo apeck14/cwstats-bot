@@ -1,4 +1,4 @@
-const { getPlayer, getClan } = require("../util/api")
+const { getPlayer, getClan, addPlayer } = require("../util/api")
 const { orange, pink } = require("../static/colors")
 const {
   getClanBadge,
@@ -127,6 +127,13 @@ module.exports = {
 
     if (playerError) return errorMsg(i, playerError)
 
+    //add player for website searching
+    addPlayer(db, {
+      tag: player.tag,
+      name: player.name,
+      clanName: player.clan.name,
+    })
+
     const playerRank = player.leagueStatistics?.currentSeason?.rank
     const arenaImage = await loadImage(
       `./src/static/images/arenas/${getArenaEmoji(player.trophies)}.png`
@@ -224,23 +231,25 @@ module.exports = {
     }`
 
     const {
-      currentPathOfLegendSeasonResult: currentPOL,
-      bestPathOfLegendSeasonResult: bestPOL,
+      currentPathOfLegendSeasonResult: currentPOLObj,
+      bestPathOfLegendSeasonResult: bestPOLObj,
     } = player
 
     // POL
-    if (currentPOL.leagueNumber === 10 || bestPOL.leagueNumber === 10) {
-      embed.description += `\n\n**__POL__**\n`
-      embed.description += `**Current Season**: ${polMedalsEmoji} **${currentPOL.trophies}**`
+    const currentPOLSeasonStr =
+      currentPOLObj?.leagueNumber < 10
+        ? "N/A"
+        : `${polMedalsEmoji} **${currentPOLObj.trophies}**`
+    const bestPOLSeasonStr =
+      bestPOLObj?.leagueNumber < 10
+        ? "N/A"
+        : `${polMedalsEmoji} **${bestPOLObj.trophies}**${
+            bestPOLObj.rank ? ` (#${bestPOLObj.rank})` : ""
+          }`
 
-      embed.description += `\n**Best Season**: `
-
-      if (bestPOL.leagueNumber === 10)
-        embed.description += `${polMedalsEmoji} **${bestPOL.trophies}**${
-          bestPOL.rank ? ` (#${bestPOL.rank})` : ""
-        }`
-      else embed.description += "None"
-    }
+    embed.description += `\n\n**__POL__**\n`
+    embed.description += `**Current Season**: ${currentPOLSeasonStr}`
+    embed.description += `\n**Best Season**: ${bestPOLSeasonStr}`
 
     embed.description += `\n\n**__Stats__**\n**Legacy PB**: ${
       player.legacyTrophyRoadHighScore || "None"

@@ -96,3 +96,18 @@ exports.getChests = async (tag) => {
 
   return await apiRequest(url, CR_API_TOKEN)
 }
+
+exports.addPlayer = async (db, { tag, name, clanName }) => {
+  try {
+    const players = db.collection("Players")
+
+    const query = { tag }
+    const update = { $set: { name, clanName } }
+    const options = { upsert: true }
+
+    players.updateOne(query, update, options)
+  } catch (err) {
+    console.log("Error adding player to db...")
+    console.log(err)
+  }
+}
