@@ -102,12 +102,27 @@ exports.addPlayer = async (db, { tag, name, clanName }) => {
     const players = db.collection("Players")
 
     const query = { tag }
-    const update = { $set: { name, clanName } }
+    const update = { $set: { name, tag, clanName } }
     const options = { upsert: true }
 
     players.updateOne(query, update, options)
   } catch (err) {
     console.log("Error adding player to db...")
+    console.log(err)
+  }
+}
+
+exports.addClan = async (db, { tag, name, badge }) => {
+  try {
+    const clans = db.collection("Clans")
+
+    const query = { tag }
+    const update = { $set: { name, tag, badge } }
+    const options = { upsert: true }
+
+    clans.updateOne(query, update, options)
+  } catch (err) {
+    console.log("Error adding clan to db...")
     console.log(err)
   }
 }
