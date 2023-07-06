@@ -198,15 +198,15 @@ module.exports = {
 
     // POL
     const currentPOLSeasonStr =
-      currentPOLObj?.leagueNumber < 10
-        ? "N/A"
-        : `${polMedalsEmoji} **${currentPOLObj.trophies}**`
+      currentPOLObj?.leagueNumber === 10
+        ? `${polMedalsEmoji} **${currentPOLObj.trophies}**`
+        : "N/A"
     const bestPOLSeasonStr =
-      bestPOLObj?.leagueNumber < 10
-        ? "N/A"
-        : `${polMedalsEmoji} **${bestPOLObj.trophies}**${
+      bestPOLObj?.leagueNumber === 10
+        ? `${polMedalsEmoji} **${bestPOLObj.trophies}**${
             bestPOLObj.rank ? ` (#${bestPOLObj.rank})` : ""
           }`
+        : "N/A"
 
     applicationEmbed.description += `\n\n**__POL__**\n`
     applicationEmbed.description += `**Current Season**: ${currentPOLSeasonStr}`
