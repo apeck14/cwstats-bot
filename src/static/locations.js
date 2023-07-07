@@ -346,6 +346,8 @@ module.exports = [
     key: "CL",
     name: "Chile",
     isCountry: true,
+    isAdded: true,
+    flagEmoji: ":flag_cl:",
   },
   {
     id: 57000056,
@@ -1024,6 +1026,8 @@ module.exports = [
     key: "NL",
     name: "Netherlands",
     isCountry: true,
+    isAdded: true,
+    flagEmoji: ":flag_nl:",
   },
   {
     id: 57000167,
