@@ -109,34 +109,50 @@ module.exports = {
 
         for (const p of alphabetizedParticipants) {
           const inClan = clan.memberList.find((m) => m.tag === p.tag)
-          if (
-            ignoreLeaders &&
-            (inClan?.role === "coLeader" || inClan?.role === "leader")
-          )
-            continue
-
+          const isLeader =
+            inClan?.role === "coLeader" || inClan?.role === "leader"
           const linkedAccount = guild.nudges?.links?.find(
             (l) => l.tag === p.tag
           )
 
           if (p.decksUsedToday === 0 && inClan) {
-            fourAttacks.push(
-              linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`
-            )
+            if (ignoreLeaders && isLeader) {
+              fourAttacks.push(`- ${p.name}`)
+            } else
+              fourAttacks.push(
+                linkedAccount
+                  ? `- <@${linkedAccount.discordID}>`
+                  : `- ${p.name}`
+              )
           } else if (p.decksUsedToday === 1) {
-            threeAttacks.push(
-              linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`
-            )
+            if (ignoreLeaders && isLeader) {
+              threeAttacks.push(`- ${p.name}`)
+            } else
+              threeAttacks.push(
+                linkedAccount
+                  ? `- <@${linkedAccount.discordID}>`
+                  : `- ${p.name}`
+              )
             slotsUsed++
           } else if (p.decksUsedToday === 2) {
-            twoAttacks.push(
-              linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`
-            )
+            if (ignoreLeaders && isLeader) {
+              twoAttacks.push(`- ${p.name}`)
+            } else
+              twoAttacks.push(
+                linkedAccount
+                  ? `- <@${linkedAccount.discordID}>`
+                  : `- ${p.name}`
+              )
             slotsUsed++
           } else if (p.decksUsedToday === 3) {
-            oneAttack.push(
-              linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`
-            )
+            if (ignoreLeaders && isLeader) {
+              oneAttack.push(`- ${p.name}`)
+            } else
+              oneAttack.push(
+                linkedAccount
+                  ? `- <@${linkedAccount.discordID}>`
+                  : `- ${p.name}`
+              )
             slotsUsed++
           }
         }
