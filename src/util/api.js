@@ -111,18 +111,3 @@ exports.addPlayer = async (db, { tag, name, clanName }) => {
     console.log(err)
   }
 }
-
-exports.addClan = async (db, { tag, name, badge }) => {
-  try {
-    const clans = db.collection("Clans")
-
-    const query = { tag }
-    const update = { $set: { name, tag, badge } }
-    const options = { upsert: true }
-
-    clans.updateOne(query, update, options)
-  } catch (err) {
-    console.log("Error adding clan to db...")
-    console.log(err)
-  }
-}

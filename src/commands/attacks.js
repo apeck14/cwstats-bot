@@ -1,4 +1,4 @@
-const { getRiverRace, getClan, addClan } = require("../util/api")
+const { getRiverRace, getClan } = require("../util/api")
 const { orange, pink } = require("../static/colors")
 const { getClanBadge, getEmoji, errorMsg } = require("../util/functions")
 const { formatStr } = require("../util/formatting")
@@ -181,13 +181,6 @@ module.exports = {
     }
 
     const badgeName = getClanBadge(badgeId, clanWarTrophies)
-
-    //add clan for website searching
-    addClan(db, {
-      tag: clan.tag,
-      name: clan.name,
-      badge: badgeName,
-    })
 
     const badgeEmoji = getEmoji(badgeName)
     const fameEmoji = getEmoji("fame")
