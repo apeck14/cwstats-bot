@@ -71,7 +71,7 @@ module.exports = {
       },
     ],
   },
-  run: async (i, db, client) => {
+  run: async (i, db) => {
     const dailyLb = db.collection("Daily Clan Leaderboard")
     const statistics = db.collection("Statistics")
     const iName = i.options.getString("location")
@@ -93,6 +93,7 @@ module.exports = {
     const leaderboard = await dailyLb
       .find(query)
       .sort({
+        notRanked: 1,
         fameAvg: -1,
         rank: 1,
       })
@@ -144,15 +145,19 @@ module.exports = {
       trophies === 4000 ? "4k" : trophies === 5000 ? "5k+" : "All (4k+)"
     }\n\n`
 
+    let showNRFooter = false
+
     for (let i = 0; i < leaderboard.length; i++) {
       const clan = leaderboard[i]
       const url = `https://www.cwstats.com/clan/${clan.tag.substring(1)}/race`
       const badgeName = getClanBadge(clan.badgeId, clan.clanScore)
       const badgeEmoji = getEmoji(badgeName)
 
-      embed.description += `${i + 1}. ${badgeEmoji} [**${formatStr(
-        clan.name
-      )}**](${url})\n`
+      if (clan.notRanked) showNRFooter = true
+
+      embed.description += `**${
+        clan.notRanked ? "NR" : i + 1
+      }.** ${badgeEmoji} [**${formatStr(clan.name)}**](${url})\n`
       embed.description += `${fameAvgEmoji} **${clan.fameAvg.toFixed(
         2
       )}** ${decksRemainingEmoji} ${clan.decksRemaining} :earth_americas: `
@@ -160,6 +165,8 @@ module.exports = {
         ? `#${clan.rank}\n`
         : `${clan.rank}\n`
     }
+
+    if (showNRFooter) embed.footer.text += " | NR = Not Ranked"
 
     return i.editReply({
       embeds: [embed],
