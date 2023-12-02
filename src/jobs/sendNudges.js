@@ -46,6 +46,8 @@ module.exports = {
       nudges.push(...scheduledNudges)
     }
 
+    console.log(hourQuery, nudges.length)
+
     const nudgesRacePromises = nudges.map((n) => getRiverRace(n.clanTag))
     const nudgesRaces = await Promise.all(nudgesRacePromises)
 
