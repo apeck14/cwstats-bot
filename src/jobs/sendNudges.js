@@ -66,7 +66,9 @@ module.exports = {
 
         if (!nudgeChannel || !race || !clan || race.error || clan.error) {
           console.log(
-            `Scheduled nudge error: ${clanTag} / ${channelID} ${clan.error} ${race.error}`
+            `Scheduled nudge error: ${clanTag} / ${channelID} ${
+              clan?.error || clan
+            } ${race?.error}`
           )
           continue
         }
