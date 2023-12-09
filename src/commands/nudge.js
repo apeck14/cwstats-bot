@@ -207,16 +207,38 @@ module.exports = {
 
     const badgeName = getClanBadge(clan.badgeId, clan.clanWarTrophies)
     const badgeEmoji = getEmoji(badgeName)
+    const decksRemainingEmoji = getEmoji("decksRemaining")
+    const slotsRemainingEmoji = getEmoji("remainingSlots")
+
+    const totalAttacksLeft =
+      200 - race.clan.participants.reduce((a, b) => a + b.decksUsedToday, 0)
+    const slotsRemaining =
+      50 - race.clan.participants.filter((p) => p.decksUsedToday > 0).length
 
     const embed = {
       title: "__Attacks Reminder__",
       color: pink,
-      description: `${badgeEmoji} **${formatStr(clan.name)}**\n\n${
+      description: `${badgeEmoji} **${formatStr(
+        clan.name
+      )}**\n${decksRemainingEmoji} **${totalAttacksLeft}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n\n${
         message || defaultMessage
       }`,
     }
 
     await i.editReply({ embeds: [embed] })
-    return i.channel.send(nudgeMessage)
+
+    try {
+      await i.channel.send(nudgeMessage)
+    } catch (e) {
+      const msg =
+        e?.code === 50001
+          ? ":x: Missing permissions to send nudge message in this channel."
+          : ":x: Unknown error while sending nudges, please try again."
+      i.editReply({
+        embeds: [
+          { ...embed, description: (embed.description += `\n\n**${msg}**`) },
+        ],
+      })
+    }
   },
 }
