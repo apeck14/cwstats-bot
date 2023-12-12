@@ -1,50 +1,50 @@
-const { getRiverRace, getClan } = require("../util/api")
+const { getClan, getRiverRace } = require("../util/api")
 const { orange, pink } = require("../static/colors")
-const { getClanBadge, errorMsg } = require("../util/functions")
+const { errorMsg, getClanBadge } = require("../util/functions")
 const { formatStr } = require("../util/formatting")
 
 module.exports = {
   data: {
-    name: "attacks",
-    name_localizations: {
-      de: "angriffe",
-      fr: "attaques",
-      "es-ES": "ataques",
-      tr: "saldırılar",
-      it: "attacchi",
-      nl: "aanvallen",
-    },
     description: "View players with remaining attacks.",
     description_localizations: {
       de: "Spieler mit verbleibenden Angriffen anzeigen.",
-      fr: "Afficher les joueurs ayant encore des attaques.",
       "es-ES": "Ver jugadores con ataques restantes.",
-      tr: "Kalan saldırıları olan oyuncuları görüntüleyin.",
+      fr: "Afficher les joueurs ayant encore des attaques.",
       it: "Visualizza i giocatori con attacchi rimanenti.",
       nl: "Bekijk spelers met resterende aanvallen.",
+      tr: "Kalan saldırıları olan oyuncuları görüntüleyin.",
+    },
+    name: "attacks",
+    name_localizations: {
+      de: "angriffe",
+      "es-ES": "ataques",
+      fr: "attaques",
+      it: "attacchi",
+      nl: "aanvallen",
+      tr: "saldırılar",
     },
     options: [
       {
-        type: 3,
-        name: "tag",
-        name_localizations: {
-          de: "kennzeichnung",
-          fr: "balise",
-          "es-ES": "etiqueta",
-          tr: "etiket",
-          it: "tag",
-          nl: "tag",
-        },
         description: "Clan tag (#ABC123) or abbreviation",
         description_localizations: {
           de: "Clan-Tag (#ABC123) oder Abkürzung",
-          fr: "Tag du clan (#ABC123) ou abréviation",
           "es-ES": "Etiqueta del clan (#ABC123) o abreviatura",
-          tr: "Klan etiketi (#ABC123) veya kısaltma",
+          fr: "Tag du clan (#ABC123) ou abréviation",
           it: "Tag del clan (#ABC123) o abbreviazione",
           nl: "Clan tag (#ABC123) of afkorting",
+          tr: "Klan etiketi (#ABC123) veya kısaltma",
+        },
+        name: "tag",
+        name_localizations: {
+          de: "kennzeichnung",
+          "es-ES": "etiqueta",
+          fr: "balise",
+          it: "tag",
+          nl: "tag",
+          tr: "etiket",
         },
         required: false,
+        type: 3,
       },
     ],
   },
@@ -56,33 +56,30 @@ module.exports = {
 
     let tag = i.options.getString("tag")
 
-    //default clan
+    // default clan
     if (!tag) {
       if (defaultClan?.tag) tag = defaultClan?.tag
       else
         return i.editReply({
           embeds: [
             {
-              description:
-                "**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me).",
               color: orange,
+              description: "**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me).",
             },
           ],
         })
     } else {
-      //abbreviation
+      // abbreviation
       const UPPERCASE_ABBR = tag.toUpperCase()
-      const abbr = abbreviations?.find(
-        (a) => a.abbr.toUpperCase() === UPPERCASE_ABBR
-      )
+      const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
 
       if (abbr) tag = abbr.tag
       else if (tag.length < 5) {
         return i.editReply({
           embeds: [
             {
-              description: "**Abbreviation does not exist.**",
               color: orange,
+              description: "**Abbreviation does not exist.**",
             },
           ],
         })
@@ -97,8 +94,8 @@ module.exports = {
       return i.editReply({
         embeds: [
           {
-            description: ":mag: **Matchmaking is underway!**",
             color: orange,
+            description: ":mag: **Matchmaking is underway!**",
           },
         ],
       })
@@ -107,8 +104,8 @@ module.exports = {
       return i.editReply({
         embeds: [
           {
-            description: "**Clan is not in a river race.**",
             color: orange,
+            description: "**Clan is not in a river race.**",
           },
         ],
       })
@@ -122,11 +119,10 @@ module.exports = {
 
     const isColosseum = race.periodType === "colosseum"
     const fame = isColosseum ? race.clan.fame : race.clan.periodPoints
-    const totalAttacksLeft =
-      200 - race.clan.participants.reduce((a, b) => a + b.decksUsedToday, 0)
+    const totalAttacksLeft = 200 - race.clan.participants.reduce((a, b) => a + b.decksUsedToday, 0)
 
     const { participants } = race.clan
-    const { memberList, badgeId, clanWarTrophies, name } = clan
+    const { badgeId, clanWarTrophies, memberList, name } = clan
 
     const fourAttacks = []
     const threeAttacks = []
@@ -136,7 +132,7 @@ module.exports = {
     let showFooter = false
 
     for (const p of participants) {
-      //push all players to appropiate array
+      // push all players to appropiate array
       const inClan = memberList.find((m) => m.tag === p.tag)
 
       if (p.decksUsedToday === 0 && inClan) fourAttacks.push(p)
@@ -167,17 +163,17 @@ module.exports = {
     oneAttack.sort((a, b) => a.name.localeCompare(b.name))
 
     const embed = {
-      color: pink,
-      title: `**__Remaining Attacks__**`,
-      description: "",
       author: {
-        name: `Week ${race.sectionIndex + 1} | ${
-          dayOfWeek < 3 ? "Training" : "War"
-        } Day ${dayOfWeek < 3 ? dayOfWeek + 1 : dayOfWeek - 2}`,
+        name: `Week ${race.sectionIndex + 1} | ${dayOfWeek < 3 ? "Training" : "War"} Day ${
+          dayOfWeek < 3 ? dayOfWeek + 1 : dayOfWeek - 2
+        }`,
       },
+      color: pink,
+      description: "",
       footer: {
         text: showFooter ? `* = Not in clan` : ``,
       },
+      title: `**__Remaining Attacks__**`,
     }
 
     const badgeName = getClanBadge(badgeId, clanWarTrophies)
@@ -186,36 +182,27 @@ module.exports = {
     const fameEmoji = client.cwEmojis.get("fame")
     const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
     const slotsRemainingEmoji = client.cwEmojis.get("remainingSlots")
-    const slotsRemaining =
-      50 - participants.filter((p) => p.decksUsedToday > 0).length
+    const slotsRemaining = 50 - participants.filter((p) => p.decksUsedToday > 0).length
 
     embed.description += `${badgeEmoji} **${formatStr(
-      name
+      name,
     )}**\n${fameEmoji} **${fame}**\n${decksRemainingEmoji} **${totalAttacksLeft}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n`
 
     if (fourAttacks.length > 0) {
       embed.description += `\n**__4 Attacks__**\n`
-      embed.description += fourAttacks
-        .map((p) => `• ${formatStr(p.name)}\n`)
-        .join("")
+      embed.description += fourAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")
     }
     if (threeAttacks.length > 0) {
       embed.description += `\n**__3 Attacks__**\n`
-      embed.description += threeAttacks
-        .map((p) => `• ${formatStr(p.name)}\n`)
-        .join("")
+      embed.description += threeAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")
     }
     if (twoAttacks.length > 0) {
       embed.description += `\n**__2 Attacks__**\n`
-      embed.description += twoAttacks
-        .map((p) => `• ${formatStr(p.name)}\n`)
-        .join("")
+      embed.description += twoAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")
     }
     if (oneAttack.length > 0) {
       embed.description += `\n**__1 Attack__**\n`
-      embed.description += oneAttack
-        .map((p) => `• ${formatStr(p.name)}\n`)
-        .join("")
+      embed.description += oneAttack.map((p) => `• ${formatStr(p.name)}\n`).join("")
     }
 
     return i.editReply({

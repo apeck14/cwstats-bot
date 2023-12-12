@@ -1,51 +1,50 @@
-const { getRiverRace, getClan } = require("../util/api")
+const { getClan, getRiverRace } = require("../util/api")
 const { orange, pink } = require("../static/colors")
-const { getClanBadge, errorMsg } = require("../util/functions")
+const { errorMsg, getClanBadge } = require("../util/functions")
 const { formatStr } = require("../util/formatting")
 
 module.exports = {
   data: {
-    name: "nudge",
-    name_localizations: {
-      de: "anstupsen",
-      fr: "envoyer-notification",
-      "es-ES": "dar-un-toque",
-      tr: "dürt",
-      it: "avvisa",
-      nl: "porren",
-    },
     description: "Ping all linked players with attacks remaining.",
     description_localizations: {
       de: "Benachrichtigen Sie alle verknüpften Spieler mit verbleibenden Angriffen.",
+      "es-ES": "Notificar a todos los jugadores vinculados con ataques restantes.",
       fr: "Notifiez tous les joueurs liés ayant des attaques restantes.",
-      "es-ES":
-        "Notificar a todos los jugadores vinculados con ataques restantes.",
-      tr: "Kalan saldırıları olan tüm bağlantılı oyuncuları bilgilendirin.",
       it: "Notificare tutti i giocatori collegati con attacchi rimanenti.",
       nl: "Informeer alle gekoppelde spelers met resterende aanvallen.",
+      tr: "Kalan saldırıları olan tüm bağlantılı oyuncuları bilgilendirin.",
+    },
+    name: "nudge",
+    name_localizations: {
+      de: "anstupsen",
+      "es-ES": "dar-un-toque",
+      fr: "envoyer-notification",
+      it: "avvisa",
+      nl: "porren",
+      tr: "dürt",
     },
     options: [
       {
-        type: 3,
-        name: "tag",
-        name_localizations: {
-          de: "kennzeichnung",
-          fr: "balise",
-          "es-ES": "etiqueta",
-          tr: "etiket",
-          it: "tag",
-          nl: "tag",
-        },
         description: "Clan tag (#ABC123) or abbreviation",
         description_localizations: {
           de: "Clan-Tag (#ABC123) oder Abkürzung",
-          fr: "Tag du clan (#ABC123) ou abréviation",
           "es-ES": "Etiqueta del clan (#ABC123) o abreviatura",
-          tr: "Klan etiketi (#ABC123) veya kısaltma",
+          fr: "Tag du clan (#ABC123) ou abréviation",
           it: "Tag del clan (#ABC123) o abbreviazione",
           nl: "Clan tag (#ABC123) of afkorting",
+          tr: "Klan etiketi (#ABC123) veya kısaltma",
+        },
+        name: "tag",
+        name_localizations: {
+          de: "kennzeichnung",
+          "es-ES": "etiqueta",
+          fr: "balise",
+          it: "tag",
+          nl: "tag",
+          tr: "etiket",
         },
         required: false,
+        type: 3,
       },
     ],
   },
@@ -54,37 +53,34 @@ module.exports = {
     const { abbreviations, defaultClan, nudges } = await guilds.findOne({
       guildID: i.guildId,
     })
-    const { message, links, ignoreLeaders } = nudges || {}
+    const { ignoreLeaders, links, message } = nudges || {}
 
     let tag = i.options.getString("tag")
 
-    //default clan
+    // default clan
     if (!tag) {
       if (defaultClan?.tag) tag = defaultClan?.tag
       else
         return i.editReply({
           embeds: [
             {
-              description:
-                "**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me).",
               color: orange,
+              description: "**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me).",
             },
           ],
         })
     } else {
-      //abbreviation
+      // abbreviation
       const UPPERCASE_ABBR = tag.toUpperCase()
-      const abbr = abbreviations?.find(
-        (a) => a.abbr.toUpperCase() === UPPERCASE_ABBR
-      )
+      const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
 
       if (abbr) tag = abbr.tag
       else if (tag.length < 5) {
         return i.editReply({
           embeds: [
             {
-              description: "**Abbreviation does not exist.**",
               color: orange,
+              description: "**Abbreviation does not exist.**",
             },
           ],
         })
@@ -99,8 +95,8 @@ module.exports = {
       return i.editReply({
         embeds: [
           {
-            description: ":mag: **Matchmaking is underway!**",
             color: orange,
+            description: ":mag: **Matchmaking is underway!**",
           },
         ],
       })
@@ -109,8 +105,8 @@ module.exports = {
       return i.editReply({
         embeds: [
           {
-            description: "**Clan is not in a river race.**",
             color: orange,
+            description: "**Clan is not in a river race.**",
           },
         ],
       })
@@ -119,8 +115,8 @@ module.exports = {
       return i.editReply({
         embeds: [
           {
-            description: "**Cannot send nudges on training days!**",
             color: orange,
+            description: "**Cannot send nudges on training days!**",
           },
         ],
       })
@@ -130,9 +126,7 @@ module.exports = {
 
     if (clanError) return errorMsg(i, clanError)
 
-    const alphabetizedParticipants = race.clan.participants.sort((a, b) =>
-      a.name.localeCompare(b.name)
-    )
+    const alphabetizedParticipants = race.clan.participants.sort((a, b) => a.name.localeCompare(b.name))
 
     const fourAttacks = []
     const threeAttacks = []
@@ -151,33 +145,21 @@ module.exports = {
       if (p.decksUsedToday === 0 && inClan) {
         if (ignoreLeaders && isLeader) {
           fourAttacks.push(`- ${p.name}`)
-        } else
-          fourAttacks.push(
-            linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`
-          )
+        } else fourAttacks.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
       } else if (p.decksUsedToday === 1) {
         if (ignoreLeaders && isLeader) {
           threeAttacks.push(`- ${p.name}`)
-        } else
-          threeAttacks.push(
-            linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`
-          )
+        } else threeAttacks.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
         slotsUsed++
       } else if (p.decksUsedToday === 2) {
         if (ignoreLeaders && isLeader) {
           twoAttacks.push(`- ${p.name}`)
-        } else
-          twoAttacks.push(
-            linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`
-          )
+        } else twoAttacks.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
         slotsUsed++
       } else if (p.decksUsedToday === 3) {
         if (ignoreLeaders && isLeader) {
           oneAttack.push(`- ${p.name}`)
-        } else
-          oneAttack.push(
-            linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`
-          )
+        } else oneAttack.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
         slotsUsed++
       }
     }
@@ -185,8 +167,7 @@ module.exports = {
     if (fourAttacks.length > 0) {
       nudgeMessage += `\n\n**__4 Attacks__**\n`
 
-      if (slotsUsed >= 50)
-        nudgeMessage += `No slots remaining! Ignoring ${fourAttacks.length} player(s).`
+      if (slotsUsed >= 50) nudgeMessage += `No slots remaining! Ignoring ${fourAttacks.length} player(s).`
       else nudgeMessage += `${fourAttacks.join("\n")}`
     }
 
@@ -202,27 +183,24 @@ module.exports = {
       nudgeMessage += `\n\n**__1 Attack__**\n${oneAttack.join("\n")}`
     }
 
-    const defaultMessage =
-      "**You have attacks remaining.** Please get them in before the deadline!"
+    const defaultMessage = "**You have attacks remaining.** Please get them in before the deadline!"
 
     const badgeName = getClanBadge(clan.badgeId, clan.clanWarTrophies)
     const badgeEmoji = client.cwEmojis.get(badgeName)
     const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
     const slotsRemainingEmoji = client.cwEmojis.get("remainingSlots")
 
-    const totalAttacksLeft =
-      200 - race.clan.participants.reduce((a, b) => a + b.decksUsedToday, 0)
-    const slotsRemaining =
-      50 - race.clan.participants.filter((p) => p.decksUsedToday > 0).length
+    const totalAttacksLeft = 200 - race.clan.participants.reduce((a, b) => a + b.decksUsedToday, 0)
+    const slotsRemaining = 50 - race.clan.participants.filter((p) => p.decksUsedToday > 0).length
 
     const embed = {
-      title: "__Attacks Reminder__",
       color: pink,
       description: `${badgeEmoji} **${formatStr(
-        clan.name
+        clan.name,
       )}**\n${decksRemainingEmoji} **${totalAttacksLeft}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n\n${
         message || defaultMessage
       }`,
+      title: "__Attacks Reminder__",
     }
 
     await i.editReply({ embeds: [embed] })
@@ -235,9 +213,7 @@ module.exports = {
           ? ":x: Missing permissions to send nudge message in this channel."
           : ":x: Unknown error while sending nudges, please try again."
       i.editReply({
-        embeds: [
-          { ...embed, description: (embed.description += `\n\n**${msg}**`) },
-        ],
+        embeds: [{ ...embed, description: (embed.description += `\n\n**${msg}**`) }],
       })
     }
   },

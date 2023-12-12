@@ -2,11 +2,7 @@ require("dotenv").config()
 
 const { AutoPoster } = require("topgg-autoposter")
 const mongo = require("./src/util/mongo")
-const {
-  initializeCronJobs,
-  initializeEvents,
-  initializeClient,
-} = require("./src/util/initialize")
+const { initializeClient, initializeCronJobs, initializeEvents } = require("./src/util/initialize")
 
 mongo.init()
 

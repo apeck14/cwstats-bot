@@ -1,6 +1,6 @@
-const { orange, pink } = require("../static/colors.js")
-const { logToSupportServer } = require("../util/logging.js")
-const { validate } = require("../util/validate.js")
+const { orange, pink } = require("../static/colors")
+const { logToSupportServer } = require("../util/logging")
+const { validate } = require("../util/validate")
 const guildCreate = require("./guildCreate")
 
 module.exports = {
@@ -13,8 +13,8 @@ module.exports = {
         return i.reply({
           embeds: [
             {
-              description: `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=280576&scope=bot%20applications.commands) me to a server to use my commands!**`,
               color: orange,
+              description: `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=280576&scope=bot%20applications.commands) me to a server to use my commands!**`,
             },
           ],
         })
@@ -32,24 +32,19 @@ module.exports = {
           guildID: i.guildId,
         })
 
-        if (!guildExists)
-          return console.log("Guild not in database, and could not be added.")
+        if (!guildExists) return console.log("Guild not in database, and could not be added.")
 
         console.log(`Guild not found, but updated! ${i.guildId}`)
       }
 
-      const { error, color, onlyShowToUser } = validate(
-        i,
-        guildExists.channels,
-        client
-      )
+      const { color, error, onlyShowToUser } = validate(i, guildExists.channels, client)
 
       if (error) {
         return i.reply({
           embeds: [
             {
-              description: error,
               color,
+              description: error,
             },
           ],
           ephemeral: onlyShowToUser,
@@ -64,19 +59,15 @@ module.exports = {
         return i.editReply({
           embeds: [
             {
-              description:
-                ":tools: **This command has been temporarily disabled**.",
               color: orange,
+              description: ":tools: **This command has been temporarily disabled**.",
             },
           ],
         })
       }
 
-      //if a user @'s themselves send reminder above embed response
-      if (
-        i.options._hoistedOptions.find((o) => o.name === "user")?.value ===
-        i.user.id
-      )
+      // if a user @'s themselves send reminder above embed response
+      if (i.options._hoistedOptions.find((o) => o.name === "user")?.value === i.user.id)
         await i.followUp(`:white_check_mark: **No need to @ yourself!**`)
 
       await run(i, db, client)
@@ -84,20 +75,15 @@ module.exports = {
       const hasOptions = i.options._hoistedOptions.length > 0
       let options = "*None*"
 
-      if (hasOptions)
-        options =
-          "\n" +
-          i.options._hoistedOptions
-            .map((o) => `• **${o.name}**: ${o.value}`)
-            .join("\n")
+      if (hasOptions) options = `\n${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}`
 
-      const { username, discriminator, id } = i.user
+      const { discriminator, id, username } = i.user
       const { guild } = i.member
 
       logToSupportServer(client, {
-        title: `__/${i.commandName}__`,
-        description: `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})\n\n**Options**: ${options}\n\n**Deferred**: ${i.deferred}\n**Replied**: ${i.replied}`,
         color: pink,
+        description: `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})\n\n**Options**: ${options}\n\n**Deferred**: ${i.deferred}\n**Replied**: ${i.replied}`,
+        title: `__/${i.commandName}__`,
       })
     } catch (e) {
       console.log(e)

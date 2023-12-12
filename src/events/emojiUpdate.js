@@ -13,14 +13,14 @@ module.exports = {
     logToSupportServer(
       client,
       {
-        title: "__Emoji Updated!__",
-        description: `**Old Name**: ${oldEmoji.name}\n**New Name**: ${newEmoji.name}`,
         color: green,
+        description: `**Old Name**: ${oldEmoji.name}\n**New Name**: ${newEmoji.name}`,
         thumbnail: {
           url: newEmoji.imageURL(),
         },
+        title: "__Emoji Updated!__",
       },
-      false
+      false,
     )
   },
 }

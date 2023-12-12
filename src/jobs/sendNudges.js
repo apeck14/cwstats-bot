@@ -1,10 +1,10 @@
 const { PermissionFlagsBits } = require("discord.js")
-const { getRiverRace, getClan } = require("../util/api")
+const { getClan, getRiverRace } = require("../util/api")
 const { getClanBadge } = require("../util/functions")
 const { formatStr } = require("../util/formatting")
 
 module.exports = {
-  expression: "*/15 * * * 4,5,6,7,1", //every 15 mins Thurs-Mon
+  expression: "*/15 * * * 4,5,6,7,1", // every 15 mins Thurs-Mon
   run: async (client, db) => {
     const guilds = db.collection("Guilds")
 
@@ -39,8 +39,8 @@ module.exports = {
         .map((n) => ({
           ...n,
           guildID: g.guildID,
-          message: g.nudges?.message || "",
           ignoreLeaders: g.nudges?.ignoreLeaders || false,
+          message: g.nudges?.message || "",
         }))
 
       nudges.push(...scheduledNudges)
@@ -56,28 +56,20 @@ module.exports = {
 
     for (const n of nudges) {
       try {
-        const { clanTag, channelID, guildID, message, ignoreLeaders } = n
-        const race = nudgesRaces.find(
-          (r) => r.data?.clan?.tag === clanTag
-        )?.data
+        const { channelID, clanTag, guildID, ignoreLeaders, message } = n
+        const race = nudgesRaces.find((r) => r.data?.clan?.tag === clanTag)?.data
         const clan = nudgesClans.find((c) => c.data?.tag === clanTag)?.data
 
         const nudgeChannel = client.channels.cache.get(channelID)
 
         if (!nudgeChannel || !race || !clan || race.error || clan.error) {
-          console.log(
-            `Scheduled nudge error: ${clanTag} / ${channelID} ${
-              clan?.error || clan
-            } ${race?.error}`
-          )
+          console.log(`Scheduled nudge error: ${clanTag} / ${channelID} ${clan?.error || clan} ${race?.error}`)
           continue
         }
 
         if (race.periodType === "training") continue
 
-        const nudgeChannelPermissions = nudgeChannel?.permissionsFor(
-          client.user
-        )
+        const nudgeChannelPermissions = nudgeChannel?.permissionsFor(client.user)
 
         const requiredFlags = [
           PermissionFlagsBits.ViewChannel,
@@ -98,9 +90,7 @@ module.exports = {
 
         nudgeMessage += `${badgeEmoji} **${formatStr(clan.name)}**`
 
-        const alphabetizedParticipants = race.clan.participants.sort((a, b) =>
-          a.name.localeCompare(b.name)
-        )
+        const alphabetizedParticipants = race.clan.participants.sort((a, b) => a.name.localeCompare(b.name))
 
         const fourAttacks = []
         const threeAttacks = []
@@ -113,50 +103,27 @@ module.exports = {
 
         for (const p of alphabetizedParticipants) {
           const inClan = clan.memberList.find((m) => m.tag === p.tag)
-          const isLeader =
-            inClan?.role === "coLeader" || inClan?.role === "leader"
-          const linkedAccount = guild.nudges?.links?.find(
-            (l) => l.tag === p.tag
-          )
+          const isLeader = inClan?.role === "coLeader" || inClan?.role === "leader"
+          const linkedAccount = guild.nudges?.links?.find((l) => l.tag === p.tag)
 
           if (p.decksUsedToday === 0 && inClan) {
             if (ignoreLeaders && isLeader) {
               fourAttacks.push(`- ${p.name}`)
-            } else
-              fourAttacks.push(
-                linkedAccount
-                  ? `- <@${linkedAccount.discordID}>`
-                  : `- ${p.name}`
-              )
+            } else fourAttacks.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
           } else if (p.decksUsedToday === 1) {
             if (ignoreLeaders && isLeader) {
               threeAttacks.push(`- ${p.name}`)
-            } else
-              threeAttacks.push(
-                linkedAccount
-                  ? `- <@${linkedAccount.discordID}>`
-                  : `- ${p.name}`
-              )
+            } else threeAttacks.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
             slotsUsed++
           } else if (p.decksUsedToday === 2) {
             if (ignoreLeaders && isLeader) {
               twoAttacks.push(`- ${p.name}`)
-            } else
-              twoAttacks.push(
-                linkedAccount
-                  ? `- <@${linkedAccount.discordID}>`
-                  : `- ${p.name}`
-              )
+            } else twoAttacks.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
             slotsUsed++
           } else if (p.decksUsedToday === 3) {
             if (ignoreLeaders && isLeader) {
               oneAttack.push(`- ${p.name}`)
-            } else
-              oneAttack.push(
-                linkedAccount
-                  ? `- <@${linkedAccount.discordID}>`
-                  : `- ${p.name}`
-              )
+            } else oneAttack.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
             slotsUsed++
           }
         }
@@ -164,8 +131,7 @@ module.exports = {
         if (fourAttacks.length > 0) {
           nudgeMessage += `\n\n**__4 Attacks__**\n`
 
-          if (slotsUsed >= 50)
-            nudgeMessage += `No slots remaining! Ignoring ${fourAttacks.length} player(s).`
+          if (slotsUsed >= 50) nudgeMessage += `No slots remaining! Ignoring ${fourAttacks.length} player(s).`
           else nudgeMessage += `${fourAttacks.join("\n")}`
         }
 
@@ -181,8 +147,7 @@ module.exports = {
           nudgeMessage += `\n\n**__1 Attack__**\n${oneAttack.join("\n")}`
         }
 
-        const defaultMessage =
-          "**You have attacks remaining.** Please get them in before the deadline!"
+        const defaultMessage = "**You have attacks remaining.** Please get them in before the deadline!"
 
         nudgeMessage += "\n\n"
         nudgeMessage += message || defaultMessage
@@ -190,7 +155,7 @@ module.exports = {
         await nudgeChannel.send(nudgeMessage)
       } catch (err) {
         console.log(err)
-        console.log(g?.guildID)
+        console.log(n?.guildID)
       }
     }
   },

@@ -15,14 +15,14 @@ module.exports = {
     logToSupportServer(
       client,
       {
-        title: "__Left Server!__",
-        description: `**Name**: ${guild.name}\n**ID**: ${guild.id}\n**Members**: ${guild.memberCount}`,
         color: red,
+        description: `**Name**: ${guild.name}\n**ID**: ${guild.id}\n**Members**: ${guild.memberCount}`,
         thumbnail: {
           url: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`,
         },
+        title: "__Left Server!__",
       },
-      false
+      false,
     )
   },
 }

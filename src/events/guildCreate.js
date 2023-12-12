@@ -7,27 +7,27 @@ module.exports = {
     const guilds = db.collection("Guilds")
 
     guilds.insertOne({
-      guildID: guild.id,
+      abbreviations: [],
       channels: {
-        applyChannelID: null,
         applicationsChannelID: null,
+        applyChannelID: null,
         commandChannelIDs: [],
         reportChannelID: null,
       },
-      abbreviations: [],
+      guildID: guild.id,
     })
 
     logToSupportServer(
       client,
       {
-        title: "__Joined Server!__",
-        description: `**Name**: ${guild.name}\n**ID**: ${guild.id}\n**Members**: ${guild.memberCount}`,
         color: green,
+        description: `**Name**: ${guild.name}\n**ID**: ${guild.id}\n**Members**: ${guild.memberCount}`,
         thumbnail: {
           url: `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`,
         },
+        title: "__Joined Server!__",
       },
-      false
+      false,
     )
   },
 }

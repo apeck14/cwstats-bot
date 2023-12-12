@@ -4,10 +4,11 @@ const { URI } = require("../../config")
 class MongoBot {
   constructor() {
     this.client = new MongoClient(URI, {
-      useUnifiedTopology: true,
       useNewUrlParser: true,
+      useUnifiedTopology: true,
     })
   }
+
   async init() {
     await this.client.connect()
     console.log("Database connected!")

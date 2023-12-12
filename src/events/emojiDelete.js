@@ -12,14 +12,14 @@ module.exports = {
     logToSupportServer(
       client,
       {
-        title: "__Emoji Deleted!__",
-        description: `**Name**: ${emoji.name}\n**ID**: ${emoji.id}`,
         color: green,
+        description: `**Name**: ${emoji.name}\n**ID**: ${emoji.id}`,
         thumbnail: {
           url: emoji.imageURL(),
         },
+        title: "__Emoji Deleted!__",
       },
-      false
+      false,
     )
   },
 }

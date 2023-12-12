@@ -1,5 +1,5 @@
-const { CLIENT_TOKEN, TEST_GUILD_ID } = require("../../config")
 const { REST, Routes } = require("discord.js")
+const { CLIENT_TOKEN, TEST_GUILD_ID } = require("../../config")
 
 const registerSlashCommands = async (CLIENT_ID, commands) => {
   const rest = new REST({
@@ -8,12 +8,9 @@ const registerSlashCommands = async (CLIENT_ID, commands) => {
 
   try {
     if (TEST_GUILD_ID) {
-      await rest.put(
-        Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID),
-        {
-          body: commands,
-        }
-      )
+      await rest.put(Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID), {
+        body: commands,
+      })
       console.log(`Loaded Guild Slash Commands`)
     } else {
       await rest.put(Routes.applicationCommands(CLIENT_ID), {

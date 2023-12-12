@@ -1,25 +1,25 @@
 module.exports = {
   data: {
-    name: "donate",
-    name_localizations: {
-      de: "spenden",
-      fr: "faire-un-don",
-      "es-ES": "donar",
-      tr: "bağış-yap",
-      it: "dona",
-      nl: "doneren",
-    },
     description: "Donate to support CW2Stats.",
     description_localizations: {
       de: "Spenden Sie, um CWStats zu unterstützen.",
-      fr: "Faites un don pour soutenir CWStats.",
       "es-ES": "Donar para apoyar a CWStats.",
-      tr: "CWStats'i desteklemek için bağış yapın.",
+      fr: "Faites un don pour soutenir CWStats.",
       it: "Dona per sostenere CWStats.",
       nl: "Doneer om CWStats te ondersteunen.",
+      tr: "CWStats'i desteklemek için bağış yapın.",
+    },
+    name: "donate",
+    name_localizations: {
+      de: "spenden",
+      "es-ES": "donar",
+      fr: "faire-un-don",
+      it: "dona",
+      nl: "doneren",
+      tr: "bağış-yap",
     },
   },
-  run: async (i, db, client) => {
+  run: async (i) => {
     const row = {
       components: [
         {
@@ -33,18 +33,18 @@ module.exports = {
     }
 
     return i.editReply({
+      components: [row],
       embeds: [
         {
-          title: "Donate with PayPal",
+          color: 0x3b7bbf,
           description:
             "CW Stats strives to aid all competitive war clans with game-changing data & stats! All proceeds help expand the capabilities of the bot & website.",
-          color: 0x3b7bbf,
           thumbnail: {
             url: "https://w7.pngwing.com/pngs/875/329/png-transparent-paypal-logo-e-commerce-payment-system-paypal-blue-angle-company.png",
           },
+          title: "Donate with PayPal",
         },
       ],
-      components: [row],
     })
   },
 }

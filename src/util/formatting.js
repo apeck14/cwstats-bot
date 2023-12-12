@@ -1,9 +1,4 @@
-const formatStr = (clanName) => {
-  return clanName
-    .replaceAll("*", "∗")
-    .replaceAll("_", "\\_")
-    .replaceAll("™️", "™")
-}
+const formatStr = (clanName) => clanName.replaceAll("*", "∗").replaceAll("_", "\\_").replaceAll("™️", "™")
 
 const formatTag = (tag) => {
   if (typeof tag !== "string") return
@@ -22,7 +17,7 @@ const formatRole = (role) => {
 }
 
 module.exports = {
+  formatRole,
   formatStr,
   formatTag,
-  formatRole,
 }

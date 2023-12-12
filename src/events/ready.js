@@ -16,7 +16,7 @@ module.exports = {
 
     const commandFiles = fs.readdirSync("./src/commands")
 
-    let commandsArray = []
+    const commandsArray = []
 
     for (const file of commandFiles) {
       const command = require(`../commands/${file}`)
@@ -35,7 +35,7 @@ module.exports = {
         color: orange,
         title: "Bot restarted!",
       },
-      false
+      false,
     )
   },
 }

@@ -4,9 +4,7 @@ const { orange, red } = require("../static/colors")
 
 const missingPermissionsToStr = (permissions, requiredFlags) => {
   const serializedPermissions = permissions.serialize()
-  const requiredPermissionsArr = new PermissionsBitField(
-    requiredFlags
-  ).toArray()
+  const requiredPermissionsArr = new PermissionsBitField(requiredFlags).toArray()
 
   let str = ""
 
@@ -21,9 +19,7 @@ const checkPermissions = (i, channels, client) => {
   const { applicationsChannelID } = channels
 
   if (i.commandName === "apply") {
-    const applicationsChannelPermissions = client.channels.cache
-      .get(applicationsChannelID)
-      .permissionsFor(client.user)
+    const applicationsChannelPermissions = client.channels.cache.get(applicationsChannelID).permissionsFor(client.user)
 
     const requiredFlags = [
       PermissionFlagsBits.ViewChannel,
@@ -36,20 +32,15 @@ const checkPermissions = (i, channels, client) => {
       return {
         error: `**Missing permissions in** <#${applicationsChannelID}>.\n\n${missingPermissionsToStr(
           applicationsChannelPermissions,
-          requiredFlags
+          requiredFlags,
         )}`,
       }
     }
   } else {
     const ADMIN_COMMANDS = ["schedule-report", "nudge"]
 
-    if (
-      i.user.id !== "493245767448789023" &&
-      ADMIN_COMMANDS.includes(i.commandName)
-    ) {
-      const isAdmin = i.member.permissions.has(
-        PermissionsBitField.Flags.ManageGuild
-      )
+    if (i.user.id !== "493245767448789023" && ADMIN_COMMANDS.includes(i.commandName)) {
+      const isAdmin = i.member.permissions.has(PermissionsBitField.Flags.ManageGuild)
 
       if (!isAdmin) {
         return {
@@ -58,18 +49,13 @@ const checkPermissions = (i, channels, client) => {
       }
     }
 
-    const channelPermissions = client.channels.cache
-      .get(i.channelId)
-      .permissionsFor(client.user)
+    const channelPermissions = client.channels.cache.get(i.channelId).permissionsFor(client.user)
 
     const requiredFlags = [PermissionFlagsBits.UseExternalEmojis]
 
     if (!channelPermissions.has(requiredFlags)) {
       return {
-        error: `__**Missing permissions**__\n\n${missingPermissionsToStr(
-          channelPermissions,
-          requiredFlags
-        )}`,
+        error: `__**Missing permissions**__\n\n${missingPermissionsToStr(channelPermissions, requiredFlags)}`,
       }
     }
   }
@@ -78,8 +64,8 @@ const checkPermissions = (i, channels, client) => {
 }
 
 const validate = (i, channels, client) => {
-  const { applyChannelID, applicationsChannelID, commandChannelIDs } = channels
-  const channelId = i.channelId
+  const { applicationsChannelID, applyChannelID, commandChannelIDs } = channels
+  const { channelId } = i
 
   const color = orange
   let onlyShowToUser = false
@@ -91,8 +77,7 @@ const validate = (i, channels, client) => {
     else if (applyChannelID !== channelId) {
       error = `You can only use this command in the set **apply channel**! (<#${applyChannelID}>)`
       onlyShowToUser = true
-    } else if (!applicationsChannelID)
-      error = "**No applications channel set.**"
+    } else if (!applicationsChannelID) error = "**No applications channel set.**"
 
     return {
       color,
@@ -123,6 +108,6 @@ const validate = (i, channels, client) => {
 }
 
 module.exports = {
-  validate,
   missingPermissionsToStr,
+  validate,
 }
