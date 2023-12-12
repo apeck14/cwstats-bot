@@ -53,6 +53,7 @@ const initializeClient = async () => {
         },
       ],
     },
+    shardCount: "auto",
   })
 
   client.commands = new Collection()
