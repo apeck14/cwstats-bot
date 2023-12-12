@@ -32,13 +32,11 @@ module.exports = {
     const embed = {
       color: pink,
       description: "*None*",
-      footer: {
-        text: "Manage abbreviations @ cwstats.com/me",
-      },
       thumbnail: {
         url: i.guild.iconURL() || "https://i.imgur.com/VAPR8Jq.png",
       },
       title: "__**Server Abbreviations**__",
+      url: "https://cwstats.com/me",
     }
 
     if (abbreviations?.length > 0) {

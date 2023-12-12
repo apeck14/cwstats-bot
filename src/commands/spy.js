@@ -310,10 +310,13 @@ module.exports = {
 
       const embed = {
         color: pink,
-        title: `**${opponent.name}** (${opponent.tag})`,
+        title: opponent.name,
+        url: `https://cwstats.com/player/${opponent.tag.slice(1)}`,
       }
 
-      let description = `${badgeEmoji} **${formatStr(opponent.clan.name)}**\n`
+      let description = `${badgeEmoji} [**${formatStr(
+        opponent.clan.name,
+      )}**](https://cwstats.com/clan/${opponent.clan.tag.slice(1)})\n`
 
       if (duelDecks.length > 0) {
         description += `\n**__Duel__** ${duelEmoji}\n`

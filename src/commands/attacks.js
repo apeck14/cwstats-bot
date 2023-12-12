@@ -174,6 +174,7 @@ module.exports = {
         text: showFooter ? `* = Not in clan` : ``,
       },
       title: `**__Remaining Attacks__**`,
+      url: `https://cwstats.com/clan/${clan.tag.slice(1)}/race`,
     }
 
     const badgeName = getClanBadge(badgeId, clanWarTrophies)
