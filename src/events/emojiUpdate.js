@@ -2,6 +2,7 @@ const fs = require("fs")
 const ownerIds = require("../static/ownerIds")
 const { updateEmojis } = require("../util/functions")
 const { green } = require("../static/colors")
+const { logToSupportServer } = require("../util/logging")
 
 module.exports = {
   event: "emojiUpdate",
