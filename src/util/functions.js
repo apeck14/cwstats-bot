@@ -1,6 +1,7 @@
 const badges = require("../static/badges.js")
 const { red } = require("../static/colors")
 const allEmojis = require("../../allEmojis.json")
+const fs = require("fs")
 
 const getClanBadge = (badgeId, trophyCount, returnEmojiPath = true) => {
   if (badgeId === -1 || badgeId === null) return "no_clan" //no clan
