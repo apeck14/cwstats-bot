@@ -2,7 +2,7 @@ const { PermissionFlagsBits, AttachmentBuilder } = require("discord.js")
 const { pink, red } = require("../static/colors")
 const { getRiverRace, getClan } = require("../util/api")
 const { formatStr } = require("../util/formatting")
-const { getClanBadge, getEmoji } = require("../util/functions")
+const { getClanBadge } = require("../util/functions")
 const { getAvgFame } = require("../util/raceFunctions")
 
 module.exports = {
@@ -120,10 +120,10 @@ module.exports = {
         }
 
         const badgeName = getClanBadge(race.clan.badgeId, race.clan.clanScore)
-        const badgeEmoji = getEmoji(badgeName)
-        const fameEmoji = getEmoji("fame")
-        const fameAvgEmoji = getEmoji("fameAvg")
-        const decksRemainingEmoji = getEmoji("decksRemaining")
+        const badgeEmoji = client.cwEmojis.get(badgeName)
+        const fameEmoji = client.cwEmojis.get("fame")
+        const fameAvgEmoji = client.cwEmojis.get("fameAvg")
+        const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
 
         const fameAccessor = isColosseum ? "fame" : "periodPoints"
         const decksRemaining =

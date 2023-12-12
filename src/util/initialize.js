@@ -69,6 +69,7 @@ const initializeClient = async () => {
   })
 
   client.commands = new Collection()
+  client.cwEmojis = new Collection()
   await client.login(CLIENT_TOKEN)
 
   console.log("Client Initialized!")

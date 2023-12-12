@@ -1,7 +1,5 @@
 const badges = require("../static/badges.js")
 const { red } = require("../static/colors")
-const allEmojis = require("../../allEmojis.json")
-const fs = require("fs")
 
 const getClanBadge = (badgeId, trophyCount, returnEmojiPath = true) => {
   if (badgeId === -1 || badgeId === null) return "no_clan" //no clan
@@ -39,9 +37,6 @@ const getClanBadge = (badgeId, trophyCount, returnEmojiPath = true) => {
   }
 
   return `${badgeName}_${league}`
-}
-const getEmoji = (emojiName) => {
-  return allEmojis[emojiName]
 }
 const getArenaEmoji = (pb) => {
   if (pb >= 8000) return "arena24"
@@ -113,18 +108,10 @@ const errorMsg = (i, message) => {
   })
 }
 
-const updateEmojis = (newEmojis) =>
-  fs.writeFile("allEmojis.json", JSON.stringify(newEmojis), (err) => {
-    if (err) console.error(err)
-    else console.log("Emojis successfully updated!")
-  })
-
 module.exports = {
   getClanBadge,
-  getEmoji,
   getArenaEmoji,
   getLeague,
   hexToRgbA,
   errorMsg,
-  updateEmojis,
 }

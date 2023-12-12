@@ -1,6 +1,6 @@
 const { getPlayer, getClan, getBattleLog, searchClans } = require("../util/api")
 const { pink } = require("../static/colors")
-const { getClanBadge, getEmoji, errorMsg } = require("../util/functions")
+const { getClanBadge, errorMsg } = require("../util/functions")
 const { formatTag, formatStr } = require("../util/formatting")
 
 const { diceCoefficient } = require("string-comparison")
@@ -329,8 +329,8 @@ module.exports = {
         index++
       }
 
-      const badgeEmoji = getEmoji(opponent.clan.badge)
-      const duelEmoji = getEmoji("duel")
+      const badgeEmoji = client.cwEmojis.get(opponent.clan.badge)
+      const duelEmoji = client.cwEmojis.get("duel")
 
       const embed = {
         color: pink,
@@ -346,7 +346,7 @@ module.exports = {
           let duelStr = `**${i + 1}.** `
 
           for (const c of duelDecks[i].cards) {
-            const emoji = getEmoji(
+            const emoji = client.cwEmojis.get(
               c
                 .toLowerCase()
                 .replace(/\s+/g, "_")
@@ -366,12 +366,12 @@ module.exports = {
         description += `\n__**Singles**__\n`
 
         for (let i = 0; i < singleDecks.length; i++) {
-          const matchEmoji = getEmoji(singleDecks[i].emoji)
+          const matchEmoji = client.cwEmojis.get(singleDecks[i].emoji)
 
           let str = `**${matchEmoji}:** `
 
           for (const c of singleDecks[i].cards) {
-            const emoji = getEmoji(
+            const emoji = client.cwEmojis.get(
               c
                 .toLowerCase()
                 .replace(/\s+/g, "_")

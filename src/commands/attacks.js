@@ -1,6 +1,6 @@
 const { getRiverRace, getClan } = require("../util/api")
 const { orange, pink } = require("../static/colors")
-const { getClanBadge, getEmoji, errorMsg } = require("../util/functions")
+const { getClanBadge, errorMsg } = require("../util/functions")
 const { formatStr } = require("../util/formatting")
 
 module.exports = {
@@ -182,10 +182,10 @@ module.exports = {
 
     const badgeName = getClanBadge(badgeId, clanWarTrophies)
 
-    const badgeEmoji = getEmoji(badgeName)
-    const fameEmoji = getEmoji("fame")
-    const decksRemainingEmoji = getEmoji("decksRemaining")
-    const slotsRemainingEmoji = getEmoji("remainingSlots")
+    const badgeEmoji = client.cwEmojis.get(badgeName)
+    const fameEmoji = client.cwEmojis.get("fame")
+    const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
+    const slotsRemainingEmoji = client.cwEmojis.get("remainingSlots")
     const slotsRemaining =
       50 - participants.filter((p) => p.decksUsedToday > 0).length
 

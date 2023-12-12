@@ -1,6 +1,6 @@
 const { PermissionFlagsBits } = require("discord.js")
 const { getRiverRace, getClan } = require("../util/api")
-const { getClanBadge, getEmoji } = require("../util/functions")
+const { getClanBadge } = require("../util/functions")
 const { formatStr } = require("../util/formatting")
 
 module.exports = {
@@ -94,7 +94,7 @@ module.exports = {
         let nudgeMessage = "## __Scheduled nudge!__\n"
 
         const badgeName = getClanBadge(clan.badgeId, clan.clanWarTrophies)
-        const badgeEmoji = getEmoji(badgeName)
+        const badgeEmoji = client.cwEmojis.get(badgeName)
 
         nudgeMessage += `${badgeEmoji} **${formatStr(clan.name)}**`
 

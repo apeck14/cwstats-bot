@@ -1,6 +1,6 @@
 const { pink, orange } = require("../static/colors")
 const { formatStr } = require("../util/formatting")
-const { getEmoji, getClanBadge } = require("../util/functions")
+const { getClanBadge } = require("../util/functions")
 const locations = require("../static/locations")
 
 module.exports = {
@@ -135,8 +135,8 @@ module.exports = {
       color: pink,
     }
 
-    const fameAvgEmoji = getEmoji("fameAvg")
-    const decksRemainingEmoji = getEmoji("decksRemaining")
+    const fameAvgEmoji = client.cwEmojis.get("fameAvg")
+    const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
 
     embed.description += `**Location**: ${location?.key || "Global"} ${
       location?.flagEmoji || ":earth_americas:"
@@ -151,7 +151,7 @@ module.exports = {
       const clan = leaderboard[i]
       const url = `https://www.cwstats.com/clan/${clan.tag.substring(1)}/race`
       const badgeName = getClanBadge(clan.badgeId, clan.clanScore)
-      const badgeEmoji = getEmoji(badgeName)
+      const badgeEmoji = client.cwEmojis.get(badgeName)
 
       if (clan.notRanked) showNRFooter = true
 

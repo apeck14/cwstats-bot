@@ -1,11 +1,6 @@
 const { getPlayer, getClan, addPlayer } = require("../util/api")
 const { orange, pink } = require("../static/colors")
-const {
-  getClanBadge,
-  getEmoji,
-  getArenaEmoji,
-  errorMsg,
-} = require("../util/functions")
+const { getClanBadge, getArenaEmoji, errorMsg } = require("../util/functions")
 const { createCanvas, registerFont, loadImage } = require("canvas")
 const { formatTag, formatRole, formatStr } = require("../util/formatting")
 registerFont("./src/static/fonts/Supercell-Magic.ttf", {
@@ -185,15 +180,15 @@ module.exports = {
       clanBadge = getClanBadge(clan.badgeId, clan.clanWarTrophies)
     }
 
-    const badgeEmoji = getEmoji(clanBadge)
-    const levelEmoji = getEmoji(`level${player.expLevel}`)
-    const polMedalsEmoji = getEmoji("polmedals")
-    const ladderEmoji = getEmoji(getArenaEmoji(player.trophies))
-    const pbEmoji = getEmoji(getArenaEmoji(player.bestTrophies))
-    const level15 = getEmoji("level15")
-    const level14 = getEmoji("level14")
-    const level13 = getEmoji("level13")
-    const level12 = getEmoji("level12")
+    const badgeEmoji = client.cwEmojis.get(clanBadge)
+    const levelEmoji = client.cwEmojis.get(`level${player.expLevel}`)
+    const polMedalsEmoji = client.cwEmojis.get("polmedals")
+    const ladderEmoji = client.cwEmojis.get(getArenaEmoji(player.trophies))
+    const pbEmoji = client.cwEmojis.get(getArenaEmoji(player.bestTrophies))
+    const level15 = client.cwEmojis.get("level15")
+    const level14 = client.cwEmojis.get("level14")
+    const level13 = client.cwEmojis.get("level13")
+    const level12 = client.cwEmojis.get("level12")
 
     const ccWins =
       player.badges.find((b) => b.name === "Classic12Wins")?.progress || 0

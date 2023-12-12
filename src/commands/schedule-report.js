@@ -2,7 +2,7 @@ const { PermissionFlagsBits } = require("discord.js")
 const { green, orange, red } = require("../static/colors")
 const { getClan } = require("../util/api")
 const { formatTag, formatStr } = require("../util/formatting")
-const { errorMsg, getClanBadge, getEmoji } = require("../util/functions")
+const { errorMsg, getClanBadge } = require("../util/functions")
 const { missingPermissionsToStr } = require("../util/validate")
 
 module.exports = {
@@ -213,7 +213,7 @@ module.exports = {
     })
 
     const badgeName = getClanBadge(clan.badgeId, clan.clanWarTrophies)
-    const badgeEmoji = getEmoji(badgeName)
+    const badgeEmoji = client.cwEmojis.get(badgeName)
 
     return i.editReply({
       embeds: [

@@ -5,7 +5,7 @@ const {
   getAvgFame,
   getProjFame,
 } = require("../util/raceFunctions")
-const { getClanBadge, getEmoji, errorMsg } = require("../util/functions")
+const { getClanBadge, errorMsg } = require("../util/functions")
 const { formatStr, formatTag } = require("../util/formatting")
 
 module.exports = {
@@ -144,17 +144,17 @@ module.exports = {
     const clansStillWarring = placements.filter((c) => !c.crossedFinishLine)
     const clansCrossedFinishLine = placements.filter((c) => c.crossedFinishLine)
 
-    const fameEmoji = getEmoji("fame")
-    const fameAvgEmoji = getEmoji("fameAvg")
-    const decksRemainingEmoji = getEmoji("decksRemaining")
-    const projectionEmoji = getEmoji("projection")
+    const fameEmoji = client.cwEmojis.get("fame")
+    const fameAvgEmoji = client.cwEmojis.get("fameAvg")
+    const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
+    const projectionEmoji = client.cwEmojis.get("projection")
 
     clansCrossedFinishLine.forEach((c) => {
       const clan = race.clans.find((cl) => cl.tag === c.tag)
       const { name, badgeId, clanScore } = clan
 
       const badgeName = getClanBadge(badgeId, clanScore)
-      const badgeEmoji = getEmoji(badgeName)
+      const badgeEmoji = client.cwEmojis.get(badgeName)
 
       if (c.tag === formatTag(tag))
         embed.description += `${badgeEmoji} **__${formatStr(name)}__**\n`
@@ -172,7 +172,7 @@ module.exports = {
         200 - participants.reduce((a, b) => a + b.decksUsedToday, 0)
 
       const badgeName = getClanBadge(badgeId, clanScore)
-      const badgeEmoji = getEmoji(badgeName)
+      const badgeEmoji = client.cwEmojis.get(badgeName)
 
       if (c.tag === formatTag(tag))
         embed.description += `${badgeEmoji} **__${formatStr(name)}__**\n`

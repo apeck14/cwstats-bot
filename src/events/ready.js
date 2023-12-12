@@ -7,6 +7,12 @@ module.exports = {
   event: "ready",
   once: true,
   run: async (client) => {
+    client.emojis.cache.each((e) => {
+      if (ownerIds.includes(e.guild.ownerId)) {
+        client.cwEmojis.set(e.name, `<:${e.name}:${e.id}>`)
+      }
+    })
+
     const commandFiles = fs.readdirSync("./src/commands")
 
     let commandsArray = []
