@@ -74,7 +74,7 @@ module.exports = {
       },
     ],
   },
-  run: async (i, db) => {
+  run: async (i, db, client) => {
     const linkedAccounts = db.collection("Linked Accounts")
 
     const user = i.options.getUser("user")

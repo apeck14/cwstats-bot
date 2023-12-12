@@ -22,7 +22,7 @@ module.exports = {
       nl: "Bekijk alle afkortingen voor deze server.",
     },
   },
-  run: async (i, db) => {
+  run: async (i, db, client) => {
     const guilds = db.collection("Guilds")
 
     const { abbreviations } = await guilds.findOne({

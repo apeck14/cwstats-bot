@@ -19,7 +19,7 @@ module.exports = {
       nl: "Doneer om CWStats te ondersteunen.",
     },
   },
-  run: async (i) => {
+  run: async (i, db, client) => {
     const row = {
       components: [
         {

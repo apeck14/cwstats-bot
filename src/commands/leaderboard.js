@@ -71,7 +71,7 @@ module.exports = {
       },
     ],
   },
-  run: async (i, db) => {
+  run: async (i, db, client) => {
     const dailyLb = db.collection("Daily Clan Leaderboard")
     const statistics = db.collection("Statistics")
     const iName = i.options.getString("location")
