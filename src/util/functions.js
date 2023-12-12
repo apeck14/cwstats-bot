@@ -112,6 +112,12 @@ const errorMsg = (i, message) => {
   })
 }
 
+const updateEmojis = (newEmojis) =>
+  fs.writeFile("allEmojis.json", JSON.stringify(newEmojis), (err) => {
+    if (err) console.error(err)
+    else console.log("Emojis successfully updated!")
+  })
+
 module.exports = {
   getClanBadge,
   getEmoji,
@@ -119,4 +125,5 @@ module.exports = {
   getLeague,
   hexToRgbA,
   errorMsg,
+  updateEmojis,
 }

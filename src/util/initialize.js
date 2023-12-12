@@ -1,6 +1,11 @@
 const { schedule } = require("node-cron")
 const fs = require("fs")
-const { Client, GatewayIntentBits, Collection } = require("discord.js")
+const {
+  Client,
+  GatewayIntentBits,
+  Collection,
+  ActivityType,
+} = require("discord.js")
 const { CLIENT_TOKEN } = require("../../config")
 
 const events = fs.readdirSync("src/events")
@@ -51,7 +56,16 @@ const initializeClient = async () => {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildMessageTyping,
       GatewayIntentBits.GuildMessageReactions,
+      GatewayIntentBits.GuildEmojisAndStickers,
     ],
+    presence: {
+      activities: [
+        {
+          name: `CWStats.com | 2500+ servers`,
+          type: ActivityType.Watching,
+        },
+      ],
+    },
   })
 
   client.commands = new Collection()
