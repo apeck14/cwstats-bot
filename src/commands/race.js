@@ -141,6 +141,7 @@ module.exports = {
     const fameAvgEmoji = client.cwEmojis.get("fameAvg")
     const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
     const projectionEmoji = client.cwEmojis.get("projection")
+    const flagEmoji = client.cwEmojis.get("flag")
 
     clansCrossedFinishLine.forEach((c) => {
       const clan = race.clans.find((cl) => cl.tag === c.tag)
@@ -149,8 +150,8 @@ module.exports = {
       const badgeName = getClanBadge(badgeId, clanScore)
       const badgeEmoji = client.cwEmojis.get(badgeName)
 
-      if (c.tag === formatTag(tag)) embed.description += `${badgeEmoji} **__${formatStr(name)}__**\n`
-      else embed.description += `${badgeEmoji} **${formatStr(name)}**\n`
+      if (c.tag === formatTag(tag)) embed.description += `${flagEmoji} ${badgeEmoji} **__${formatStr(name)}__**\n`
+      else embed.description += `${flagEmoji} ${badgeEmoji} **${formatStr(name)}**\n`
     })
 
     for (const c of clansStillWarring) {
