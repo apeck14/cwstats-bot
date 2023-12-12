@@ -2,6 +2,7 @@ const fs = require("fs")
 const registerSlashCommands = require("../util/slash")
 const { logToSupportServer } = require("../util/logging")
 const { orange } = require("../static/colors")
+const ownerIds = require("../static/ownerIds")
 
 module.exports = {
   event: "ready",
