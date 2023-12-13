@@ -26,7 +26,7 @@ module.exports = {
           client.users.cache.get(executorId).send({ embeds: [welcomeEmbed] })
         }
       })
-      .catch(() => {})
+      .catch(console.error)
 
     guilds.insertOne({
       abbreviations: [],
