@@ -44,7 +44,6 @@ const initializeClient = async () => {
       GatewayIntentBits.GuildMessageTyping,
       GatewayIntentBits.GuildMessageReactions,
       GatewayIntentBits.GuildEmojisAndStickers,
-      GatewayIntentBits.GuildModeration,
     ],
     presence: {
       activities: [
