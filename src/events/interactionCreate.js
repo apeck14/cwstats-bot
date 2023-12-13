@@ -14,7 +14,7 @@ module.exports = {
           embeds: [
             {
               color: orange,
-              description: `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=2147797184&scope=bot) me to a server to use my commands!**`,
+              description: `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=2147797184&scope=bot+applications.commands) me to a server to use my commands!**`,
             },
           ],
         })
