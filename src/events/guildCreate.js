@@ -13,8 +13,6 @@ module.exports = {
           (log) => log.actionType === "Create" && log.targetType === "User" && log.targetId === "869761158763143218",
         )?.executorId
 
-        console.log(executorId)
-
         // send welcome message to user who invited
         if (executorId) {
           const cwstatsEmoji = client.cwEmojis.get("cwstats")
