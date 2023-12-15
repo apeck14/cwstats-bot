@@ -1,7 +1,8 @@
-const { PermissionFlagsBits } = require("discord.js")
+const { hyperlink, PermissionFlagsBits } = require("discord.js")
 const { getClan, getRiverRace } = require("../util/api")
 const { getClanBadge } = require("../util/functions")
 const { formatStr } = require("../util/formatting")
+const { red } = require("../static/colors")
 
 module.exports = {
   expression: "*/15 * * * 4,5,6,7,1", // every 15 mins Thurs-Mon
@@ -46,8 +47,6 @@ module.exports = {
       nudges.push(...scheduledNudges)
     }
 
-    console.log(hourQuery, nudges.length)
-
     const nudgesRacePromises = nudges.map((n) => getRiverRace(n.clanTag))
     const nudgesRaces = await Promise.all(nudgesRacePromises)
 
@@ -60,14 +59,45 @@ module.exports = {
         const race = nudgesRaces.find((r) => r.data?.clan?.tag === clanTag)?.data
         const clan = nudgesClans.find((c) => c.data?.tag === clanTag)?.data
 
+        if (race?.periodType === "training") continue
+
         const nudgeChannel = client.channels.cache.get(channelID)
 
-        if (!nudgeChannel || !race || !clan || race.error || clan.error) {
-          console.log(`Scheduled nudge error: ${clanTag} / ${channelID} ${clan?.error || clan} ${race?.error}`)
-          continue
+        if (!nudgeChannel) {
+          // delete scheduled nudge
+          console.log(`Nudge Channel Not Found: ${clanTag} ${channelID} (Deleting...)`)
+          guilds.updateOne(
+            {
+              guildID,
+            },
+            {
+              $pull: {
+                "nudges.scheduled": {
+                  $elemMatch: {
+                    clanTag,
+                    scheduledHourUTC: hourQuery,
+                  },
+                },
+              },
+            },
+          )
         }
 
-        if (race.periodType === "training") continue
+        if (!race || !clan || race.error || clan.error) {
+          const errMsg = !race
+            ? `**River race not found. Scheduled nudge ignored.**`
+            : `**Unexpected error while attempting to send scheduled nudge.** If this issue continues, please join the ${hyperlink(
+                "Support Server",
+                "https://discord.com/invite/fFY3cnMmnH",
+              )}.`
+
+          console.log(`Scheduled nudge error: ${clanTag}`)
+          console.log(clan?.error || race?.error)
+
+          nudgeChannel.send({ embeds: [{ color: red, description: errMsg }] })
+
+          continue
+        }
 
         const nudgeChannelPermissions = nudgeChannel?.permissionsFor(client.user)
 
@@ -79,7 +109,7 @@ module.exports = {
         ]
 
         if (!nudgeChannelPermissions.has(requiredFlags)) {
-          console.log(`Missing permissions: ${channelID}`)
+          console.log(`Missing permissions: ${guildID} ${channelID}`)
           continue
         }
 
