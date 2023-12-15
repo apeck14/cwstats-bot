@@ -1,7 +1,6 @@
-const { diceCoefficient } = require("string-comparison")
 const { getBattleLog, getClan, getPlayer, searchClans } = require("../util/api")
 const { pink } = require("../static/colors")
-const { errorMsg, getClanBadge } = require("../util/functions")
+const { errorMsg, findBestMatch, getClanBadge } = require("../util/functions")
 const { formatStr, formatTag } = require("../util/formatting")
 
 const specialGamemodes = require("../static/specialGamemodes")
@@ -183,18 +182,16 @@ module.exports = {
           tag: clan.tag,
         }
 
-        const bestMatchSorted = diceCoefficient.sortMatch(
-          iPlayerSearch,
+        const bestMatch = findBestMatch(
+          iPlayerSearch.trim(),
           clan.memberList.map((p) => p.name),
         )
 
-        const bestMatch = bestMatchSorted[bestMatchSorted.length - 1]
-
         if (bestMatch.rating === 0) {
-          return errorMsg(i, "**No player found in this clan has a similar name. Try again.**")
+          return errorMsg(i, "**No player in this clan has a similar name. Please try again.**")
         }
 
-        const player = clan.memberList.find((p) => p.name === bestMatch.member)
+        const player = clan.memberList.find((p) => p.name === bestMatch.str)
 
         opponent.name = player.name
         opponent.tag = player.tag
@@ -371,8 +368,8 @@ module.exports = {
       return i.editReply({
         embeds: [embed],
       })
-    } catch {
-      console.log("SPY ERROR DATA:")
+    } catch (err) {
+      console.log(err)
       console.log(i?.options?._hoistedOptions || i?.options)
     }
   },

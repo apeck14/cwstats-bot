@@ -1,3 +1,4 @@
+const dice = require("fast-dice-coefficient")
 const badges = require("../static/badges")
 const { red } = require("../static/colors")
 
@@ -104,8 +105,27 @@ const errorMsg = (i, message) => {
   })
 }
 
+const findBestMatch = (str, arr) => {
+  let bestMatch = { rating: 0, str: null }
+
+  for (const s of arr) {
+    const rating = dice(str, s)
+
+    if (rating === 1)
+      return {
+        rating,
+        str: s,
+      }
+
+    if (rating > bestMatch.rating) bestMatch = { rating, str: s }
+  }
+
+  return bestMatch
+}
+
 module.exports = {
   errorMsg,
+  findBestMatch,
   getArenaEmoji,
   getClanBadge,
   getLeague,
