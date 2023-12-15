@@ -65,7 +65,7 @@ module.exports = {
 
         if (!nudgeChannel) {
           // delete scheduled nudge
-          console.log(`Nudge Channel Not Found: ${clanTag} ${channelID} (Deleting...)`)
+          console.log(`Nudge Channel Not Found: ${clanTag} ${guildID} ${channelID} (Deleting...)`)
           guilds.updateOne(
             {
               guildID,
@@ -81,6 +81,8 @@ module.exports = {
               },
             },
           )
+
+          continue
         }
 
         if (!race || !clan || race.error || clan.error) {
