@@ -45,7 +45,9 @@ module.exports = {
     if (abbreviations?.length > 0) {
       abbreviations.sort((a, b) => a.abbr.localeCompare(b.abbr))
 
-      embed.description = `${abbreviations.map((a) => `\n• **${a.abbr}**: ${formatStr(a.name)}`).join("")}`
+      embed.description = `${abbreviations
+        .map((a) => `\n• **${a.abbr.toLowerCase()}**: ${formatStr(a.name)}`)
+        .join("")}`
     }
 
     return i.editReply({
