@@ -56,11 +56,11 @@ module.exports = {
       {
         choices: [
           {
-            name: "4000+",
+            name: "L2 (4000-4999)",
             value: "4000+",
           },
           {
-            name: "5000+",
+            name: "L3 (5000+)",
             value: "5000+",
           },
         ],
@@ -93,8 +93,9 @@ module.exports = {
     const leaderboard = await dailyLb
       .find(query)
       .sort({
-        fameAvg: -1,
         notRanked: 1,
+        // eslint-disable-next-line perfectionist/sort-objects
+        fameAvg: -1,
         rank: 1,
       })
       .limit(10)
