@@ -32,6 +32,9 @@ module.exports = {
     const embed = {
       color: pink,
       description: "*None*",
+      footer: {
+        text: "Abbreviations are not case sensitive!",
+      },
       thumbnail: {
         url: i.guild.iconURL() || "https://i.imgur.com/VAPR8Jq.png",
       },
