@@ -54,8 +54,8 @@ module.exports = {
         const { channelID, clanTag, guildID, ignoreLeaders, message } = n
 
         const [{ data: clan, error: clanError }, { data: race, error: raceError }] = await Promise.all([
-          getClan(n.tag),
-          getRiverRace(n.tag),
+          getClan(n.clanTag),
+          getRiverRace(n.clanTag),
         ])
 
         if (race?.periodType === "training") continue
