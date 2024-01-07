@@ -185,7 +185,7 @@ module.exports = {
 
         await nudgeChannel.send(nudgeMessage)
       } catch (err) {
-        console.log(err)
+        console.log(err?.message)
         console.log(n?.guildID)
       }
     }
