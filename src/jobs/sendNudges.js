@@ -31,6 +31,8 @@ module.exports = {
       })
       .toArray()
 
+    console.log(hourQuery, guildsToSendNudge.length)
+
     const nudges = []
 
     // add all nudges in correct format
@@ -47,17 +49,14 @@ module.exports = {
       nudges.push(...scheduledNudges)
     }
 
-    const nudgesRacePromises = nudges.map((n) => getRiverRace(n.clanTag))
-    const nudgesRaces = await Promise.all(nudgesRacePromises)
-
-    const nudgesClanPromises = nudges.map((n) => getClan(n.clanTag))
-    const nudgesClans = await Promise.all(nudgesClanPromises)
-
     for (const n of nudges) {
       try {
         const { channelID, clanTag, guildID, ignoreLeaders, message } = n
-        const race = nudgesRaces.find((r) => r.data?.clan?.tag === clanTag)?.data
-        const clan = nudgesClans.find((c) => c.data?.tag === clanTag)?.data
+
+        const [{ data: clan, error: clanError }, { data: race, error: raceError }] = await Promise.all([
+          getClan(n.tag),
+          getRiverRace(n.tag),
+        ])
 
         if (race?.periodType === "training") continue
 
@@ -85,7 +84,7 @@ module.exports = {
           continue
         }
 
-        if (!race || !clan || race.error || clan.error) {
+        if (clanError || raceError || !clan || !race) {
           const errMsg = !race
             ? `**River race not found. Scheduled nudge ignored.**`
             : `**Unexpected error while attempting to send scheduled nudge.** If this issue continues, please join the ${hyperlink(
