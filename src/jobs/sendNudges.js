@@ -93,7 +93,7 @@ module.exports = {
               )}.`
 
           console.log(`Scheduled nudge error: ${clanTag}`)
-          console.log(clan?.error || race?.error)
+          console.log(clanError || raceError)
 
           nudgeChannel.send({ embeds: [{ color: red, description: errMsg }] })
 
