@@ -54,17 +54,17 @@ module.exports = {
         const { channelID, clanTag, guildID, ignoreLeaders, message } = n
 
         const [{ data: clan, error: clanError }, { data: race, error: raceError }] = await Promise.all([
-          getClan(n.clanTag),
-          getRiverRace(n.clanTag),
+          getClan(clanTag),
+          getRiverRace(clanTag),
         ])
 
         if (race?.periodType === "training") continue
 
         const nudgeChannel = client.channels.cache.get(channelID)
 
-        if (!nudgeChannel) {
+        if (!nudgeChannel || clan?.members === 0) {
           // delete scheduled nudge
-          console.log(`Nudge Channel Not Found: ${clanTag} ${guildID} ${channelID} (Deleting...)`)
+          console.log(`Channel or Clan doesn't exist: ${clanTag} ${guildID} ${channelID} (Deleting...)`)
           guilds.updateOne(
             {
               guildID,
