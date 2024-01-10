@@ -1,4 +1,5 @@
 const fs = require("fs")
+const { WebhookClient } = require("discord.js")
 const registerSlashCommands = require("../util/slash")
 const { logToSupportServer } = require("../util/logging")
 const { orange } = require("../static/colors")
@@ -13,6 +14,9 @@ module.exports = {
         client.cwEmojis.set(e.name, `<:${e.name}:${e.id}>`)
       }
     })
+
+    client.commandsWebhook = new WebhookClient({ url: process.env.COMMANDS_WEBHOOK_URL })
+    client.botWebhook = new WebhookClient({ url: process.env.BOT_WEBHOOK_URL })
 
     const commandFiles = fs.readdirSync("./src/commands")
 
