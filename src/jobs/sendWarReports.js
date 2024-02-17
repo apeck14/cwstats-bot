@@ -16,7 +16,6 @@ module.exports = {
 
     const guildsToSendReport = await guilds
       .find({
-        "warReport.enabled": true,
         "warReport.scheduledReportTimeHHMM": `${currentHH}:${currentMM}`,
       })
       .toArray()
