@@ -64,7 +64,7 @@ module.exports = {
           embeds: [
             {
               color: orange,
-              description: "**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me).",
+              description: `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`,
             },
           ],
         })

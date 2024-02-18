@@ -39,7 +39,7 @@ module.exports = {
         url: i.guild.iconURL() || "https://i.imgur.com/VAPR8Jq.png",
       },
       title: "__**Server Abbreviations**__",
-      url: "https://cwstats.com/me",
+      url: `https://cwstats.com/me/servers/${i.guildId}`,
     }
 
     if (abbreviations?.length > 0) {

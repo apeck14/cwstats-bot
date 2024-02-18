@@ -67,8 +67,7 @@ module.exports = {
         embeds: [
           {
             color: orange,
-            description:
-              "The set **applications** channel has been deleted. Please set the new channel [here](https://www.cwstats.com).",
+            description: `The set **applications** channel has been deleted. Please set the new channel [here](https://www.cwstats.com/me/servers/${i.guildId}/channels).`,
           },
         ],
       })
