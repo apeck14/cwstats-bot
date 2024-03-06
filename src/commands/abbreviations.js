@@ -25,30 +25,33 @@ module.exports = {
   run: async (i, db) => {
     const guilds = db.collection("Guilds")
 
-    const { abbreviations } = await guilds.findOne({
+    const { abbreviations, defaultClan } = await guilds.findOne({
       guildID: i.guildId,
     })
 
     const embed = {
       color: pink,
-      description: "*None*",
-      footer: {
-        text: "Abbreviations are not case sensitive!",
-      },
+      description: "**__Default Clan__**\n",
       thumbnail: {
         url: i.guild.iconURL() || "https://i.imgur.com/VAPR8Jq.png",
       },
       title: "__**Server Abbreviations**__",
-      url: `https://cwstats.com/me/servers/${i.guildId}`,
+      url: `https://cwstats.com/me/${i.guildId}`,
     }
+
+    if (defaultClan) {
+      embed.description += `**${defaultClan.name}**`
+    } else embed.description += "*None*"
+
+    embed.description += "\n\n**__Abbreviations__**"
 
     if (abbreviations?.length > 0) {
       abbreviations.sort((a, b) => a.abbr.localeCompare(b.abbr))
 
-      embed.description = `${abbreviations
+      embed.description += `${abbreviations
         .map((a) => `\n• **${a.abbr.toLowerCase()}**: ${formatStr(a.name)}`)
         .join("")}`
-    }
+    } else embed.description += "\n*None*"
 
     return i.editReply({
       embeds: [embed],
