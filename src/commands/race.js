@@ -1,8 +1,8 @@
 const { getRiverRace } = require("../util/api")
 const { orange, pink } = require("../static/colors")
-const { getAvgFame, getProjFame, getRacePlacements } = require("../util/raceFunctions")
+const { getRaceDetails } = require("../util/raceFunctions")
 const { errorMsg, getClanBadge } = require("../util/functions")
-const { formatStr, formatTag } = require("../util/formatting")
+const { formatStr } = require("../util/formatting")
 
 module.exports = {
   data: {
@@ -112,12 +112,15 @@ module.exports = {
       })
     }
 
-    const isColosseum = race.periodType === "colosseum"
-    const dayOfWeek = race.periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
+    const { clans, periodIndex, periodType, sectionIndex } = getRaceDetails(race)
+    const dayOfWeek = periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
+    const isColosseum = periodType === "colosseum"
+
+    const TAG = race.clan.tag
 
     const embed = {
       author: {
-        name: `Week ${race.sectionIndex + 1} | ${dayOfWeek < 3 ? "Training" : "War"} Day ${
+        name: `Week ${sectionIndex + 1} | ${dayOfWeek < 3 ? "Training" : "War"} Day ${
           dayOfWeek < 3 ? dayOfWeek + 1 : dayOfWeek - 2
         }`,
       },
@@ -130,12 +133,8 @@ module.exports = {
         url: "https://i.imgur.com/VAPR8Jq.png",
       },
       title: isColosseum ? `**__Colosseum__**` : `**__River Race__**`,
-      url: `https://www.cwstats.com/clan/${race.clan.tag.substring(1)}/race`,
+      url: `https://www.cwstats.com/clan/${TAG.substring(1)}/race`,
     }
-
-    const placements = getRacePlacements(race.clans, isColosseum)
-    const clansStillWarring = placements.filter((c) => !c.crossedFinishLine)
-    const clansCrossedFinishLine = placements.filter((c) => c.crossedFinishLine)
 
     const fameEmoji = client.cwEmojis.get("fame")
     const fameAvgEmoji = client.cwEmojis.get("fameAvg")
@@ -143,40 +142,35 @@ module.exports = {
     const projectionEmoji = client.cwEmojis.get("projection")
     const flagEmoji = client.cwEmojis.get("flag")
 
-    clansCrossedFinishLine.forEach((c) => {
-      const clan = race.clans.find((cl) => cl.tag === c.tag)
-      const { badgeId, clanScore, name } = clan
+    const clansStillWarring = clans.filter((c) => !c.crossedFinishLine)
+    const clansCrossedFinishLine = clans.filter((c) => c.crossedFinishLine)
 
-      const badgeName = getClanBadge(badgeId, clanScore)
+    clansCrossedFinishLine.forEach((c) => {
+      const { badgeId, name, trophies } = c
+
+      const badgeName = getClanBadge(badgeId, trophies)
       const badgeEmoji = client.cwEmojis.get(badgeName)
 
-      if (c.tag === formatTag(tag)) embed.description += `${flagEmoji} ${badgeEmoji} **__${formatStr(name)}__**\n`
+      if (c.tag === TAG) embed.description += `${flagEmoji} ${badgeEmoji} **__${formatStr(name)}__**\n`
       else embed.description += `${flagEmoji} ${badgeEmoji} **${formatStr(name)}**\n`
     })
 
     for (const c of clansStillWarring) {
-      embed.description += c.placement === Infinity ? "\n" : `\n**${c.placement}.**`
+      embed.description += c.placement ? `\n**${c.placement}.**` : "\n"
 
-      const clan = race.clans.find((cl) => cl.tag === c.tag)
-      const { badgeId, clanScore, name, participants } = clan
+      const { badgeId, fameAvg, name, participants, projFame, projPlace, trophies } = c
 
       const decksRemaining = 200 - participants.reduce((a, b) => a + b.decksUsedToday, 0)
 
-      const badgeName = getClanBadge(badgeId, clanScore)
+      const badgeName = getClanBadge(badgeId, trophies)
       const badgeEmoji = client.cwEmojis.get(badgeName)
 
-      if (c.tag === formatTag(tag)) embed.description += `${badgeEmoji} **__${formatStr(name)}__**\n`
+      if (c.tag === TAG) embed.description += `${badgeEmoji} **__${formatStr(name)}__**\n`
       else embed.description += `${badgeEmoji} **${formatStr(name)}**\n`
 
-      embed.description += `${fameEmoji} ${c.fame}\n${projectionEmoji} ${getProjFame(
-        clan,
-        isColosseum,
-        dayOfWeek,
-      )}\n${decksRemainingEmoji} ${decksRemaining}\n${fameAvgEmoji} **${getAvgFame(
-        clan,
-        isColosseum,
-        dayOfWeek,
-      ).toFixed(2)}**\n`
+      embed.description += `${fameEmoji} ${c.fame}\n${projectionEmoji} ${projFame} ${
+        projPlace ? `(${projPlace})` : ""
+      }\n${decksRemainingEmoji} ${decksRemaining}\n${fameAvgEmoji} **${fameAvg.toFixed(2)}**\n`
     }
 
     return i.editReply({
