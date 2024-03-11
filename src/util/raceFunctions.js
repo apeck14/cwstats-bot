@@ -90,7 +90,7 @@ const formatPlacement = (place) => {
 }
 
 const getProjPlacements = (clans, dayOfWeek) => {
-  if (dayOfWeek < 3) return
+  if (dayOfWeek < 3) return clans
 
   const clanProjections = clans.map((c) => ({
     fame: c.projFame,
