@@ -434,7 +434,9 @@ module.exports = [
     name: "Cyprus",
   },
   {
+    flagEmoji: ":flag_cz:",
     id: 57000070,
+    isAdded: true,
     isCountry: true,
     key: "CZ",
     name: "Czech Republic",
@@ -756,7 +758,9 @@ module.exports = [
     name: "Jamaica",
   },
   {
+    flagEmoji: ":flag_jp:",
     id: 57000122,
+    isAdded: true,
     isCountry: true,
     key: "JP",
     name: "Japan",
@@ -1150,7 +1154,9 @@ module.exports = [
     name: "Pitcairn Islands",
   },
   {
+    flagEmoji: ":flag_pl:",
     id: 57000187,
+    isAdded: true,
     isCountry: true,
     key: "PL",
     name: "Poland",
@@ -1512,7 +1518,9 @@ module.exports = [
     name: "Uganda",
   },
   {
+    flagEmoji: ":flag_ua:",
     id: 57000246,
+    isAdded: true,
     isCountry: true,
     key: "UA",
     name: "Ukraine",
