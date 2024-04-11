@@ -20,6 +20,8 @@ module.exports = {
       })
       .toArray()
 
+    console.log(`${currentHH}:${currentMM}`, guildsToSendReport?.length)
+
     const guildsPromises = guildsToSendReport.map((g) => getRiverRace(g.warReport.clanTag))
     const guildsRaceData = await Promise.all(guildsPromises)
 
