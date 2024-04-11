@@ -31,12 +31,16 @@ module.exports = {
         const { channels, guildID } = g
         const { reportChannelID } = channels
 
+        if (guildID === "660225034706747408") console.log("here")
+
         const reportChannel = client.channels.cache.get(reportChannelID)
 
         if (!reportChannel) {
           console.log(`No report channel found: ${guildID}`)
           continue
         }
+
+        if (guildID === "660225034706747408") console.log("here")
 
         const reportChannelPermissions = reportChannel?.permissionsFor(client.user)
         const requiredFlags = [
@@ -52,11 +56,15 @@ module.exports = {
           continue
         }
 
+        if (guildID === "660225034706747408") console.log("here")
+
         const raceRes = guildsRaceData.find((res) => res.data?.clan?.tag === g.warReport.clanTag)
         const { data: race, error } = raceRes || {}
 
         const clanRes = guildsClanData.find((res) => res.data?.tag === g.warReport.clanTag)
         const { data: clan, error: clanError } = clanRes || {}
+
+        if (guildID === "660225034706747408") console.log("here")
 
         const thumbnail = {
           url: "https://i.imgur.com/VAPR8Jq.png",
