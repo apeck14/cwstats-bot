@@ -28,12 +28,15 @@ module.exports = {
 
     for (const g of guildsToSendReport) {
       try {
-        const { channels } = g
+        const { channels, guildID } = g
         const { reportChannelID } = channels
 
         const reportChannel = client.channels.cache.get(reportChannelID)
 
-        if (!reportChannel) continue
+        if (!reportChannel) {
+          console.log(`No report channel found: ${guildID}`)
+          continue
+        }
 
         const reportChannelPermissions = reportChannel?.permissionsFor(client.user)
         const requiredFlags = [
@@ -44,7 +47,10 @@ module.exports = {
           PermissionFlagsBits.AttachFiles,
         ]
 
-        if (!reportChannelPermissions.has(requiredFlags)) continue
+        if (!reportChannelPermissions.has(requiredFlags)) {
+          console.log(`Missing permissions (war report): ${guildID} ${reportChannelID}`)
+          continue
+        }
 
         const raceRes = guildsRaceData.find((res) => res.data?.clan?.tag === g.warReport.clanTag)
         const { data: race, error } = raceRes || {}
