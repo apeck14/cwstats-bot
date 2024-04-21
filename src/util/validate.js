@@ -64,7 +64,7 @@ const checkPermissions = (i, channels, client) => {
 }
 
 const validate = (i, channels, client) => {
-  const { applicationsChannelID, applyChannelID, commandChannelIDs } = channels
+  const { applicationsChannelID, applyChannelID, commandChannelIDs, commandChannelKeyword } = channels
   const { channelId } = i
 
   const color = orange
@@ -86,13 +86,19 @@ const validate = (i, channels, client) => {
     }
   }
 
-  if (commandChannelIDs.length > 0 && !commandChannelIDs.includes(channelId)) {
-    return {
-      color,
-      error: `You can only use this command in a set **command channel**!`,
-      onlyShowToUser: true,
-    }
+  const notCommandChannelEmbed = {
+    color,
+    error: `You can only use this command in a set **command channel**!`,
+    onlyShowToUser: true,
   }
+
+  let showCommandChannelEmbed = true
+
+  if (commandChannelIDs?.length === 0 && !commandChannelKeyword) showCommandChannelEmbed = false
+  else if (commandChannelIDs?.length > 0 && commandChannelIDs.includes(channelId)) showCommandChannelEmbed = false
+  else if (commandChannelKeyword && i.channel.name.includes(commandChannelKeyword)) showCommandChannelEmbed = false
+
+  if (showCommandChannelEmbed) return notCommandChannelEmbed
 
   const { error } = checkPermissions(i, channels, client)
 
