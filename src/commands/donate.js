@@ -1,3 +1,5 @@
+const { pink } = require("../static/colors")
+
 module.exports = {
   data: {
     description: "Donate to support CW2Stats.",
@@ -23,10 +25,22 @@ module.exports = {
     const row = {
       components: [
         {
-          label: "Donate",
+          label: "PayPal",
           style: 5,
           type: 2,
           url: "https://paypal.me/cw2stats",
+        },
+        {
+          label: "BuyMeACoffee",
+          style: 5,
+          type: 2,
+          url: "https://buymeacoffee.com/cwstats",
+        },
+        {
+          label: "Patreon",
+          style: 5,
+          type: 2,
+          url: "https://www.patreon.com/CWStats",
         },
       ],
       type: 1,
@@ -36,13 +50,12 @@ module.exports = {
       components: [row],
       embeds: [
         {
-          color: 0x3b7bbf,
-          description:
-            "CW Stats strives to aid all competitive war clans with game-changing data & stats! All proceeds help expand the capabilities of the bot & website.",
+          color: pink,
+          description: `CWStats strives to aid all competitive war clans with game-changing data & stats! All proceeds help expand the capabilities of the bot & website.`,
           thumbnail: {
-            url: "https://w7.pngwing.com/pngs/875/329/png-transparent-paypal-logo-e-commerce-payment-system-paypal-blue-angle-company.png",
+            url: "https://i.imgur.com/VAPR8Jq.png",
           },
-          title: "Donate with PayPal",
+          title: "Support CWStats!",
         },
       ],
     })
