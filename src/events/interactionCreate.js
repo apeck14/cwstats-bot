@@ -7,7 +7,8 @@ module.exports = {
   event: "interactionCreate",
   run: async (client, db, i) => {
     try {
-      if (!i || !i.isChatInputCommand()) return
+      const isContextMenuCommand = i.isMessageContextMenuCommand()
+      if (!i || (!isContextMenuCommand && !i.isChatInputCommand())) return
 
       if (!i.guild) {
         return i.reply({
@@ -53,7 +54,9 @@ module.exports = {
 
       await i.deferReply()
 
-      const { disabled, run } = i.client.commands.get(i.commandName)
+      const { disabled, run } = isContextMenuCommand
+        ? i.client.contextCommands.get(i.commandName)
+        : i.client.commands.get(i.commandName)
 
       if (disabled) {
         return i.editReply({
