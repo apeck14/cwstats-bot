@@ -1,12 +1,7 @@
-const { createCanvas, loadImage, registerFont } = require("canvas")
 const { addPlayer, getClan, getPlayer } = require("../util/api")
 const { green, orange, pink } = require("../static/colors")
 const { errorMsg, getArenaEmoji, getClanBadge } = require("../util/functions")
 const { formatRole, formatStr, formatTag } = require("../util/formatting")
-
-registerFont("./src/static/fonts/Supercell-Magic.ttf", {
-  family: "Supercell-Magic",
-})
 
 module.exports = {
   data: {
@@ -85,36 +80,6 @@ module.exports = {
       name: player.name,
       tag: player.tag,
     })
-
-    const playerRank = player.leagueStatistics?.currentSeason?.rank
-    const arenaImage = await loadImage(`./src/static/images/arenas/${getArenaEmoji(player.trophies)}.png`)
-
-    const canvas = createCanvas(arenaImage.width, arenaImage.height)
-    const context = canvas.getContext("2d")
-
-    context.drawImage(arenaImage, 0, 0, canvas.width, canvas.height)
-
-    // add global rank
-    if (playerRank > -1) {
-      const fontSize = () => {
-        if (playerRank < 10) return 130
-        if (playerRank < 1000) return 115
-
-        return 90
-      }
-
-      context.font = `${fontSize()}px Supercell-Magic`
-
-      const textWidth = context.measureText(playerRank).width
-      const [tX, tY] = [(arenaImage.width - textWidth) / 2, arenaImage.height / 2 + 15]
-      const [oX, oY] = [tX + 4, tY + 6]
-
-      context.fillStyle = "black"
-      context.fillText(playerRank, oX, oY)
-
-      context.fillStyle = "white"
-      context.fillText(playerRank, tX, tY)
-    }
 
     let clanBadge
 
@@ -201,7 +166,7 @@ module.exports = {
       embeds: [applicationEmbed],
       files: [
         {
-          attachment: canvas.toBuffer(),
+          attachment: `./src/static/images/arenas/${getArenaEmoji(player.trophies)}.png`,
           name: "arena.png",
         },
       ],
