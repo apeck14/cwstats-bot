@@ -114,6 +114,7 @@ module.exports = {
 
     const { clans, periodIndex, periodType, sectionIndex } = getRaceDetails(race)
     const dayOfWeek = periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
+    const isTraining = dayOfWeek <= 2
     const isColosseum = periodType === "colosseum"
 
     const TAG = race.clan.tag
@@ -142,8 +143,13 @@ module.exports = {
     const projectionEmoji = client.cwEmojis.get("projection")
     const flagEmoji = client.cwEmojis.get("flag")
 
-    const clansStillWarring = clans.filter((c) => !c.crossedFinishLine)
-    const clansCrossedFinishLine = clans.filter((c) => c.crossedFinishLine)
+    const clansStillWarring = []
+    const clansCrossedFinishLine = []
+
+    for (const c of clans) {
+      if (c.crossedFinishLine) clansCrossedFinishLine.push(c)
+      else clansStillWarring.push(c)
+    }
 
     clansCrossedFinishLine.forEach((c) => {
       const { badgeId, name, trophies } = c
@@ -156,21 +162,25 @@ module.exports = {
     })
 
     for (const c of clansStillWarring) {
-      embed.description += c.placement ? `\n**${c.placement}.**` : "\n"
+      embed.description += "\n"
 
       const { badgeId, fameAvg, name, participants, projFame, projPlace, trophies } = c
-
-      const decksRemaining = 200 - participants.reduce((a, b) => a + b.decksUsedToday, 0)
-
       const badgeName = getClanBadge(badgeId, trophies)
       const badgeEmoji = client.cwEmojis.get(badgeName)
 
-      if (c.tag === TAG) embed.description += `${badgeEmoji} **__${formatStr(name)}__**\n`
-      else embed.description += `${badgeEmoji} **${formatStr(name)}**\n`
+      const isClan = c.tag === TAG
+      const formattedClanName = `${badgeEmoji} **${isClan ? "__" : ""}${formatStr(name)}${isClan ? "__" : ""}**\n`
 
-      embed.description += `${fameEmoji} ${c.fame}\n${projectionEmoji} ${projFame} ${
-        projPlace ? `(${projPlace})` : ""
-      }\n${decksRemainingEmoji} ${decksRemaining}\n${fameAvgEmoji} **${fameAvg.toFixed(2)}**\n`
+      // show clan data if not training day and more than 0 medals
+      if (!isTraining && c.fame > 0) {
+        embed.description += `**${c.placement}.**${formattedClanName}`
+
+        const decksRemaining = 200 - participants.reduce((a, b) => a + b.decksUsedToday, 0)
+
+        embed.description += `${fameEmoji} ${c.fame}\n${projectionEmoji} ${projFame} ${
+          projPlace ? `(${projPlace})` : ""
+        }\n${decksRemainingEmoji} ${decksRemaining}\n${fameAvgEmoji} **${fameAvg.toFixed(2)}**\n`
+      } else embed.description += formattedClanName
     }
 
     return i.editReply({
