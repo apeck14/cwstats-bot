@@ -49,7 +49,14 @@ const checkPermissions = (i, channels, client) => {
       }
     }
 
-    const channelPermissions = client.channels.cache.get(i.channelId).permissionsFor(client.user)
+    const channel = client.channels.cache.get(i.channelId)
+
+    if (!channel)
+      return {
+        error: "**Channel not found.**",
+      }
+
+    const channelPermissions = channel.permissionsFor(client.user)
 
     const requiredFlags = [PermissionFlagsBits.UseExternalEmojis]
 
