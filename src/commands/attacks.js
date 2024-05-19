@@ -190,19 +190,19 @@ module.exports = {
     )}**\n${fameEmoji} **${fame}**\n${decksRemainingEmoji} **${totalAttacksLeft}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n`
 
     if (fourAttacks.length > 0) {
-      embed.description += `\n**__4 Attacks__**\n`
+      embed.description += `\n**__4 Attacks__** (${fourAttacks.length})\n`
       embed.description += fourAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")
     }
     if (threeAttacks.length > 0) {
-      embed.description += `\n**__3 Attacks__**\n`
+      embed.description += `\n**__3 Attacks__** (${threeAttacks.length})\n`
       embed.description += threeAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")
     }
     if (twoAttacks.length > 0) {
-      embed.description += `\n**__2 Attacks__**\n`
+      embed.description += `\n**__2 Attacks__** (${twoAttacks.length})\n`
       embed.description += twoAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")
     }
     if (oneAttack.length > 0) {
-      embed.description += `\n**__1 Attack__**\n`
+      embed.description += `\n**__1 Attack__** (${oneAttack.length})\n`
       embed.description += oneAttack.map((p) => `• ${formatStr(p.name)}\n`).join("")
     }
 
