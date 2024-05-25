@@ -43,6 +43,7 @@ module.exports = {
           ...n,
           guildID: g.guildID,
           ignoreLeaders: g.nudges?.ignoreLeaders || false,
+          ignoreWhenCrossedFinishLine: g.nudges?.ignoreWhenCrossedFinishLine || false,
           message: g.nudges?.message || "",
         }))
 
@@ -51,7 +52,7 @@ module.exports = {
 
     for (const n of nudges) {
       try {
-        const { channelID, clanTag, guildID, ignoreLeaders, message } = n
+        const { channelID, clanTag, guildID, ignoreLeaders, ignoreWhenCrossedFinishLine, message } = n
 
         const [{ data: clan, error: clanError }, { data: race, error: raceError }] = await Promise.all([
           getClan(clanTag),
@@ -59,6 +60,9 @@ module.exports = {
         ])
 
         if (race?.periodType === "training") continue
+
+        const isColosseum = race?.periodType === "colosseum"
+        if (!isColosseum && race?.clan?.fame >= 10000 && ignoreWhenCrossedFinishLine) continue
 
         const nudgeChannel = client.channels.cache.get(channelID)
 
