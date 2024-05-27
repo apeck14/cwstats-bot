@@ -2,6 +2,8 @@ const { PermissionFlagsBits, PermissionsBitField } = require("discord.js")
 const startCase = require("lodash/startCase")
 const { orange, red } = require("../static/colors")
 
+const ADMIN_COMMANDS = ["nudge"]
+
 const missingPermissionsToStr = (permissions, requiredFlags) => {
   const serializedPermissions = permissions.serialize()
   const requiredPermissionsArr = new PermissionsBitField(requiredFlags).toArray()
@@ -15,7 +17,8 @@ const missingPermissionsToStr = (permissions, requiredFlags) => {
   return str
 }
 
-const checkPermissions = (i, channels, client) => {
+const checkPermissions = (i, guild, client) => {
+  const { adminRoleID, channels } = guild
   const { applicationsChannelID } = channels
 
   if (i.commandName === "apply") {
@@ -37,12 +40,11 @@ const checkPermissions = (i, channels, client) => {
       }
     }
   } else {
-    const ADMIN_COMMANDS = ["schedule-report", "nudge"]
-
-    if (i.user.id !== "493245767448789023" && ADMIN_COMMANDS.includes(i.commandName)) {
+    if (ADMIN_COMMANDS.includes(i.commandName)) {
       const isAdmin = i.member.permissions.has(PermissionsBitField.Flags.ManageGuild)
+      const hasAdminRole = !adminRoleID || !i.member.roles.cache.has(adminRoleID)
 
-      if (!isAdmin) {
+      if (!isAdmin && !hasAdminRole) {
         return {
           error: "**You do not have permissions to use this command.**",
         }
@@ -70,8 +72,8 @@ const checkPermissions = (i, channels, client) => {
   return {}
 }
 
-const validate = (i, channels, client) => {
-  const { applicationsChannelID, applyChannelID, commandChannelIDs, commandChannelKeyword } = channels
+const validate = (i, guild, client) => {
+  const { applicationsChannelID, applyChannelID, commandChannelIDs, commandChannelKeyword } = guild.channels
   const { channelId } = i
 
   const color = orange
@@ -107,7 +109,7 @@ const validate = (i, channels, client) => {
 
   if (showCommandChannelEmbed) return notCommandChannelEmbed
 
-  const { error } = checkPermissions(i, channels, client)
+  const { error } = checkPermissions(i, guild, client)
 
   if (error) {
     return {

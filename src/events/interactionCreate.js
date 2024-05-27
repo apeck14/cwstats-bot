@@ -38,7 +38,7 @@ module.exports = {
         console.log(`Guild not found, but updated! ${i.guildId}`)
       }
 
-      const { color, error, onlyShowToUser } = validate(i, guildExists.channels, client)
+      const { color, error, onlyShowToUser } = validate(i, guildExists, client)
 
       if (error) {
         return i.reply({
