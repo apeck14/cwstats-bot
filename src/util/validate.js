@@ -44,6 +44,8 @@ const checkPermissions = (i, guild, client) => {
       const isAdmin = i.member.permissions.has(PermissionsBitField.Flags.ManageGuild)
       const hasAdminRole = !adminRoleID || !i.member.roles.cache.has(adminRoleID)
 
+      console.log({ adminRoleID, hasAdminRole, idFound: i.member.roles.cache.has(adminRoleID) })
+
       if (!isAdmin && !hasAdminRole) {
         return {
           error: "**You do not have permissions to use this command.**",
