@@ -42,9 +42,7 @@ const checkPermissions = (i, guild, client) => {
   } else {
     if (ADMIN_COMMANDS.includes(i.commandName)) {
       const isAdmin = i.member.permissions.has(PermissionsBitField.Flags.ManageGuild)
-      const hasAdminRole = !adminRoleID || !i.member.roles.cache.has(adminRoleID)
-
-      console.log({ adminRoleID, hasAdminRole, idFound: i.member.roles.cache.has(adminRoleID) })
+      const hasAdminRole = !adminRoleID || i.member.roles.cache.has(adminRoleID)
 
       if (!isAdmin && !hasAdminRole) {
         return {
