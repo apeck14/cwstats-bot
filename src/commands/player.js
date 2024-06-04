@@ -1,6 +1,6 @@
 const { addPlayer, getClan, getPlayer } = require("../util/api")
 const { orange, pink } = require("../static/colors")
-const { errorMsg, getArenaEmoji, getClanBadge } = require("../util/functions")
+const { errorMsg, getArenaEmoji, getClanBadge, getPlayerCardData } = require("../util/functions")
 const { formatRole, formatStr, formatTag } = require("../util/formatting")
 
 module.exports = {
@@ -150,15 +150,13 @@ module.exports = {
     const level15 = client.cwEmojis.get("level15")
     const level14 = client.cwEmojis.get("level14")
     const level13 = client.cwEmojis.get("level13")
-    const level12 = client.cwEmojis.get("level12")
+    const wildShardEmoji = client.cwEmojis.get("wildshard")
 
     const ccWins = player.badges.find((b) => b.name === "Classic12Wins")?.progress || 0
     const gcWins = player.badges.find((b) => b.name === "Grand12Wins")?.progress || 0
     const cw2Wins = player.badges.find((b) => b.name === "ClanWarWins")?.progress || 0
-    const lvl15Cards = player.cards.filter((c) => c.maxLevel - c.level === -1).length
-    const lvl14Cards = player.cards.filter((c) => c.maxLevel - c.level === 0).length
-    const lvl13Cards = player.cards.filter((c) => c.maxLevel - c.level === 1).length
-    const lvl12Cards = player.cards.filter((c) => c.maxLevel - c.level === 2).length
+
+    const { evolutions, lvl13, lvl14, lvl15 } = getPlayerCardData(player.cards)
 
     const embed = {
       color: pink,
@@ -176,7 +174,6 @@ module.exports = {
 
     const { bestPathOfLegendSeasonResult: bestPOLObj, currentPathOfLegendSeasonResult: currentPOLObj } = player
 
-    // POL
     const currentPOLSeasonStr =
       currentPOLObj?.leagueNumber === 10 ? `${polMedalsEmoji} **${currentPOLObj.trophies}**` : "N/A"
     const bestPOLSeasonStr =
@@ -192,8 +189,8 @@ module.exports = {
       player.legacyTrophyRoadHighScore || "None"
     }\n**CW1 Wins**: ${player.warDayWins}\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${
       player.challengeMaxWins
-    }\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` // stats
-    embed.description += `**__Cards__**\n${level15}: ${lvl15Cards}\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}` // cards
+    }\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n`
+    embed.description += `**__Cards__**\n${wildShardEmoji}: ${evolutions}\n${level15}: ${lvl15}\n${level14}: ${lvl14}\n${level13}: ${lvl13}`
 
     return i.editReply({
       embeds: [embed],

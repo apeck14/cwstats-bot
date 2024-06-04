@@ -123,11 +123,33 @@ const findBestMatch = (str, arr) => {
   return bestMatch
 }
 
+const getPlayerCardData = (cards) => {
+  const cardData = {
+    evolutions: 0,
+    lvl13: 0,
+    lvl14: 0,
+    lvl15: 0,
+  }
+
+  for (const c of cards) {
+    const levelDiff = c.maxLevel - c.level
+
+    if (levelDiff === -1) cardData.lvl15++
+    else if (levelDiff === 0) cardData.lvl14++
+    else if (levelDiff === 1) cardData.lvl13++
+
+    if (c.evolutionLevel) cardData.evolutions++
+  }
+
+  return cardData
+}
+
 module.exports = {
   errorMsg,
   findBestMatch,
   getArenaEmoji,
   getClanBadge,
   getLeague,
+  getPlayerCardData,
   hexToRgbA,
 }
