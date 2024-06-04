@@ -34,7 +34,8 @@
     "import/no-dynamic-require": "off",
     "global-require": "off",
     "no-await-in-loop": "off",
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "one-var": "off"
   },
   "overrides": []
 }
