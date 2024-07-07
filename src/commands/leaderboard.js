@@ -2,6 +2,7 @@ const { orange, pink } = require("../static/colors")
 const { formatStr } = require("../util/formatting")
 const { getClanBadge } = require("../util/functions")
 const locations = require("../static/locations")
+const { getAllPlusClanTags } = require("../util/api")
 
 module.exports = {
   data: {
@@ -90,16 +91,20 @@ module.exports = {
       }
     }
 
-    const leaderboard = await dailyLb
-      .find(query)
-      .sort({
-        notRanked: 1,
-        // eslint-disable-next-line perfectionist/sort-objects
-        fameAvg: -1,
-        rank: 1,
-      })
-      .limit(10)
-      .toArray()
+    const [leaderboard, { lbLastUpdated }, plusTags] = await Promise.all([
+      dailyLb
+        .find(query)
+        .sort({
+          notRanked: 1,
+          // eslint-disable-next-line perfectionist/sort-objects
+          fameAvg: -1,
+          rank: 1,
+        })
+        .limit(10)
+        .toArray(),
+      statistics.findOne({}),
+      getAllPlusClanTags(db),
+    ])
 
     if (leaderboard.length === 0) {
       return i.editReply({
@@ -112,7 +117,6 @@ module.exports = {
       })
     }
 
-    const { lbLastUpdated } = (await statistics.find({}).toArray())[0]
     const now = Date.now()
     const diffInMins = Math.round((now - lbLastUpdated) / 1000 / 60)
 
@@ -136,6 +140,7 @@ module.exports = {
 
     const fameAvgEmoji = client.cwEmojis.get("fameAvg")
     const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
+    const cwstatsPlusEmoji = client.cwEmojis.get("cwstats_plus")
 
     embed.description += `**Location**: ${location?.key || "Global"} ${location?.flagEmoji || ":earth_americas:"}\n`
     embed.description += `**League**: ${trophies === 4000 ? "4k" : trophies === 5000 ? "5k+" : "All (4k+)"}\n\n`
@@ -147,10 +152,11 @@ module.exports = {
       const url = `https://www.cwstats.com/clan/${clan.tag.substring(1)}/race`
       const badgeName = getClanBadge(clan.badgeId, clan.clanScore)
       const badgeEmoji = client.cwEmojis.get(badgeName)
+      const isPlus = plusTags.includes(clan.tag) ? cwstatsPlusEmoji : ""
 
       if (clan.notRanked) showNRFooter = true
 
-      embed.description += `**${clan.notRanked ? "NR" : i + 1}.** ${badgeEmoji} [**${formatStr(clan.name)}**](${url})\n`
+      embed.description += `**${clan.notRanked ? "NR" : i + 1}.** ${badgeEmoji} [**${formatStr(clan.name)}**](${url})${isPlus}\n`
       embed.description += `${fameAvgEmoji} **${clan.fameAvg.toFixed(2)}** ${decksRemainingEmoji} ${
         clan.decksRemaining
       } :earth_americas: `

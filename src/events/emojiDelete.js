@@ -1,5 +1,5 @@
 const ownerIds = require("../static/ownerIds")
-const { green } = require("../static/colors")
+const { red } = require("../static/colors")
 const { logToSupportServer } = require("../util/logging")
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
     logToSupportServer(
       client,
       {
-        color: green,
+        color: red,
         description: `**Name**: ${emoji.name}\n**ID**: ${emoji.id}`,
         thumbnail: {
           url: emoji.imageURL(),

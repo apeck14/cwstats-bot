@@ -109,3 +109,15 @@ exports.addPlayer = async (db, { clanName, name, tag }) => {
     console.log(err)
   }
 }
+
+exports.getAllPlusClanTags = async (db) => {
+  try {
+    const plus = db.collection("CWStats+")
+
+    const plusClans = await plus.distinct("tag")
+
+    return plusClans
+  } catch (e) {
+    return []
+  }
+}
