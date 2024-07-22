@@ -1,5 +1,5 @@
 const axios = require("axios")
-const { CR_API_JOB_TOKEN, CR_API_TOKEN } = require("../../config")
+const { CR_API_TOKEN } = require("../../config")
 const { formatTag } = require("./formatting")
 
 const apiRequest = async (url, apiToken) => {
@@ -79,7 +79,7 @@ exports.getRiverRace = (tag) => {
   tag = formatTag(tag).substring(1)
   const url = `https://proxy.royaleapi.dev/v1/clans/%23${tag}/currentriverrace`
 
-  return apiRequest(url, CR_API_JOB_TOKEN)
+  return apiRequest(url, CR_API_TOKEN)
 }
 
 exports.getWarLeaderboard = (limit = 100, locationId = "global") => {
