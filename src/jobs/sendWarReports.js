@@ -1,5 +1,5 @@
 const { AttachmentBuilder, PermissionFlagsBits } = require("discord.js")
-const { pink, red } = require("../static/colors")
+const { orange, pink, red } = require("../static/colors")
 const { getClan, getRiverRace } = require("../util/api")
 const { formatStr } = require("../util/formatting")
 const { getClanBadge } = require("../util/functions")
@@ -205,11 +205,17 @@ module.exports = {
           reportStr += "\n\n* = Not in clan"
         }
 
+        const plusEmbed = {
+          color: orange,
+          description:
+            "**Daily War Reports** will be replaced by **Daily Player Tracking** in the coming weeks. If interested, please [activate](<https://www.cwstats.com/upgrade>) **CWStats+** for your clan, for free.",
+        }
+
         await reportChannel.send({
-          embeds: [embed],
+          embeds: [embed, plusEmbed],
         })
 
-        reportChannel.send({
+        await reportChannel.send({
           files: [txtReport],
         })
       } catch (err) {
