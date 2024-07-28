@@ -212,11 +212,15 @@ module.exports = {
         }
 
         await reportChannel.send({
-          embeds: [embed, plusEmbed],
+          embeds: [embed],
         })
 
         await reportChannel.send({
           files: [txtReport],
+        })
+
+        reportChannel.send({
+          embeds: [plusEmbed],
         })
       } catch (err) {
         console.log(err)
