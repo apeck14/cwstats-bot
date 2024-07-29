@@ -1,6 +1,6 @@
 const { AttachmentBuilder, PermissionFlagsBits } = require("discord.js")
 const { orange, pink, red } = require("../static/colors")
-const { getClan, getRiverRace } = require("../util/api")
+const { getAllPlusClanTags, getClan, getRiverRace } = require("../util/api")
 const { formatStr } = require("../util/formatting")
 const { getClanBadge } = require("../util/functions")
 const { getAvgFame } = require("../util/raceFunctions")
@@ -14,11 +14,14 @@ module.exports = {
     const currentHH = now.getUTCHours() < 10 ? `0${now.getUTCHours()}` : now.getUTCHours()
     const currentMM = now.getUTCMinutes() < 10 ? `0${now.getUTCMinutes()}` : now.getUTCMinutes()
 
-    const guildsToSendReport = await guilds
-      .find({
-        "warReport.scheduledReportTimeHHMM": `${currentHH}:${currentMM}`,
-      })
-      .toArray()
+    const [guildsToSendReport, plusClansTags] = await Promise.all([
+      guilds
+        .find({
+          "warReport.scheduledReportTimeHHMM": `${currentHH}:${currentMM}`,
+        })
+        .toArray(),
+      getAllPlusClanTags(db),
+    ])
 
     const guildsPromises = guildsToSendReport.map((g) => getRiverRace(g.warReport.clanTag))
     const guildsRaceData = await Promise.all(guildsPromises)
@@ -205,12 +208,6 @@ module.exports = {
           reportStr += "\n\n* = Not in clan"
         }
 
-        const plusEmbed = {
-          color: orange,
-          description:
-            "**Daily War Reports** will be replaced by **Daily Player Tracking** in the coming weeks. If interested, please [activate](<https://www.cwstats.com/upgrade>) **CWStats+** for your clan, for free.",
-        }
-
         await reportChannel.send({
           embeds: [embed],
         })
@@ -219,9 +216,17 @@ module.exports = {
           files: [txtReport],
         })
 
-        reportChannel.send({
-          embeds: [plusEmbed],
-        })
+        if (!plusClansTags.includes(clan.tag)) {
+          const plusEmbed = {
+            color: orange,
+            description:
+              "**Daily War Reports** will be replaced by **Daily Player Tracking** in the coming weeks. If interested, please [activate](<https://www.cwstats.com/upgrade>) **CWStats+** for your clan, for free.",
+          }
+
+          reportChannel.send({
+            embeds: [plusEmbed],
+          })
+        }
       } catch (err) {
         console.log(err)
         console.log(g?.guildID)
