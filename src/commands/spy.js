@@ -114,8 +114,8 @@ module.exports = {
       if (iTag) {
         const { data, error } = await getBattleLog(iTag)
 
-        if (data.length === 0 || error) {
-          const msg = data.length === 0 ? "**Invalid tag, or no recent battles found for this player.**" : error
+        if (error || data?.length === 0) {
+          const msg = data?.length === 0 ? "**Invalid tag, or no recent battles found for this player.**" : error
 
           return errorMsg(i, msg)
         }
