@@ -12,7 +12,7 @@
   "author": "Apehk",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.7.2",
+    "axios": "^1.7.3",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
     "fast-dice-coefficient": "^1.0.3",
@@ -27,7 +27,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.9.0",
-    "eslint-plugin-perfectionist": "^3.0.0",
+    "eslint-plugin-perfectionist": "^3.1.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "prettier": "^3.3.3"
   }
