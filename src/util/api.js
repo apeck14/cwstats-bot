@@ -97,7 +97,7 @@ exports.getChests = (tag) => {
 
 exports.addPlayer = async (db, { clanName, name, tag }) => {
   try {
-    const players = db.collection("Players")
+    const players = db.collection("Players 2")
 
     const query = { tag }
     const update = { $set: { clanName, name, tag } }
