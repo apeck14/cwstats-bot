@@ -8,10 +8,16 @@ const ownerIds = require("../static/ownerIds")
 module.exports = {
   event: "ready",
   once: true,
-  run: async (client) => {
+  run: async (client, db) => {
+    const emojis = db.collection("Emojis")
+
     client.emojis.cache.each((e) => {
       if (ownerIds.includes(e.guild.ownerId)) {
-        client.cwEmojis.set(e.name, `<:${e.name}:${e.id}>`)
+        const emoji = `<:${e.name}:${e.id}>`
+        client.cwEmojis.set(e.name, emoji)
+
+        // upsert emoji in DB for Jobs repo to consume
+        emojis.updateOne({ name: e.name }, { emoji, name: e.name }, { upsert: true })
       }
     })
 
