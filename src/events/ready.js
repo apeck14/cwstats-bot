@@ -17,7 +17,7 @@ module.exports = {
         client.cwEmojis.set(e.name, emoji)
 
         // upsert emoji in DB for Jobs repo to consume
-        emojis.updateOne({ name: e.name }, { emoji, name: e.name }, { upsert: true })
+        emojis.updateOne({ name: e.name }, { $set: { emoji, name: e.name } }, { upsert: true })
       }
     })
 
