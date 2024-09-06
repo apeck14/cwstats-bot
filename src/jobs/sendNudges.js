@@ -31,8 +31,6 @@ module.exports = {
       })
       .toArray()
 
-    console.log(hourQuery, guildsToSendNudge.length)
-
     const nudges = []
 
     // add all nudges in correct format
@@ -50,14 +48,17 @@ module.exports = {
       nudges.push(...scheduledNudges)
     }
 
+    const nudgesRacePromises = nudges.map((n) => getRiverRace(n.clanTag))
+    const nudgesRaces = await Promise.all(nudgesRacePromises)
+
+    const nudgesClanPromises = nudges.map((n) => getClan(n.clanTag))
+    const nudgesClans = await Promise.all(nudgesClanPromises)
+
     for (const n of nudges) {
       try {
         const { channelID, clanTag, guildID, ignoreLeaders, ignoreWhenCrossedFinishLine, message } = n
-
-        const [{ data: clan, error: clanError }, { data: race, error: raceError }] = await Promise.all([
-          getClan(clanTag),
-          getRiverRace(clanTag),
-        ])
+        const { data: race, error: raceError } = nudgesRaces.find((r) => r.data?.clan?.tag === clanTag) || {}
+        const { data: clan, error: clanError } = nudgesClans.find((c) => c.data?.tag === clanTag) || {}
 
         if (race?.periodType === "training") continue
 
@@ -66,9 +67,9 @@ module.exports = {
 
         const nudgeChannel = client.channels.cache.get(channelID)
 
-        if (!nudgeChannel || clan?.members === 0) {
+        if (!nudgeChannel) {
           // delete scheduled nudge
-          console.log(`Channel or Clan doesn't exist: ${clanTag} ${guildID} ${channelID} (Deleting...)`)
+          console.log(`Nudge Channel Not Found: ${clanTag} ${guildID} ${channelID} (Deleting...)`)
           guilds.updateOne(
             {
               guildID,
@@ -88,7 +89,7 @@ module.exports = {
           continue
         }
 
-        if (clanError || raceError || !clan || !race) {
+        if (!race || !clan || raceError || clanError) {
           const errMsg = !race
             ? `**River race not found. Scheduled nudge ignored.**`
             : `**Unexpected error while attempting to send scheduled nudge.** If this issue continues, please join the ${hyperlink(
@@ -96,8 +97,7 @@ module.exports = {
                 "https://discord.com/invite/fFY3cnMmnH",
               )}.`
 
-          console.log(`Scheduled nudge error: ${clanTag}`)
-          console.log(clanError || raceError)
+          console.log(`Scheduled nudge error: ${clanTag}`, clanError || raceError)
 
           nudgeChannel.send({ embeds: [{ color: red, description: errMsg }] })
 
@@ -189,7 +189,7 @@ module.exports = {
 
         await nudgeChannel.send(nudgeMessage)
       } catch (err) {
-        console.log(err?.message)
+        console.log("sendNudges error", err)
         console.log(n?.guildID)
       }
     }
