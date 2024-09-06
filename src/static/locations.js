@@ -12,7 +12,9 @@ module.exports = [
     name: "Europe",
   },
   {
+    flagEmoji: "<:na:1281504885619036160>",
     id: 57000001,
+    isAdded: true,
     isCountry: false,
     key: "_NA",
     name: "North America",

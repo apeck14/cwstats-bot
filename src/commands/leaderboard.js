@@ -32,7 +32,7 @@ module.exports = {
             name: l.name,
             value: l.name,
           }))
-          .sort((a, b) => b.name - a.name),
+          .sort((a, b) => a.name.localeCompare(b.name)),
         description: "Filter by location",
         description_localizations: {
           de: "Nach Standort filtern",
@@ -111,7 +111,7 @@ module.exports = {
         embeds: [
           {
             color: orange,
-            description: "**No clans found!**",
+            description: "**No leaderboard clans match this criteria!**",
           },
         ],
       })
@@ -142,7 +142,7 @@ module.exports = {
     const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
     const cwstatsPlusEmoji = client.cwEmojis.get("cwstats_plus")
 
-    embed.description += `**Location**: ${location?.key || "Global"} ${location?.flagEmoji || ":earth_americas:"}\n`
+    embed.description += `**Location**: ${location?.key?.replace("_", "") || "Global"} ${location?.flagEmoji || ":earth_americas:"}\n`
     embed.description += `**League**: ${trophies === 4000 ? "4k" : trophies === 5000 ? "5k+" : "All (4k+)"}\n\n`
 
     let showNRFooter = false
