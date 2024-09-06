@@ -12,9 +12,11 @@ initializeClient()
   .then((client) => AutoPoster(process.env.TOPGG_TOKEN, client))
   .catch((e) => console.log(e))
 
-process.on("unhandledRejection", (err) => {
-  console.log("---UNHANDLED REJECION---")
-  console.error(err)
+process.on("unhandledRejection", (reason, promise) => {
+  console.log("---UNHANDLED REJECTION---")
+  console.log("Reason:", reason)
+  console.log("Promise:", promise)
+  console.trace()
 })
 
 process.on("uncaughtException", (err) => {
