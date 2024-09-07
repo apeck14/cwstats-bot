@@ -220,7 +220,7 @@ module.exports = {
           const plusEmbed = {
             color: orange,
             description:
-              "**Daily War Reports** will be replaced by **Daily Player Tracking** in the coming weeks. If interested, please [activate](<https://www.cwstats.com/upgrade>) **CWStats+** for your clan, for free.",
+              "This will be the final week of **Daily War Reports** (replaced by **Daily Player Tracking**). If interested, please [activate](<https://www.cwstats.com/upgrade>) **CWStats+** for your clan, for free.",
           }
 
           reportChannel.send({
