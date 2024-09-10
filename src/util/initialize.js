@@ -1,10 +1,8 @@
-const { schedule } = require("node-cron")
 const fs = require("fs")
 const { ActivityType, Client, Collection, GatewayIntentBits } = require("discord.js")
 const { CLIENT_TOKEN } = require("../../config")
 
 const events = fs.readdirSync("src/events")
-const jobs = fs.readdirSync("src/jobs")
 
 const initializeEvents = (mongo, client) => {
   for (const event of events) {
@@ -14,24 +12,6 @@ const initializeEvents = (mongo, client) => {
   }
 
   console.log("DiscordJS Events Initalized!")
-
-  return client
-}
-
-const initializeCronJobs = (mongo, client) => {
-  for (const job of jobs) {
-    try {
-      require.resolve(`../jobs/${job}`)
-      const jobFile = require(`../jobs/${job}`)
-      const newJob = schedule(jobFile.expression, () => jobFile.run(client, mongo.db))
-      newJob.start()
-    } catch (e) {
-      console.log(e)
-      continue
-    }
-  }
-
-  console.log("Cron Jobs Initialized!")
 
   return client
 }
@@ -69,6 +49,5 @@ const initializeClient = async () => {
 
 module.exports = {
   initializeClient,
-  initializeCronJobs,
   initializeEvents,
 }

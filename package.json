@@ -18,7 +18,6 @@
     "fast-dice-coefficient": "^1.0.3",
     "lodash": "^4.17.21",
     "mongodb": "^6.8.1",
-    "node-cron": "^3.0.3",
     "topgg-autoposter": "^2.0.2"
   },
   "devDependencies": {
