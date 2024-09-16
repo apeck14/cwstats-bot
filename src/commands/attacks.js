@@ -74,7 +74,7 @@ module.exports = {
       const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
 
       if (abbr) tag = abbr.tag
-      else if (tag.length < 5) {
+      else if (tag.length < 3) {
         return i.editReply({
           embeds: [
             {
