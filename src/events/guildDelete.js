@@ -6,10 +6,13 @@ module.exports = {
   run: async (client, db, guild) => {
     if (guild.available && client.isReady()) {
       const guilds = db.collection("Guilds")
+      const linkedClans = db.collection("Linked Clans")
 
       guilds.deleteOne({
         guildID: guild.id,
       })
+
+      linkedClans.deleteMany({ guildID: guild.id })
     }
 
     logToSupportServer(
