@@ -1,7 +1,5 @@
-const { Events } = require("discord.js")
-
 module.exports = {
-  name: Events.WebhooksUpdate,
+  name: "webhooksUpdate",
   run: async (client, db, channel) => {
     console.log("TESTTTTT", channel)
   },
