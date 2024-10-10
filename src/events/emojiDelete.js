@@ -1,9 +1,10 @@
+const { Events } = require("discord.js")
 const ownerIds = require("../static/ownerIds")
 const { red } = require("../static/colors")
 const { logToSupportServer } = require("../util/logging")
 
 module.exports = {
-  event: "emojiDelete",
+  name: Events.GuildEmojiDelete,
   run: async (client, db, emoji) => {
     if (!ownerIds.includes(emoji.guild.ownerId)) return
 

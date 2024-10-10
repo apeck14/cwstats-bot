@@ -1,10 +1,11 @@
+const { Events } = require("discord.js")
 const { orange, pink } = require("../static/colors")
 const { logToSupportServer } = require("../util/logging")
 const { validate } = require("../util/validate")
 const guildCreate = require("./guildCreate")
 
 module.exports = {
-  event: "interactionCreate",
+  name: Events.InteractionCreate,
   run: async (client, db, i) => {
     try {
       const isContextMenuCommand = i.isMessageContextMenuCommand()

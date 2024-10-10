@@ -7,8 +7,8 @@ const events = fs.readdirSync("src/events")
 const initializeEvents = (mongo, client) => {
   for (const event of events) {
     const eventFile = require(`../events/${event}`)
-    if (eventFile.once) client.once(eventFile.event, (...args) => eventFile.run(client, mongo.db, ...args))
-    else client.on(eventFile.event, (...args) => eventFile.run(client, mongo.db, ...args))
+    if (eventFile.once) client.once(eventFile.name, (...args) => eventFile.run(client, mongo.db, ...args))
+    else client.on(eventFile.name, (...args) => eventFile.run(client, mongo.db, ...args))
   }
 
   console.log("DiscordJS Events Initalized!")

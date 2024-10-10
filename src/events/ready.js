@@ -1,12 +1,12 @@
 const fs = require("fs")
-const { WebhookClient } = require("discord.js")
+const { Events, WebhookClient } = require("discord.js")
 const registerSlashCommands = require("../util/slash")
 const { logToSupportServer } = require("../util/logging")
 const { orange } = require("../static/colors")
 const ownerIds = require("../static/ownerIds")
 
 module.exports = {
-  event: "ready",
+  name: Events.ClientReady,
   once: true,
   run: async (client, db) => {
     const emojis = db.collection("Emojis")

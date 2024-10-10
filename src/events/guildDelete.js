@@ -1,8 +1,9 @@
+const { Events } = require("discord.js")
 const { red } = require("../static/colors")
 const { logToSupportServer } = require("../util/logging")
 
 module.exports = {
-  event: "guildDelete",
+  name: Events.GuildDelete,
   run: async (client, db, guild) => {
     if (guild.available && client.isReady()) {
       const guilds = db.collection("Guilds")

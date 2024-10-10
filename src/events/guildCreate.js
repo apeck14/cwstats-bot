@@ -1,8 +1,9 @@
+const { Events } = require("discord.js")
 const { green, pink } = require("../static/colors")
 const { logToSupportServer } = require("../util/logging")
 
 module.exports = {
-  event: "guildCreate",
+  name: Events.GuildCreate,
   run: async (client, db, guild) => {
     const guilds = db.collection("Guilds")
 
