@@ -20,6 +20,7 @@ const initializeClient = async () => {
   const client = new Client({
     intents: [
       GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMembers,
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildMessageTyping,
       GatewayIntentBits.GuildMessageReactions,
