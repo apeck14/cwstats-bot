@@ -76,6 +76,7 @@ const checkPermissions = (i, guild, client) => {
 }
 
 const validate = (i, guild, client, isModalSubmit) => {
+  console.log({ isModalSubmit })
   const { applicationsChannelID, applyChannelID, commandChannelIDs, commandChannelKeyword } = guild.channels
   const { channelId } = i
 
