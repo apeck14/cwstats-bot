@@ -12,9 +12,6 @@ const sendCommandLog = async (i, client) => {
 
   let desc = `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})`
 
-  // for user context commands
-  if (i.targetId) desc += `\n**Target User**: ${i.targetId}`
-
   const hasOptions = i?.options?._hoistedOptions?.length > 0
   const hasFields = i?.fields?.fields?.size > 0
   let data = "*None*"
@@ -90,8 +87,7 @@ module.exports = {
             ephemeral: true,
           })
 
-        run(i, db, client)
-        return sendCommandLog(i, client)
+        return run(i, db, client)
       }
 
       // on modal submit
@@ -106,7 +102,7 @@ module.exports = {
           }
         }
 
-        return
+        return sendCommandLog(i, client)
       }
 
       if (error) {
