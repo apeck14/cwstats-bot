@@ -7,19 +7,26 @@ const { validate } = require("../util/validate")
 const guildCreate = require("./guildCreate")
 
 const sendCommandLog = async (i, client) => {
-  const hasOptions = i?.options?._hoistedOptions?.length > 0
-  const hasFields = i?.fields?.fields?.size > 0
-  let data = "\n*None*"
-
-  if (hasOptions) data = `\n${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}`
-  else if (hasFields) data = `\n${i.fields.fields.map((o) => `• **${o.customId}**: ${o.value}`).join("\n")}`
-
   const { discriminator, id, username } = i.user
   const { guild } = i.member
 
+  let desc = `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})`
+
+  // for user context commands
+  if (i.targetId) desc += `\n**Target User**: ${i.targetId}`
+
+  const hasOptions = i?.options?._hoistedOptions?.length > 0
+  const hasFields = i?.fields?.fields?.size > 0
+  let data = "*None*"
+
+  if (hasOptions) data = `${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}`
+  else if (hasFields) data = `${i.fields.fields.map((o) => `• **${o.customId}**: ${o.value}`).join("\n")}`
+
+  desc += `\n\n**Fields**: \n${data}`
+
   logToSupportServer(client, {
     color: pink,
-    description: `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})\n\n**Fields**: ${data}`,
+    description: desc,
     title: `__/${i.commandName || i.customId}__`,
   })
 }
