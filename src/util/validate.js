@@ -2,8 +2,6 @@ const { PermissionFlagsBits, PermissionsBitField } = require("discord.js")
 const startCase = require("lodash/startCase")
 const { orange, red } = require("../static/colors")
 
-const ADMIN_COMMANDS = ["nudge"]
-
 const missingPermissionsToStr = (permissions, requiredFlags) => {
   const serializedPermissions = permissions.serialize()
   const requiredPermissionsArr = new PermissionsBitField(requiredFlags).toArray()
@@ -16,6 +14,8 @@ const missingPermissionsToStr = (permissions, requiredFlags) => {
 
   return str
 }
+
+const ADMIN_COMMANDS = ["nudge", "Link Player (ADMIN)"]
 
 const checkPermissions = (i, guild, client) => {
   const { adminRoleID, channels } = guild
@@ -40,11 +40,14 @@ const checkPermissions = (i, guild, client) => {
       }
     }
   } else {
-    if (ADMIN_COMMANDS.includes(i.commandName)) {
-      const isAdmin = i.member.permissions.has(PermissionsBitField.Flags.ManageGuild)
+    const isNotMe = i.user.id !== "493245767448789023"
+    const isAdminCommand = ADMIN_COMMANDS.includes(i.commandName)
+
+    if (isNotMe && isAdminCommand) {
+      const hasPermissions = i.member.permissions.has(PermissionsBitField.Flags.ManageGuild)
       const hasAdminRole = adminRoleID && i.member.roles.cache.has(adminRoleID)
 
-      if (!isAdmin && !hasAdminRole) {
+      if (!hasPermissions && !hasAdminRole) {
         return {
           error: "**You do not have permissions to use this command.**",
         }
@@ -72,42 +75,44 @@ const checkPermissions = (i, guild, client) => {
   return {}
 }
 
-const validate = (i, guild, client) => {
+const validate = (i, guild, client, isModalSubmit) => {
   const { applicationsChannelID, applyChannelID, commandChannelIDs, commandChannelKeyword } = guild.channels
   const { channelId } = i
 
   const color = orange
   let onlyShowToUser = false
 
-  if (i.commandName === "apply") {
-    let error = ""
+  if (!isModalSubmit) {
+    if (i.commandName === "apply") {
+      let error = ""
 
-    if (!applyChannelID) error = "**No apply channel set.**"
-    else if (applyChannelID !== channelId) {
-      error = `You can only use this command in the set **apply channel**! (<#${applyChannelID}>)`
-      onlyShowToUser = true
-    } else if (!applicationsChannelID) error = "**No applications channel set.**"
+      if (!applyChannelID) error = "**No apply channel set.**"
+      else if (applyChannelID !== channelId) {
+        error = `You can only use this command in the set **apply channel**! (<#${applyChannelID}>)`
+        onlyShowToUser = true
+      } else if (!applicationsChannelID) error = "**No applications channel set.**"
 
-    return {
-      color,
-      error,
-      onlyShowToUser,
+      return {
+        color,
+        error,
+        onlyShowToUser,
+      }
     }
+
+    const notCommandChannelEmbed = {
+      color,
+      error: `You can only use this command in a set **command channel**!`,
+      onlyShowToUser: true,
+    }
+
+    let showCommandChannelEmbed = true
+
+    if (commandChannelIDs?.length === 0 && !commandChannelKeyword) showCommandChannelEmbed = false
+    else if (commandChannelIDs?.length > 0 && commandChannelIDs.includes(channelId)) showCommandChannelEmbed = false
+    else if (commandChannelKeyword && i.channel.name.includes(commandChannelKeyword)) showCommandChannelEmbed = false
+
+    if (showCommandChannelEmbed) return notCommandChannelEmbed
   }
-
-  const notCommandChannelEmbed = {
-    color,
-    error: `You can only use this command in a set **command channel**!`,
-    onlyShowToUser: true,
-  }
-
-  let showCommandChannelEmbed = true
-
-  if (commandChannelIDs?.length === 0 && !commandChannelKeyword) showCommandChannelEmbed = false
-  else if (commandChannelIDs?.length > 0 && commandChannelIDs.includes(channelId)) showCommandChannelEmbed = false
-  else if (commandChannelKeyword && i.channel.name.includes(commandChannelKeyword)) showCommandChannelEmbed = false
-
-  if (showCommandChannelEmbed) return notCommandChannelEmbed
 
   const { error } = checkPermissions(i, guild, client)
 

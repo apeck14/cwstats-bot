@@ -1,15 +1,38 @@
 const { Events } = require("discord.js")
+const path = require("path")
+const fs = require("fs")
 const { orange, pink } = require("../static/colors")
 const { logToSupportServer } = require("../util/logging")
 const { validate } = require("../util/validate")
 const guildCreate = require("./guildCreate")
 
+const sendCommandLog = async (i, client) => {
+  const hasOptions = i.options._hoistedOptions.length > 0
+  let options = "*None*"
+
+  if (hasOptions) options = `\n${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}`
+
+  const { discriminator, id, username } = i.user
+  const { guild } = i.member
+
+  logToSupportServer(client, {
+    color: pink,
+    description: `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})\n\n**Options**: ${options}\n\n**Deferred**: ${i.deferred}\n**Replied**: ${i.replied}`,
+    title: `__/${i.commandName}__`,
+  })
+}
+
 module.exports = {
   name: Events.InteractionCreate,
   run: async (client, db, i) => {
     try {
-      const isContextMenuCommand = i.isMessageContextMenuCommand()
-      if (!i || (!isContextMenuCommand && !i.isChatInputCommand())) return
+      if (!i) return
+
+      const isCommand = i.isChatInputCommand()
+      const isContextMenuCommand = i.isMessageContextMenuCommand() || i.isUserContextMenuCommand()
+      const isModalSubmit = i.isModalSubmit()
+
+      if (!isCommand && !isContextMenuCommand && !isModalSubmit) return
 
       if (!i.guild) {
         return i.reply({
@@ -39,7 +62,41 @@ module.exports = {
         console.log(`Guild not found, but updated! ${i.guildId}`)
       }
 
-      const { color, error, onlyShowToUser } = validate(i, guildExists, client)
+      const { color, error, onlyShowToUser } = validate(i, guildExists, client, isModalSubmit)
+
+      // context commands
+      if (isContextMenuCommand) {
+        const { run } = i.client.contextCommands.get(i.commandName)
+
+        // show error modal
+        if (error)
+          return i.reply({
+            embeds: [
+              {
+                color,
+                description: error,
+              },
+            ],
+            ephemeral: true,
+          })
+
+        return run(i, db, client)
+      }
+
+      // on modal submit
+      if (isModalSubmit) {
+        const { customId } = i
+        const commandFilePath = path.join(__dirname, "../context-commands", `${customId}.js`)
+
+        if (fs.existsSync(commandFilePath)) {
+          const command = require(commandFilePath)
+          if (command.handleModalSubmit) {
+            command.handleModalSubmit(i, db)
+          }
+        }
+
+        return sendCommandLog(i, client)
+      }
 
       if (error) {
         return i.reply({
@@ -55,9 +112,7 @@ module.exports = {
 
       await i.deferReply()
 
-      const { disabled, run } = isContextMenuCommand
-        ? i.client.contextCommands.get(i.commandName)
-        : i.client.commands.get(i.commandName)
+      const { disabled, run } = i.client.commands.get(i.commandName)
 
       if (disabled) {
         return i.editReply({
@@ -72,23 +127,13 @@ module.exports = {
 
       // if a user @'s themselves send reminder above embed response
       if (i.options._hoistedOptions.find((o) => o.name === "user")?.value === i.user.id)
-        await i.followUp(`:white_check_mark: **No need to @ yourself!**`)
+        await i.followUp(
+          `:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`,
+        )
 
       await run(i, db, client)
 
-      const hasOptions = i.options._hoistedOptions.length > 0
-      let options = "*None*"
-
-      if (hasOptions) options = `\n${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}`
-
-      const { discriminator, id, username } = i.user
-      const { guild } = i.member
-
-      logToSupportServer(client, {
-        color: pink,
-        description: `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})\n\n**Options**: ${options}\n\n**Deferred**: ${i.deferred}\n**Replied**: ${i.replied}`,
-        title: `__/${i.commandName}__`,
-      })
+      sendCommandLog(i, client)
     } catch (e) {
       console.log(e)
       console.log(e?.requestBody?.json)

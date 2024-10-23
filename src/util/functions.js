@@ -144,7 +144,10 @@ const getPlayerCardData = (cards) => {
   return cardData
 }
 
+const calcLinkedPlayerLimit = (linkedPlusClansCount) => 100 + linkedPlusClansCount * 75
+
 module.exports = {
+  calcLinkedPlayerLimit,
   errorMsg,
   findBestMatch,
   getArenaEmoji,
