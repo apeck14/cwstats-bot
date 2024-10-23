@@ -8,7 +8,7 @@ const guildCreate = require("./guildCreate")
 
 const sendCommandLog = async (i, client) => {
   const hasOptions = i.options?._hoistedOptions?.length > 0
-  const hasFields = i.fields.size > 0
+  const hasFields = i?.fields?.size > 0
   let data = "*None*"
 
   if (hasOptions) data = `\n${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}`
