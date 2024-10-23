@@ -20,7 +20,7 @@ const sendCommandLog = async (i, client) => {
   logToSupportServer(client, {
     color: pink,
     description: `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})\n\n**Fields**: ${data}\n\n**Deferred**: ${i.deferred}\n**Replied**: ${i.replied}`,
-    title: `__/${i.commandName}__`,
+    title: `__/${i.commandName || i.customId}__`,
   })
 }
 
