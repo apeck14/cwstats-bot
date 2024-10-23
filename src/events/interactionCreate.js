@@ -7,17 +7,19 @@ const { validate } = require("../util/validate")
 const guildCreate = require("./guildCreate")
 
 const sendCommandLog = async (i, client) => {
-  const hasOptions = i.options._hoistedOptions.length > 0
-  let options = "*None*"
+  const hasOptions = i.options?._hoistedOptions?.length > 0
+  const hasFields = i.fields.size > 0
+  let data = "*None*"
 
-  if (hasOptions) options = `\n${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}`
+  if (hasOptions) data = `\n${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}`
+  else if (hasFields) data = `\n${i.fields.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}`
 
   const { discriminator, id, username } = i.user
   const { guild } = i.member
 
   logToSupportServer(client, {
     color: pink,
-    description: `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})\n\n**Options**: ${options}\n\n**Deferred**: ${i.deferred}\n**Replied**: ${i.replied}`,
+    description: `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})\n\n**Fields**: ${data}\n\n**Deferred**: ${i.deferred}\n**Replied**: ${i.replied}`,
     title: `__/${i.commandName}__`,
   })
 }
