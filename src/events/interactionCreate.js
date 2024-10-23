@@ -90,7 +90,8 @@ module.exports = {
             ephemeral: true,
           })
 
-        return run(i, db, client)
+        run(i, db, client)
+        return sendCommandLog(i, client)
       }
 
       // on modal submit
@@ -105,7 +106,7 @@ module.exports = {
           }
         }
 
-        return sendCommandLog(i, client)
+        return
       }
 
       if (error) {
