@@ -75,15 +75,14 @@ const checkPermissions = (i, guild, client) => {
   return {}
 }
 
-const validate = (i, guild, client, isModalSubmit) => {
-  console.log({ isModalSubmit })
+const validate = (i, guild, client, ignoreChannelChecks) => {
   const { applicationsChannelID, applyChannelID, commandChannelIDs, commandChannelKeyword } = guild.channels
   const { channelId } = i
 
   const color = orange
   let onlyShowToUser = false
 
-  if (!isModalSubmit) {
+  if (!ignoreChannelChecks) {
     if (i.commandName === "apply") {
       let error = ""
 

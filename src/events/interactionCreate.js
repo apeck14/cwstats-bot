@@ -64,9 +64,8 @@ module.exports = {
         console.log(`Guild not found, but updated! ${i.guildId}`)
       }
 
-      console.log("1", isModalSubmit)
-
-      const { color, error, onlyShowToUser } = validate(i, guildExists, client, isModalSubmit)
+      const ignoreChannelChecks = isModalSubmit || i.commandName === "Link Player (ADMIN)"
+      const { color, error, onlyShowToUser } = validate(i, guildExists, client, ignoreChannelChecks)
 
       // context commands
       if (isContextMenuCommand) {
