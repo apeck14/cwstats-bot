@@ -108,7 +108,7 @@ module.exports = {
   run: async (i) => {
     const { targetUser } = i
 
-    const modal = new ModalBuilder().setCustomId(`player-link`).setTitle(`Link Player: ${targetUser.tag}`)
+    const modal = new ModalBuilder().setCustomId("link-player").setTitle(`Link Player: ${targetUser.tag}`)
 
     // Create input fields for the modal
     const input = new TextInputBuilder()
