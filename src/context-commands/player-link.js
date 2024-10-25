@@ -28,7 +28,9 @@ module.exports = {
     const linkedClans = db.collection("Linked Clans")
     const CWStatsPlus = db.collection("CWStats+")
 
-    const inputTag = i.fields.getTextInputValue("tag")
+    const input = i.fields.fields.entries().next().value
+    const { customId: targetId, value: inputTag } = input[1]
+
     const formattedTag = formatTag(inputTag)
 
     const guild = await guilds.findOne({
@@ -85,7 +87,7 @@ module.exports = {
       {
         $push: {
           "nudges.links": {
-            discordID: i.user.id,
+            discordID: targetId,
             name: player.name,
             tag: player.tag,
           },
@@ -106,11 +108,11 @@ module.exports = {
   run: async (i) => {
     const { targetUser } = i
 
-    const modal = new ModalBuilder().setCustomId("player-link").setTitle(`Link Player: ${targetUser.tag}`)
+    const modal = new ModalBuilder().setCustomId(`player-link`).setTitle(`Link Player: ${targetUser.tag}`)
 
     // Create input fields for the modal
     const input = new TextInputBuilder()
-      .setCustomId("tag")
+      .setCustomId(targetUser.id)
       .setLabel("PLAYER TAG (#ABC123):")
       .setStyle(TextInputStyle.Short)
       .setRequired(true)
