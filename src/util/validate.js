@@ -15,7 +15,7 @@ const missingPermissionsToStr = (permissions, requiredFlags) => {
   return str
 }
 
-const ADMIN_COMMANDS = ["nudge", "Link Player (ADMIN)"]
+const ADMIN_COMMANDS = ["nudge", "Link Player (ADMIN)", "Unlink Player (ADMIN)"]
 
 const checkPermissions = (i, guild, client) => {
   const { adminRoleID, channels } = guild
