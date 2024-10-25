@@ -41,7 +41,8 @@ module.exports = {
 
       if (!isCommand && !isUserContextMenuCommand && !isMessageContextMenuCommand && !isModalSubmit) return
 
-      if (!isModalSubmit && !isUserContextMenuCommand) await i.deferReply()
+      const validateChannel = isCommand || isMessageContextMenuCommand
+      if (validateChannel) await i.deferReply()
 
       if (!i.guild) {
         return i.reply({
@@ -71,7 +72,6 @@ module.exports = {
         console.log(`Guild not found, but updated! ${i.guildId}`)
       }
 
-      const validateChannel = isCommand || isMessageContextMenuCommand
       const { color, error, onlyShowToUser } = validate(i, guildExists, client, validateChannel)
 
       // context commands
@@ -79,16 +79,20 @@ module.exports = {
         const { run } = i.client.contextCommands.get(i.commandName)
 
         // show error modal
-        if (error)
-          return i.reply({
-            embeds: [
-              {
-                color,
-                description: error,
-              },
-            ],
-            ephemeral: true,
-          })
+        const messageInput = {
+          embeds: [
+            {
+              color,
+              description: error,
+            },
+          ],
+          ephemeral: true,
+        }
+
+        // show error modal
+        if (error) {
+          return isUserContextMenuCommand ? i.reply(messageInput) : i.editReply(messageInput)
+        }
 
         return run(i, db, client)
       }
