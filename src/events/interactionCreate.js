@@ -78,7 +78,6 @@ module.exports = {
       if (isUserContextMenuCommand || isMessageContextMenuCommand) {
         const { run } = i.client.contextCommands.get(i.commandName)
 
-        // show error modal
         const messageInput = {
           embeds: [
             {
