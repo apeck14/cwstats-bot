@@ -75,14 +75,14 @@ const checkPermissions = (i, guild, client) => {
   return {}
 }
 
-const validate = (i, guild, client, ignoreChannelChecks) => {
+const validate = (i, guild, client, validateChannel) => {
   const { applicationsChannelID, applyChannelID, commandChannelIDs, commandChannelKeyword } = guild.channels
   const { channelId } = i
 
   const color = orange
   let onlyShowToUser = false
 
-  if (!ignoreChannelChecks) {
+  if (validateChannel) {
     if (i.commandName === "apply") {
       let error = ""
 
