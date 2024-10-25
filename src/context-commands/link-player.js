@@ -24,91 +24,106 @@ module.exports = {
     type: ApplicationCommandType.User,
   },
   handleModalSubmit: async (i, db) => {
-    const guilds = db.collection("Guilds")
-    const linkedClans = db.collection("Linked Clans")
-    const CWStatsPlus = db.collection("CWStats+")
+    try {
+      const guilds = db.collection("Guilds")
+      const linkedClans = db.collection("Linked Clans")
+      const CWStatsPlus = db.collection("CWStats+")
 
-    const input = i.fields.fields.entries().next().value
-    const { customId: targetId, value: inputTag } = input[1]
+      const input = i.fields.fields.entries().next().value
+      const { customId: targetId, value: inputTag } = input[1]
 
-    const formattedTag = formatTag(inputTag)
+      const formattedTag = formatTag(inputTag)
 
-    const guild = await guilds.findOne({
-      guildID: i.guildId,
-    })
+      const guild = await guilds.findOne({
+        guildID: i.guildId,
+      })
 
-    const { nudges } = guild
-    const { links } = nudges || {}
+      const { nudges } = guild
+      const { links } = nudges || {}
 
-    if (links) {
-      // get amount of linked plus clans
-      const [serverLinkedClans, allPlusClans] = await Promise.all([
-        linkedClans.find({ guildID: i.guildId }).toArray(),
-        CWStatsPlus.distinct("tag"),
-      ])
-      const linkedPlusClans = serverLinkedClans.filter((c) => allPlusClans.includes(c.tag))
-      const linkedPlayerLimit = calcLinkedPlayerLimit(linkedPlusClans.length)
+      if (links) {
+        // get amount of linked plus clans
+        const [serverLinkedClans, allPlusClans] = await Promise.all([
+          linkedClans.find({ guildID: i.guildId }).toArray(),
+          CWStatsPlus.distinct("tag"),
+        ])
+        const linkedPlusClans = serverLinkedClans.filter((c) => allPlusClans.includes(c.tag))
+        const linkedPlayerLimit = calcLinkedPlayerLimit(linkedPlusClans.length)
 
-      let err
+        let err
 
-      if (links.length >= linkedPlayerLimit) err = "**Max amount of linked players reached!**"
-      else if (links.some((l) => l.tag === formattedTag)) err = "**This player has already been linked.**"
+        if (links.length >= linkedPlayerLimit) err = "**Max amount of linked players reached!**"
 
-      if (err)
+        const tagFound = links.find((l) => l.tag === formattedTag)
+        if (tagFound) err = `**This player tag has already been linked to: <@${tagFound.discordID}>**`
+
+        if (err)
+          return i.reply({
+            embeds: [
+              {
+                color: orange,
+                description: err,
+              },
+            ],
+            ephemeral: true,
+          })
+      }
+
+      // check if player exists
+      const { data: player, error } = await getPlayer(formattedTag)
+
+      if (error)
         return i.reply({
           embeds: [
             {
-              color: orange,
-              description: err,
+              color: red,
+              description: error,
             },
           ],
           ephemeral: true,
         })
-    }
 
-    // check if player exists
-    const { data: player, error } = await getPlayer(formattedTag)
+      guilds.updateOne(
+        {
+          guildID: i.guildId,
+        },
+        {
+          $push: {
+            "nudges.links": {
+              discordID: targetId,
+              name: player.name,
+              tag: player.tag,
+            },
+          },
+        },
+      )
 
-    if (error)
       return i.reply({
         embeds: [
           {
-            color: red,
-            description: error,
+            color: green,
+            description: `:white_check_mark: **${player.name}** successfully linked to user!`,
           },
         ],
         ephemeral: true,
       })
-
-    guilds.updateOne(
-      {
-        guildID: i.guildId,
-      },
-      {
-        $push: {
-          "nudges.links": {
-            discordID: targetId,
-            name: player.name,
-            tag: player.tag,
+    } catch (e) {
+      console.log("link-player", e)
+      return i.reply({
+        embeds: [
+          {
+            color: red,
+            description: "**Unexpected error.**",
           },
-        },
-      },
-    )
-
-    return i.reply({
-      embeds: [
-        {
-          color: green,
-          description: `:white_check_mark: **${player.name}** successfully linked to user!`,
-        },
-      ],
-      ephemeral: true,
-    })
+        ],
+        ephemeral: true,
+      })
+    }
   },
   run: async (i) => {
     const { targetUser } = i
 
-    const modal = new ModalBuilder().setCustomId("link-player").setTitle(`Link Player: ${targetUser.tag}`)
+    const modal = new ModalBuilder().setCustomId(`link-player`).setTitle(`Link Player: ${targetUser.tag}`)
 
     // Create input fields for the modal
     const input = new TextInputBuilder()
