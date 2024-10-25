@@ -35,10 +35,13 @@ module.exports = {
       if (!i) return
 
       const isCommand = i.isChatInputCommand()
-      const isContextMenuCommand = i.isMessageContextMenuCommand() || i.isUserContextMenuCommand()
+      const isUserContextMenuCommand = i.isUserContextMenuCommand()
+      const isMessageContextMenuCommand = i.isMessageContextMenuCommand()
       const isModalSubmit = i.isModalSubmit()
 
-      if (!isCommand && !isContextMenuCommand && !isModalSubmit) return
+      if (!isCommand && !isUserContextMenuCommand && !isMessageContextMenuCommand && !isModalSubmit) return
+
+      if (!isModalSubmit && !isUserContextMenuCommand) await i.deferReply()
 
       if (!i.guild) {
         return i.reply({
@@ -72,7 +75,7 @@ module.exports = {
       const { color, error, onlyShowToUser } = validate(i, guildExists, client, ignoreChannelChecks)
 
       // context commands
-      if (isContextMenuCommand) {
+      if (isUserContextMenuCommand || isMessageContextMenuCommand) {
         const { run } = i.client.contextCommands.get(i.commandName)
 
         // show error modal
@@ -116,8 +119,6 @@ module.exports = {
           ephemeral: onlyShowToUser,
         })
       }
-
-      await i.deferReply()
 
       const { disabled, run } = i.client.commands.get(i.commandName)
 
