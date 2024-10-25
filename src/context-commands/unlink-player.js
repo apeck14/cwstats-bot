@@ -17,7 +17,7 @@ module.exports = {
       fr: "Délier joueur (ADMIN)",
       it: "Scollega giocatore (AMMIN)",
       nl: "Speler ontkoppelen (BEHEERDER)",
-      tr: "Oyuncu bağlantısını kaldır (Yönetici)",
+      tr: "Oyuncu çıkar (Yönetici)",
     },
     type: ApplicationCommandType.User,
   },
