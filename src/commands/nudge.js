@@ -134,7 +134,17 @@ module.exports = {
     const oneAttack = []
 
     let nudgeMessage = ""
-    let slotsUsed = 0
+
+    let slotsRemaining = 50
+    let attacksRemaining = 200
+
+    // determine attacks and slots remaining
+    for (const p of race.clan.participants) {
+      if (p.decksUsedToday) {
+        slotsRemaining--
+        attacksRemaining -= p.decksUsedToday
+      }
+    }
 
     for (const p of alphabetizedParticipants) {
       const inClan = clan.memberList.find((m) => m.tag === p.tag)
@@ -150,24 +160,21 @@ module.exports = {
         if (ignoreLeaders && isLeader) {
           threeAttacks.push(`- ${p.name}`)
         } else threeAttacks.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
-        slotsUsed++
       } else if (p.decksUsedToday === 2) {
         if (ignoreLeaders && isLeader) {
           twoAttacks.push(`- ${p.name}`)
         } else twoAttacks.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
-        slotsUsed++
       } else if (p.decksUsedToday === 3) {
         if (ignoreLeaders && isLeader) {
           oneAttack.push(`- ${p.name}`)
         } else oneAttack.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
-        slotsUsed++
       }
     }
 
     if (fourAttacks.length > 0) {
       nudgeMessage += `\n\n**__4 Attacks__**\n`
 
-      if (slotsUsed >= 50) nudgeMessage += `No slots remaining! Ignoring ${fourAttacks.length} player(s).`
+      if (slotsRemaining <= 0) nudgeMessage += `No slots remaining! Ignoring **${fourAttacks.length}** player(s).`
       else nudgeMessage += `${fourAttacks.join("\n")}`
     }
 
@@ -190,17 +197,14 @@ module.exports = {
     const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
     const slotsRemainingEmoji = client.cwEmojis.get("remainingSlots")
 
-    const totalAttacksLeft = 200 - race.clan.participants.reduce((a, b) => a + b.decksUsedToday, 0)
-    const slotsRemaining = 50 - race.clan.participants.filter((p) => p.decksUsedToday > 0).length
-
     const embed = {
       color: pink,
       description: `${badgeEmoji} **${formatStr(
         clan.name,
-      )}**\n${decksRemainingEmoji} **${totalAttacksLeft}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n\n${
+      )}**\n${decksRemainingEmoji} **${attacksRemaining}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n\n${
         message || defaultMessage
       }`,
-      title: "__Attacks Reminder__",
+      title: "__Nudge!__",
     }
 
     await i.editReply({ embeds: [embed] })
