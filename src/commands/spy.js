@@ -206,7 +206,7 @@ module.exports = {
 
         log = data
       } else {
-        return errorMsg(i, "**Both clan and player name search are required. Otherwise, search by player tag.**")
+        return errorMsg(i, "**Both clan and player name are required. Otherwise, search by player tag.**")
       }
 
       const duelDecks = [] // { emoji: "", cards: [] }
@@ -319,12 +319,12 @@ module.exports = {
         description += `\n**__Duel__** ${duelEmoji}\n`
 
         for (let i = 0; i < duelDecks.length; i++) {
-          let duelStr = `**${i + 1}.** `
+          let duelStr = ``
 
           for (const c of duelDecks[i].cards) {
-            const emoji = client.cwEmojis.get(
-              c.toLowerCase().replace(/\s+/g, "_").replace(/\./g, "").replace(/-/g, "_"),
-            )
+            let emoji = client.cwEmojis.get(c.toLowerCase().replace(/\s+/g, "_").replace(/\./g, "").replace(/-/g, "_"))
+
+            if (!emoji) emoji = client.cwEmojis.get("unknown")
 
             duelStr += emoji
           }
@@ -343,9 +343,9 @@ module.exports = {
           let str = `**${matchEmoji}:** `
 
           for (const c of singleDecks[i].cards) {
-            const emoji = client.cwEmojis.get(
-              c.toLowerCase().replace(/\s+/g, "_").replace(/\./g, "").replace(/-/g, "_"),
-            )
+            let emoji = client.cwEmojis.get(c.toLowerCase().replace(/\s+/g, "_").replace(/\./g, "").replace(/-/g, "_"))
+
+            if (!emoji) emoji = client.cwEmojis.get("unknown")
 
             str += emoji
           }
