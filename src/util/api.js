@@ -13,13 +13,6 @@ const apiRequest = async (url, apiToken) => {
   const { data, status } = resp
 
   if (status === 200) {
-    if (data?.clan?.tag === "#9U82JJ0Y") data.clan.name = "TheLiberalOnes"
-
-    const clanInRace = data?.clans?.find((c) => c.tag === "#9U82JJ0Y")
-    if (clanInRace) {
-      clanInRace.name = "TheLiberalOnes"
-    }
-
     return {
       data: data.items || data,
       status,
