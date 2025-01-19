@@ -112,7 +112,7 @@ module.exports = {
       }
 
       if (error) {
-        return i.reply({
+        return i.editReply({
           embeds: [
             {
               color,
