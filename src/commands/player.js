@@ -89,7 +89,7 @@ module.exports = {
           embeds: [
             {
               color: orange,
-              description: `**No tag linked!** Use **/link** to link your tag.`,
+              description: `**No tag linked!** Use </link:947456869688025104> to link your tag.`,
             },
           ],
         })
