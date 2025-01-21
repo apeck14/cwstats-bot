@@ -126,7 +126,22 @@ module.exports = {
 
     if (clanError) return errorMsg(i, clanError)
 
-    const alphabetizedParticipants = race.clan.participants.sort((a, b) => a.name.localeCompare(b.name))
+    const linkedDiscordIDs = new Set() // used to check if a user has multiple tags linked, then can add username in parentheses
+    const alphabetizedParticipants = race.clan.participants
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((p) => {
+        const { discordID } = links?.find((l) => l.tag === p.tag) || {}
+
+        if (discordID) {
+          p.discordID = discordID
+
+          if (linkedDiscordIDs.has(discordID)) {
+            p.showUsername = true
+          } else linkedDiscordIDs.add(discordID)
+        }
+
+        return p
+      })
 
     const fourAttacks = []
     const threeAttacks = []
@@ -138,36 +153,34 @@ module.exports = {
     let slotsRemaining = 50
     let attacksRemaining = 200
 
-    // determine attacks and slots remaining
-    for (const p of race.clan.participants) {
+    for (const p of alphabetizedParticipants) {
       if (p.decksUsedToday) {
         slotsRemaining--
         attacksRemaining -= p.decksUsedToday
       }
-    }
 
-    for (const p of alphabetizedParticipants) {
       const inClan = clan.memberList.find((m) => m.tag === p.tag)
 
       const isLeader = inClan?.role === "coLeader" || inClan?.role === "leader"
-      const linkedAccount = links?.find((l) => l.tag === p.tag)
+
+      const userString = p.discordID ? `- <@${p.discordID}>${p.showUsername ? ` (${p.name})` : ""}` : `- ${p.name}`
 
       if (p.decksUsedToday === 0 && inClan) {
         if (ignoreLeaders && isLeader) {
           fourAttacks.push(`- ${p.name}`)
-        } else fourAttacks.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
+        } else fourAttacks.push(userString)
       } else if (p.decksUsedToday === 1) {
         if (ignoreLeaders && isLeader) {
           threeAttacks.push(`- ${p.name}`)
-        } else threeAttacks.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
+        } else threeAttacks.push(userString)
       } else if (p.decksUsedToday === 2) {
         if (ignoreLeaders && isLeader) {
           twoAttacks.push(`- ${p.name}`)
-        } else twoAttacks.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
+        } else twoAttacks.push(userString)
       } else if (p.decksUsedToday === 3) {
         if (ignoreLeaders && isLeader) {
           oneAttack.push(`- ${p.name}`)
-        } else oneAttack.push(linkedAccount ? `- <@${linkedAccount.discordID}>` : `- ${p.name}`)
+        } else oneAttack.push(userString)
       }
     }
 
