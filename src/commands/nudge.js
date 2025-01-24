@@ -126,7 +126,7 @@ module.exports = {
 
     if (clanError) return errorMsg(i, clanError)
 
-    const linkedDiscordIDs = new Set() // used to check if a user has multiple tags linked, then can add username in parentheses
+    const linkedDiscordIDs = new Map() // Map to track discordID and its occurrences
     const alphabetizedParticipants = race.clan.participants
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((p) => {
@@ -135,9 +135,14 @@ module.exports = {
         if (discordID) {
           p.discordID = discordID
 
-          if (linkedDiscordIDs.has(discordID)) {
+          // Track occurrences of discordID
+          const count = linkedDiscordIDs.get(discordID) || 0
+          linkedDiscordIDs.set(discordID, count + 1)
+
+          // If this discordID appears more than once, set showUsername
+          if (count > 0) {
             p.showUsername = true
-          } else linkedDiscordIDs.add(discordID)
+          }
         }
 
         return p
