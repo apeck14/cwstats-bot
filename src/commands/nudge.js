@@ -126,7 +126,7 @@ module.exports = {
 
     if (clanError) return errorMsg(i, clanError)
 
-    const linkedDiscordIDs = new Map() // Map to track discordID and its occurrences
+    const linkedDiscordIDs = new Map()
     const alphabetizedParticipants = race.clan.participants
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((p) => {
@@ -134,15 +134,7 @@ module.exports = {
 
         if (discordID) {
           p.discordID = discordID
-
-          // Track occurrences of discordID
-          const count = linkedDiscordIDs.get(discordID) || 0
-          linkedDiscordIDs.set(discordID, count + 1)
-
-          // If this discordID appears more than once, set showUsername
-          if (count > 0) {
-            p.showUsername = true
-          }
+          linkedDiscordIDs.set(discordID, (linkedDiscordIDs.get(discordID) || 0) + 1)
         }
 
         return p
@@ -165,10 +157,11 @@ module.exports = {
       }
 
       const inClan = clan.memberList.find((m) => m.tag === p.tag)
-
       const isLeader = inClan?.role === "coLeader" || inClan?.role === "leader"
 
-      const userString = p.discordID ? `- <@${p.discordID}>${p.showUsername ? ` (${p.name})` : ""}` : `- ${p.name}`
+      const showUsername = linkedDiscordIDs.get(p.discordID) > 1
+
+      const userString = p.discordID ? `- <@${p.discordID}>${showUsername ? ` (${p.name})` : ""}` : `- ${p.name}`
 
       if (p.decksUsedToday === 0 && inClan) {
         if (ignoreLeaders && isLeader) {
