@@ -10,7 +10,7 @@ const apiRequest = async (url, apiToken) => {
       },
     })
     .catch((err) => err.response)
-  const { data, status } = resp
+  const { data, status } = resp || {}
 
   if (status === 200) {
     return {
