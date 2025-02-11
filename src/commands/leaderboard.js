@@ -58,11 +58,11 @@ module.exports = {
         choices: [
           {
             name: "L2 (4000-4999)",
-            value: "4000+",
+            value: "L2",
           },
           {
             name: "L3 (5000+)",
-            value: "5000+",
+            value: "L3",
           },
         ],
         description: "Filter by league",
@@ -79,17 +79,16 @@ module.exports = {
     const iLeague = i.options.getString("league")
 
     const location = locations.find((l) => l.name === iName)
-    const trophies = parseInt(iLeague?.slice(0, -1))
-    const maxTrophies = trophies === 5000 ? 10000 : trophies + 1000
+    const minTrophies = iLeague === "L2" ? 4000 : 5000
 
-    const query = {}
-    if (iName) query["location.name"] = iName
-    if (maxTrophies) {
-      query.clanScore = {
-        $gte: trophies,
-        $lt: maxTrophies,
-      }
+    const query = {
+      clanScore: {
+        ...(minTrophies ? { $gte: minTrophies } : {}),
+        ...(minTrophies && iLeague === "L2" ? { $lte: 4999 } : {}),
+      },
     }
+
+    if (iName) query["location.name"] = iName
 
     const [leaderboard, { lbLastUpdated }, plusTags] = await Promise.all([
       dailyLb
@@ -122,8 +121,8 @@ module.exports = {
 
     let embedUrl = `https://www.cwstats.com/leaderboard/daily/${location?.key || "global"}`
 
-    if (trophies === 4000) embedUrl += `?league=4000`
-    else if (trophies === 5000) embedUrl += `?league=5000`
+    if (minTrophies === 4000) embedUrl += `?league=4000`
+    else if (minTrophies === 5000) embedUrl += `?league=5000`
 
     const embed = {
       color: pink,
@@ -141,9 +140,10 @@ module.exports = {
     const fameAvgEmoji = client.cwEmojis.get("fameAvg")
     const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
     const cwstatsPlusEmoji = client.cwEmojis.get("cwstats_plus")
+    const leagueEmoji = iLeague ? client.cwEmojis.get(`legendary${iLeague.slice(iLeague.length - 1)}`) : ""
 
     embed.description += `**Location**: ${location?.key?.replace("_", "") || "Global"} ${location?.flagEmoji || ":earth_americas:"}\n`
-    embed.description += `**League**: ${trophies === 4000 ? "4k" : trophies === 5000 ? "5k+" : "All (4k+)"}\n\n`
+    embed.description += `**League**: ${iLeague || "All (L2+)"} ${leagueEmoji}\n\n`
 
     let showNRFooter = false
 
