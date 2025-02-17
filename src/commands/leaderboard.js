@@ -79,7 +79,7 @@ module.exports = {
     const iLeague = i.options.getString("league")
 
     const location = locations.find((l) => l.name === iName)
-    const minTrophies = iLeague === "L2" ? 4000 : 5000
+    const minTrophies = iLeague === "L3" ? 5000 : 4000
 
     const query = {
       clanScore: {
