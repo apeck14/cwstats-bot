@@ -84,7 +84,7 @@ module.exports = {
     const query = {
       clanScore: {
         ...(minTrophies ? { $gte: minTrophies } : {}),
-        ...(minTrophies && iLeague === "L2" ? { $lte: 4999 } : {}),
+        ...(iLeague === "L2" ? { $lte: 4999 } : {}),
       },
     }
 
