@@ -9,7 +9,7 @@ mongo.init()
 initializeClient()
   .then((client) => initializeEvents(mongo, client))
   .then((client) => AutoPoster(process.env.TOPGG_TOKEN, client))
-  .catch((e) => console.log(e))
+  .catch(() => {})
 
 process.on("unhandledRejection", (reason, promise) => {
   console.log("---UNHANDLED REJECTION---")
