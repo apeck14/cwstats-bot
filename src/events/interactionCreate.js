@@ -146,7 +146,7 @@ module.exports = {
       }
 
       // check for cooldown in database
-      if (cooldown) {
+      if (cooldown && guildExists?.cooldowns) {
         const commandCooldown = guildExists?.cooldowns[i.commandName]
         if (commandCooldown) {
           const now = new Date()
