@@ -164,7 +164,7 @@ module.exports = {
     for (const c of clansStillWarring) {
       embed.description += "\n"
 
-      const { badgeId, fameAvg, name, participants, projFame, projPlace, trophies } = c
+      const { badgeId, decksRemaining, fameAvg, name, projFame, projPlace, trophies } = c
       const badgeName = getClanBadge(badgeId, trophies)
       const badgeEmoji = client.cwEmojis.get(badgeName)
 
@@ -174,8 +174,6 @@ module.exports = {
       // show clan data if not training day and more than 0 medals
       if (!isTraining && c.fame > 0) {
         embed.description += `**${c.placement}.**${formattedClanName}`
-
-        const decksRemaining = 200 - participants.reduce((a, b) => a + b.decksUsedToday, 0)
 
         embed.description += `${fameEmoji} ${c.fame}\n${projectionEmoji} ${projFame} ${
           projPlace ? `(${projPlace})` : ""

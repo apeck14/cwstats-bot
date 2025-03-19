@@ -121,3 +121,39 @@ exports.getAllPlusClanTags = async (db) => {
     return []
   }
 }
+
+exports.getLinkedClansByGuild = async (db, id) => {
+  try {
+    const LinkedClans = db.collection("Linked Clans")
+
+    const allLinkedClans = await LinkedClans.find({ guildID: id }).toArray()
+
+    return allLinkedClans || []
+  } catch (e) {
+    console.log("getLinkedClansByGuild error", e)
+    return []
+  }
+}
+
+exports.setCooldown = async (db, id, commandName, delay) => {
+  try {
+    const Guilds = db.collection("Guilds")
+
+    const now = new Date()
+    now.setMilliseconds(now.getMilliseconds() + delay)
+
+    await Guilds.updateOne(
+      { guildID: id },
+      {
+        $set: {
+          [`cooldowns.${commandName}`]: now,
+        },
+      },
+    )
+
+    return true
+  } catch (e) {
+    console.log("getLinkedClansByGuild error", e)
+    return false
+  }
+}

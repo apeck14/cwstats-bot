@@ -24,12 +24,12 @@ const initializeClient = async () => {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildMessageTyping,
       GatewayIntentBits.GuildMessageReactions,
-      GatewayIntentBits.GuildEmojisAndStickers,
+      GatewayIntentBits.GuildExpressions,
     ],
     presence: {
       activities: [
         {
-          name: `CWStats.com | 2500+ servers`,
+          name: `CWStats.com | 2800+ servers`,
           type: ActivityType.Watching,
         },
       ],

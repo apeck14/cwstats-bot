@@ -28,6 +28,15 @@ const sendCommandLog = async (i, client) => {
   })
 }
 
+const getTimeDifference = (date1, date2) => {
+  const diff = Math.abs(date2 - date1) // Get the difference in milliseconds
+
+  const minutes = Math.floor(diff / (1000 * 60)) // Convert to minutes
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000) // Get remaining seconds
+
+  return `${minutes}m ${seconds}s`
+}
+
 module.exports = {
   name: Events.InteractionCreate,
   run: async (client, db, i) => {
@@ -123,7 +132,7 @@ module.exports = {
         })
       }
 
-      const { disabled, run } = i.client.commands.get(i.commandName)
+      const { cooldown, disabled, run } = i.client.commands.get(i.commandName)
 
       if (disabled) {
         return i.editReply({
@@ -134,6 +143,27 @@ module.exports = {
             },
           ],
         })
+      }
+
+      // check for cooldown in database
+      if (cooldown) {
+        const commandCooldown = guildExists?.cooldowns[i.commandName]
+        if (commandCooldown) {
+          const now = new Date()
+
+          if (now < commandCooldown) {
+            const timeRemainingStr = getTimeDifference(now, commandCooldown)
+
+            return i.editReply({
+              embeds: [
+                {
+                  color: orange,
+                  description: `This command is on cooldown for **${timeRemainingStr}**.`,
+                },
+              ],
+            })
+          }
+        }
       }
 
       // if a user @'s themselves send reminder above embed response
