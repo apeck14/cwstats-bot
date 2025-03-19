@@ -6,28 +6,29 @@
   "scripts": {
     "clean": "rm -rf node_modules",
     "reinstall": "npm run clean && npm install",
-    "lint": "eslint . --ext .js --fix"
+    "lint": "eslint . --ext .js --fix",
+    "update:minor": "ncu -u --target minor"
   },
   "keywords": [],
   "author": "Apehk",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.7.7",
-    "discord.js": "^14.16.3",
-    "dotenv": "^16.4.5",
+    "axios": "^1.8.4",
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.7",
     "fast-dice-coefficient": "^1.0.3",
     "lodash": "^4.17.21",
-    "mongodb": "^6.10.0",
+    "mongodb": "^6.15.0",
     "topgg-autoposter": "^2.0.2"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
+    "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-perfectionist": "^3.9.1",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "prettier": "^3.3.3"
+    "prettier": "^3.5.3"
   }
 }
