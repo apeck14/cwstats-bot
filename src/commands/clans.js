@@ -63,7 +63,7 @@ module.exports = {
             isPlus: true,
             isTraining,
             name: c.clanName,
-            projPlace,
+            projPlace: projPlace || "N/A",
             tag: c.tag,
             trophies,
           })
@@ -83,7 +83,7 @@ module.exports = {
             isPlus: false,
             isTraining: clan.isTraining,
             name: c.clanName,
-            projPlace: clan.projPlacement,
+            projPlace: clan.projPlacement || "N/A",
             tag: c.tag,
             trophies: clan.clanScore,
           })
@@ -128,20 +128,21 @@ module.exports = {
     const projectionEmoji = client.cwEmojis.get("projection")
     const fameAvgEmoji = client.cwEmojis.get("fameAvg")
     const flagEmoji = client.cwEmojis.get("flag")
+    const plusEmoji = client.cwEmojis.get("cwstats_plus")
 
     const generateEmbed = (pageIndex) => {
       const start = pageIndex * itemsPerPage
       const end = start + itemsPerPage
       const pageData = liveClanData.slice(start, end)
 
-      const description = !pageData.length
+      const description = !liveClanData.length
         ? `No clans linked to this server. You can link your clans [**here**](https://cwstats.com/me/servers/${i.guildId}/clans).`
         : pageData
             .map((c) => {
               const badgeEmoji = client.cwEmojis.get(c.badgeEmoji)
               const url = `https://www.cwstats.com/clan/${c.tag.substring(1)}/race`
 
-              let entry = `${badgeEmoji} [**${formatStr(c.name)}**](${url})`
+              let entry = `${badgeEmoji} [**${formatStr(c.name)}**](${url})${c.isPlus ? ` ${plusEmoji}` : ""}`
 
               if (c.isTraining || c.noData) return entry
               if (c.crossedFinishLine) {
