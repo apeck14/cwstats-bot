@@ -54,7 +54,7 @@ module.exports = {
       if (validateChannel) await i.deferReply()
 
       if (!i.guild) {
-        return i.reply({
+        return i.editReply({
           embeds: [
             {
               color: orange,
