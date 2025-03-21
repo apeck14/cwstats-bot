@@ -156,8 +156,8 @@ module.exports = {
             .join("\n\n")
 
       if (pageData.length) {
-        // set cooldown timestamp (now + 5 mins)
-        setCooldown(db, i.guildId, "clans", 300000)
+        // set cooldown timestamp (now + 1 min)
+        setCooldown(db, i.guildId, "clans", 60000)
       }
 
       const embed = new EmbedBuilder()
