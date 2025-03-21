@@ -155,11 +155,6 @@ module.exports = {
             })
             .join("\n\n")
 
-      if (pageData.length) {
-        // set cooldown timestamp (now + 1 min)
-        setCooldown(db, i.guildId, "clans", 60000)
-      }
-
       const embed = new EmbedBuilder()
         .setTitle(`__Live River Races__`)
         .setDescription(description)
@@ -171,6 +166,9 @@ module.exports = {
         embed.setFooter({
           text: `Page ${pageIndex + 1} of ${Math.ceil(liveClanData.length / itemsPerPage)}`,
         })
+
+        // set cooldown timestamp (now + 1 min)
+        setCooldown(db, i.guildId, "clans", 60000)
       }
 
       return embed
