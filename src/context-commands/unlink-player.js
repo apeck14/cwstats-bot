@@ -1,6 +1,7 @@
 const {
   ActionRowBuilder,
   ApplicationCommandType,
+  MessageFlags,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
@@ -44,7 +45,7 @@ module.exports = {
               description: `This user is **not linked** to player tag: **${formattedTag}**.`,
             },
           ],
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         })
       }
 
@@ -69,7 +70,7 @@ module.exports = {
             description: `:white_check_mark: User was **successfully unlinked** from player tag: **${formattedTag}**!`,
           },
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       })
     } catch (e) {
       console.log("unlink-player", e)
@@ -80,7 +81,7 @@ module.exports = {
             description: "**Unexpected error.**",
           },
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       })
     }
   },

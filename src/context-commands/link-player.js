@@ -1,6 +1,7 @@
 const {
   ActionRowBuilder,
   ApplicationCommandType,
+  MessageFlags,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
@@ -65,7 +66,7 @@ module.exports = {
                 description: err,
               },
             ],
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           })
       }
 
@@ -80,7 +81,7 @@ module.exports = {
               description: error,
             },
           ],
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         })
 
       // update discord username of player
@@ -112,7 +113,7 @@ module.exports = {
             description: `:white_check_mark: **${player.name}** successfully linked to user!`,
           },
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       })
     } catch (e) {
       return i.reply({
@@ -122,7 +123,7 @@ module.exports = {
             description: "**Unexpected error.**",
           },
         ],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       })
     }
   },

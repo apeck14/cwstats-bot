@@ -1,4 +1,4 @@
-const { Events } = require("discord.js")
+const { Events, MessageFlags } = require("discord.js")
 const path = require("path")
 const fs = require("fs")
 const { orange, pink } = require("../static/colors")
@@ -94,7 +94,7 @@ module.exports = {
               description: error,
             },
           ],
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         }
 
         // show error modal
@@ -128,7 +128,7 @@ module.exports = {
               description: error,
             },
           ],
-          ephemeral: onlyShowToUser,
+          flags: onlyShowToUser ? MessageFlags.Ephemeral : 0,
         })
       }
 
