@@ -157,3 +157,23 @@ exports.setCooldown = async (db, id, commandName, delay) => {
     return false
   }
 }
+
+exports.updateDiscordNickname = async ({ guildId, nickname, userId }) => {
+  try {
+    await axios.patch(
+      `https://discord.com/api/v10/guilds/${guildId}/members/${userId}`,
+      { nick: nickname },
+      {
+        headers: {
+          Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      },
+    )
+
+    return true
+  } catch (err) {
+    console.error("updateDiscordNickname Error", err?.response?.data || err.message)
+    return false
+  }
+}

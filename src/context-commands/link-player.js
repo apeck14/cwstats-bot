@@ -6,9 +6,9 @@ const {
   TextInputStyle,
 } = require("discord.js")
 const { formatTag } = require("../util/formatting")
-const { calcLinkedPlayerLimit } = require("../util/functions")
+const { calcLinkedPlayerLimit, generateDiscordNickname } = require("../util/functions")
 const { green, orange, red } = require("../static/colors")
-const { getPlayer } = require("../util/api")
+const { getPlayer, updateDiscordNickname } = require("../util/api")
 
 module.exports = {
   data: {
@@ -83,7 +83,14 @@ module.exports = {
           ephemeral: true,
         })
 
-      guilds.updateOne(
+      // update discord username of player
+      if (nudges?.updateNicknameUponLinking) {
+        const existingLinks = links.filter((l) => l.discordID === targetId).map((l) => l.name)
+        const newNickname = generateDiscordNickname([...existingLinks, player.name])
+        updateDiscordNickname({ guildId: i.guildId, nickname: newNickname, userId: targetId })
+      }
+
+      await guilds.updateOne(
         {
           guildID: i.guildId,
         },
@@ -108,7 +115,6 @@ module.exports = {
         ephemeral: true,
       })
     } catch (e) {
-      console.log("link-player", e)
       return i.reply({
         embeds: [
           {

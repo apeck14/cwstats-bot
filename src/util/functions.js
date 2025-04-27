@@ -146,10 +146,13 @@ const getPlayerCardData = (cards) => {
 
 const calcLinkedPlayerLimit = (linkedPlusClansCount) => 100 + linkedPlusClansCount * 75
 
+const generateDiscordNickname = (linkedIGNs = []) => linkedIGNs.join(" | ")
+
 module.exports = {
   calcLinkedPlayerLimit,
   errorMsg,
   findBestMatch,
+  generateDiscordNickname,
   getArenaEmoji,
   getClanBadge,
   getLeague,
