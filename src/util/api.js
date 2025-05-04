@@ -50,11 +50,6 @@ exports.getBattleLog = (tag) => {
   return apiRequest(url, CR_API_TOKEN)
 }
 
-exports.getCardInfo = () => {
-  const url = `https://proxy.royaleapi.dev/v1/cards`
-
-  return apiRequest(url, CR_API_TOKEN)
-}
 exports.getClan = (tag) => {
   tag = formatTag(tag).substring(1)
   const url = `https://proxy.royaleapi.dev/v1/clans/%23${tag}`
@@ -84,13 +79,6 @@ exports.getRiverRace = (tag) => {
 
 exports.getWarLeaderboard = (limit = 100, locationId = "global") => {
   const url = `https://proxy.royaleapi.dev/v1/locations/${locationId}/rankings/clanwars/?limit=${limit}`
-
-  return apiRequest(url, CR_API_TOKEN)
-}
-
-exports.getChests = (tag) => {
-  tag = formatTag(tag).substring(1)
-  const url = `https://proxy.royaleapi.dev/v1/players/%23${tag}/upcomingchests`
 
   return apiRequest(url, CR_API_TOKEN)
 }
