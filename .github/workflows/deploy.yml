@@ -26,11 +26,6 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Debug VPS path
-        run: |
-          echo "Files in remote path:"
-          ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "ls -l $VPS_PATH/.github/workflows"
-
       - name: Sync files via rsync
         env:
           VPS_USER: ${{ secrets.VPS_USER }}
