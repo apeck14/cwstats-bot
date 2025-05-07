@@ -2,7 +2,7 @@ const { orange, pink } = require("../static/colors")
 const { formatStr } = require("../util/formatting")
 const { getClanBadge } = require("../util/functions")
 const locations = require("../static/locations")
-const { getAllPlusClanTags } = require("../util/api")
+const { getAllPlusClanTags } = require("../util/services")
 
 module.exports = {
   data: {

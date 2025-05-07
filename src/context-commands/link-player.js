@@ -9,7 +9,7 @@ const {
 const { formatTag } = require("../util/formatting")
 const { calcLinkedPlayerLimit, generateDiscordNickname } = require("../util/functions")
 const { green, orange, red } = require("../static/colors")
-const { getPlayer, updateDiscordNickname } = require("../util/api")
+const { getPlayer, updateDiscordNickname } = require("../util/services")
 
 module.exports = {
   data: {

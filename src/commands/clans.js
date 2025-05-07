@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js")
-const { getAllPlusClanTags, getLinkedClansByGuild, getRiverRace, setCooldown } = require("../util/api")
+const { getAllPlusClanTags, getLinkedClansByGuild, getRiverRace, setCooldown } = require("../util/services")
 const { getClanBadge } = require("../util/functions")
 const { getRaceDetails } = require("../util/raceFunctions")
 const { pink } = require("../static/colors")

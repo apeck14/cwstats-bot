@@ -1,4 +1,4 @@
-const { addPlayer, getClan, getPlayer } = require("../util/api")
+const { addPlayer, getClan, getPlayer } = require("../util/services")
 const { orange, pink } = require("../static/colors")
 const { errorMsg, getArenaEmoji, getClanBadge, getPlayerCardData } = require("../util/functions")
 const { formatRole, formatStr, formatTag } = require("../util/formatting")

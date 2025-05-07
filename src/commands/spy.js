@@ -1,4 +1,4 @@
-const { getBattleLog, getClan, getPlayer, searchClans } = require("../util/api")
+const { getBattleLog, getClan, getPlayer, searchClans } = require("../util/services")
 const { pink } = require("../static/colors")
 const { errorMsg, findBestMatch, getClanBadge } = require("../util/functions")
 const { formatStr, formatTag } = require("../util/formatting")

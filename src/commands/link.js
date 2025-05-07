@@ -1,4 +1,4 @@
-const { addPlayer, getPlayer } = require("../util/api")
+const { addPlayer, getPlayer } = require("../util/services")
 const { green, orange } = require("../static/colors")
 const { formatStr, formatTag } = require("../util/formatting")
 const { errorMsg } = require("../util/functions")

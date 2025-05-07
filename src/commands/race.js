@@ -1,4 +1,4 @@
-const { getRiverRace } = require("../util/api")
+const { getRiverRace } = require("../util/services")
 const { orange, pink } = require("../static/colors")
 const { getRaceDetails } = require("../util/raceFunctions")
 const { errorMsg, getClanBadge } = require("../util/functions")
