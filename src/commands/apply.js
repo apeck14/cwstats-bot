@@ -1,6 +1,6 @@
-const { addPlayer, getClan, getPlayer } = require("../util/services")
-const { green, orange, pink } = require("../static/colors")
-const { errorMsg, getArenaEmoji, getClanBadge } = require("../util/functions")
+const { addPlayer, getClan, getGuild, getPlayer } = require("../util/services")
+const { pink } = require("../static/colors")
+const { errorMsg, getArenaEmoji, getPlayerCardData, successMsg, warningMsg } = require("../util/functions")
 const { formatRole, formatStr, formatTag } = require("../util/formatting")
 
 module.exports = {
@@ -49,71 +49,64 @@ module.exports = {
     ],
   },
   run: async (i, db, client) => {
-    const guilds = db.collection("Guilds")
-    const { channels } = await guilds.findOne({
-      guildID: i.guildId,
-    })
-    const { applicationsChannelID } = channels
+    const { data: guild, error: guildError } = await getGuild(i.guildId, true)
 
-    const APPLICATIONS_CHANNEL = client.channels.cache.get(applicationsChannelID)
+    if (guildError) {
+      return errorMsg(i, guildError)
+    }
+
+    const { applicationsChannelID } = guild.channels || {}
+
+    const APPLICATIONS_CHANNEL = applicationsChannelID && client.channels.cache.get(applicationsChannelID)
 
     if (!APPLICATIONS_CHANNEL) {
-      return i.editReply({
-        embeds: [
-          {
-            color: orange,
-            description: `The set **applications** channel has been deleted. Please set the new channel [here](https://www.cwstats.com/me/servers/${i.guildId}/channels).`,
-          },
-        ],
-      })
+      const msg = `The set **applications** channel has been deleted. Please set the new channel [here](https://www.cwstats.com/me/servers/${i.guildId}/channels).`
+      return warningMsg(i, msg)
     }
 
-    const tag = i.options.getString("tag")
+    const iTag = i.options.getString("tag")
 
-    const { data: player, error: playerError } = await getPlayer(tag)
+    const { data: player, error: playerError } = await getPlayer(iTag)
 
-    if (playerError) return errorMsg(i, playerError)
+    if (playerError) {
+      return errorMsg(i, playerError)
+    }
 
     // add player for website searching
-    addPlayer(db, {
-      clanName: player?.clan?.name || "",
-      name: player.name,
-      tag: player.tag,
-    })
+    addPlayer(player.tag)
 
-    let clanBadge
+    const inClan = !!player.clan
 
-    if (!player.clan) {
-      player.clan = {
-        name: "None",
-      }
-      clanBadge = getClanBadge(-1)
-    } else {
-      // get clan badge
+    let clanBadge = "no_clan"
+
+    if (inClan) {
       const { data: clan, error: clanError } = await getClan(player.clan.tag)
 
-      if (clanError) return errorMsg(i, clanError)
+      if (clanError) {
+        return errorMsg(i, clanError)
+      }
 
-      clanBadge = getClanBadge(clan.badgeId, clan.clanWarTrophies)
+      clanBadge = clan.badge
     }
+
+    const ladderArena = getArenaEmoji(player.trophies)
+    const pbArena = getArenaEmoji(player.bestTrophies)
 
     const badgeEmoji = client.cwEmojis.get(clanBadge)
     const levelEmoji = client.cwEmojis.get(`level${player.expLevel}`)
     const polMedalsEmoji = client.cwEmojis.get("polmedals")
-    const ladderEmoji = client.cwEmojis.get(getArenaEmoji(player.trophies))
-    const pbEmoji = client.cwEmojis.get(getArenaEmoji(player.bestTrophies))
+    const ladderEmoji = client.cwEmojis.get(ladderArena)
+    const pbEmoji = client.cwEmojis.get(pbArena)
     const level15 = client.cwEmojis.get("level15")
     const level14 = client.cwEmojis.get("level14")
     const level13 = client.cwEmojis.get("level13")
-    const level12 = client.cwEmojis.get("level12")
+    const wildShardEmoji = client.cwEmojis.get("wildshard")
 
     const ccWins = player.badges.find((b) => b.name === "Classic12Wins")?.progress || 0
     const gcWins = player.badges.find((b) => b.name === "Grand12Wins")?.progress || 0
     const cw2Wins = player.badges.find((b) => b.name === "ClanWarWins")?.progress || 0
-    const lvl15Cards = player.cards.filter((c) => c.maxLevel - c.level === -1).length
-    const lvl14Cards = player.cards.filter((c) => c.maxLevel - c.level === 0).length
-    const lvl13Cards = player.cards.filter((c) => c.maxLevel - c.level === 1).length
-    const lvl12Cards = player.cards.filter((c) => c.maxLevel - c.level === 2).length
+
+    const { evolutions, lvl13, lvl14, lvl15 } = getPlayerCardData(player.cards)
 
     const applicationEmbed = {
       color: pink,
@@ -124,12 +117,14 @@ module.exports = {
       title: "__New Application!__",
     }
 
-    applicationEmbed.description += `${levelEmoji} [**${formatStr(
-      player.name,
-    )}**](https://royaleapi.com/player/${formatTag(tag).substring(1)})\n`
-    applicationEmbed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${
-      player.bestTrophies
-    }\n${badgeEmoji} **${formatStr(player.clan.name)}**${player.role ? ` (${formatRole(player.role)})` : ""}` // clan & ladder
+    const royaleApiUrl = `https://royaleapi.com/player/${formatTag(player.tag, false)}`
+    const name = formatStr(player.name)
+    const clanName = inClan ? formatStr(player.clan.name) : "*None*"
+    const role = inClan ? ` (${formatRole(player.role)})` : ""
+
+    applicationEmbed.description += `${levelEmoji} [**${name}**](${royaleApiUrl})\n`
+    applicationEmbed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${player.bestTrophies}\n`
+    applicationEmbed.description += `${badgeEmoji} **${clanName}**${role}`
 
     const { bestPathOfLegendSeasonResult: bestPOLObj, currentPathOfLegendSeasonResult: currentPOLObj } = player
 
@@ -150,23 +145,16 @@ module.exports = {
     }\n**CW1 Wins**: ${player.warDayWins}\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${
       player.challengeMaxWins
     }\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n` // stats
-    applicationEmbed.description += `**__Cards__**\n${level15}: ${lvl15Cards}\n${level14}: ${lvl14Cards}\n${level13}: ${lvl13Cards}\n${level12}: ${lvl12Cards}` // cards
+    applicationEmbed.description += `**__Cards__**\n${wildShardEmoji}: ${evolutions}\n${level15}: ${lvl15}\n${level14}: ${lvl14}\n${level13}: ${lvl13}` // cards
     applicationEmbed.description += `\n\n**Request By**: <@!${i.user.id}>`
 
-    i.editReply({
-      embeds: [
-        {
-          color: green,
-          description: `✅ Request sent for **${formatStr(player.name)}**! A Co-Leader will contact you shortly.`,
-        },
-      ],
-    })
+    successMsg(i, `✅ Request sent for **${name}**! A Co-Leader will contact you shortly.`)
 
     return APPLICATIONS_CHANNEL.send({
       embeds: [applicationEmbed],
       files: [
         {
-          attachment: `./src/static/images/arenas/${getArenaEmoji(player.trophies)}.png`,
+          attachment: `./src/static/images/arenas/${ladderArena}.png`,
           name: "arena.png",
         },
       ],

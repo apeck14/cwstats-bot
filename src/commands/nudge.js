@@ -1,6 +1,5 @@
-const { getClan, getRiverRace } = require("../util/services")
-const { orange, pink } = require("../static/colors")
-const { errorMsg, getClanBadge } = require("../util/functions")
+const { getClan, getGuild, getRace } = require("../util/services")
+const { errorMsg, warningMsg } = require("../util/functions")
 const { formatStr } = require("../util/formatting")
 
 module.exports = {
@@ -49,10 +48,11 @@ module.exports = {
     ],
   },
   run: async (i, db, client) => {
-    const guilds = db.collection("Guilds")
-    const { abbreviations, defaultClan, nudges } = await guilds.findOne({
-      guildID: i.guildId,
-    })
+    const { data: guild, error } = await getGuild(i.guildId)
+
+    if (error) return errorMsg(i, error)
+
+    const { abbreviations, defaultClan, nudges } = guild
     const { ignoreLeaders, links, message } = nudges || {}
 
     let tag = i.options.getString("tag")
@@ -61,73 +61,36 @@ module.exports = {
     if (!tag) {
       if (defaultClan?.tag) tag = defaultClan?.tag
       else
-        return i.editReply({
-          embeds: [
-            {
-              color: orange,
-              description: `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`,
-            },
-          ],
-        })
+        return warningMsg(
+          i,
+          `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`,
+        )
     } else {
       // abbreviation
       const UPPERCASE_ABBR = tag.toUpperCase()
       const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
 
       if (abbr) tag = abbr.tag
-      else if (tag.length < 3) {
-        return i.editReply({
-          embeds: [
-            {
-              color: orange,
-              description: "**Abbreviation does not exist.**",
-            },
-          ],
-        })
-      }
+      else if (tag.length < 3) return warningMsg(i, "**Abbreviation does not exist.**")
     }
 
-    const { data: race, error: raceError } = await getRiverRace(tag)
+    const [{ data: race, error: raceError }, { data: clan, error: clanError }] = await Promise.all([
+      getRace(tag, true),
+      getClan(tag),
+    ])
 
-    if (raceError) return errorMsg(i, raceError)
+    if (raceError || clanError) return errorMsg(i, raceError || clanError)
 
-    if (race.state === "matchmaking") {
-      return i.editReply({
-        embeds: [
-          {
-            color: orange,
-            description: ":mag: **Matchmaking is underway!**",
-          },
-        ],
-      })
-    }
-    if (!race.clans || race.clans.length <= 1) {
-      return i.editReply({
-        embeds: [
-          {
-            color: orange,
-            description: "**Clan is not in a river race.**",
-          },
-        ],
-      })
-    }
-    if (race.periodType === "training") {
-      return i.editReply({
-        embeds: [
-          {
-            color: orange,
-            description: "**Cannot send nudges on training days!**",
-          },
-        ],
-      })
-    }
+    const { clanIndex, clans, isTraining, state } = race
+    const { participants } = clans[clanIndex]
+    const { badge, memberList } = clan
 
-    const { data: clan, error: clanError } = await getClan(tag)
-
-    if (clanError) return errorMsg(i, clanError)
+    if (state === "matchmaking") return warningMsg(i, ":mag: **Matchmaking is underway!**")
+    if (!clans || clans.length <= 1) return warningMsg(i, "**Clan is not in a river race.**")
+    if (isTraining) return warningMsg(i, "**Cannot send nudges on training days!**")
 
     const linkedDiscordIDs = new Map()
-    const alphabetizedParticipants = race.clan.participants
+    const alphabetizedParticipants = participants
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((p) => {
         const { discordID } = links?.find((l) => l.tag === p.tag) || {}
@@ -140,96 +103,66 @@ module.exports = {
         return p
       })
 
-    const fourAttacks = []
-    const threeAttacks = []
-    const twoAttacks = []
-    const oneAttack = []
-
-    let nudgeMessage = ""
-
     let slotsRemaining = 50
     let attacksRemaining = 200
 
+    const attackGroups = {
+      1: [],
+      2: [],
+      3: [],
+      4: [],
+    }
+
     for (const p of alphabetizedParticipants) {
-      if (p.decksUsedToday) {
+      const used = p.decksUsedToday ?? 0
+
+      if (used) {
         slotsRemaining--
-        attacksRemaining -= p.decksUsedToday
+        attacksRemaining -= used
       }
 
-      const inClan = clan.memberList.find((m) => m.tag === p.tag)
+      const inClan = memberList.find((m) => m.tag === p.tag)
       const isLeader = inClan?.role === "coLeader" || inClan?.role === "leader"
 
-      const showUsername = linkedDiscordIDs.get(p.discordID) > 1
+      const displayName = p.discordID
+        ? `- <@${p.discordID}>${linkedDiscordIDs.get(p.discordID) > 1 ? ` (${p.name})` : ""}`
+        : `- ${p.name}`
 
-      const userString = p.discordID ? `- <@${p.discordID}>${showUsername ? ` (${p.name})` : ""}` : `- ${p.name}`
-
-      if (p.decksUsedToday === 0 && inClan) {
-        if (ignoreLeaders && isLeader) {
-          fourAttacks.push(`- ${p.name}`)
-        } else fourAttacks.push(userString)
-      } else if (p.decksUsedToday === 1) {
-        if (ignoreLeaders && isLeader) {
-          threeAttacks.push(`- ${p.name}`)
-        } else threeAttacks.push(userString)
-      } else if (p.decksUsedToday === 2) {
-        if (ignoreLeaders && isLeader) {
-          twoAttacks.push(`- ${p.name}`)
-        } else twoAttacks.push(userString)
-      } else if (p.decksUsedToday === 3) {
-        if (ignoreLeaders && isLeader) {
-          oneAttack.push(`- ${p.name}`)
-        } else oneAttack.push(userString)
+      const remainingAttacks = 4 - used
+      if (attackGroups[remainingAttacks] && inClan) {
+        attackGroups[remainingAttacks].push(ignoreLeaders && isLeader ? `- ${p.name}` : displayName)
       }
     }
 
-    if (fourAttacks.length > 0) {
-      nudgeMessage += `\n\n**__4 Attacks__**\n`
-
-      if (slotsRemaining <= 0) nudgeMessage += `No slots remaining! Ignoring **${fourAttacks.length}** player(s).`
-      else nudgeMessage += `${fourAttacks.join("\n")}`
-    }
-
-    if (threeAttacks.length > 0) {
-      nudgeMessage += `\n\n**__3 Attacks__**\n${threeAttacks.join("\n")}`
-    }
-
-    if (twoAttacks.length > 0) {
-      nudgeMessage += `\n\n**__2 Attacks__**\n${twoAttacks.join("\n")}`
-    }
-
-    if (oneAttack.length > 0) {
-      nudgeMessage += `\n\n**__1 Attack__**\n${oneAttack.join("\n")}`
-    }
-
-    const defaultMessage = "**You have attacks remaining.** Please get them in before the deadline!"
-
-    const badgeName = getClanBadge(clan.badgeId, clan.clanWarTrophies)
-    const badgeEmoji = client.cwEmojis.get(badgeName)
+    const badgeEmoji = client.cwEmojis.get(badge)
     const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
     const slotsRemainingEmoji = client.cwEmojis.get("remainingSlots")
 
-    const embed = {
-      color: pink,
-      description: `${badgeEmoji} **${formatStr(
-        clan.name,
-      )}**\n${decksRemainingEmoji} **${attacksRemaining}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n\n${
-        message || defaultMessage
-      }`,
-      title: "__Nudge!__",
+    let nudgeMessage = `${badgeEmoji} **${formatStr(
+      clan.name,
+    )}**\n${decksRemainingEmoji} **${attacksRemaining}**\n${slotsRemainingEmoji} **${slotsRemaining}**`
+
+    const labels = {
+      1: "1 Attack",
+      2: "2 Attacks",
+      3: "3 Attacks",
+      4: "4 Attacks",
     }
 
-    await i.editReply({ embeds: [embed] })
-
-    try {
-      await i.channel.send(nudgeMessage)
-    } catch (e) {
-      const msg =
-        e?.code === 50001
-          ? ":x: Missing permissions to send nudge message in this channel."
-          : ":x: Unknown error while sending nudges, please try again."
-      i.editReply({
-        embeds: [{ ...embed, description: (embed.description += `\n\n**${msg}**`) }],
-      })
+    for (const key of Object.keys(labels).reverse()) {
+      const group = attackGroups[key]
+      if (group.length > 0) {
+        nudgeMessage += `\n\n**__${labels[key]}__**\n`
+        if (key === 4 && slotsRemaining <= 0) {
+          nudgeMessage += `No slots remaining! Ignoring **${group.length}** player(s).`
+        } else {
+          nudgeMessage += group.join("\n")
+        }
+      }
     }
+
+    nudgeMessage += `\n\n${message || "**You have attacks remaining.** Please get them in before the deadline!"}`
+
+    i.editReply(nudgeMessage)
   },
 }

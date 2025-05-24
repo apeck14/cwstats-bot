@@ -1,7 +1,6 @@
-const { addPlayer, getPlayer } = require("../util/services")
-const { green, orange } = require("../static/colors")
+const { addPlayer, linkPlayer } = require("../util/services")
 const { formatStr, formatTag } = require("../util/formatting")
-const { errorMsg } = require("../util/functions")
+const { errorMsg, successMsg, warningMsg } = require("../util/functions")
 
 module.exports = {
   data: {
@@ -48,160 +47,28 @@ module.exports = {
       },
     ],
   },
-  run: async (i, db) => {
-    const linkedAccounts = db.collection("Linked Accounts")
-
-    const tag = formatTag(i.options.getString("tag"))
-
-    const { data: player, error } = await getPlayer(tag)
-
-    if (error) return errorMsg(i, error)
+  run: async (i) => {
+    const iTag = i.options.getString("tag")
+    const formattedTag = formatTag(iTag, false)
 
     // add player for website searching
-    addPlayer(db, {
-      clanName: player?.clan?.name || "",
-      name: player.name,
-      tag: player.tag,
-    })
+    addPlayer(formattedTag)
 
-    const linkedAccount = await linkedAccounts.findOne({
-      discordID: i.user.id,
-    })
+    const { error, name, result, success } = await linkPlayer(formattedTag, i.user.id)
 
-    if (!linkedAccount) {
-      await linkedAccounts.insertOne({
-        discordID: i.user.id,
-        savedClans: [],
-        savedPlayers: [
-          {
-            name: player.name,
-            tag,
-          },
-        ],
-        tag,
-      })
-
-      return i.editReply({
-        embeds: [
-          {
-            color: green,
-            description: `✅ Account linked to **${formatStr(player.name)}**!`,
-          },
-        ],
-      })
-    }
-    if (!linkedAccount.tag) {
-      await linkedAccounts.updateOne(
-        {
-          discordID: i.user.id,
-        },
-        {
-          $push: {
-            savedPlayers: {
-              name: player.name,
-              tag,
-            },
-          },
-          $set: {
-            tag,
-          },
-        },
-      )
-
-      return i.editReply({
-        embeds: [
-          {
-            color: green,
-            description: `✅ Account linked to **${formatStr(player.name)}**!`,
-          },
-        ],
-      })
-    }
-    // already linked to that tag
-    if (linkedAccount.tag === tag) {
-      return i.editReply({
-        embeds: [
-          {
-            color: orange,
-            description: "**You have already linked that ID!**",
-          },
-        ],
-      })
+    if (error) {
+      return errorMsg(i, error)
     }
 
-    // already linked to antoher tag, send confirmation embed to update to new tag
-
-    const row = {
-      components: [
-        {
-          custom_id: "yes",
-          label: "Yes",
-          style: 3,
-          type: 2,
-        },
-        {
-          custom_id: "no",
-          label: "No",
-          style: 4,
-          type: 2,
-        },
-      ],
-      type: 1,
+    // tag already linked
+    if (result.modifiedCount === 0) {
+      return warningMsg(i, "**You have already linked that tag!**")
     }
 
-    // send confirmatiom embed
-    const confEmbed = await i.editReply({
-      components: [row],
-      embeds: [
-        {
-          color: green,
-          description: `Are you sure you want to link your account to a new ID?\n\n**Old ID:** ${linkedAccount.tag}\n**New ID:** ${tag}`,
-        },
-      ],
-    })
+    if (success) {
+      return successMsg(i, `✅ Account linked to **${formatStr(name)}**!`)
+    }
 
-    const iFilter = (int) => int.user.id === i.user.id
-
-    const collector = confEmbed.createMessageComponentCollector({
-      filter: iFilter,
-      time: 10000,
-    })
-
-    collector.on("collect", async (int) => {
-      if (int.customId === "yes") {
-        await linkedAccounts.updateOne(
-          {
-            discordID: int.user.id,
-          },
-          {
-            $push: {
-              savedPlayers: {
-                name: player.name,
-                tag,
-              },
-            },
-            $set: {
-              tag,
-            },
-          },
-        )
-
-        return int.update({
-          components: [],
-          embeds: [
-            {
-              color: green,
-              description: `✅ Updated! Account linked to **${formatStr(player.name)}**.`,
-            },
-          ],
-        })
-      }
-
-      i.deleteReply()
-    })
-
-    collector.on("end", (collected) => {
-      if (!collected.size) i.deleteReply()
-    })
+    return errorMsg(i, "**Unexpected error.** Please try again.")
   },
 }

@@ -1,6 +1,6 @@
-const { getClan, getRiverRace } = require("../util/services")
-const { orange, pink } = require("../static/colors")
-const { errorMsg, getClanBadge } = require("../util/functions")
+const { getClan, getGuild, getRace } = require("../util/services")
+const { pink } = require("../static/colors")
+const { errorMsg, warningMsg } = require("../util/functions")
 const { formatStr } = require("../util/formatting")
 
 module.exports = {
@@ -49,124 +49,79 @@ module.exports = {
     ],
   },
   run: async (i, db, client) => {
-    const guilds = db.collection("Guilds")
-    const { abbreviations, defaultClan } = await guilds.findOne({
-      guildID: i.guildId,
-    })
+    const { data: guild, error: guildError } = await getGuild(i.guildId, true)
 
-    let tag = i.options.getString("tag")
+    if (guildError) return errorMsg(i, guildError)
 
-    // default clan
-    if (!tag) {
-      if (defaultClan?.tag) tag = defaultClan?.tag
-      else
-        return i.editReply({
-          embeds: [
-            {
-              color: orange,
-              description: `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`,
-            },
-          ],
-        })
-    } else {
-      // abbreviation
-      const UPPERCASE_ABBR = tag.toUpperCase()
+    const { abbreviations, defaultClan } = guild.channels || {}
+
+    let iTag = i.options.getString("tag")
+
+    if (iTag) {
+      // check for abbreviation
+      const UPPERCASE_ABBR = iTag.toUpperCase()
       const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
 
-      if (abbr) tag = abbr.tag
-      else if (tag.length < 3) {
-        return i.editReply({
-          embeds: [
-            {
-              color: orange,
-              description: "**Abbreviation does not exist.**",
-            },
-          ],
-        })
-      }
+      if (abbr) iTag = abbr.tag
+      else if (iTag.length < 5) return warningMsg(i, "**Abbreviation does not exist.**")
+    }
+    // default clan
+    else if (defaultClan?.tag) iTag = defaultClan?.tag
+    else {
+      const msg = `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`
+      return warningMsg(i, msg)
     }
 
-    const { data: race, error: raceError } = await getRiverRace(tag)
+    const [{ data: race, error: raceError }, { data: clan, error: clanError }] = await Promise.all([
+      getRace(iTag),
+      getClan(iTag),
+    ])
 
-    if (raceError) return errorMsg(i, raceError)
+    if (raceError || clanError) return errorMsg(i, raceError || clanError)
+    if (race.state === "matchmaking") return warningMsg(i, ":mag: **Matchmaking is underway!**")
+    if (!race.clans || race.clans.length <= 1) return warningMsg(i, "**Clan is not in a river race.**")
 
-    if (race.state === "matchmaking") {
-      return i.editReply({
-        embeds: [
-          {
-            color: orange,
-            description: ":mag: **Matchmaking is underway!**",
-          },
-        ],
-      })
-    }
-    if (!race.clans || race.clans.length <= 1) {
-      return i.editReply({
-        embeds: [
-          {
-            color: orange,
-            description: "**Clan is not in a river race.**",
-          },
-        ],
-      })
-    }
+    const { memberList } = clan
+    const { clanIndex, dayIndex, isColosseum, isTraining, sectionIndex } = race
+    const { badge, decksUsed, fame: clanFame, name, participants, periodPoints, slotsUsed, tag } = race.clans[clanIndex]
 
-    const { data: clan, error: clanError } = await getClan(tag)
+    const fame = isColosseum ? clanFame : periodPoints
+    const decksRemaining = 200 - decksUsed
+    const slotsRemaining = 50 - slotsUsed
+    const week = sectionIndex + 1
+    const dayType = isTraining ? "Training" : "War"
+    const dayNum = isTraining ? dayIndex + 1 : dayIndex - 2
 
-    if (clanError) return errorMsg(i, clanError)
-
-    const dayOfWeek = race.periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
-
-    const isColosseum = race.periodType === "colosseum"
-    const fame = isColosseum ? race.clan.fame : race.clan.periodPoints
-    const totalAttacksLeft = 200 - race.clan.participants.reduce((a, b) => a + b.decksUsedToday, 0)
-
-    const { participants } = race.clan
-    const { badgeId, clanWarTrophies, memberList, name } = clan
-
-    const fourAttacks = []
-    const threeAttacks = []
-    const twoAttacks = []
-    const oneAttack = []
-
+    const memberTagSet = new Set(memberList.map((m) => m.tag))
     let showFooter = false
 
-    for (const p of participants) {
-      // push all players to appropiate array
-      const inClan = memberList.find((m) => m.tag === p.tag)
+    // [4, 3, 2, 1]
+    const attackBuckets = [[], [], [], []]
 
-      if (p.decksUsedToday === 0 && inClan) fourAttacks.push(p)
-      else if (p.decksUsedToday === 1) {
+    // add all players to appropriate array
+    for (const p of participants) {
+      const inClan = memberTagSet.has(p.tag)
+      const decksRemaining = 4 - p.decksUsedToday
+
+      if (decksRemaining >= 4 && inClan) {
+        attackBuckets[0].push(p)
+      } else if (decksRemaining > 0 && decksRemaining < 4) {
         if (!inClan) {
           p.name += "*"
           showFooter = true
         }
-        threeAttacks.push(p)
-      } else if (p.decksUsedToday === 2) {
-        if (!inClan) {
-          p.name += "*"
-          showFooter = true
-        }
-        twoAttacks.push(p)
-      } else if (p.decksUsedToday === 3) {
-        if (!inClan) {
-          p.name += "*"
-          showFooter = true
-        }
-        oneAttack.push(p)
+        attackBuckets[4 - decksRemaining].push(p)
       }
     }
 
-    fourAttacks.sort((a, b) => a.name.localeCompare(b.name))
-    threeAttacks.sort((a, b) => a.name.localeCompare(b.name))
-    twoAttacks.sort((a, b) => a.name.localeCompare(b.name))
-    oneAttack.sort((a, b) => a.name.localeCompare(b.name))
+    // sort all buckets
+    for (const bucket of attackBuckets) {
+      bucket.sort((a, b) => a.name.localeCompare(b.name))
+    }
 
     const embed = {
       author: {
-        name: `Week ${race.sectionIndex + 1} | ${dayOfWeek < 3 ? "Training" : "War"} Day ${
-          dayOfWeek < 3 ? dayOfWeek + 1 : dayOfWeek - 2
-        }`,
+        name: `Week ${week} | ${dayType} Day ${dayNum}`,
       },
       color: pink,
       description: "",
@@ -174,36 +129,27 @@ module.exports = {
         text: showFooter ? `* = Not in clan` : ``,
       },
       title: `**__Remaining Attacks__**`,
-      url: `https://cwstats.com/clan/${clan.tag.slice(1)}/race`,
+      url: `https://cwstats.com/clan/${tag.substring(1)}/race`,
     }
 
-    const badgeName = getClanBadge(badgeId, clanWarTrophies)
-
-    const badgeEmoji = client.cwEmojis.get(badgeName)
+    const badgeEmoji = client.cwEmojis.get(badge)
     const fameEmoji = client.cwEmojis.get("fame")
     const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
     const slotsRemainingEmoji = client.cwEmojis.get("remainingSlots")
-    const slotsRemaining = 50 - participants.filter((p) => p.decksUsedToday > 0).length
 
     embed.description += `${badgeEmoji} **${formatStr(
       name,
-    )}**\n${fameEmoji} **${fame}**\n${decksRemainingEmoji} **${totalAttacksLeft}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n`
+    )}**\n${fameEmoji} **${fame}**\n${decksRemainingEmoji} **${decksRemaining}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n`
 
-    if (fourAttacks.length > 0) {
-      embed.description += `\n**__4 Attacks__** (${fourAttacks.length})\n`
-      embed.description += fourAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")
-    }
-    if (threeAttacks.length > 0) {
-      embed.description += `\n**__3 Attacks__** (${threeAttacks.length})\n`
-      embed.description += threeAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")
-    }
-    if (twoAttacks.length > 0) {
-      embed.description += `\n**__2 Attacks__** (${twoAttacks.length})\n`
-      embed.description += twoAttacks.map((p) => `• ${formatStr(p.name)}\n`).join("")
-    }
-    if (oneAttack.length > 0) {
-      embed.description += `\n**__1 Attack__** (${oneAttack.length})\n`
-      embed.description += oneAttack.map((p) => `• ${formatStr(p.name)}\n`).join("")
+    const labels = ["4 Attacks", "3 Attacks", "2 Attacks", "1 Attack"]
+
+    for (let i = 0; i < attackBuckets.length; i++) {
+      const group = attackBuckets[i]
+
+      if (group.length > 0) {
+        embed.description += `\n**__${labels[i]}__** (${group.length})\n`
+        embed.description += group.map((p) => `• ${formatStr(p.name)}\n`).join("")
+      }
     }
 
     return i.editReply({

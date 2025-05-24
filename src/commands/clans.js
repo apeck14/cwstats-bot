@@ -1,9 +1,80 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js")
-const { getAllPlusClanTags, getLinkedClansByGuild, getRiverRace, setCooldown } = require("../util/services")
-const { getClanBadge } = require("../util/functions")
-const { getRaceDetails } = require("../util/raceFunctions")
+const { errorMsg, getClanBadge } = require("../util/functions")
 const { pink } = require("../static/colors")
 const { formatStr } = require("../util/formatting")
+const {
+  getAllPlusClans,
+  getDailyLeaderboard,
+  getGuildLinkedClans,
+  getRace,
+  setCommandCooldown,
+} = require("../util/services")
+
+const ITEMS_PER_PAGE = 5
+
+const generateEmbed = ({ client, interaction, liveClanData, pageIndex }) => {
+  const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
+  const projectionEmoji = client.cwEmojis.get("projection")
+  const fameAvgEmoji = client.cwEmojis.get("fameAvg")
+  const flagEmoji = client.cwEmojis.get("flag")
+  const plusEmoji = client.cwEmojis.get("cwstats_plus")
+
+  const start = pageIndex * ITEMS_PER_PAGE
+  const end = start + ITEMS_PER_PAGE
+  const pageData = liveClanData.slice(start, end)
+
+  const description = !liveClanData.length
+    ? `No clans linked to this server. You can link your clans [**here**](https://cwstats.com/me/servers/${interaction.guildId}/clans).`
+    : pageData
+        .map((c) => {
+          const badgeEmoji = client.cwEmojis.get(c.badgeEmoji)
+          const url = `https://www.cwstats.com/clan/${c.tag.substring(1)}/race`
+
+          let entry = `${badgeEmoji} [**${formatStr(c.name)}**](${url})${c.isPlus ? ` ${plusEmoji}` : ""}`
+
+          if (c.isTraining || c.noData) return entry
+          if (c.crossedFinishLine) {
+            entry += `\n${flagEmoji} *Crossed finish line*`
+            return entry
+          }
+
+          entry += `\n${projectionEmoji} **${c.projPlace}** ${fameAvgEmoji} **${c.fameAvg.toFixed(2)}** ${decksRemainingEmoji} **${c.decksRemaining}**`
+          return entry
+        })
+        .join("\n\n")
+
+  const embed = new EmbedBuilder()
+    .setTitle(`__Live River Races__`)
+    .setDescription(description)
+    .setThumbnail(interaction.guild.iconURL({ dynamic: true, size: 1024 }))
+    .setColor(pink)
+
+  // set pages footer
+  if (liveClanData.length) {
+    embed.setFooter({
+      text: `Page ${pageIndex + 1} of ${Math.ceil(liveClanData.length / ITEMS_PER_PAGE)}`,
+    })
+
+    // set cooldown timestamp (now + 1 min)
+    setCommandCooldown(interaction.guildId, "clans", 60000)
+  }
+
+  return embed
+}
+
+const generateButtons = ({ liveClanData, pageIndex }) =>
+  new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId("prev_page")
+      .setLabel("◀️")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(pageIndex === 0),
+    new ButtonBuilder()
+      .setCustomId("next_page")
+      .setLabel("▶️")
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(pageIndex >= Math.ceil(liveClanData.length / ITEMS_PER_PAGE) - 1),
+  )
 
 module.exports = {
   cooldown: true,
@@ -28,13 +99,17 @@ module.exports = {
     },
   },
   run: async (i, db, client) => {
-    const DailyLb = db.collection("Daily Clan Leaderboard")
+    const [
+      { data: linkedClans, error: linkedClansError },
+      { data: fullDailyLb, error: dailyLbError },
+      { data: plusTags, error: plusClansError },
+    ] = await Promise.all([getGuildLinkedClans(i.guildId), getDailyLeaderboard({}), getAllPlusClans(true)])
 
-    const [linkedClans, dailyLeaderboard, plusTags] = await Promise.all([
-      getLinkedClansByGuild(db, i.guildId),
-      DailyLb.find({}).toArray(),
-      getAllPlusClanTags(db),
-    ])
+    if (linkedClansError || dailyLbError || plusClansError) {
+      return errorMsg(i, linkedClansError || dailyLbError || plusClansError)
+    }
+
+    const { clans: dailyLeaderboard } = fullDailyLb
 
     const liveClanData = []
 
@@ -46,26 +121,22 @@ module.exports = {
 
         // get live race data
         if (isPlus) {
-          const { data: race } = await getRiverRace(c.tag)
-          const { clans, periodIndex } = getRaceDetails(race)
-          const dayOfWeek = periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
-          const isTraining = dayOfWeek <= 2
+          const { data: race } = await getRace(c.tag)
 
-          const { badgeId, crossedFinishLine, decksRemaining, fameAvg, projPlace, trophies } = clans.find(
-            (cl) => cl.tag === c.tag,
-          )
+          const { clanIndex, clans, isTraining } = race
+          const { badge, clanScore, crossedFinishLine, decksUsed, fameAvg, projPlace } = clans[clanIndex]
 
           liveClanData.push({
-            badgeEmoji: getClanBadge(badgeId, trophies),
+            badgeEmoji: badge,
             crossedFinishLine,
-            decksRemaining,
+            decksRemaining: 200 - decksUsed,
             fameAvg,
             isPlus: true,
             isTraining,
             name: c.clanName,
-            projPlace: projPlace || "N/A",
+            projPlace: projPlace < 0 ? "N/A" : projPlace,
             tag: c.tag,
-            trophies,
+            trophies: clanScore,
           })
 
           continue
@@ -122,75 +193,10 @@ module.exports = {
     })
 
     let page = 0
-    const itemsPerPage = 5
-
-    const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
-    const projectionEmoji = client.cwEmojis.get("projection")
-    const fameAvgEmoji = client.cwEmojis.get("fameAvg")
-    const flagEmoji = client.cwEmojis.get("flag")
-    const plusEmoji = client.cwEmojis.get("cwstats_plus")
-
-    const generateEmbed = (pageIndex) => {
-      const start = pageIndex * itemsPerPage
-      const end = start + itemsPerPage
-      const pageData = liveClanData.slice(start, end)
-
-      const description = !liveClanData.length
-        ? `No clans linked to this server. You can link your clans [**here**](https://cwstats.com/me/servers/${i.guildId}/clans).`
-        : pageData
-            .map((c) => {
-              const badgeEmoji = client.cwEmojis.get(c.badgeEmoji)
-              const url = `https://www.cwstats.com/clan/${c.tag.substring(1)}/race`
-
-              let entry = `${badgeEmoji} [**${formatStr(c.name)}**](${url})${c.isPlus ? ` ${plusEmoji}` : ""}`
-
-              if (c.isTraining || c.noData) return entry
-              if (c.crossedFinishLine) {
-                entry += `\n${flagEmoji} *Crossed finish line*`
-                return entry
-              }
-
-              entry += `\n${projectionEmoji} **${c.projPlace}** ${fameAvgEmoji} **${c.fameAvg.toFixed(2)}** ${decksRemainingEmoji} **${c.decksRemaining}**`
-              return entry
-            })
-            .join("\n\n")
-
-      const embed = new EmbedBuilder()
-        .setTitle(`__Live River Races__`)
-        .setDescription(description)
-        .setThumbnail(i.guild.iconURL({ dynamic: true, size: 1024 }))
-        .setColor(pink)
-
-      // set pages footer
-      if (liveClanData.length) {
-        embed.setFooter({
-          text: `Page ${pageIndex + 1} of ${Math.ceil(liveClanData.length / itemsPerPage)}`,
-        })
-
-        // set cooldown timestamp (now + 1 min)
-        setCooldown(db, i.guildId, "clans", 60000)
-      }
-
-      return embed
-    }
-
-    const generateButtons = (pageIndex) =>
-      new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId("prev_page")
-          .setLabel("◀️")
-          .setStyle(ButtonStyle.Primary)
-          .setDisabled(pageIndex === 0),
-        new ButtonBuilder()
-          .setCustomId("next_page")
-          .setLabel("▶️")
-          .setStyle(ButtonStyle.Primary)
-          .setDisabled(pageIndex >= Math.ceil(liveClanData.length / itemsPerPage) - 1),
-      )
 
     const message = await i.editReply({
-      components: [generateButtons(page)],
-      embeds: [generateEmbed(page)],
+      components: [generateButtons({ liveClanData, pageIndex: page })],
+      embeds: [generateEmbed({ client, interaction: i, liveClanData, pageIndex: page })],
       fetchReply: true,
     })
 
@@ -200,11 +206,11 @@ module.exports = {
       if (!interaction.isButton()) return
 
       if (interaction.customId === "prev_page" && page > 0) page--
-      if (interaction.customId === "next_page" && page < Math.ceil(liveClanData.length / itemsPerPage) - 1) page++
+      if (interaction.customId === "next_page" && page < Math.ceil(liveClanData.length / ITEMS_PER_PAGE) - 1) page++
 
       await interaction.update({
-        components: [generateButtons(page)],
-        embeds: [generateEmbed(page)],
+        components: [generateButtons({ liveClanData, pageIndex: page })],
+        embeds: [generateEmbed({ client, interaction: i, liveClanData, pageIndex: page })],
       })
     })
 

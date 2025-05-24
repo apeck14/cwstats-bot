@@ -1,167 +1,197 @@
 const axios = require("axios")
-const { CR_API_TOKEN } = require("../../config")
 const { formatTag } = require("./formatting")
 
-const apiRequest = async (url, apiToken) => {
-  const resp = await axios
-    .get(url, {
+const BASE_URL = "http://0.0.0.0:5000"
+
+const CWSTATS_API_KEY = process.env.INTERNAL_API_KEY
+
+const handleAPISuccess = (e) => e?.data
+
+// Format error messages to make them more user friendly
+const handleAPIFailure = (e, notFoundMessage = `**Not found.**`) => {
+  console.log(e.response.data)
+  const { status } = e || {}
+
+  let error = `**Unexpected error.** Please try again.`
+
+  if (status === 404) error = notFoundMessage
+  else if (status === 429) error = `**Rate limit exceeded.** Please try again later.`
+  else if (status === 503) error = `:tools: **Maintenence break.**`
+
+  return { error, status }
+}
+
+const getGuild = (id, limited = false) =>
+  axios
+    .get(`${BASE_URL}/guild/${id}${limited ? "/limited" : ""}`, {
       headers: {
-        Authorization: `Bearer ${apiToken}`,
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
       },
     })
-    .catch((err) => err.response)
-  const { data, status } = resp || {}
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e, "**Guild not found.**"))
 
-  if (status === 200) {
-    return {
-      data: data.items || data,
-      status,
-    }
-  }
-  if (status === 404) {
-    return {
-      error: "**Not found.**",
-      status,
-    }
-  }
-  if (status === 429) {
-    return {
-      error: "**API limit exceeded.** Please try again later.",
-      status,
-    }
-  }
-  if (status === 503) {
-    return {
-      error: ":tools: **Maintenence break.**",
-      status,
-    }
-  }
-
-  return {
-    error: "**Unexpected error.** Please try again.",
-    status,
-  }
-}
-
-exports.getBattleLog = (tag) => {
-  tag = formatTag(tag).substring(1)
-  const url = `https://proxy.royaleapi.dev/v1/players/%23${tag}/battlelog`
-
-  return apiRequest(url, CR_API_TOKEN)
-}
-
-exports.getClan = (tag) => {
-  tag = formatTag(tag).substring(1)
-  const url = `https://proxy.royaleapi.dev/v1/clans/%23${tag}`
-
-  return apiRequest(url, CR_API_TOKEN)
-}
-
-exports.searchClans = (query) => {
-  const url = `https://proxy.royaleapi.dev/v1/clans?name=${encodeURIComponent(query)}`
-
-  return apiRequest(url, CR_API_TOKEN)
-}
-
-exports.getPlayer = (tag) => {
-  tag = formatTag(tag).substring(1)
-  const url = `https://proxy.royaleapi.dev/v1/players/%23${tag}`
-
-  return apiRequest(url, CR_API_TOKEN)
-}
-
-exports.getRiverRace = (tag) => {
-  tag = formatTag(tag).substring(1)
-  const url = `https://proxy.royaleapi.dev/v1/clans/%23${tag}/currentriverrace`
-
-  return apiRequest(url, CR_API_TOKEN)
-}
-
-exports.getWarLeaderboard = (limit = 100, locationId = "global") => {
-  const url = `https://proxy.royaleapi.dev/v1/locations/${locationId}/rankings/clanwars/?limit=${limit}`
-
-  return apiRequest(url, CR_API_TOKEN)
-}
-
-exports.addPlayer = async (db, { clanName, name, tag }) => {
-  try {
-    const players = db.collection("Players")
-
-    const query = { tag }
-    const update = { $set: { clanName, name, tag } }
-    const options = { upsert: true }
-
-    players.updateOne(query, update, options)
-  } catch (err) {
-    console.log("Error adding player to db...")
-    console.log(err)
-  }
-}
-
-exports.getAllPlusClanTags = async (db) => {
-  try {
-    const plus = db.collection("CWStats+")
-
-    const plusClans = await plus.distinct("tag")
-
-    return plusClans
-  } catch (e) {
-    return []
-  }
-}
-
-exports.getLinkedClansByGuild = async (db, id) => {
-  try {
-    const LinkedClans = db.collection("Linked Clans")
-
-    const allLinkedClans = await LinkedClans.find({ guildID: id }).toArray()
-
-    return allLinkedClans || []
-  } catch (e) {
-    console.log("getLinkedClansByGuild error", e)
-    return []
-  }
-}
-
-exports.setCooldown = async (db, id, commandName, delay) => {
-  try {
-    const Guilds = db.collection("Guilds")
-
-    const now = new Date()
-    now.setMilliseconds(now.getMilliseconds() + delay)
-
-    await Guilds.updateOne(
-      { guildID: id },
-      {
-        $set: {
-          [`cooldowns.${commandName}`]: now,
-        },
+const getGuildLinkedClans = (id) =>
+  axios
+    .get(`${BASE_URL}/guild/${id}/clans`, {
+      headers: {
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
       },
-    )
+    })
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e, "**Guild not found.**"))
 
-    return true
-  } catch (e) {
-    console.log("getLinkedClansByGuild error", e)
-    return false
-  }
-}
+const getPlayer = (tag, limited = false) =>
+  axios
+    .get(`${BASE_URL}/player/${formatTag(tag, false)}${limited ? "/limited" : ""}`, {
+      headers: {
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e, "**Player not found.**"))
 
-exports.updateDiscordNickname = async ({ guildId, nickname, userId }) => {
-  try {
-    await axios.patch(
-      `https://discord.com/api/v10/guilds/${guildId}/members/${userId}`,
-      { nick: nickname },
+const addPlayer = (tag) =>
+  axios
+    .put(
+      `${BASE_URL}/player`,
+      {
+        tag: formatTag(tag, false),
+      },
       {
         headers: {
-          Authorization: `Bot ${process.env.CLIENT_TOKEN}`,
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${CWSTATS_API_KEY}`,
         },
       },
     )
+    .then(handleAPISuccess)
+    .catch(handleAPIFailure)
 
-    return true
-  } catch (err) {
-    console.error("updateDiscordNickname Error", err?.response?.data || err.message)
-    return false
-  }
+const linkPlayer = (tag, userId) =>
+  axios
+    .put(
+      `${BASE_URL}/player/link`,
+      { tag, userId },
+      {
+        headers: {
+          Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        },
+      },
+    )
+    .then(handleAPISuccess)
+    .catch(handleAPIFailure)
+
+const getClan = (tag, limited = false) =>
+  axios
+    .get(`${BASE_URL}/clan/${formatTag(tag, false)}${limited ? "/limited" : ""}`, {
+      headers: {
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e, "**Clan not found.**"))
+
+const getRace = (tag, limited = false) =>
+  axios
+    .get(`${BASE_URL}/clan/${formatTag(tag, false)}/race${limited ? "/limited" : ""}`, {
+      headers: {
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e, "**Race not found.**"))
+
+const getDailyLeaderboard = ({ key, limit, maxTrophies, minTrophies }) =>
+  axios
+    .get(`${BASE_URL}/leaderboard/daily`, {
+      headers: {
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+      },
+      params: {
+        key,
+        limit,
+        maxTrophies,
+        minTrophies,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e))
+
+const getAllPlusClans = (tagsOnly = false) =>
+  axios
+    .get(`${BASE_URL}/plus/clans`, {
+      headers: {
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+      },
+      params: {
+        tagsOnly,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e))
+
+const setCommandCooldown = (id, commandName, delay) =>
+  axios
+    .patch(
+      `${BASE_URL}/guild/${id}/command-cooldown`,
+      {
+        commandName,
+        delay,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        },
+      },
+    )
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e))
+
+const getLinkedAccount = (userId) =>
+  axios
+    .get(`${BASE_URL}/user/${userId}/linked-account`, {
+      headers: {
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e, "**Linked account not found.**"))
+
+const getPlayerBattleLog = (tag) =>
+  axios
+    .get(`${BASE_URL}/player/${formatTag(tag, false)}/log`, {
+      headers: {
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e, "**Player not found.**"))
+
+const searchClans = (name) =>
+  axios
+    .get(`${BASE_URL}/clan/search`, {
+      headers: {
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+      },
+      params: {
+        name,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e, "**No clans found.**"))
+
+module.exports = {
+  addPlayer,
+  getAllPlusClans,
+  getClan,
+  getDailyLeaderboard,
+  getGuild,
+  getGuildLinkedClans,
+  getLinkedAccount,
+  getPlayer,
+  getPlayerBattleLog,
+  getRace,
+  linkPlayer,
+  searchClans,
+  setCommandCooldown,
 }

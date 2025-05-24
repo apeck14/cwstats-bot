@@ -1,8 +1,7 @@
-const { getRiverRace } = require("../util/services")
-const { orange, pink } = require("../static/colors")
-const { getRaceDetails } = require("../util/raceFunctions")
-const { errorMsg, getClanBadge } = require("../util/functions")
-const { formatStr } = require("../util/formatting")
+const { getGuild, getRace } = require("../util/services")
+const { pink } = require("../static/colors")
+const { errorMsg, warningMsg } = require("../util/functions")
+const { formatPlace, formatStr } = require("../util/formatting")
 
 module.exports = {
   data: {
@@ -50,91 +49,53 @@ module.exports = {
     ],
   },
   run: async (i, db, client) => {
-    const guilds = db.collection("Guilds")
-    const { abbreviations, defaultClan } = await guilds.findOne({
-      guildID: i.guildId,
-    })
+    const { data: guild, error: guildError } = await getGuild(i.guildId, true)
+
+    if (guildError || !guild) return errorMsg(i, guildError || "**Guild not found.**")
 
     let tag = i.options.getString("tag")
+    const { abbreviations, defaultClan } = guild
 
     // default clan
     if (!tag) {
-      if (defaultClan?.tag) tag = defaultClan?.tag
+      if (defaultClan?.tag) tag = defaultClan.tag
       else
-        return i.editReply({
-          embeds: [
-            {
-              color: orange,
-              description: `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`,
-            },
-          ],
-        })
+        return warningMsg(
+          i,
+          `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`,
+        )
     } else {
       // abbreviation
       const UPPERCASE_ABBR = tag.toUpperCase()
       const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
 
       if (abbr) tag = abbr.tag
-      else if (tag.length < 3) {
-        return i.editReply({
-          embeds: [
-            {
-              color: orange,
-              description: "**Abbreviation does not exist.**",
-            },
-          ],
-        })
-      }
+      else if (tag.length < 3) return warningMsg(i, "**Abbreviation does not exist.**")
     }
 
-    const { data: race, error } = await getRiverRace(tag)
+    const { data: race, error: raceError } = await getRace(tag)
 
-    if (error) return errorMsg(i, error)
+    if (raceError) return errorMsg(i, raceError)
 
-    if (race.state === "matchmaking") {
-      return i.editReply({
-        embeds: [
-          {
-            color: orange,
-            description: ":mag: **Matchmaking is underway!**",
-          },
-        ],
-      })
-    }
-    if (!race.clans || !race.clans.length) {
-      return i.editReply({
-        embeds: [
-          {
-            color: orange,
-            description: "**Clan is not in a river race.**",
-          },
-        ],
-      })
-    }
+    if (race.state === "matchmaking") return warningMsg(i, ":mag: **Matchmaking is underway!**")
+    if (!race.clans || !race.clans.length) return warningMsg(i, "**Clan is not in a river race.**")
 
-    const { clans, periodIndex, periodType, sectionIndex } = getRaceDetails(race)
-    const dayOfWeek = periodIndex % 7 // 0-6 (0,1,2 TRAINING, 3,4,5,6 BATTLE)
-    const isTraining = dayOfWeek <= 2
-    const isColosseum = periodType === "colosseum"
-
-    const TAG = race.clan.tag
+    const { clanIndex, clans, dayIndex, isColosseum, isTraining, sectionIndex } = race
+    const { tag: clanTag } = clans[clanIndex]
 
     const embed = {
       author: {
-        name: `Week ${sectionIndex + 1} | ${dayOfWeek < 3 ? "Training" : "War"} Day ${
-          dayOfWeek < 3 ? dayOfWeek + 1 : dayOfWeek - 2
+        name: `Week ${sectionIndex + 1} | ${isTraining ? "Training" : "War"} Day ${
+          isTraining ? dayIndex + 1 : dayIndex - 2
         }`,
       },
       color: pink,
       description: "",
-      footer: {
-        text: isColosseum ? "Missed attacks negatively affect fame/atk" : "",
-      },
       thumbnail: {
         url: "https://i.imgur.com/VAPR8Jq.png",
       },
       title: isColosseum ? `**__Colosseum__**` : `**__River Race__**`,
-      url: `https://www.cwstats.com/clan/${TAG.substring(1)}/race`,
+      url: `https://www.cwstats.com/clan/${clanTag.substring(1)}/race`,
     }
 
     const fameEmoji = client.cwEmojis.get("fame")
@@ -143,45 +104,37 @@ module.exports = {
     const projectionEmoji = client.cwEmojis.get("projection")
     const flagEmoji = client.cwEmojis.get("flag")
 
-    const clansStillWarring = []
-    const clansCrossedFinishLine = []
+    let passedFinishLine = true
 
     for (const c of clans) {
-      if (c.crossedFinishLine) clansCrossedFinishLine.push(c)
-      else clansStillWarring.push(c)
-    }
+      const { badge, crossedFinishLine, currentPlace, decksUsed, fame, fameAvg, name, projFame, projPlace, tag } = c
 
-    clansCrossedFinishLine.forEach((c) => {
-      const { badgeId, name, trophies } = c
-
-      const badgeName = getClanBadge(badgeId, trophies)
-      const badgeEmoji = client.cwEmojis.get(badgeName)
-
-      if (c.tag === TAG) embed.description += `${flagEmoji} ${badgeEmoji} **__${formatStr(name)}__**\n`
-      else embed.description += `${flagEmoji} ${badgeEmoji} **${formatStr(name)}**\n`
-    })
-
-    for (const c of clansStillWarring) {
-      embed.description += "\n"
-
-      const { badgeId, decksRemaining, fameAvg, name, projFame, projPlace, trophies } = c
-      const badgeName = getClanBadge(badgeId, trophies)
-      const badgeEmoji = client.cwEmojis.get(badgeName)
-
-      const isClan = c.tag === TAG
+      const badgeEmoji = client.cwEmojis.get(badge)
+      const isClan = tag === clanTag
       const formattedClanName = `${badgeEmoji} **${isClan ? "__" : ""}${formatStr(name)}${isClan ? "__" : ""}**\n`
 
-      // show clan data if not training day and more than 0 medals
-      if (!isTraining && c.fame > 0) {
-        embed.description += `**${c.placement}.**${formattedClanName}`
+      if (!crossedFinishLine && passedFinishLine) {
+        embed.description += "\n"
+        passedFinishLine = false
+      }
 
-        embed.description += `${fameEmoji} ${c.fame}\n${projectionEmoji} ${projFame} ${
-          projPlace ? `(${projPlace})` : ""
-        }\n${decksRemainingEmoji} ${decksRemaining}\n${fameAvgEmoji} **${fameAvg.toFixed(2)}**\n`
-      } else embed.description += formattedClanName
+      if (crossedFinishLine) {
+        embed.description += `${flagEmoji} ${formattedClanName}`
+      } else if (!isTraining && currentPlace > 0) {
+        const formattedProjPlace = formatPlace(projPlace)
+        const decksRemaining = 200 - decksUsed
+
+        embed.description += `**${currentPlace}.**${formattedClanName}`
+        embed.description += `${fameEmoji} ${fame}\n`
+        embed.description += `${projectionEmoji} ${projFame} (${formattedProjPlace})\n`
+        embed.description += `${decksRemainingEmoji} ${decksRemaining}\n`
+        embed.description += `${fameAvgEmoji} **${fameAvg.toFixed(2)}**\n\n`
+      } else {
+        embed.description += formattedClanName
+      }
     }
 
-    return i.editReply({
+    i.editReply({
       embeds: [embed],
     })
   },

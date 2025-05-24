@@ -1,6 +1,6 @@
 const dice = require("fast-dice-coefficient")
 const badges = require("../static/badges")
-const { red } = require("../static/colors")
+const { green, orange, red } = require("../static/colors")
 
 const getClanBadge = (badgeId, trophyCount, returnEmojiPath = true) => {
   if (badgeId === -1 || badgeId === null) return "no_clan" // no clan
@@ -105,6 +105,28 @@ const errorMsg = (i, message) => {
   })
 }
 
+const warningMsg = (i, message) => {
+  i.editReply({
+    embeds: [
+      {
+        color: orange,
+        description: message,
+      },
+    ],
+  })
+}
+
+const successMsg = (i, message) => {
+  i.editReply({
+    embeds: [
+      {
+        color: green,
+        description: message,
+      },
+    ],
+  })
+}
+
 const findBestMatch = (str, arr) => {
   let bestMatch = { rating: 0, str: null }
 
@@ -158,4 +180,6 @@ module.exports = {
   getLeague,
   getPlayerCardData,
   hexToRgbA,
+  successMsg,
+  warningMsg,
 }

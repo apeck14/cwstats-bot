@@ -1,6 +1,6 @@
-const { addPlayer, getClan, getPlayer } = require("../util/services")
-const { orange, pink } = require("../static/colors")
-const { errorMsg, getArenaEmoji, getClanBadge, getPlayerCardData } = require("../util/functions")
+const { addPlayer, getClan, getLinkedAccount, getPlayer } = require("../util/services")
+const { pink } = require("../static/colors")
+const { errorMsg, getArenaEmoji, getPlayerCardData, warningMsg } = require("../util/functions")
 const { formatRole, formatStr, formatTag } = require("../util/formatting")
 
 module.exports = {
@@ -71,48 +71,28 @@ module.exports = {
     ],
   },
   run: async (i, db, client) => {
-    const linkedAccounts = db.collection("Linked Accounts")
-
-    const user = i.options.getUser("user")
+    const iUser = i.options.getUser("user")
     const iTag = i.options.getString("tag")
+
     let tag
 
-    if (!user && !iTag) {
+    if (!iUser && !iTag) {
       // linked account
-      const linkedAccount = await linkedAccounts.findOne({
-        discordID: i.user.id,
-      })
+      const { data: linkedAccount, error } = await getLinkedAccount(i.user.id)
+
+      if (error) return errorMsg(i, error)
 
       if (linkedAccount?.tag) tag = linkedAccount.tag
-      else {
-        return i.editReply({
-          embeds: [
-            {
-              color: orange,
-              description: `**No tag linked!** Use </link:947456869688025104> to link your tag.`,
-            },
-          ],
-        })
-      }
-    } else if (iTag)
-      tag = iTag // tag
+      else return warningMsg(i, `**No tag linked!** Use </link:960088363417882631> to link your tag.`)
+    } else if (iTag) tag = iTag
     else {
       // user
-      const linkedAccount = await linkedAccounts.findOne({
-        discordID: user.id,
-      })
+      const { data: linkedAccount, error } = await getLinkedAccount(iUser.id)
+
+      if (error) return errorMsg(i, error)
 
       if (linkedAccount?.tag) tag = linkedAccount.tag
-      else {
-        return i.editReply({
-          embeds: [
-            {
-              color: orange,
-              description: `<@!${user.id}> **does not have an account linked.**`,
-            },
-          ],
-        })
-      }
+      else return warningMsg(i, `<@!${iUser.id}> **does not have an account linked.**`)
     }
 
     const { data: player, error: playerError } = await getPlayer(tag)
@@ -120,26 +100,18 @@ module.exports = {
     if (playerError) return errorMsg(i, playerError)
 
     // add player for website searching
-    addPlayer(db, {
-      clanName: player?.clan?.name || "",
-      name: player.name,
-      tag: player.tag,
-    })
+    addPlayer(player.tag)
 
-    let clanBadge
+    const inClan = !!player.clan
 
-    if (!player.clan) {
-      player.clan = {
-        name: "None",
-      }
-      clanBadge = getClanBadge(-1)
-    } else {
-      // get clan badge
-      const { data: clan, error: clanError } = await getClan(player.clan.tag)
+    let clanBadge = "no_clan"
+
+    if (inClan) {
+      const { data: clan, error: clanError } = await getClan(player.clan.tag, true)
 
       if (clanError) return errorMsg(i, clanError)
 
-      clanBadge = getClanBadge(clan.badgeId, clan.clanWarTrophies)
+      clanBadge = clan.badge
     }
 
     const badgeEmoji = client.cwEmojis.get(clanBadge)
@@ -165,24 +137,36 @@ module.exports = {
         url: "attachment://arena.png",
       },
       title: `${levelEmoji} **${player.name}**`,
-      url: `https://royaleapi.com/player/${formatTag(tag).substring(1)}`,
+      url: `https://royaleapi.com/player/${formatTag(tag, false)}`,
     }
 
     embed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${
       player.bestTrophies
     }\n${badgeEmoji} **${formatStr(player.clan.name)}**${player.role ? ` (${formatRole(player.role)})` : ""}`
 
-    const { bestPathOfLegendSeasonResult: bestPOLObj, currentPathOfLegendSeasonResult: currentPOLObj } = player
+    const {
+      bestPathOfLegendSeasonResult: bestPOLObj,
+      currentPathOfLegendSeasonResult: currentPOLObj,
+      lastPathOfLegendSeasonResult: lastPOLObj,
+    } = player
 
+    // ! bug with supercell's API for current POL season rank
     const currentPOLSeasonStr =
       currentPOLObj?.leagueNumber === 10 ? `${polMedalsEmoji} **${currentPOLObj.trophies}**` : "N/A"
+
     const bestPOLSeasonStr =
       bestPOLObj?.leagueNumber === 10
         ? `${polMedalsEmoji} **${bestPOLObj.trophies}**${bestPOLObj.rank ? ` (#${bestPOLObj.rank})` : ""}`
         : "N/A"
 
-    embed.description += `\n\n**__POL__**\n`
-    embed.description += `**Current Season**: ${currentPOLSeasonStr}`
+    const lastPOLSeasonStr =
+      lastPOLObj?.leagueNumber === 10
+        ? `${polMedalsEmoji} **${lastPOLObj.trophies}**${lastPOLObj.rank ? ` (#${lastPOLObj.rank})` : ""}`
+        : "N/A"
+
+    embed.description += `\n\n**__POL__**`
+    embed.description += `\n**Current Season**: ${currentPOLSeasonStr}`
+    embed.description += `\n**Last Season**: ${lastPOLSeasonStr}`
     embed.description += `\n**Best Season**: ${bestPOLSeasonStr}`
 
     embed.description += `\n\n**__Stats__**\n**Legacy PB**: ${
@@ -192,7 +176,7 @@ module.exports = {
     }\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n`
     embed.description += `**__Cards__**\n${wildShardEmoji}: ${evolutions}\n${level15}: ${lvl15}\n${level14}: ${lvl14}\n${level13}: ${lvl13}`
 
-    return i.editReply({
+    i.editReply({
       embeds: [embed],
       files: [
         {

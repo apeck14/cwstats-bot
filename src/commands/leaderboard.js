@@ -1,8 +1,8 @@
-const { orange, pink } = require("../static/colors")
+const { pink } = require("../static/colors")
 const { formatStr } = require("../util/formatting")
-const { getClanBadge } = require("../util/functions")
+const { errorMsg, getClanBadge, warningMsg } = require("../util/functions")
 const locations = require("../static/locations")
-const { getAllPlusClanTags } = require("../util/services")
+const { getAllPlusClans, getDailyLeaderboard } = require("../util/services")
 
 module.exports = {
   data: {
@@ -73,51 +73,36 @@ module.exports = {
     ],
   },
   run: async (i, db, client) => {
-    const dailyLb = db.collection("Daily Clan Leaderboard")
-    const statistics = db.collection("Statistics")
     const iName = i.options.getString("location")
     const iLeague = i.options.getString("league")
 
     const location = locations.find((l) => l.name === iName)
+
     const minTrophies = iLeague === "L3" ? 5000 : 4000
+    const maxTrophies = iLeague === "L2" ? 4999 : null
 
-    const query = {
-      clanScore: {
-        ...(minTrophies ? { $gte: minTrophies } : {}),
-        ...(iLeague === "L2" ? { $lte: 4999 } : {}),
-      },
-    }
-
-    if (iName) query["location.name"] = iName
-
-    const [leaderboard, { lbLastUpdated }, plusTags] = await Promise.all([
-      dailyLb
-        .find(query)
-        .sort({
-          notRanked: 1,
-          // eslint-disable-next-line perfectionist/sort-objects
-          fameAvg: -1,
-          rank: 1,
-        })
-        .limit(10)
-        .toArray(),
-      statistics.findOne({}),
-      getAllPlusClanTags(db),
+    const [{ data: dailyLb, error: lbError }, { data: plusTags, error: plusError }] = await Promise.all([
+      getDailyLeaderboard({
+        key: location?.key,
+        limit: 10,
+        maxTrophies,
+        minTrophies,
+      }),
+      getAllPlusClans(true),
     ])
 
+    if (lbError || plusError) {
+      return errorMsg(i, lbError || plusError)
+    }
+
+    const { clans: leaderboard, lastUpdated } = dailyLb
+
     if (leaderboard.length === 0) {
-      return i.editReply({
-        embeds: [
-          {
-            color: orange,
-            description: "**No leaderboard clans match this criteria!**",
-          },
-        ],
-      })
+      return warningMsg(i, "**No leaderboard clans match this criteria!**")
     }
 
     const now = Date.now()
-    const diffInMins = Math.round((now - lbLastUpdated) / 1000 / 60)
+    const diffInMins = Math.round((now - lastUpdated) / 1000 / 60)
 
     let embedUrl = `https://www.cwstats.com/leaderboard/daily/${location?.key || "global"}`
 

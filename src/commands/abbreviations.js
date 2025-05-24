@@ -1,5 +1,7 @@
 const { pink } = require("../static/colors")
 const { formatStr } = require("../util/formatting")
+const { errorMsg } = require("../util/functions")
+const { getGuild } = require("../util/services")
 
 module.exports = {
   data: {
@@ -22,12 +24,13 @@ module.exports = {
       tr: "kısaltmalar",
     },
   },
-  run: async (i, db) => {
-    const guilds = db.collection("Guilds")
+  run: async (i) => {
+    const { data: guild, error } = await getGuild(i.guildId, true)
+    const { abbreviations, defaultClan } = guild || {}
 
-    const { abbreviations, defaultClan } = await guilds.findOne({
-      guildID: i.guildId,
-    })
+    if (error) {
+      return errorMsg(i, error)
+    }
 
     const embed = {
       color: pink,
@@ -39,9 +42,7 @@ module.exports = {
       url: `https://cwstats.com/me/servers/${i.guildId}`,
     }
 
-    if (defaultClan) {
-      embed.description += `**${defaultClan.name}**`
-    } else embed.description += "*None*"
+    embed.description += defaultClan ? `**${defaultClan.name}**` : "*None*"
 
     embed.description += "\n\n**__Abbreviations__**"
 

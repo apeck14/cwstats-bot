@@ -1,9 +1,41 @@
-const { getBattleLog, getClan, getPlayer, searchClans } = require("../util/services")
+const { getClan, getPlayer, getPlayerBattleLog, searchClans } = require("../util/services")
 const { pink } = require("../static/colors")
-const { errorMsg, findBestMatch, getClanBadge } = require("../util/functions")
+const { errorMsg, findBestMatch } = require("../util/functions")
 const { formatStr, formatTag } = require("../util/formatting")
 
 const specialGamemodes = require("../static/specialGamemodes")
+
+function sharesCards(deck1, deck2) {
+  const set2 = new Set(deck2)
+  return deck1.some((card) => set2.has(card))
+}
+
+function addDeck(deck, duelDecks, singleDecks, type = "duel", emoji = "duel", duelSet = false) {
+  const alreadyExists = [...duelDecks, ...singleDecks].some((d) => sharesCards(d.cards, deck))
+  if (alreadyExists) return
+
+  if (type === "duel" && !duelSet) {
+    // Remove overlapping decks from singles
+    for (let i = 0; i < singleDecks.length; i++) {
+      if (sharesCards(singleDecks[i].cards, deck)) {
+        singleDecks.splice(i, 1)
+        i--
+      }
+    }
+    duelDecks.push({ cards: deck, emoji })
+  } else {
+    singleDecks.push({ cards: deck, emoji })
+  }
+}
+
+function getCardEmoji(cardName, emojis) {
+  const normalized = cardName.toLowerCase().replace(/\s+/g, "_").replace(/\./g, "").replace(/-/g, "_")
+  return emojis.get(normalized) || emojis.get("unknown")
+}
+
+function formatDeck(cards) {
+  return cards.map((c) => `${c.name}${c.evolutionLevel ? " Evo" : ""}`)
+}
 
 module.exports = {
   data: {
@@ -27,78 +59,124 @@ module.exports = {
     },
     options: [
       {
-        description: "Search by clan name",
+        description: "Search by player tag",
         description_localizations: {
-          de: "Suche nach Clan-Namen",
-          "es-ES": "Búsqueda por nombre de clan",
-          fr: "Recherche par nom de clan",
-          it: "Ricerca per nome del clan",
-          nl: "Zoeken op clannaam",
-          tr: "Klan adına göre arama",
+          de: "Suche nach Spielertag",
+          "es-ES": "Búsqueda por etiqueta de jugador",
+          fr: "Recherche par tag de joueur",
+          it: "Ricerca per tag del giocatore",
+          nl: "Zoeken op spelertag",
+          tr: "Oyuncu etiketine göre arama",
         },
-        name: "clan-search",
+        name: "-tag",
         name_localizations: {
-          de: "clan-suche",
-          "es-ES": "búsqueda-clan",
-          fr: "recherche-clan",
-          it: "ricerca-clan",
-          nl: "clan-zoeken",
-          tr: "klan-arama",
+          de: "-kennzeichnung",
+          "es-ES": "-etiqueta",
+          fr: "-balise",
+          it: "-tag",
+          nl: "-tag",
+          tr: "-etiket",
         },
-        required: false,
-        type: 3,
+        options: [
+          {
+            description: "Player tag (#ABC123)",
+            description_localizations: {
+              de: "Spielertag (#ABC123)",
+              "es-ES": "Etiqueta del jugador (#ABC123)",
+              fr: "Tag du joueur (#ABC123)",
+              it: "Tag del giocatore (#ABC123)",
+              nl: "Spelertag (#ABC123)",
+              tr: "Oyuncu etiketi (#ABC123)",
+            },
+            name: "tag",
+            name_localizations: {
+              de: "kennzeichnung",
+              "es-ES": "etiqueta",
+              fr: "balise",
+              it: "tag",
+              nl: "tag",
+              tr: "etiket",
+            },
+            required: true,
+            type: 3,
+          },
+        ],
+        type: 1,
       },
       {
-        description: "Search by player name",
+        description: "Search by player + clan name",
         description_localizations: {
-          de: "Suche nach Spielername",
-          "es-ES": "Búsqueda por nombre de jugador",
-          fr: "Recherche par nom de joueur",
-          it: "Ricerca per nome del giocatore",
-          nl: "Zoeken op spelersnaam",
-          tr: "Oyuncu adına göre arama",
+          de: "Suche nach Spieler- und Clanname",
+          "es-ES": "Buscar por jugador y nombre del clan",
+          fr: "Rechercher par nom de joueur et de clan",
+          it: "Cerca per nome giocatore e nome clan",
+          nl: "Zoek op speler- en clannaam",
+          tr: "Oyuncu ve klan adına göre ara",
         },
-        name: "player-search",
+        name: "-search",
         name_localizations: {
-          de: "spieler-suche",
-          "es-ES": "búsqueda-jugador",
-          fr: "recherche-joueur",
-          it: "ricerca-giocatore",
-          nl: "speler-zoeken",
-          tr: "oyuncu-arama",
+          de: "-suche",
+          "es-ES": "-búsqueda",
+          fr: "-recherche",
+          it: "-ricerca",
+          nl: "-zoeken",
+          tr: "-arama",
         },
-        required: false,
-        type: 3,
-      },
-      {
-        description: "Player tag (#ABC123)",
-        description_localizations: {
-          de: "Spielertag (#ABC123)",
-          "es-ES": "Etiqueta del jugador (#ABC123)",
-          fr: "Tag du joueur (#ABC123)",
-          it: "Tag del giocatore (#ABC123)",
-          nl: "Spelertag (#ABC123)",
-          tr: "Oyuncu etiketi (#ABC123)",
-        },
-        name: "tag",
-        name_localizations: {
-          de: "kennzeichnung",
-          "es-ES": "etiqueta",
-          fr: "balise",
-          it: "tag",
-          nl: "tag",
-          tr: "etiket",
-        },
-        required: false,
-        type: 3,
+        options: [
+          {
+            description: "Player name",
+            description_localizations: {
+              de: "Spielername",
+              "es-ES": "Nombre del jugador",
+              fr: "Nom du joueur",
+              it: "Nome del giocatore",
+              nl: "Spelersnaam",
+              tr: "Oyuncu adı",
+            },
+            name: "player",
+            name_localizations: {
+              de: "spieler",
+              "es-ES": "jugador",
+              fr: "joueur",
+              it: "giocatore",
+              nl: "speler",
+              tr: "oyuncu",
+            },
+            required: true,
+            type: 3,
+          },
+          {
+            description: "Clan name",
+            description_localizations: {
+              de: "Clanname",
+              "es-ES": "Nombre del clan",
+              fr: "Nom du clan",
+              it: "Nome del clan",
+              nl: "Clannaam",
+              tr: "Klan adı",
+            },
+            name: "clan",
+            name_localizations: {
+              de: "klan",
+              "es-ES": "clan",
+              fr: "clan",
+              it: "clan",
+              nl: "clan",
+              tr: "klan",
+            },
+            required: true,
+            type: 3,
+          },
+        ],
+        type: 1,
       },
     ],
   },
   run: async (i, db, client) => {
     try {
       const iTag = i.options.getString("tag")
-      const iClanSearch = i.options.getString("clan-search")
-      const iPlayerSearch = i.options.getString("player-search")
+      const iClanSearch = i.options.getString("clan")
+      const iPlayerSearch = i.options.getString("player")
 
       let log = []
       const opponent = {
@@ -112,7 +190,7 @@ module.exports = {
       }
 
       if (iTag) {
-        const { data, error } = await getBattleLog(iTag)
+        const { data, error } = await getPlayerBattleLog(iTag)
 
         if (error || data?.length === 0) {
           const msg = data?.length === 0 ? "**Invalid tag, or no recent battles found for this player.**" : error
@@ -147,9 +225,7 @@ module.exports = {
           if (!opponent.clan.name) {
             const { data: player, error: playerError } = await getPlayer(formattedTag)
 
-            if (playerError) {
-              return errorMsg(i, "Error while retrieving player data.")
-            }
+            if (playerError) return errorMsg(i, "Error while retrieving player data.")
 
             opponent.name = player.name
             opponent.clan.name = player.clan.name
@@ -157,56 +233,54 @@ module.exports = {
           }
         }
 
-        const { data: clan, error: clanError } = await getClan(opponent.clan.tag)
+        const { data: clan, error: clanError } = await getClan(opponent.clan.tag, true)
         if (clanError) return errorMsg(i, clanError)
 
-        opponent.clan.badge = getClanBadge(clan.badgeId, clan.clanWarTrophies)
+        opponent.clan.badge = clan.badge
         log = data
-      } else if (iClanSearch && iPlayerSearch) {
-        // eslint-disable-next-line prefer-const
-        let { data: clans, error: clanSearchError } = await searchClans(iClanSearch)
-
-        const indeces = clans.length > 10 ? 10 : clans.length
-
-        clans = clans.slice(0, indeces).sort((a, b) => b.clanWarTrophies - a.clanWarTrophies)
-
+      } else {
+        const { data: clans, error: clanSearchError } = await searchClans(iClanSearch)
         if (clanSearchError) return errorMsg(i, clanSearchError)
-        if (clans.length === 0) return errorMsg(i, "**No clans found.**")
+        if (!clans || clans.length === 0) return errorMsg(i, "**No clans found.**")
 
-        const { data: clan, error: clanError } = await getClan(clans[0].tag)
-        if (clanError) return errorMsg(i, clanError)
+        // * keep slice for limiting to closely named clans from query, then sort
+        const topClans = clans
+          .slice(0, Math.min(clans.length, 10))
+          .sort((a, b) => b.clanWarTrophies - a.clanWarTrophies)
+
+        const topClanTag = topClans[0]?.tag
+        const { data: clan, error: clanError } = await getClan(topClanTag)
+        if (clanError || !clan) return errorMsg(i, clanError || "**Unable to fetch clan data.**")
 
         opponent.clan = {
-          badge: getClanBadge(clan.badgeId, clan.clanWarTrophies),
+          badge: clan.badge,
           name: clan.name,
           tag: clan.tag,
         }
 
-        const bestMatch = findBestMatch(
-          iPlayerSearch.trim(),
-          clan.memberList.map((p) => p.name),
-        )
+        const playerNames = clan.memberList.map((p) => p.name)
+        const bestMatch = findBestMatch(iPlayerSearch.trim(), playerNames)
 
         if (bestMatch.rating === 0) {
           return errorMsg(i, "**No player in this clan has a similar name. Please try again.**")
         }
 
         const player = clan.memberList.find((p) => p.name === bestMatch.str)
+        if (!player) {
+          return errorMsg(i, "**Matched player not found in member list.**")
+        }
 
         opponent.name = player.name
         opponent.tag = player.tag
 
-        const { data, error } = await getBattleLog(player.tag)
-
-        if (data.length === 0 || error) {
-          const msg = data.length === 0 ? "**No recent battles found for this player.**" : error
-
+        const { data: battleLog, error: battleLogError } = await getPlayerBattleLog(player.tag)
+        if (!battleLog || battleLog.length === 0 || battleLogError) {
+          const msg =
+            !battleLog || battleLog.length === 0 ? "**No recent battles found for this player.**" : battleLogError
           return errorMsg(i, msg)
         }
 
-        log = data
-      } else {
-        return errorMsg(i, "**Both clan and player name are required. Otherwise, search by player tag.**")
+        log = battleLog
       }
 
       const duelDecks = [] // { emoji: "", cards: [] }
@@ -214,86 +288,27 @@ module.exports = {
       let duelSet = false // if most recent duel has already been set direct other duel decks to singleDecks
       let index = 0
 
-      const sharesCards = (deck1, deck2) => {
-        for (const c of deck1) {
-          if (deck2.includes(c)) return true
-        }
-
-        return false
-      }
-
-      const addDeck = (deck, type = "duel", emoji = "duel") => {
-        if (type === "duel") {
-          // loop through duel decks
-          for (const d of duelDecks) {
-            if (sharesCards(d.cards, deck)) return
-          }
-
-          if (duelSet) {
-            // loop through single decks
-            for (const d of singleDecks) {
-              if (sharesCards(d.cards, deck)) return
-            }
-
-            singleDecks.push({ cards: deck, emoji })
-          } else {
-            // remove from single decks if already added
-            for (let i = 0; i < singleDecks.length; i++) {
-              const d = singleDecks[i]
-
-              if (sharesCards(d.cards, deck)) {
-                singleDecks.splice(i, 1)
-              }
-            }
-            duelDecks.push({ cards: deck, emoji })
-          }
-        } else {
-          // loop through duel decks
-          for (const d of duelDecks) {
-            if (sharesCards(d.cards, deck)) return
-          }
-
-          // loop through single decks
-          for (const d of singleDecks) {
-            if (sharesCards(d.cards, deck)) return
-          }
-
-          singleDecks.push({ cards: deck, emoji })
-        }
-      }
-
       while (duelDecks.length + singleDecks.length < 4 && index < log.length) {
         const m = log[index]
 
         if (m.type === "riverRacePvP") {
-          const deck = []
-
-          for (const c of m.team[0].cards) {
-            const cardName = `${c.name}${c.evolutionLevel ? " Evo" : ""}`
-            deck.push(cardName)
-          }
-
           let emoji = "normal"
 
           if (m.gameMode.name !== "CW_Battle_1v1") {
             const modeExists = specialGamemodes.find((gm) => gm.name === m.gameMode.name)
-
             if (modeExists) emoji = modeExists.emoji
           }
 
-          addDeck(deck, "single", emoji)
+          const deck = formatDeck(m.team[0].cards)
+
+          addDeck(deck, duelDecks, singleDecks, "single", emoji, duelSet)
         } else if (m.type === "riverRaceDuel" || m.type === "riverRaceDuelColosseum") {
           const { rounds } = m.team[0]
 
           for (const r of rounds) {
-            const deck = []
+            const deck = formatDeck(r.cards)
 
-            for (const c of r.cards) {
-              const cardName = `${c.name}${c.evolutionLevel ? " Evo" : ""}`
-              deck.push(cardName)
-            }
-
-            addDeck(deck)
+            addDeck(deck, duelDecks, singleDecks, "duel", "duel", duelSet)
           }
 
           duelSet = true
@@ -319,14 +334,10 @@ module.exports = {
         description += `\n**__Duel__** ${duelEmoji}\n`
 
         for (let i = 0; i < duelDecks.length; i++) {
-          let duelStr = ``
+          let duelStr = `**${i + 1}.** `
 
           for (const c of duelDecks[i].cards) {
-            let emoji = client.cwEmojis.get(c.toLowerCase().replace(/\s+/g, "_").replace(/\./g, "").replace(/-/g, "_"))
-
-            if (!emoji) emoji = client.cwEmojis.get("unknown")
-
-            duelStr += emoji
+            duelStr += getCardEmoji(c, client.cwEmojis)
           }
 
           duelStr += "\n"
@@ -343,11 +354,7 @@ module.exports = {
           let str = `**${matchEmoji}:** `
 
           for (const c of singleDecks[i].cards) {
-            let emoji = client.cwEmojis.get(c.toLowerCase().replace(/\s+/g, "_").replace(/\./g, "").replace(/-/g, "_"))
-
-            if (!emoji) emoji = client.cwEmojis.get("unknown")
-
-            str += emoji
+            str += getCardEmoji(c, client.cwEmojis)
           }
 
           str += `\n`
@@ -365,7 +372,7 @@ module.exports = {
 
       embed.description = description
 
-      return i.editReply({
+      i.editReply({
         embeds: [embed],
       })
     } catch (err) {
