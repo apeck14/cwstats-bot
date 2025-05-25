@@ -9,14 +9,15 @@ const handleAPISuccess = (e) => e?.data
 
 // Format error messages to make them more user friendly
 const handleAPIFailure = (e, notFoundMessage = `**Not found.**`) => {
-  console.log(e.response.data)
-  const { status } = e || {}
+  const { response, status } = e || {}
+  const { data } = response || {}
 
   let error = `**Unexpected error.** Please try again.`
 
   if (status === 404) error = notFoundMessage
   else if (status === 429) error = `**Rate limit exceeded.** Please try again later.`
   else if (status === 503) error = `:tools: **Maintenence break.**`
+  else if (status !== 500 && data.error) error = `**${data.error}**`
 
   return { error, status }
 }
@@ -180,8 +181,37 @@ const searchClans = (name) =>
     .then(handleAPISuccess)
     .catch((e) => handleAPIFailure(e, "**No clans found.**"))
 
+const addNudgeLink = (id, tag, userId) =>
+  axios
+    .put(
+      `${BASE_URL}/guild/${id}/nudge-link`,
+      {
+        tag: formatTag(tag, false),
+        userId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        },
+      },
+    )
+    .then(handleAPISuccess)
+    .catch(handleAPIFailure)
+
+const deleteNudgeLink = (id, tag) =>
+  axios
+    .delete(`${BASE_URL}/guild/${id}/nudge-link/${formatTag(tag, false)}`, {
+      headers: {
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e, "**Tag is not linked.**"))
+
 module.exports = {
+  addNudgeLink,
   addPlayer,
+  deleteNudgeLink,
   getAllPlusClans,
   getClan,
   getDailyLeaderboard,

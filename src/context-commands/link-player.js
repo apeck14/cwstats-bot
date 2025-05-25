@@ -6,10 +6,9 @@ const {
   TextInputBuilder,
   TextInputStyle,
 } = require("discord.js")
-const { formatTag } = require("../util/formatting")
-const { calcLinkedPlayerLimit, generateDiscordNickname } = require("../util/functions")
+const { formatStr, formatTag } = require("../util/formatting")
 const { green, orange, red } = require("../static/colors")
-const { getPlayer, updateDiscordNickname } = require("../util/services")
+const { addNudgeLink } = require("../util/services")
 
 module.exports = {
   data: {
@@ -24,103 +23,42 @@ module.exports = {
     },
     type: ApplicationCommandType.User,
   },
-  handleModalSubmit: async (i, db) => {
+  handleModalSubmit: async (i) => {
     try {
-      const guilds = db.collection("Guilds")
-      const linkedClans = db.collection("Linked Clans")
-      const CWStatsPlus = db.collection("CWStats+")
-
       const input = i.fields.fields.entries().next().value
       const { customId: targetId, value: inputTag } = input[1]
 
       const formattedTag = formatTag(inputTag)
 
-      const guild = await guilds.findOne({
-        guildID: i.guildId,
-      })
+      const { error, name } = await addNudgeLink(i.guildId, formattedTag, targetId)
 
-      const { nudges } = guild
-      const { links } = nudges || {}
-
-      if (links) {
-        // get amount of linked plus clans
-        const [serverLinkedClans, allPlusClans] = await Promise.all([
-          linkedClans.find({ guildID: i.guildId }).toArray(),
-          CWStatsPlus.distinct("tag"),
-        ])
-        const linkedPlusClans = serverLinkedClans.filter((c) => allPlusClans.includes(c.tag))
-        const linkedPlayerLimit = calcLinkedPlayerLimit(linkedPlusClans.length)
-
-        let err
-
-        if (links.length >= linkedPlayerLimit) err = "**Max amount of linked players reached!**"
-
-        const tagFound = links.find((l) => l.tag === formattedTag)
-        if (tagFound) err = `**This player tag has already been linked to: <@${tagFound.discordID}>**`
-
-        if (err)
-          return i.reply({
-            embeds: [
-              {
-                color: orange,
-                description: err,
-              },
-            ],
-            flags: MessageFlags.Ephemeral,
-          })
-      }
-
-      // check if player exists
-      const { data: player, error } = await getPlayer(formattedTag)
-
-      if (error)
+      if (error) {
         return i.reply({
           embeds: [
             {
-              color: red,
-              description: error,
+              color: orange,
+              description: `**${error}**`,
             },
           ],
           flags: MessageFlags.Ephemeral,
         })
-
-      // update discord username of player
-      if (nudges?.updateNicknameUponLinking) {
-        const existingLinks = links.filter((l) => l.discordID === targetId).map((l) => l.name)
-        const newNickname = generateDiscordNickname([...existingLinks, player.name])
-        updateDiscordNickname({ guildId: i.guildId, nickname: newNickname, userId: targetId })
       }
 
-      await guilds.updateOne(
-        {
-          guildID: i.guildId,
-        },
-        {
-          $push: {
-            "nudges.links": {
-              discordID: targetId,
-              name: player.name,
-              tag: player.tag,
-            },
-          },
-        },
-      )
-
-      return i.reply({
+      i.reply({
         embeds: [
           {
             color: green,
-            description: `:white_check_mark: **${player.name}** successfully linked to user!`,
+            description: `:white_check_mark: **${formatStr(name)}** successfully linked to user!`,
           },
         ],
         flags: MessageFlags.Ephemeral,
       })
     } catch (e) {
-      return i.reply({
+      i.reply({
         embeds: [
           {
             color: red,
-            description: "**Unexpected error.**",
+            description: "**Unexpected error.** Please try again.",
           },
         ],
         flags: MessageFlags.Ephemeral,
@@ -146,6 +84,6 @@ module.exports = {
     modal.addComponents(actionRow)
 
     // Show the modal
-    await i.showModal(modal)
+    i.showModal(modal)
   },
 }

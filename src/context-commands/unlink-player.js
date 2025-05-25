@@ -6,8 +6,8 @@ const {
   TextInputBuilder,
   TextInputStyle,
 } = require("discord.js")
-const { formatTag } = require("../util/formatting")
-const { green, red } = require("../static/colors")
+const { green, orange, red } = require("../static/colors")
+const { deleteNudgeLink } = require("../util/services")
 
 module.exports = {
   data: {
@@ -22,52 +22,30 @@ module.exports = {
     },
     type: ApplicationCommandType.User,
   },
-  handleModalSubmit: async (i, db) => {
+  handleModalSubmit: async (i) => {
     try {
-      const guilds = db.collection("Guilds")
-
       const input = i.fields.fields.entries().next().value
-      const { customId: targetId, value: inputTag } = input[1]
+      const { value: inputTag } = input[1]
 
-      const guild = await guilds.findOne({
-        guildID: i.guildId,
-      })
+      const { error, tag } = await deleteNudgeLink(i.guildId, inputTag)
 
-      const { nudges } = guild
-      const { links } = nudges || {}
-      const formattedTag = formatTag(inputTag)
-
-      if (!links || !links.length || !links.find((l) => l.discordID === targetId && l.tag === formattedTag)) {
+      if (error) {
         return i.reply({
           embeds: [
             {
-              color: red,
-              description: `This user is **not linked** to player tag: **${formattedTag}**.`,
+              color: orange,
+              description: `**${error}**`,
             },
           ],
           flags: MessageFlags.Ephemeral,
         })
       }
 
-      guilds.updateOne(
-        {
-          guildID: i.guildId,
-        },
-        {
-          $pull: {
-            "nudges.links": {
-              discordID: targetId,
-              tag: formattedTag,
-            },
-          },
-        },
-      )
-
-      return i.reply({
+      i.reply({
         embeds: [
           {
             color: green,
-            description: `:white_check_mark: User was **successfully unlinked** from player tag: **${formattedTag}**!`,
+            description: `:white_check_mark: **${tag}** was successfully unlinked!`,
           },
         ],
         flags: MessageFlags.Ephemeral,
@@ -104,6 +82,6 @@ module.exports = {
     modal.addComponents(actionRow)
 
     // Show the modal
-    await i.showModal(modal)
+    i.showModal(modal)
   },
 }
