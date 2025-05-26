@@ -5,6 +5,7 @@ const { logToSupportServer } = require("../util/logging")
 const { orange } = require("../static/colors")
 const ownerIds = require("../static/ownerIds")
 const { bulkAddEmojis } = require("../util/services")
+const { BOT_WEBHOOK_URL, COMMANDS_WEBHOOK_URL } = require("../../config")
 
 module.exports = {
   name: Events.ClientReady,
@@ -23,8 +24,8 @@ module.exports = {
 
     bulkAddEmojis(emojis)
 
-    client.commandsWebhook = new WebhookClient({ url: process.env.COMMANDS_WEBHOOK_URL })
-    client.botWebhook = new WebhookClient({ url: process.env.BOT_WEBHOOK_URL })
+    client.commandsWebhook = new WebhookClient({ url: COMMANDS_WEBHOOK_URL })
+    client.botWebhook = new WebhookClient({ url: BOT_WEBHOOK_URL })
 
     const commandFiles = fs.readdirSync("./src/commands")
     const contextCommandFiles = fs.readdirSync("./src/context-commands")
