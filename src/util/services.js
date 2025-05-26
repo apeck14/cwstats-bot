@@ -1,9 +1,8 @@
 const axios = require("axios")
 const { formatTag } = require("./formatting")
+const { INTERNAL_API_KEY } = require("../../config")
 
 const BASE_URL = "http://0.0.0.0:5000"
-
-const CWSTATS_API_KEY = process.env.INTERNAL_API_KEY
 
 const handleAPISuccess = (e) => e?.data
 
@@ -26,7 +25,7 @@ const getGuild = (id, limited = false) =>
   axios
     .get(`${BASE_URL}/guild/${id}${limited ? "/limited" : ""}`, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
     })
     .then(handleAPISuccess)
@@ -36,7 +35,7 @@ const getGuildLinkedClans = (id) =>
   axios
     .get(`${BASE_URL}/guild/${id}/clans`, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
     })
     .then(handleAPISuccess)
@@ -46,7 +45,7 @@ const getPlayer = (tag, limited = false) =>
   axios
     .get(`${BASE_URL}/player/${formatTag(tag, false)}${limited ? "/limited" : ""}`, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
     })
     .then(handleAPISuccess)
@@ -61,7 +60,7 @@ const addPlayer = (tag) =>
       },
       {
         headers: {
-          Authorization: `Bearer ${CWSTATS_API_KEY}`,
+          Authorization: `Bearer ${INTERNAL_API_KEY}`,
         },
       },
     )
@@ -75,7 +74,7 @@ const linkPlayer = (tag, userId) =>
       { tag, userId },
       {
         headers: {
-          Authorization: `Bearer ${CWSTATS_API_KEY}`,
+          Authorization: `Bearer ${INTERNAL_API_KEY}`,
         },
       },
     )
@@ -86,7 +85,7 @@ const getClan = (tag, limited = false) =>
   axios
     .get(`${BASE_URL}/clan/${formatTag(tag, false)}${limited ? "/limited" : ""}`, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
     })
     .then(handleAPISuccess)
@@ -96,7 +95,7 @@ const getRace = (tag, limited = false) =>
   axios
     .get(`${BASE_URL}/clan/${formatTag(tag, false)}/race${limited ? "/limited" : ""}`, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
     })
     .then(handleAPISuccess)
@@ -106,7 +105,7 @@ const getDailyLeaderboard = ({ key, limit, maxTrophies, minTrophies }) =>
   axios
     .get(`${BASE_URL}/leaderboard/daily`, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
       params: {
         key,
@@ -122,7 +121,7 @@ const getAllPlusClans = (tagsOnly = false) =>
   axios
     .get(`${BASE_URL}/plus/clans`, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
       params: {
         tagsOnly,
@@ -141,7 +140,7 @@ const setCommandCooldown = (id, commandName, delay) =>
       },
       {
         headers: {
-          Authorization: `Bearer ${CWSTATS_API_KEY}`,
+          Authorization: `Bearer ${INTERNAL_API_KEY}`,
         },
       },
     )
@@ -152,7 +151,7 @@ const getLinkedAccount = (userId) =>
   axios
     .get(`${BASE_URL}/user/${userId}/linked-account`, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
     })
     .then(handleAPISuccess)
@@ -162,7 +161,7 @@ const getPlayerBattleLog = (tag) =>
   axios
     .get(`${BASE_URL}/player/${formatTag(tag, false)}/log`, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
     })
     .then(handleAPISuccess)
@@ -172,7 +171,7 @@ const searchClans = (name) =>
   axios
     .get(`${BASE_URL}/clan/search`, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
       params: {
         name,
@@ -191,7 +190,7 @@ const addNudgeLink = (id, tag, userId) =>
       },
       {
         headers: {
-          Authorization: `Bearer ${CWSTATS_API_KEY}`,
+          Authorization: `Bearer ${INTERNAL_API_KEY}`,
         },
       },
     )
@@ -202,7 +201,7 @@ const deleteNudgeLink = (id, tag) =>
   axios
     .delete(`${BASE_URL}/guild/${id}/nudge-link/${formatTag(tag, false)}`, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
     })
     .then(handleAPISuccess)
@@ -212,7 +211,7 @@ const createGuild = (id) =>
   axios
     .post(`${BASE_URL}/guild/${id}`, null, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
     })
     .then(handleAPISuccess)
@@ -222,7 +221,7 @@ const deleteGuild = (id) =>
   axios
     .delete(`${BASE_URL}/guild/${id}`, {
       headers: {
-        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
       },
     })
     .then(handleAPISuccess)
@@ -237,7 +236,7 @@ const bulkAddEmojis = (emojis) =>
       },
       {
         headers: {
-          Authorization: `Bearer ${CWSTATS_API_KEY}`,
+          Authorization: `Bearer ${INTERNAL_API_KEY}`,
         },
       },
     )
