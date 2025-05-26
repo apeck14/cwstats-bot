@@ -84,10 +84,9 @@ module.exports = {
     if (!race.clans || race.clans.length <= 1) return warningMsg(i, "**Clan is not in a river race.**")
 
     const { memberList } = clan
-    const { clanIndex, dayIndex, isColosseum, isTraining, sectionIndex } = race
-    const { badge, decksUsed, fame: clanFame, name, participants, periodPoints, slotsUsed, tag } = race.clans[clanIndex]
+    const { clanIndex, dayIndex, isTraining, sectionIndex } = race
+    const { badge, decksUsed, fame, name, participants, slotsUsed, tag } = race.clans[clanIndex]
 
-    const fame = isColosseum ? clanFame : periodPoints
     const decksRemaining = 200 - decksUsed
     const slotsRemaining = 50 - slotsUsed
     const week = sectionIndex + 1
