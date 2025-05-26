@@ -2,7 +2,7 @@ const axios = require("axios")
 const { formatTag } = require("./formatting")
 const { INTERNAL_API_KEY } = require("../../config")
 
-const BASE_URL = "https://api.cwstats.com/api"
+const BASE_URL = "https://api.cwstats.com"
 
 const handleAPISuccess = (e) => e?.data
 
