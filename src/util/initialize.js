@@ -4,11 +4,11 @@ const { CLIENT_TOKEN } = require("../../config")
 
 const events = fs.readdirSync("src/events")
 
-const initializeEvents = (mongo, client) => {
+const initializeEvents = (client) => {
   for (const event of events) {
     const eventFile = require(`../events/${event}`)
-    if (eventFile.once) client.once(eventFile.name, (...args) => eventFile.run(client, mongo.db, ...args))
-    else client.on(eventFile.name, (...args) => eventFile.run(client, mongo.db, ...args))
+    if (eventFile.once) client.once(eventFile.name, (...args) => eventFile.run(client, ...args))
+    else client.on(eventFile.name, (...args) => eventFile.run(client, ...args))
   }
 
   console.log("DiscordJS Events Initalized!")
@@ -29,7 +29,7 @@ const initializeClient = async () => {
     presence: {
       activities: [
         {
-          name: `CWStats.com | 2800+ servers`,
+          name: `CWStats.com | 3000+ servers`,
           type: ActivityType.Watching,
         },
       ],

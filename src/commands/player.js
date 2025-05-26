@@ -68,7 +68,7 @@ module.exports = {
       },
     ],
   },
-  run: async (i, db, client) => {
+  run: async (i, client) => {
     const iUser = i.options.getUser("user")
     const iTag = i.options.getString("tag")
 

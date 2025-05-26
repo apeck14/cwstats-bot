@@ -98,7 +98,7 @@ module.exports = {
       tr: "klanlar",
     },
   },
-  run: async (i, db, client) => {
+  run: async (i, client) => {
     const [
       { data: linkedClans, error: linkedClansError },
       { data: fullDailyLb, error: dailyLbError },

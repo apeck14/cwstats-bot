@@ -15,7 +15,7 @@ module.exports = {
     },
     type: ApplicationCommandType.Message,
   },
-  run: async (i, db, client) => {
+  run: async (i, client) => {
     const iTag = i.targetMessage.content
 
     if (!iTag) return errorMsg(i, "**This message has no text content.**")

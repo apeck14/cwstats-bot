@@ -1,13 +1,10 @@
 require("dotenv").config()
 
 const { AutoPoster } = require("topgg-autoposter")
-const mongo = require("./src/util/mongo")
 const { initializeClient, initializeEvents } = require("./src/util/initialize")
 
-mongo.init()
-
 initializeClient()
-  .then((client) => initializeEvents(mongo, client))
+  .then((client) => initializeEvents(client))
   .then((client) => AutoPoster(process.env.TOPGG_TOKEN, client))
   .catch(() => {})
 

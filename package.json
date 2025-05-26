@@ -19,7 +19,6 @@
     "dotenv": "^16.5.0",
     "fast-dice-coefficient": "^1.0.3",
     "lodash": "^4.17.21",
-    "mongodb": "^6.16.0",
     "topgg-autoposter": "^2.0.2"
   },
   "devDependencies": {

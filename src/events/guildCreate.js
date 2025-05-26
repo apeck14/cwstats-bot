@@ -5,7 +5,7 @@ const { createGuild } = require("../util/services")
 
 module.exports = {
   name: Events.GuildCreate,
-  run: async (client, db, guild) => {
+  run: async (client, guild) => {
     guild
       .fetchAuditLogs()
       .then((logs) => {

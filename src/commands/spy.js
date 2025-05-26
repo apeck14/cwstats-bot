@@ -172,7 +172,7 @@ module.exports = {
       },
     ],
   },
-  run: async (i, db, client) => {
+  run: async (i, client) => {
     try {
       const iTag = i.options.getString("tag")
       const iClanSearch = i.options.getString("clan")

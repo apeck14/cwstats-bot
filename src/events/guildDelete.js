@@ -5,7 +5,7 @@ const { deleteGuild } = require("../util/services")
 
 module.exports = {
   name: Events.GuildDelete,
-  run: async (client, db, guild) => {
+  run: async (client, guild) => {
     if (guild.available && client.isReady()) {
       deleteGuild(guild.id)
     }

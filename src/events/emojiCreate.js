@@ -5,7 +5,7 @@ const { logToSupportServer } = require("../util/logging")
 
 module.exports = {
   name: Events.GuildEmojiCreate,
-  run: async (client, db, emoji) => {
+  run: async (client, emoji) => {
     if (!ownerIds.includes(emoji.guild.ownerId)) return
 
     client.cwEmojis.set(emoji.name, `<:${emoji.name}:${emoji.id}>`)

@@ -72,7 +72,7 @@ module.exports = {
       },
     ],
   },
-  run: async (i, db, client) => {
+  run: async (i, client) => {
     const iName = i.options.getString("location")
     const iLeague = i.options.getString("league")
 

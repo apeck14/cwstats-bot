@@ -40,7 +40,7 @@ const getTimeDifference = (date1, date2) => {
 
 module.exports = {
   name: Events.InteractionCreate,
-  run: async (client, db, i) => {
+  run: async (client, i) => {
     try {
       if (!i) return
 
@@ -94,7 +94,7 @@ module.exports = {
           return isUserContextMenuCommand ? i.reply(messageInput) : i.editReply(messageInput)
         }
 
-        return run(i, db, client)
+        return run(i, client)
       }
 
       // on modal submit
@@ -105,7 +105,7 @@ module.exports = {
         if (fs.existsSync(commandFilePath)) {
           const command = require(commandFilePath)
           if (command.handleModalSubmit) {
-            command.handleModalSubmit(i, db)
+            command.handleModalSubmit(i)
           }
         }
 
@@ -148,7 +148,7 @@ module.exports = {
           `:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`,
         )
 
-      await run(i, db, client)
+      await run(i, client)
 
       sendCommandLog(i, client)
     } catch (e) {
