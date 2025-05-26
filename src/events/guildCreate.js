@@ -1,12 +1,11 @@
 const { Events } = require("discord.js")
 const { green, pink } = require("../static/colors")
 const { logToSupportServer } = require("../util/logging")
+const { createGuild } = require("../util/services")
 
 module.exports = {
   name: Events.GuildCreate,
   run: async (client, db, guild) => {
-    const guilds = db.collection("Guilds")
-
     guild
       .fetchAuditLogs()
       .then((logs) => {
@@ -29,16 +28,7 @@ module.exports = {
       })
       .catch(console.error)
 
-    guilds.insertOne({
-      abbreviations: [],
-      channels: {
-        applicationsChannelID: null,
-        applyChannelID: null,
-        commandChannelIDs: [],
-        reportChannelID: null,
-      },
-      guildID: guild.id,
-    })
+    createGuild(guild.id)
 
     logToSupportServer(
       client,

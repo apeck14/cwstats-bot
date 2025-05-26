@@ -4,7 +4,8 @@ const fs = require("fs")
 const { orange, pink } = require("../static/colors")
 const { logToSupportServer } = require("../util/logging")
 const { validate } = require("../util/validate")
-const guildCreate = require("./guildCreate")
+const { createGuild, getGuild } = require("../util/services")
+const { errorMsg, warningMsg } = require("../util/functions")
 
 const sendCommandLog = async (i, client) => {
   const { discriminator, id, username } = i.user
@@ -64,24 +65,15 @@ module.exports = {
         })
       }
 
-      const guilds = db.collection("Guilds")
-      let guildExists = await guilds.findOne({
-        guildID: i.guildId,
-      })
+      const { data: guild } = await getGuild(i.guildId)
 
-      if (!guildExists) {
-        await guildCreate.run(client, db, i.member.guild)
+      if (!guild) {
+        await createGuild(i.guildId)
 
-        guildExists = await guilds.findOne({
-          guildID: i.guildId,
-        })
-
-        if (!guildExists) return console.log("Guild not in database, and could not be added.")
-
-        console.log(`Guild not found, but updated! ${i.guildId}`)
+        return errorMsg(i, "**Guild not found in database.** Please try again.")
       }
 
-      const { color, error, onlyShowToUser } = validate(i, guildExists, client, validateChannel)
+      const { color, error, onlyShowToUser } = validate(i, guild, client, validateChannel)
 
       // context commands
       if (isUserContextMenuCommand || isMessageContextMenuCommand) {
@@ -134,34 +126,18 @@ module.exports = {
 
       const { cooldown, disabled, run } = i.client.commands.get(i.commandName)
 
-      if (disabled) {
-        return i.editReply({
-          embeds: [
-            {
-              color: orange,
-              description: ":tools: **This command has been temporarily disabled**.",
-            },
-          ],
-        })
-      }
+      if (disabled) return warningMsg(i, ":tools: **This command has been temporarily disabled**.")
 
       // check for cooldown in database
-      if (cooldown && guildExists?.cooldowns) {
-        const commandCooldown = guildExists?.cooldowns[i.commandName]
+      if (cooldown && guild?.cooldowns) {
+        const commandCooldown = guild?.cooldowns[i.commandName]
         if (commandCooldown) {
           const now = new Date()
 
           if (now < commandCooldown) {
             const timeRemainingStr = getTimeDifference(now, commandCooldown)
 
-            return i.editReply({
-              embeds: [
-                {
-                  color: orange,
-                  description: `This command is on cooldown for **${timeRemainingStr}**.`,
-                },
-              ],
-            })
+            return warningMsg(i, `This command is on cooldown for **${timeRemainingStr}**.`)
           }
         }
       }

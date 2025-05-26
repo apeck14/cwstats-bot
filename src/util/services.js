@@ -17,7 +17,7 @@ const handleAPIFailure = (e, notFoundMessage = `**Not found.**`) => {
   if (status === 404) error = notFoundMessage
   else if (status === 429) error = `**Rate limit exceeded.** Please try again later.`
   else if (status === 503) error = `:tools: **Maintenence break.**`
-  else if (status !== 500 && data.error) error = `**${data.error}**`
+  else if (status !== 500 && data?.error) error = `**${data.error}**`
 
   return { error, status }
 }
@@ -208,9 +208,48 @@ const deleteNudgeLink = (id, tag) =>
     .then(handleAPISuccess)
     .catch((e) => handleAPIFailure(e, "**Tag is not linked.**"))
 
+const createGuild = (id) =>
+  axios
+    .post(`${BASE_URL}/guild/${id}`, null, {
+      headers: {
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch(handleAPIFailure)
+
+const deleteGuild = (id) =>
+  axios
+    .delete(`${BASE_URL}/guild/${id}`, {
+      headers: {
+        Authorization: `Bearer ${CWSTATS_API_KEY}`,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch((e) => handleAPIFailure(e, "**Guild not found.**"))
+
+const bulkAddEmojis = (emojis) =>
+  axios
+    .post(
+      `${BASE_URL}/emoji/bulk-add`,
+      {
+        emojis,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${CWSTATS_API_KEY}`,
+        },
+      },
+    )
+    .then(handleAPISuccess)
+    .catch(handleAPIFailure)
+
 module.exports = {
   addNudgeLink,
   addPlayer,
+  bulkAddEmojis,
+  createGuild,
+  deleteGuild,
   deleteNudgeLink,
   getAllPlusClans,
   getClan,

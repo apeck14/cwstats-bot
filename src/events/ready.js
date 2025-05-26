@@ -4,22 +4,24 @@ const registerSlashCommands = require("../util/slash")
 const { logToSupportServer } = require("../util/logging")
 const { orange } = require("../static/colors")
 const ownerIds = require("../static/ownerIds")
+const { bulkAddEmojis } = require("../util/services")
 
 module.exports = {
   name: Events.ClientReady,
   once: true,
-  run: async (client, db) => {
-    const emojis = db.collection("Emojis")
+  run: async (client) => {
+    const emojis = []
 
     client.emojis.cache.each((e) => {
       if (ownerIds.includes(e.guild.ownerId)) {
         const emoji = `<:${e.name}:${e.id}>`
         client.cwEmojis.set(e.name, emoji)
 
-        // upsert emoji in DB for Jobs repo to consume
-        emojis.updateOne({ name: e.name }, { $set: { emoji, name: e.name } }, { upsert: true })
+        emojis.push({ emoji, name: e.name })
       }
     })
+
+    bulkAddEmojis(emojis)
 
     client.commandsWebhook = new WebhookClient({ url: process.env.COMMANDS_WEBHOOK_URL })
     client.botWebhook = new WebhookClient({ url: process.env.BOT_WEBHOOK_URL })
