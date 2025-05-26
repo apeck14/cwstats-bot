@@ -65,20 +65,6 @@ const getArenaEmoji = (pb) => {
   return "arena1"
 }
 
-const getLeague = (pb) => {
-  if (pb >= 8000) return "league-10"
-  if (pb >= 7600) return "league-9"
-  if (pb >= 7300) return "league-8"
-  if (pb >= 7000) return "league-7"
-  if (pb >= 6600) return "league-6"
-  if (pb >= 6300) return "league-5"
-  if (pb >= 6000) return "league-4"
-  if (pb >= 5600) return "league-3"
-  if (pb >= 5300) return "league-2"
-  if (pb >= 5000) return "league-1"
-  return null
-}
-
 const errorMsg = (i, message) => {
   i.editReply({
     embeds: [
@@ -180,9 +166,11 @@ const createPlayerEmbed = (client, player, clanBadge) => {
     url: `https://royaleapi.com/player/${player.tag.substring(1)}`,
   }
 
+  const clanName = player?.clan?.name || "None"
+
   embed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${
     player.bestTrophies
-  }\n${badgeEmoji} **${formatStr(player.clan.name)}**${player.role ? ` (${formatRole(player.role)})` : ""}`
+  }\n${badgeEmoji} **${formatStr(clanName)}**${player.role ? ` (${formatRole(player.role)})` : ""}`
 
   const {
     bestPathOfLegendSeasonResult: bestPOLObj,
@@ -231,8 +219,9 @@ module.exports = {
   createPlayerEmbed,
   errorMsg,
   findBestMatch,
+  getArenaEmoji,
   getClanBadge,
-  getLeague,
+  getPlayerCardData,
   successMsg,
   warningMsg,
 }
