@@ -79,22 +79,6 @@ const getLeague = (pb) => {
   return null
 }
 
-const hexToRgbA = (hex) => {
-  if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-    let c = hex.substring(1).split("")
-
-    if (c.length === 3) {
-      c = [c[0], c[0], c[1], c[1], c[2], c[2]]
-    }
-
-    c = `0x${c.join("")}`
-
-    return `rgba(${[(c >> 16) & 255, (c >> 8) & 255, c & 255].join(",")},0.25)`
-  }
-
-  return "rgba(255, 255, 255, 0.25)" // transparent white
-}
-
 const errorMsg = (i, message) => {
   i.editReply({
     embeds: [
@@ -166,10 +150,6 @@ const getPlayerCardData = (cards) => {
 
   return cardData
 }
-
-const calcLinkedPlayerLimit = (linkedPlusClansCount) => 100 + linkedPlusClansCount * 75
-
-const generateDiscordNickname = (linkedIGNs = []) => linkedIGNs.join(" | ")
 
 const createPlayerEmbed = (client, player, clanBadge) => {
   const arenaEmoji = getArenaEmoji(player.trophies)
@@ -248,16 +228,11 @@ const createPlayerEmbed = (client, player, clanBadge) => {
 }
 
 module.exports = {
-  calcLinkedPlayerLimit,
   createPlayerEmbed,
   errorMsg,
   findBestMatch,
-  generateDiscordNickname,
-  getArenaEmoji,
   getClanBadge,
   getLeague,
-  getPlayerCardData,
-  hexToRgbA,
   successMsg,
   warningMsg,
 }

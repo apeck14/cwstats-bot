@@ -128,6 +128,5 @@ const validate = (i, guild, client, validateChannel) => {
 }
 
 module.exports = {
-  missingPermissionsToStr,
   validate,
 }
