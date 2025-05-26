@@ -53,7 +53,7 @@ module.exports = {
 
     if (guildError) return errorMsg(i, guildError)
 
-    const { abbreviations, defaultClan } = guild.channels || {}
+    const { abbreviations, defaultClan } = guild
 
     let iTag = i.options.getString("tag")
 
