@@ -2,7 +2,7 @@ const axios = require("axios")
 const { formatTag } = require("./formatting")
 const { INTERNAL_API_KEY } = require("../../config")
 
-const BASE_URL = "http://0.0.0.0:5000"
+const BASE_URL = "http://127.0.0.1:5000"
 
 const handleAPISuccess = (e) => e?.data
 
