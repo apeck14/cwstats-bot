@@ -57,19 +57,21 @@ module.exports = {
 
     let iTag = i.options.getString("tag")
 
-    if (iTag) {
-      // check for abbreviation
+    // default clan
+    if (!iTag) {
+      if (defaultClan?.tag) iTag = defaultClan.tag
+      else
+        return warningMsg(
+          i,
+          `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`,
+        )
+    } else {
+      // abbreviation
       const UPPERCASE_ABBR = iTag.toUpperCase()
       const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
 
       if (abbr) iTag = abbr.tag
-      else if (iTag.length < 5) return warningMsg(i, "**Abbreviation does not exist.**")
-    }
-    // default clan
-    else if (defaultClan?.tag) iTag = defaultClan?.tag
-    else {
-      const msg = `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`
-      return warningMsg(i, msg)
+      else if (iTag.length < 3) return warningMsg(i, "**Abbreviation does not exist.**")
     }
 
     const [{ data: race, error: raceError }, { data: clan, error: clanError }] = await Promise.all([
