@@ -25,6 +25,8 @@ module.exports = {
   },
   handleModalSubmit: async (i) => {
     try {
+      await i.deferReply({ flags: MessageFlags.Ephemeral })
+
       const input = i.fields.fields.entries().next().value
       const { customId: targetId, value: inputTag } = input[1]
 
@@ -33,7 +35,7 @@ module.exports = {
       const { error, name } = await addNudgeLink(i.guildId, formattedTag, targetId)
 
       if (error) {
-        return i.reply({
+        return i.editReply({
           embeds: [
             {
               color: orange,
@@ -44,7 +46,7 @@ module.exports = {
         })
       }
 
-      i.reply({
+      i.editReply({
         embeds: [
           {
             color: green,
@@ -54,7 +56,7 @@ module.exports = {
         flags: MessageFlags.Ephemeral,
       })
     } catch (e) {
-      i.reply({
+      i.editReply({
         embeds: [
           {
             color: red,

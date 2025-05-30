@@ -24,13 +24,15 @@ module.exports = {
   },
   handleModalSubmit: async (i) => {
     try {
+      await i.deferReply({ flags: MessageFlags.Ephemeral })
+
       const input = i.fields.fields.entries().next().value
       const { value: inputTag } = input[1]
 
       const { error, tag } = await deleteNudgeLink(i.guildId, inputTag)
 
       if (error) {
-        return i.reply({
+        return i.editReply({
           embeds: [
             {
               color: orange,
@@ -41,7 +43,7 @@ module.exports = {
         })
       }
 
-      i.reply({
+      i.editReply({
         embeds: [
           {
             color: green,
@@ -52,7 +54,7 @@ module.exports = {
       })
     } catch (e) {
       console.log("unlink-player", e)
-      return i.reply({
+      return i.editReply({
         embeds: [
           {
             color: red,
