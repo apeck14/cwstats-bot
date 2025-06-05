@@ -130,7 +130,7 @@ module.exports = {
         embed.description += `${decksRemainingEmoji} ${decksRemaining}\n`
         embed.description += `${fameAvgEmoji} **${fameAvg.toFixed(2)}**\n\n`
       } else {
-        embed.description += formattedClanName
+        embed.description += `${formattedClanName}\n`
       }
     }
 
