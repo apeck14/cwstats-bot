@@ -3,7 +3,7 @@ const { createPlayerEmbed, errorMsg, warningMsg } = require("../util/functions")
 
 module.exports = {
   data: {
-    description: "View player stats.",
+    description: "View player profile stats.",
     description_localizations: {
       de: "Spielerstatistiken anzeigen.",
       "es-ES": "Ver estadísticas del jugador.",
@@ -95,7 +95,7 @@ module.exports = {
 
     const { data: player, error: playerError } = await getPlayer(tag)
 
-    if (playerError) return errorMsg(i, playerError)
+    if (playerError || !player) return errorMsg(i, playerError || "**Player not found.**")
 
     // add player for website searching
     addPlayer(player.tag)
