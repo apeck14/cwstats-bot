@@ -51,6 +51,16 @@ const getPlayer = (tag, limited = false) =>
     .then(handleAPISuccess)
     .catch((e) => handleAPIFailure(e, "**Player not found.**"))
 
+const getPlayerScores = (tag) =>
+  axios
+    .get(`${BASE_URL}/player/${formatTag(tag, false)}/scores`, {
+      headers: {
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch(handleAPIFailure)
+
 const addPlayer = (tag) =>
   axios
     .put(
@@ -258,6 +268,7 @@ module.exports = {
   getLinkedAccount,
   getPlayer,
   getPlayerBattleLog,
+  getPlayerScores,
   getRace,
   linkPlayer,
   searchClans,
