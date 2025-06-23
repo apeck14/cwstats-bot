@@ -60,10 +60,8 @@ module.exports = {
       return errorMsg(i, error)
     }
 
-    console.log(i.user.id, result)
-
     // tag already linked
-    if (result.modifiedCount === 0) {
+    if (result.modifiedCount === 0 && result.matchedCount === 1) {
       return warningMsg(i, "**You have already linked that tag!**")
     }
 
