@@ -1,9 +1,9 @@
 const { Events, MessageFlags } = require("discord.js")
 const path = require("path")
 const fs = require("fs")
-const { orange, pink } = require("../static/colors")
+const { pink } = require("../static/colors")
 const { logToSupportServer } = require("../util/logging")
-const { validate } = require("../util/validate")
+const validate = require("../util/validate")
 const { createGuild, getGuild } = require("../util/services")
 const { errorMsg, warningMsg } = require("../util/functions")
 
@@ -52,28 +52,24 @@ module.exports = {
       if (!isCommand && !isUserContextMenuCommand && !isMessageContextMenuCommand && !isModalSubmit) return
 
       const validateChannel = isCommand || isMessageContextMenuCommand
-      if (validateChannel) await i.deferReply()
 
-      if (!i.guild) {
-        return i.editReply({
-          embeds: [
-            {
-              color: orange,
-              description: `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=2147797184&scope=bot+applications.commands) me to a server to use my commands!**`,
-            },
-          ],
-        })
-      }
+      if (!i.guild)
+        return warningMsg(
+          i,
+          `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=2147797184&scope=bot+applications.commands) me to a server to use my commands!**`,
+        )
 
       const { data: guild } = await getGuild(i.guildId)
 
       if (!guild) {
         await createGuild(i.guildId)
 
-        return errorMsg(i, "**Guild not found in database.** Please try again.")
+        return errorMsg(i, "**Unexpected error.** Please try again.")
       }
 
       const { color, error, onlyShowToUser } = validate(i, guild, client, validateChannel)
+
+      if (validateChannel) await i.deferReply({ flags: onlyShowToUser ? MessageFlags.Ephemeral : 0 })
 
       // context commands
       if (isUserContextMenuCommand || isMessageContextMenuCommand) {

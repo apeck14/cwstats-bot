@@ -65,37 +65,43 @@ const getArenaEmoji = (pb) => {
   return "arena1"
 }
 
-const errorMsg = (i, message) => {
-  i.editReply({
-    embeds: [
-      {
-        color: red,
-        description: message,
-      },
-    ],
-  })
+const errorMsg = async (i, message) => {
+  const embed = {
+    color: red,
+    description: message,
+  }
+
+  if (i.deferred || i.replied) {
+    await i.editReply({ embeds: [embed] })
+  } else {
+    await i.reply({ embeds: [embed] })
+  }
 }
 
-const warningMsg = (i, message) => {
-  i.editReply({
-    embeds: [
-      {
-        color: orange,
-        description: message,
-      },
-    ],
-  })
+const warningMsg = async (i, message) => {
+  const embed = {
+    color: orange,
+    description: message,
+  }
+
+  if (i.deferred || i.replied) {
+    await i.editReply({ embeds: [embed] })
+  } else {
+    await i.reply({ embeds: [embed] })
+  }
 }
 
-const successMsg = (i, message) => {
-  i.editReply({
-    embeds: [
-      {
-        color: green,
-        description: message,
-      },
-    ],
-  })
+const successMsg = async (i, message) => {
+  const embed = {
+    color: green,
+    description: message,
+  }
+
+  if (i.deferred || i.replied) {
+    await i.editReply({ embeds: [embed] })
+  } else {
+    await i.reply({ embeds: [embed] })
+  }
 }
 
 const findBestMatch = (str, arr) => {

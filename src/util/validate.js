@@ -99,9 +99,23 @@ const validate = (i, guild, client, validateChannel) => {
       }
     }
 
+    const formattedKeyword = commandChannelKeyword
+      ? `- Any channel containing \`${commandChannelKeyword.toLowerCase()}\`\n`
+      : ""
+
+    let channelsToShow = commandChannelIDs
+    let suffix = ""
+
+    if (commandChannelIDs.length > 5) {
+      channelsToShow = commandChannelIDs.slice(0, 5)
+      suffix = `\n- ${commandChannelIDs.length - 5} more...`
+    }
+
+    const formattedChannels = channelsToShow.map((id) => `- <#${id}>`).join("\n") + suffix
+
     const notCommandChannelEmbed = {
       color,
-      error: `You can only use this command in a set **command channel**!`,
+      error: `### You can only use this command in a set __command channel__:\n${formattedKeyword}${formattedChannels}`,
       onlyShowToUser: true,
     }
 
@@ -127,6 +141,4 @@ const validate = (i, guild, client, validateChannel) => {
   return {}
 }
 
-module.exports = {
-  validate,
-}
+module.exports = validate
