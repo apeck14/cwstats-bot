@@ -141,11 +141,11 @@ module.exports = {
 
       if (clan.notRanked) showNRFooter = true
 
-      embed.description += `**${clan.notRanked ? "NR" : i + 1}.** ${badgeEmoji} [**${formatStr(clan.name)}**](${url})${isPlus}\n`
+      embed.description += `\u202A**${clan.notRanked ? "NR" : i + 1}.** ${badgeEmoji} [**${formatStr(clan.name)}**](${url})${isPlus}\n`
       embed.description += `${fameAvgEmoji} **${clan.fameAvg.toFixed(2)}** ${decksRemainingEmoji} ${
         clan.decksRemaining
       } :earth_americas: `
-      embed.description += Number.isInteger(clan.rank) ? `#${clan.rank}\n` : `${clan.rank}\n`
+      embed.description += Number.isInteger(clan.rank) ? `#${clan.rank}\n` : `N/A\n`
     }
 
     if (showNRFooter) embed.footer.text += " | NR = Not Ranked"

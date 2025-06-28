@@ -168,7 +168,7 @@ const createPlayerEmbed = (client, player, clanBadge) => {
     thumbnail: {
       url: "attachment://arena.png",
     },
-    title: `${levelEmoji} **${player.name}**`,
+    title: `\u202A${levelEmoji} **${player.name}**`,
     url: `https://royaleapi.com/player/${player.tag.substring(1)}`,
   }
 
@@ -176,7 +176,7 @@ const createPlayerEmbed = (client, player, clanBadge) => {
 
   embed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${
     player.bestTrophies
-  }\n${badgeEmoji} **${formatStr(clanName)}**${player.role ? ` (${formatRole(player.role)})` : ""}`
+  }\n\u202A${badgeEmoji} **${formatStr(clanName)}**${player.role ? ` (${formatRole(player.role)})` : ""}`
 
   const {
     bestPathOfLegendSeasonResult: bestPOLObj,

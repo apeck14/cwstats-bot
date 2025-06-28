@@ -138,7 +138,7 @@ module.exports = {
     const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
     const slotsRemainingEmoji = client.cwEmojis.get("remainingSlots")
 
-    embed.description += `${badgeEmoji} **${formatStr(
+    embed.description += `\u202A${badgeEmoji} **${formatStr(
       name,
     )}**\n${fameEmoji} **${fame}**\n${decksRemainingEmoji} **${decksRemaining}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n`
 

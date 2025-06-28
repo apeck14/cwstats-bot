@@ -138,7 +138,7 @@ module.exports = {
     const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
     const slotsRemainingEmoji = client.cwEmojis.get("remainingSlots")
 
-    let nudgeMessage = `${badgeEmoji} **${formatStr(
+    let nudgeMessage = `\u202A${badgeEmoji} **${formatStr(
       clan.name,
     )}**\n${decksRemainingEmoji} **${attacksRemaining}**\n${slotsRemainingEmoji} **${slotsRemaining}**`
 

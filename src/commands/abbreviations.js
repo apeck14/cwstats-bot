@@ -50,7 +50,7 @@ module.exports = {
       abbreviations.sort((a, b) => a.abbr.localeCompare(b.abbr))
 
       embed.description += `${abbreviations
-        .map((a) => `\n• **${a.abbr.toLowerCase()}**: ${formatStr(a.name)}`)
+        .map((a) => `\n\u202A• **${a.abbr.toLowerCase()}**: ${formatStr(a.name)}`)
         .join("")}`
     } else embed.description += "\n*None*"
 

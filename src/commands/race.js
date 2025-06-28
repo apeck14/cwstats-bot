@@ -124,13 +124,13 @@ module.exports = {
         const formattedProjPlace = formatPlace(projPlace)
         const decksRemaining = 200 - decksUsed
 
-        embed.description += `**${currentPlace}.**${formattedClanName}`
+        embed.description += `\u202A**${currentPlace}.**${formattedClanName}`
         embed.description += `${fameEmoji} ${fame}\n`
         embed.description += `${projectionEmoji} ${projFame} (${formattedProjPlace})\n`
         embed.description += `${decksRemainingEmoji} ${decksRemaining}\n`
         embed.description += `${fameAvgEmoji} **${fameAvg.toFixed(2)}**\n\n`
       } else {
-        embed.description += `${formattedClanName}\n`
+        embed.description += `\u202A${formattedClanName}\n`
       }
     }
 

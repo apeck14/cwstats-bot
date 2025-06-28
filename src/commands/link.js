@@ -66,7 +66,7 @@ module.exports = {
     }
 
     if (success) {
-      return successMsg(i, `✅ Account linked to **${formatStr(name)}**!`)
+      return successMsg(i, `\u202A✅ Account linked to **${formatStr(name)}**!`)
     }
 
     return errorMsg(i, "**Unexpected error.** Please try again.")

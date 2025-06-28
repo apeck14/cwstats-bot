@@ -30,7 +30,7 @@ const generateEmbed = ({ client, interaction, liveClanData, pageIndex }) => {
           const badgeEmoji = client.cwEmojis.get(c.badgeEmoji)
           const url = `https://www.cwstats.com/clan/${c.tag.substring(1)}/race`
 
-          let entry = `${badgeEmoji} [**${formatStr(c.name)}**](${url})${c.isPlus ? ` ${plusEmoji}` : ""}`
+          let entry = `\u202A${badgeEmoji} [**${formatStr(c.name)}**](${url})${c.isPlus ? ` ${plusEmoji}` : ""}`
 
           if (c.isTraining || c.noData) return entry
           if (c.crossedFinishLine) {

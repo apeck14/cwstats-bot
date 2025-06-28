@@ -326,7 +326,7 @@ module.exports = {
         url: `https://cwstats.com/player/${opponent.tag.slice(1)}`,
       }
 
-      let description = `${badgeEmoji} [**${formatStr(
+      let description = `\u202A${badgeEmoji} [**${formatStr(
         opponent.clan.name,
       )}**](https://cwstats.com/clan/${opponent.clan.tag.slice(1)})\n`
 
