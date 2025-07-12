@@ -48,8 +48,10 @@ module.exports = {
       const isUserContextMenuCommand = i.isUserContextMenuCommand()
       const isMessageContextMenuCommand = i.isMessageContextMenuCommand()
       const isModalSubmit = i.isModalSubmit()
+      const isAutocomplete = i.isAutocomplete()
 
-      if (!isCommand && !isUserContextMenuCommand && !isMessageContextMenuCommand && !isModalSubmit) return
+      if (!isCommand && !isUserContextMenuCommand && !isMessageContextMenuCommand && !isModalSubmit && !isAutocomplete)
+        return
 
       const validateChannel = isCommand || isMessageContextMenuCommand
 
@@ -120,7 +122,17 @@ module.exports = {
         })
       }
 
-      const { cooldown, disabled, run } = i.client.commands.get(i.commandName)
+      const { cooldown, disabled, run, search } = i.client.commands.get(i.commandName)
+
+      if (isAutocomplete) {
+        const results = await search(i)
+
+        if (results) {
+          i.respond(results.length > 0 ? results : [{ name: "No matches", value: "no_match" }])
+        }
+
+        return
+      }
 
       if (disabled) return warningMsg(i, ":tools: **This command has been temporarily disabled**.")
 

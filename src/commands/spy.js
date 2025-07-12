@@ -1,4 +1,4 @@
-const { getClan, getPlayer, getPlayerBattleLog, searchClans } = require("../util/services")
+const { getClan, getPlayer, getPlayerBattleLog, getPlayerSearch, searchClans } = require("../util/services")
 const { pink } = require("../static/colors")
 const { errorMsg, findBestMatch } = require("../util/functions")
 const { formatStr, formatTag } = require("../util/formatting")
@@ -104,7 +104,7 @@ module.exports = {
         type: 1,
       },
       {
-        description: "Search by player + clan name",
+        description: "Search by player name",
         description_localizations: {
           de: "Suche nach Spieler- und Clanname",
           "es-ES": "Buscar por jugador y nombre del clan",
@@ -124,6 +124,7 @@ module.exports = {
         },
         options: [
           {
+            autocomplete: true,
             description: "Player name",
             description_localizations: {
               de: "Spielername",
@@ -141,28 +142,6 @@ module.exports = {
               it: "giocatore",
               nl: "speler",
               tr: "oyuncu",
-            },
-            required: true,
-            type: 3,
-          },
-          {
-            description: "Clan name",
-            description_localizations: {
-              de: "Clanname",
-              "es-ES": "Nombre del clan",
-              fr: "Nom du clan",
-              it: "Nome del clan",
-              nl: "Clannaam",
-              tr: "Klan adı",
-            },
-            name: "clan",
-            name_localizations: {
-              de: "klan",
-              "es-ES": "clan",
-              fr: "clan",
-              it: "clan",
-              nl: "clan",
-              tr: "klan",
             },
             required: true,
             type: 3,
@@ -379,5 +358,22 @@ module.exports = {
       console.log(err)
       console.log(i?.options?._hoistedOptions || i?.options)
     }
+  },
+  search: async (i) => {
+    const query = i.options.getFocused()
+
+    if (!query || query.length < 2) {
+      i.respond([{ name: "🔎 Search by player name", value: "no_match" }])
+      return
+    }
+
+    const { data: players } = await getPlayerSearch(query, 15)
+
+    const mappedPlayers = players.map((p) => ({
+      name: `${p.name} ${p.clanName ? `(${p.clanName})` : ""}`,
+      value: p.tag,
+    }))
+
+    return mappedPlayers
   },
 }

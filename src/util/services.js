@@ -253,6 +253,20 @@ const bulkAddEmojis = (emojis) =>
     .then(handleAPISuccess)
     .catch(handleAPIFailure)
 
+const getPlayerSearch = (name, limit = 10) =>
+  axios
+    .get(`${BASE_URL}/player/search`, {
+      headers: {
+        Authorization: `Bearer ${INTERNAL_API_KEY}`,
+      },
+      params: {
+        limit,
+        name,
+      },
+    })
+    .then(handleAPISuccess)
+    .catch(handleAPIFailure)
+
 module.exports = {
   addNudgeLink,
   addPlayer,
@@ -269,6 +283,7 @@ module.exports = {
   getPlayer,
   getPlayerBattleLog,
   getPlayerScores,
+  getPlayerSearch,
   getRace,
   linkPlayer,
   searchClans,
