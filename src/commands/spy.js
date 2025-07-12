@@ -205,8 +205,8 @@ module.exports = {
           if (playerError) return errorMsg(i, "Error while retrieving player data.")
 
           opponent.name = player.name
-          opponent.clan.name = player.clan.name
-          opponent.clan.tag = player.clan.tag
+          opponent.clan.name = player?.clan?.name || "None"
+          opponent.clan.tag = player?.clan?.tag
         }
       }
 
@@ -259,9 +259,11 @@ module.exports = {
         url: `https://cwstats.com/player/${opponent.tag.slice(1)}`,
       }
 
-      let description = `\u202A${badgeEmoji} [**${formatStr(
-        opponent.clan.name,
-      )}**](https://cwstats.com/clan/${opponent.clan.tag.slice(1)})\n`
+      const clanName = opponent.clan.tag
+        ? `[**${formatStr(opponent.clan.name)}**](https://cwstats.com/clan/${opponent.clan.tag.slice(1)})`
+        : opponent.clan.name
+
+      let description = `\u202A${badgeEmoji} ${clanName}\n`
 
       if (duelDecks.length > 0) {
         description += `\n**__Duel__** ${duelEmoji}\n`
