@@ -128,7 +128,7 @@ module.exports = {
         const results = await search(i)
 
         if (results) {
-          i.respond(results.length > 0 ? results : [{ name: "No matches", value: "no_match" }])
+          i.respond(results.length > 0 ? results : [{ name: "❌ No matches", value: "no_match" }])
         }
 
         return
