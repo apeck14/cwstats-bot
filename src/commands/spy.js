@@ -324,7 +324,7 @@ module.exports = {
       return
     }
 
-    const { data: players } = await getPlayerSearch(query, 15)
+    const { data: players } = await getPlayerSearch(query, 25)
 
     const mappedPlayers = players.map((p) => ({
       name: `${p.name} ${p.clanName ? `(${p.clanName})` : ""}`,
