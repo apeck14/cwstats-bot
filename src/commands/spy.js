@@ -210,10 +210,11 @@ module.exports = {
         }
       }
 
-      const { data: clan, error: clanError } = await getClan(opponent.clan.tag, true)
-      if (clanError) return errorMsg(i, clanError)
+      const { data: clan, error: clanError, status } = await getClan(opponent.clan.tag, true)
 
-      opponent.clan.badge = clan.badge
+      if (clanError && status !== 404) return errorMsg(i, clanError)
+
+      if (clan) opponent.clan.badge = clan.badge
       log = data
 
       const duelDecks = [] // { emoji: "", cards: [] }
