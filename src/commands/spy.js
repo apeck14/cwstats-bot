@@ -1,6 +1,6 @@
-const { getClan, getPlayer, getPlayerBattleLog, getPlayerSearch, searchClans } = require("../util/services")
+const { getClan, getPlayer, getPlayerBattleLog, getPlayerSearch } = require("../util/services")
 const { pink } = require("../static/colors")
-const { errorMsg, findBestMatch } = require("../util/functions")
+const { errorMsg } = require("../util/functions")
 const { formatStr, formatTag } = require("../util/formatting")
 
 const specialGamemodes = require("../static/specialGamemodes")
@@ -154,7 +154,6 @@ module.exports = {
   run: async (i, client) => {
     try {
       const iTag = i.options.getString("tag")
-      const iClanSearch = i.options.getString("clan")
       const iPlayerSearch = i.options.getString("player")
 
       let log = []
@@ -168,99 +167,54 @@ module.exports = {
         tag: "#",
       }
 
-      if (iTag) {
-        const { data, error } = await getPlayerBattleLog(iTag)
+      const formattedTag = formatTag(iTag || iPlayerSearch)
 
-        if (error || data?.length === 0) {
-          const msg = data?.length === 0 ? "**Invalid tag, or no recent battles found for this player.**" : error
+      const { data, error } = await getPlayerBattleLog(formattedTag)
 
-          return errorMsg(i, msg)
-        }
+      if (error || data?.length === 0) {
+        const msg = data?.length === 0 ? "**Invalid tag, or no recent battles found for this player.**" : error
 
-        const formattedTag = formatTag(iTag)
-
-        opponent.tag = formattedTag
-
-        const lastMatch = data[0].team.find((p) => p.tag === formattedTag)
-
-        if (lastMatch.clan) {
-          opponent.name = lastMatch.name
-          opponent.clan.name = lastMatch.clan.name
-          opponent.clan.tag = lastMatch.clan.tag
-        } else {
-          // loop through log to find clan data
-          for (const m of data) {
-            if (opponent.clan.name) break
-
-            const opp = m.team.find((p) => p.tag === formattedTag)
-
-            if (opp.clan) {
-              opponent.name = opp.name
-              opponent.clan.name = opp.clan.name
-              opponent.clan.tag = opp.clan.tag
-            }
-          }
-
-          if (!opponent.clan.name) {
-            const { data: player, error: playerError } = await getPlayer(formattedTag)
-
-            if (playerError) return errorMsg(i, "Error while retrieving player data.")
-
-            opponent.name = player.name
-            opponent.clan.name = player.clan.name
-            opponent.clan.tag = player.clan.tag
-          }
-        }
-
-        const { data: clan, error: clanError } = await getClan(opponent.clan.tag, true)
-        if (clanError) return errorMsg(i, clanError)
-
-        opponent.clan.badge = clan.badge
-        log = data
-      } else {
-        const { data: clans, error: clanSearchError } = await searchClans(iClanSearch)
-        if (clanSearchError) return errorMsg(i, clanSearchError)
-        if (!clans || clans.length === 0) return errorMsg(i, "**No clans found.**")
-
-        // * keep slice for limiting to closely named clans from query, then sort
-        const topClans = clans
-          .slice(0, Math.min(clans.length, 10))
-          .sort((a, b) => b.clanWarTrophies - a.clanWarTrophies)
-
-        const topClanTag = topClans[0]?.tag
-        const { data: clan, error: clanError } = await getClan(topClanTag)
-        if (clanError || !clan) return errorMsg(i, clanError || "**Unable to fetch clan data.**")
-
-        opponent.clan = {
-          badge: clan.badge,
-          name: clan.name,
-          tag: clan.tag,
-        }
-
-        const playerNames = clan.memberList.map((p) => p.name)
-        const bestMatch = findBestMatch(iPlayerSearch.trim(), playerNames)
-
-        if (bestMatch.rating === 0) {
-          return errorMsg(i, "**No player in this clan has a similar name. Please try again.**")
-        }
-
-        const player = clan.memberList.find((p) => p.name === bestMatch.str)
-        if (!player) {
-          return errorMsg(i, "**Matched player not found in member list.**")
-        }
-
-        opponent.name = player.name
-        opponent.tag = player.tag
-
-        const { data: battleLog, error: battleLogError } = await getPlayerBattleLog(player.tag)
-        if (!battleLog || battleLog.length === 0 || battleLogError) {
-          const msg =
-            !battleLog || battleLog.length === 0 ? "**No recent battles found for this player.**" : battleLogError
-          return errorMsg(i, msg)
-        }
-
-        log = battleLog
+        return errorMsg(i, msg)
       }
+
+      opponent.tag = formattedTag
+
+      const lastMatch = data[0].team.find((p) => p.tag === formattedTag)
+
+      if (lastMatch.clan) {
+        opponent.name = lastMatch.name
+        opponent.clan.name = lastMatch.clan.name
+        opponent.clan.tag = lastMatch.clan.tag
+      } else {
+        // loop through log to find clan data
+        for (const m of data) {
+          if (opponent.clan.name) break
+
+          const opp = m.team.find((p) => p.tag === formattedTag)
+
+          if (opp.clan) {
+            opponent.name = opp.name
+            opponent.clan.name = opp.clan.name
+            opponent.clan.tag = opp.clan.tag
+          }
+        }
+
+        if (!opponent.clan.name) {
+          const { data: player, error: playerError } = await getPlayer(formattedTag)
+
+          if (playerError) return errorMsg(i, "Error while retrieving player data.")
+
+          opponent.name = player.name
+          opponent.clan.name = player.clan.name
+          opponent.clan.tag = player.clan.tag
+        }
+      }
+
+      const { data: clan, error: clanError } = await getClan(opponent.clan.tag, true)
+      if (clanError) return errorMsg(i, clanError)
+
+      opponent.clan.badge = clan.badge
+      log = data
 
       const duelDecks = [] // { emoji: "", cards: [] }
       const singleDecks = [] // { emoji: "", cards: [] }

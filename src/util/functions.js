@@ -1,4 +1,3 @@
-const dice = require("fast-dice-coefficient")
 const badges = require("../static/badges")
 const { green, orange, pink, red } = require("../static/colors")
 const { formatRole, formatStr } = require("./formatting")
@@ -104,24 +103,6 @@ const successMsg = async (i, message) => {
   }
 }
 
-const findBestMatch = (str, arr) => {
-  let bestMatch = { rating: 0, str: null }
-
-  for (const s of arr) {
-    const rating = dice(str, s)
-
-    if (rating === 1)
-      return {
-        rating,
-        str: s,
-      }
-
-    if (rating > bestMatch.rating) bestMatch = { rating, str: s }
-  }
-
-  return bestMatch
-}
-
 const getPlayerCardData = (cards) => {
   const cardData = {
     evolutions: 0,
@@ -224,7 +205,6 @@ const createPlayerEmbed = (client, player, clanBadge) => {
 module.exports = {
   createPlayerEmbed,
   errorMsg,
-  findBestMatch,
   getArenaEmoji,
   getClanBadge,
   getPlayerCardData,

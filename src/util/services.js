@@ -177,19 +177,6 @@ const getPlayerBattleLog = (tag) =>
     .then(handleAPISuccess)
     .catch((e) => handleAPIFailure(e, "**Player not found.**"))
 
-const searchClans = (name) =>
-  axios
-    .get(`${BASE_URL}/clan/search`, {
-      headers: {
-        Authorization: `Bearer ${INTERNAL_API_KEY}`,
-      },
-      params: {
-        name,
-      },
-    })
-    .then(handleAPISuccess)
-    .catch((e) => handleAPIFailure(e, "**No clans found.**"))
-
 const addNudgeLink = (id, tag, userId) =>
   axios
     .put(
@@ -286,6 +273,5 @@ module.exports = {
   getPlayerSearch,
   getRace,
   linkPlayer,
-  searchClans,
   setCommandCooldown,
 }
