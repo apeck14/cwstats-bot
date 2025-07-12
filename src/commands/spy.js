@@ -172,7 +172,7 @@ module.exports = {
       const { data, error } = await getPlayerBattleLog(formattedTag)
 
       if (error || data?.length === 0) {
-        const msg = data?.length === 0 ? "**Invalid tag, or no recent battles found for this player.**" : error
+        const msg = data?.length === 0 ? "**No recent battles found for this player.**" : error
 
         return errorMsg(i, msg)
       }
