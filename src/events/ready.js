@@ -28,6 +28,8 @@ module.exports = {
         commandsArray.map((c) => c.data),
       )
 
+      initializeEmojis(client)
+
       client.user.setPresence({
         activities: [
           { name: `CWStats.com | /help | ${client.guilds.cache.size}+ servers`, type: ActivityType.Watching },
@@ -45,11 +47,6 @@ module.exports = {
         },
         false,
       )
-
-      // Start non-blocking tasks
-      setTimeout(() => {
-        initializeEmojis(client)
-      }, 3000)
     } catch (e) {
       console.error("❌ Error in ready event:", e)
       await logToSupportServer(

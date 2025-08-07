@@ -77,26 +77,22 @@ async function initializeCommands(client) {
 }
 
 function initializeEmojis(client) {
+  console.time("🎨 Emoji Load Time")
+
   const emojis = []
 
-  const emojiList = [...client.emojis.cache.values()]
-  let index = 0
-
-  const interval = setInterval(() => {
-    if (index >= emojiList.length) {
-      bulkAddEmojis(emojis)
-      console.log(`🎨 Preloaded ${emojis.length} emojis into memory`)
-      clearInterval(interval)
-      return
-    }
-
-    const emoji = emojiList[index++]
-    if (!emoji.guild || !ownerIds.includes(emoji.guild.ownerId)) return
+  for (const emoji of client.emojis.cache.values()) {
+    const { guild } = emoji
+    if (!guild || !ownerIds.includes(guild.ownerId)) continue
 
     const emojiStr = `<:${emoji.name}:${emoji.id}>`
     client.cwEmojis.set(emoji.name, emojiStr)
     emojis.push({ emoji: emojiStr, name: emoji.name })
-  }, 10) // 10ms per emoji (~100/sec)
+  }
+
+  bulkAddEmojis(emojis)
+  console.log(`🎨 Loaded ${emojis.length} emojis into memory`)
+  console.timeEnd("🎨 Emoji Load Time")
 }
 
 module.exports = {
