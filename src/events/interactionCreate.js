@@ -63,8 +63,6 @@ module.exports = {
 
       const { data: guild } = await getGuild(i.guildId)
 
-      console.log({ guild })
-
       if (!guild) {
         await createGuild(i.guildId)
 
@@ -162,7 +160,7 @@ module.exports = {
 
       sendCommandLog(i, client)
     } catch (e) {
-      console.log(e)
+      console.log("INTERACTION CREATE", e)
       console.log(e?.requestBody?.json)
     }
   },
