@@ -10,7 +10,7 @@ const registerSlashCommands = async (CLIENT_ID, commands) => {
     await rest.put(Routes.applicationCommands(CLIENT_ID), {
       body: commands,
     })
-    console.log(`Loaded Slash Commands`)
+    console.log(`✅ Slash commands registered: ${commands.length}`)
   } catch (error) {
     console.log(`Could not load Slash Commands: \n ${error}`)
   }

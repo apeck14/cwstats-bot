@@ -1,6 +1,9 @@
 const fs = require("fs")
 const { ActivityType, Client, Collection, GatewayIntentBits } = require("discord.js")
+const path = require("path")
 const { CLIENT_TOKEN } = require("../../config")
+const { bulkAddEmojis } = require("./services")
+const ownerIds = require("../static/ownerIds")
 
 const events = fs.readdirSync("src/events")
 
@@ -48,7 +51,57 @@ const initializeClient = async () => {
   return client
 }
 
+async function initializeCommands(client) {
+  const commandsArray = []
+
+  const commandDir = path.join(__dirname, "../commands")
+  const contextDir = path.join(__dirname, "../context-commands")
+
+  const commandFiles = fs.readdirSync(commandDir).filter((f) => f.endsWith(".js"))
+  const contextFiles = fs.readdirSync(contextDir).filter((f) => f.endsWith(".js"))
+
+  for (const file of commandFiles) {
+    const command = require(`${commandDir}/${file}`)
+    client.commands.set(command.data.name, command)
+    commandsArray.push(command)
+  }
+
+  for (const file of contextFiles) {
+    const command = require(`${contextDir}/${file}`)
+    client.contextCommands.set(command.data.name, command)
+    commandsArray.push(command)
+  }
+
+  console.log(`🔧 Loaded ${commandsArray.length} commands`)
+  return commandsArray
+}
+
+function initializeEmojis(client) {
+  const emojis = []
+
+  const emojiList = [...client.emojis.cache.values()]
+  let index = 0
+
+  const interval = setInterval(() => {
+    if (index >= emojiList.length) {
+      bulkAddEmojis(emojis)
+      console.log(`🎨 Preloaded ${emojis.length} emojis into memory`)
+      clearInterval(interval)
+      return
+    }
+
+    const emoji = emojiList[index++]
+    if (!emoji.guild || !ownerIds.includes(emoji.guild.ownerId)) return
+
+    const emojiStr = `<:${emoji.name}:${emoji.id}>`
+    client.cwEmojis.set(emoji.name, emojiStr)
+    emojis.push({ emoji: emojiStr, name: emoji.name })
+  }, 10) // 10ms per emoji (~100/sec)
+}
+
 module.exports = {
   initializeClient,
+  initializeCommands,
+  initializeEmojis,
   initializeEvents,
 }
