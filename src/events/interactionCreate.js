@@ -156,8 +156,6 @@ module.exports = {
           `:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`,
         )
 
-      console.log("HERE")
-
       await run(i, client)
 
       sendCommandLog(i, client)

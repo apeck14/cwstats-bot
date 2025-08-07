@@ -1,5 +1,5 @@
 const fs = require("fs")
-const { Events, WebhookClient } = require("discord.js")
+const { ActivityType, Events, WebhookClient } = require("discord.js")
 const registerSlashCommands = require("../util/slash")
 const { logToSupportServer } = require("../util/logging")
 const { orange } = require("../static/colors")
@@ -12,6 +12,10 @@ module.exports = {
   once: true,
   run: async (client) => {
     try {
+      console.log(`✅ Logged in as ${client.user.tag}`)
+      console.log(`🌐 Connected to ${client.guilds.cache.size} guilds`)
+      console.log(`👥 Cached users: ${client.users.cache.size}`)
+
       const emojis = []
 
       client.emojis.cache.each((e) => {
@@ -53,7 +57,10 @@ module.exports = {
 
       registerSlashCommands(client.user.id, commandsData)
 
-      console.log(`${client.user.tag} Started`)
+      client.user.setPresence({
+        activities: [{ name: "CWStats.com | /help | 3000+ servers", type: ActivityType.Watching }],
+        status: "online",
+      })
 
       logToSupportServer(
         client,
