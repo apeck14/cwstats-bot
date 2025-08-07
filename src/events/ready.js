@@ -25,8 +25,6 @@ module.exports = {
 
       bulkAddEmojis(emojis)
 
-      console.log({ BOT_WEBHOOK_URL, COMMANDS_WEBHOOK_URL })
-
       client.commandsWebhook = new WebhookClient({ url: COMMANDS_WEBHOOK_URL })
       client.botWebhook = new WebhookClient({ url: BOT_WEBHOOK_URL })
 
