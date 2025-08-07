@@ -63,6 +63,8 @@ module.exports = {
 
       const { data: guild } = await getGuild(i.guildId)
 
+      console.log({ guild })
+
       if (!guild) {
         await createGuild(i.guildId)
 
