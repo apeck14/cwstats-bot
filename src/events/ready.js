@@ -32,7 +32,7 @@ module.exports = {
 
       client.user.setPresence({
         activities: [
-          { name: `CWStats.com | /help | ${client.guilds.cache.size}+ servers`, type: ActivityType.Watching },
+          { name: `/help | CWStats.com | ${client.guilds.cache.size}+ servers`, type: ActivityType.Watching },
         ],
         status: "online",
       })
