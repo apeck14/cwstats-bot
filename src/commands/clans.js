@@ -121,7 +121,9 @@ module.exports = {
 
         // get live race data
         if (isPlus) {
-          const { data: race } = await getRace(c.tag)
+          const { data: race, error } = await getRace(c.tag)
+
+          if (error) continue
 
           const { clanIndex, clans, isTraining } = race
           const { badge, clanScore, crossedFinishLine, decksUsed, fameAvg, projPlace } = clans[clanIndex]
