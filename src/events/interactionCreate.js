@@ -75,8 +75,6 @@ module.exports = {
 
       const { color, error, onlyShowToUser } = validate(i, guild, client, validateChannel)
 
-      console.log({ error, onlyShowToUser, validateChannel })
-
       if (validateChannel) await i.deferReply({ flags: onlyShowToUser ? MessageFlags.Ephemeral : 0 })
 
       // context commands
