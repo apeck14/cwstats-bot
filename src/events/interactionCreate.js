@@ -46,6 +46,7 @@ module.exports = {
   name: Events.InteractionCreate,
   run: async (client, i) => {
     try {
+      console.log(1)
       if (!i) return
 
       const isCommand = i.isChatInputCommand()
@@ -54,13 +55,19 @@ module.exports = {
       const isModalSubmit = i.isModalSubmit()
       const isAutocomplete = i.isAutocomplete()
 
+      console.log(2)
+
       if (!isCommand && !isUserContextMenuCommand && !isMessageContextMenuCommand && !isModalSubmit && !isAutocomplete)
         return
+
+      console.log(3)
 
       if (i.createdTimestamp < client.readyTimestamp) {
         console.log(`Ignoring stale interaction ${i.id}`)
         return
       }
+
+      console.log(4)
 
       // Don't try to reply if it's too old
       const now = Date.now()
@@ -71,6 +78,8 @@ module.exports = {
         return
       }
 
+      console.log(5)
+
       const validateChannel = isCommand || isMessageContextMenuCommand
 
       if (!i.guild)
@@ -79,7 +88,11 @@ module.exports = {
           `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=2147797184&scope=bot+applications.commands) me to a server to use my commands!**`,
         )
 
+      console.log(6)
+
       const { data: guild } = await getGuild(i.guildId)
+
+      console.log(7)
 
       if (!guild) {
         await createGuild(i.guildId)
@@ -87,9 +100,14 @@ module.exports = {
         return errorMsg(i, "**Unexpected error.** Please try again.")
       }
 
+      console.log(8)
+
       const { color, error, onlyShowToUser } = validate(i, guild, client, validateChannel)
 
+      console.log(9)
       if (validateChannel) await i.deferReply({ flags: onlyShowToUser ? MessageFlags.Ephemeral : 0 })
+
+      console.log(10)
 
       // context commands
       if (isUserContextMenuCommand || isMessageContextMenuCommand) {
@@ -112,6 +130,8 @@ module.exports = {
 
         return run(i, client)
       }
+
+      console.log(11)
 
       // on modal submit
       if (isModalSubmit) {
