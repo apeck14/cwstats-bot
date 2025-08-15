@@ -149,6 +149,8 @@ module.exports = {
         return
       }
 
+      console.log(12)
+
       if (error) {
         return i.editReply({
           embeds: [
@@ -160,6 +162,8 @@ module.exports = {
           flags: onlyShowToUser ? MessageFlags.Ephemeral : 0,
         })
       }
+
+      console.log(13)
 
       const { cooldown, disabled, run, search } = i.client.commands.get(i.commandName)
 
@@ -173,7 +177,11 @@ module.exports = {
         return
       }
 
+      console.log(14)
+
       if (disabled) return warningMsg(i, ":tools: **This command has been temporarily disabled**.")
+
+      console.log(15)
 
       // check for cooldown in database
       if (cooldown && guild?.cooldowns) {
@@ -189,15 +197,23 @@ module.exports = {
         }
       }
 
+      console.log(16)
+
       // if a user @'s themselves send reminder above embed response
       if (i.options._hoistedOptions.find((o) => o.name === "user")?.value === i.user.id)
         await i.followUp(
           `:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`,
         )
 
+      console.log(17)
+
       await run(i, client)
 
+      console.log(18)
+
       await sendCommandLog(i, client)
+
+      console.log(19)
     } catch (e) {
       console.log("INTERACTION CREATE", e)
       console.log(e?.requestBody?.json)
