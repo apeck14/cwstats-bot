@@ -57,6 +57,11 @@ module.exports = {
       if (!isCommand && !isUserContextMenuCommand && !isMessageContextMenuCommand && !isModalSubmit && !isAutocomplete)
         return
 
+      if (i.createdTimestamp < client.readyTimestamp) {
+        console.log(`Ignoring stale interaction ${i.id}`)
+        return
+      }
+
       // Don't try to reply if it's too old
       const now = Date.now()
       const interactionAge = now - i.createdTimestamp
