@@ -23,7 +23,7 @@ const sendCommandLog = async (i, client) => {
 
     desc += `\n\n**Fields**: \n${data}`
 
-    logToSupportServer(client, {
+    await logToSupportServer(client, {
       color: pink,
       description: desc,
       title: `__/${i.commandName || i.customId}__`,
@@ -125,7 +125,8 @@ module.exports = {
           }
         }
 
-        return sendCommandLog(i, client)
+        await sendCommandLog(i, client)
+        return
       }
 
       if (error) {
@@ -176,7 +177,7 @@ module.exports = {
 
       await run(i, client)
 
-      sendCommandLog(i, client)
+      await sendCommandLog(i, client)
     } catch (e) {
       console.log("INTERACTION CREATE", e)
       console.log(e?.requestBody?.json)

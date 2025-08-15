@@ -30,7 +30,7 @@ module.exports = {
 
     createGuild(guild.id)
 
-    logToSupportServer(
+    await logToSupportServer(
       client,
       {
         color: green,

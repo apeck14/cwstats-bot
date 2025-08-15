@@ -11,16 +11,10 @@ module.exports = {
     console.time("✅ Bot Ready Time")
 
     try {
-      if (!client.user) {
-        console.log("Bot is not logged in yet.")
-        return
-      }
-
       console.log(`✅ Logged in as ${client.user.tag}`)
       console.log(`🌐 Connected to ${client.guilds.cache.size} guilds`)
       console.log(`👥 Cached users: ${client.users.cache.size}`)
 
-      client.readyTimestamp = Date.now()
       client.commandsWebhook = COMMANDS_WEBHOOK_URL ? new WebhookClient({ url: COMMANDS_WEBHOOK_URL }) : null
       client.botWebhook = BOT_WEBHOOK_URL ? new WebhookClient({ url: BOT_WEBHOOK_URL }) : null
 

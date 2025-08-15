@@ -10,7 +10,7 @@ module.exports = {
 
     client.cwEmojis.set(emoji.name, `<:${emoji.name}:${emoji.id}>`)
 
-    logToSupportServer(
+    await logToSupportServer(
       client,
       {
         color: green,
