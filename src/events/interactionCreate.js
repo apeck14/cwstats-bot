@@ -23,7 +23,7 @@ const sendCommandLog = async (i, client) => {
 
     desc += `\n\n**Fields**: \n${data}`
 
-    await logToSupportServer(client, {
+    logToSupportServer(client, {
       color: pink,
       description: desc,
       title: `__/${i.commandName || i.customId}__`,

@@ -10,7 +10,7 @@ module.exports = {
 
     client.cwEmojis.delete(emoji.name)
 
-    await logToSupportServer(
+    logToSupportServer(
       client,
       {
         color: red,

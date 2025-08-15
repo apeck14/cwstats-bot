@@ -3,11 +3,9 @@ const logToSupportServer = async (client, embed, isCommand = true) => {
 
   if (!webhook) return
 
-  const res = await webhook.send({ embeds: [embed] }).catch((e) => {
+  webhook.send({ embeds: [embed] }).catch((e) => {
     console.error("Error sending embed to Support Server:", e)
   })
-
-  console.log({ res })
 }
 
 module.exports = {

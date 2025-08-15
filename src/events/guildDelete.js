@@ -10,7 +10,7 @@ module.exports = {
       deleteGuild(guild.id)
     }
 
-    await logToSupportServer(
+    logToSupportServer(
       client,
       {
         color: red,

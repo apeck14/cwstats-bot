@@ -1,5 +1,5 @@
 const fs = require("fs")
-const { ActivityType, Client, Collection, GatewayIntentBits } = require("discord.js")
+const { Client, Collection, GatewayIntentBits } = require("discord.js")
 const path = require("path")
 const { CLIENT_TOKEN } = require("../../config")
 const { bulkAddEmojis } = require("./services")
@@ -29,14 +29,6 @@ const initializeClient = async () => {
       GatewayIntentBits.GuildMessageReactions,
       GatewayIntentBits.GuildExpressions,
     ],
-    presence: {
-      activities: [
-        {
-          name: `CWStats.com | 3000+ servers`,
-          type: ActivityType.Watching,
-        },
-      ],
-    },
     shards: "auto",
   })
 

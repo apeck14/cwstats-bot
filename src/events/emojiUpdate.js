@@ -11,7 +11,7 @@ module.exports = {
     client.cwEmojis.delete(oldEmoji.name)
     client.cwEmojis.set(newEmoji.name, `<:${newEmoji.name}:${newEmoji.id}>`)
 
-    await logToSupportServer(
+    logToSupportServer(
       client,
       {
         color: green,
