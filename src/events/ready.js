@@ -7,7 +7,6 @@ const { initializeCommands, initializeEmojis } = require("../util/initialize")
 
 module.exports = {
   name: Events.ClientReady,
-  once: true,
   run: async (client) => {
     console.time("✅ Bot Ready Time")
 

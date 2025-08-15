@@ -4,10 +4,34 @@ const { AutoPoster } = require("topgg-autoposter")
 const { initializeClient, initializeEvents } = require("./src/util/initialize")
 const { TOPGG_TOKEN } = require("./config")
 
+let client // store reference for cleanup
+
 initializeClient()
-  .then((client) => initializeEvents(client))
-  .then((client) => AutoPoster(TOPGG_TOKEN, client))
-  .catch(() => {})
+  .then((c) => {
+    client = c
+    return initializeEvents(client)
+  })
+  .then((c) => AutoPoster(TOPGG_TOKEN, c))
+  .catch((err) => {
+    console.error("Initialization error:", err)
+  })
+
+// Graceful shutdown for PM2 restarts / kills
+const shutdown = async () => {
+  console.log("Shutting down gracefully...")
+  if (client) {
+    try {
+      await client.destroy()
+      console.log("Discord client destroyed.")
+    } catch (err) {
+      console.error("Error destroying Discord client:", err)
+    }
+  }
+  process.exit(0)
+}
+
+process.on("SIGINT", shutdown)
+process.on("SIGTERM", shutdown)
 
 process.on("unhandledRejection", (reason, promise) => {
   console.log("---UNHANDLED REJECTION---")
