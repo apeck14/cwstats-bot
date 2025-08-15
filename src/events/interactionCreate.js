@@ -207,6 +207,9 @@ module.exports = {
 
       console.log(17)
 
+      console.log(i.client.commands.get(i.commandName))
+      console.log(`Running command: ${i.commandName} (${i.id})`)
+
       await run(i, client)
 
       console.log(18)
