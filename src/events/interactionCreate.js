@@ -8,25 +8,29 @@ const { createGuild, getGuild } = require("../util/services")
 const { errorMsg, warningMsg } = require("../util/functions")
 
 const sendCommandLog = async (i, client) => {
-  const { discriminator, id, username } = i.user
-  const { guild } = i.member
+  try {
+    const { discriminator, id, username } = i.user
+    const { guild } = i.member
 
-  let desc = `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})`
+    let desc = `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})`
 
-  const hasOptions = i?.options?._hoistedOptions?.length > 0
-  const hasFields = i?.fields?.fields?.size > 0
-  let data = "*None*"
+    const hasOptions = i?.options?._hoistedOptions?.length > 0
+    const hasFields = i?.fields?.fields?.size > 0
+    let data = "*None*"
 
-  if (hasOptions) data = `${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}`
-  else if (hasFields) data = `${i.fields.fields.map((o) => `• **${o.customId}**: ${o.value}`).join("\n")}`
+    if (hasOptions) data = `${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}`
+    else if (hasFields) data = `${i.fields.fields.map((o) => `• **${o.customId}**: ${o.value}`).join("\n")}`
 
-  desc += `\n\n**Fields**: \n${data}`
+    desc += `\n\n**Fields**: \n${data}`
 
-  logToSupportServer(client, {
-    color: pink,
-    description: desc,
-    title: `__/${i.commandName || i.customId}__`,
-  })
+    logToSupportServer(client, {
+      color: pink,
+      description: desc,
+      title: `__/${i.commandName || i.customId}__`,
+    })
+  } catch (e) {
+    console.error("Error sending command log:", e)
+  }
 }
 
 const getTimeDifference = (date1, date2) => {
