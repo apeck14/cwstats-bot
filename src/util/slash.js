@@ -23,6 +23,11 @@ const getChangedSlashCommands = async (CLIENT_ID, localCommands) => {
       // Compare metadata (ignore IDs and other Discord-managed fields)
       const { default_member_permissions, description, dm_permission, options } = remote
 
+      console.log(local.description !== description)
+      console.log(JSON.stringify(local.options ?? []) !== JSON.stringify(options ?? []))
+      console.log(local.dm_permission !== dm_permission)
+      console.log(local.default_member_permissions !== default_member_permissions)
+
       return (
         local.description !== description ||
         JSON.stringify(local.options ?? []) !== JSON.stringify(options ?? []) ||
