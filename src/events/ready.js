@@ -19,7 +19,7 @@ module.exports = {
       // Load commands (slash + context)
       const commandsArray = await initializeCommands(client)
 
-      // Register slash commands (skip if no changes logic can be added here)
+      // Register slash commands
       await registerSlashCommands(
         client.user.id,
         commandsArray.map((c) => c.data),
