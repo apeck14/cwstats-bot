@@ -17,6 +17,11 @@ const normalizeCommand = (cmd) => ({
   })),
 })
 
+const normalizeContextCommand = (cmd) => ({
+  name: cmd.name,
+  type: cmd.type,
+})
+
 /**
  * Compare local commands with remote (Discord-registered) commands
  * @param {string} CLIENT_ID - The bot's client ID
@@ -32,8 +37,8 @@ const getChangedSlashCommands = async (CLIENT_ID, localCommands) => {
       const remote = remoteCommands.find((r) => r.name === local.name)
       if (!remote) return true // new command
 
-      const localNorm = normalizeCommand(local)
-      const remoteNorm = normalizeCommand(remote)
+      const localNorm = local.contextCmd ? normalizeContextCommand(local) : normalizeCommand(local)
+      const remoteNorm = local.contextCmd ? normalizeContextCommand(remote) : normalizeCommand(remote)
 
       return JSON.stringify(localNorm) !== JSON.stringify(remoteNorm)
     })
