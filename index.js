@@ -33,10 +33,9 @@ const shutdown = async () => {
 process.on("SIGINT", shutdown)
 process.on("SIGTERM", shutdown)
 
-process.on("unhandledRejection", (reason, promise) => {
+process.on("unhandledRejection", (reason) => {
   console.log("---UNHANDLED REJECTION---")
   console.log("Reason:", reason)
-  console.log("Promise:", promise)
 })
 
 process.on("uncaughtException", (err) => {
