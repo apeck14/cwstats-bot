@@ -114,9 +114,6 @@ module.exports = {
 
     const playerEmbedData = createPlayerEmbed(client, player, clanBadge)
 
-    console.log(i)
-    console.log("HERE")
-
     i.editReply(playerEmbedData)
   },
 }
