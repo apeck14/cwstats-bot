@@ -5,6 +5,18 @@ const rest = new REST({
   version: "10",
 }).setToken(CLIENT_TOKEN)
 
+const normalizeCommand = (cmd) => ({
+  description: cmd.description,
+  name: cmd.name,
+  options: (cmd.options ?? []).map((opt) => ({
+    choices: (opt.choices ?? []).map((c) => ({ name: c.name, value: c.value })),
+    description: opt.description,
+    name: opt.name,
+    required: opt.required ?? false,
+    type: opt.type,
+  })),
+})
+
 /**
  * Compare local commands with remote (Discord-registered) commands
  * @param {string} CLIENT_ID - The bot's client ID
@@ -20,20 +32,10 @@ const getChangedSlashCommands = async (CLIENT_ID, localCommands) => {
       const remote = remoteCommands.find((r) => r.name === local.name)
       if (!remote) return true // new command
 
-      // Compare metadata (ignore IDs and other Discord-managed fields)
-      const { default_member_permissions, description, dm_permission, options } = remote
+      const localNorm = normalizeCommand(local)
+      const remoteNorm = normalizeCommand(remote)
 
-      console.log(local.description !== description)
-      console.log(JSON.stringify(local.options ?? []) !== JSON.stringify(options ?? []))
-      console.log(local.dm_permission !== dm_permission)
-      console.log(local.default_member_permissions !== default_member_permissions)
-
-      return (
-        local.description !== description ||
-        JSON.stringify(local.options ?? []) !== JSON.stringify(options ?? []) ||
-        local.dm_permission !== dm_permission ||
-        local.default_member_permissions !== default_member_permissions
-      )
+      return JSON.stringify(localNorm) !== JSON.stringify(remoteNorm)
     })
 
     return changed
