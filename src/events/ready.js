@@ -13,8 +13,8 @@ module.exports = {
       console.log(`🌐 Connected to ${client.guilds.cache.size} guilds`)
       console.log(`👥 Cached users: ${client.users.cache.size}`)
 
-      client.commandsWebhook = COMMANDS_WEBHOOK_URL ? new WebhookClient({ url: COMMANDS_WEBHOOK_URL }) : null
-      client.botWebhook = BOT_WEBHOOK_URL ? new WebhookClient({ url: BOT_WEBHOOK_URL }) : null
+      // client.commandsWebhook = COMMANDS_WEBHOOK_URL ? new WebhookClient({ url: COMMANDS_WEBHOOK_URL }) : null
+      // client.botWebhook = BOT_WEBHOOK_URL ? new WebhookClient({ url: BOT_WEBHOOK_URL }) : null
 
       // Load commands (slash + context)
       const commandsArray = await initializeCommands(client)
