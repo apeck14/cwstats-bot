@@ -178,7 +178,7 @@ module.exports = {
       run(i, client)
       sendCommandLog(i, client)
     } catch (e) {
-      console.log("INTERACTION CREATE", e)
+      console.log("INTERACTION CREATE", i?.commandName, e)
       console.log(e?.requestBody?.json)
     }
   },

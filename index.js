@@ -37,7 +37,6 @@ process.on("unhandledRejection", (reason, promise) => {
   console.log("---UNHANDLED REJECTION---")
   console.log("Reason:", reason)
   console.log("Promise:", promise)
-  console.trace()
 })
 
 process.on("uncaughtException", (err) => {
