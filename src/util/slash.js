@@ -55,19 +55,19 @@ const registerSlashCommands = async (CLIENT_ID, commands) => {
     const changed = await getChangedSlashCommands(CLIENT_ID, commands)
 
     if (changed.length === 0) {
-      console.log("✅ No slash command changes detected.")
+      console.log("✅ No command changes detected.")
       return
     }
 
     // Overwrite (add/update) changed commands one by one
     for (const cmd of changed) {
       await rest.post(Routes.applicationCommands(CLIENT_ID), { body: cmd })
-      console.log(`🔄 Updated slash command: ${cmd.name}`)
+      console.log(`🔄 Updated command: ${cmd.name}`)
     }
 
-    console.log(`✅ Slash commands updated: ${changed.length}`)
+    console.log(`✅ Commands updated: ${changed.length}`)
   } catch (error) {
-    console.error(`❌ Could not register Slash Commands: \n`, error)
+    console.error(`❌ Could not register Commands: \n`, error)
   }
 }
 
