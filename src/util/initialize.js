@@ -61,8 +61,6 @@ async function initializeCommands(client) {
   for (const file of contextFiles) {
     const command = require(`${contextDir}/${file}`)
     client.contextCommands.set(command.data.name, command)
-
-    command.contextCmd = true
     commandsArray.push(command)
   }
 

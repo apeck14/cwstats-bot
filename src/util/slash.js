@@ -37,8 +37,10 @@ const getChangedSlashCommands = async (CLIENT_ID, localCommands) => {
       const remote = remoteCommands.find((r) => r.name === local.name)
       if (!remote) return true // new command
 
-      const localNorm = local.contextCmd ? normalizeContextCommand(local) : normalizeCommand(local)
-      const remoteNorm = local.contextCmd ? normalizeContextCommand(remote) : normalizeCommand(remote)
+      const isContextCmd = remote.type === 2 || remote.type === 3
+
+      const localNorm = isContextCmd ? normalizeContextCommand(local) : normalizeCommand(local)
+      const remoteNorm = isContextCmd ? normalizeContextCommand(remote) : normalizeCommand(remote)
 
       return JSON.stringify(localNorm) !== JSON.stringify(remoteNorm)
     })
