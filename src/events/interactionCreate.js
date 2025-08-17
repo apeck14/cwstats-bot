@@ -3,9 +3,9 @@ const path = require("path")
 const fs = require("fs")
 const { pink } = require("../static/colors")
 const { logToSupportServer } = require("../util/logging")
-const validate = require("../util/validate")
 const { createGuild, getGuild } = require("../util/services")
 const { errorMsg, warningMsg } = require("../util/functions")
+const validate = require("../util/validate")
 
 const sendCommandLog = (i, client) => {
   try {
@@ -42,37 +42,77 @@ const getTimeDifference = (date1, date2) => {
   return `${minutes}m ${seconds}s`
 }
 
+async function handleCommand(i, client, guild) {
+  const { color, error, onlyShowToUser } = validate(i, guild, client, true)
+
+  await i.deferReply({ flags: onlyShowToUser ? MessageFlags.Ephemeral : 0 })
+
+  if (error) {
+    return i.editReply({ embeds: [{ color, description: error }] })
+  }
+
+  const cmd = i.client.commands.get(i.commandName)
+
+  if (cmd.cooldown && guild?.cooldowns) {
+    const commandCooldown = guild?.cooldowns[i.commandName]
+    if (commandCooldown) {
+      const now = new Date()
+
+      if (now < commandCooldown) {
+        const timeRemainingStr = getTimeDifference(now, commandCooldown)
+        return warningMsg(i, `This command is on cooldown for **${timeRemainingStr}**.`)
+      }
+    }
+  }
+
+  // if a user @'s themselves send reminder above embed response
+  if (i.options._hoistedOptions.find((o) => o.name === "user")?.value === i.user.id)
+    await i.followUp(`:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`)
+
+  await cmd.run(i, client)
+  sendCommandLog(i, client)
+}
+
+async function handleContextCommand(i, client) {
+  const { color, error } = validate(i, null, client, true)
+  await i.deferReply({ flags: MessageFlags.Ephemeral })
+
+  if (error) {
+    return i.editReply({ embeds: [{ color, description: error }] })
+  }
+
+  const cmd = i.client.contextCommands.get(i.commandName)
+  await cmd.run(i, client)
+
+  sendCommandLog(i, client)
+}
+
+async function handleModalSubmit(i, client) {
+  const file = path.join(__dirname, "../context-commands", `${i.customId}.js`)
+  if (fs.existsSync(file)) {
+    const command = require(file)
+    if (command.handleModalSubmit) await command.handleModalSubmit(i)
+  }
+  sendCommandLog(i, client)
+}
+
+async function handleAutocomplete(i, client) {
+  const cmd = i.client.commands.get(i.commandName)
+  if (!cmd?.search) return
+  const results = await cmd.search(i)
+  await i.respond(results?.length ? results : [{ name: "❌ No matches", value: "no_match" }])
+  sendCommandLog(i, client)
+}
+
 module.exports = {
   name: Events.InteractionCreate,
   run: async (client, i) => {
     try {
       if (!i) return
+      if (i.createdTimestamp < client.readyTimestamp) return // stale interaction
+      if (Date.now() - i.createdTimestamp > 15 * 60 * 1000) return // expired interaction
 
-      const isCommand = i.isChatInputCommand()
-      const isUserContextMenuCommand = i.isUserContextMenuCommand()
-      const isMessageContextMenuCommand = i.isMessageContextMenuCommand()
-      const isModalSubmit = i.isModalSubmit()
-      const isAutocomplete = i.isAutocomplete()
-
-      if (!isCommand && !isUserContextMenuCommand && !isMessageContextMenuCommand && !isModalSubmit && !isAutocomplete)
-        return
-
-      if (i.createdTimestamp < client.readyTimestamp) {
-        console.log(`Ignoring stale interaction ${i.id}`)
-        return
-      }
-
-      // Don't try to reply if it's too old
-      const now = Date.now()
-      const interactionAge = now - i.createdTimestamp
-
-      if (interactionAge > 15 * 60 * 1000) {
-        console.log("Ignoring expired interaction:", i.id)
-        return
-      }
-
-      const validateChannel = isCommand || isMessageContextMenuCommand
-
+      // ignore DMs
       if (!i.guild)
         return warningMsg(
           i,
@@ -81,105 +121,20 @@ module.exports = {
 
       const { data: guild } = await getGuild(i.guildId)
 
+      // guild not in database, create it
       if (!guild) {
         await createGuild(i.guildId)
-
         return errorMsg(i, "**Unexpected error.** Please try again.")
       }
 
-      const { color, error, onlyShowToUser } = validate(i, guild, client, validateChannel)
-
-      if (validateChannel) await i.deferReply({ flags: onlyShowToUser ? MessageFlags.Ephemeral : 0 })
-
-      // context commands
-      if (isUserContextMenuCommand || isMessageContextMenuCommand) {
-        const { run } = i.client.contextCommands.get(i.commandName)
-
-        const messageInput = {
-          embeds: [
-            {
-              color,
-              description: error,
-            },
-          ],
-          flags: MessageFlags.Ephemeral,
-        }
-
-        // show error modal
-        if (error) {
-          return isUserContextMenuCommand ? i.reply(messageInput) : i.editReply(messageInput)
-        }
-
-        return run(i, client)
+      if (i.isAutocomplete()) return handleAutocomplete(i, client)
+      if (i.isChatInputCommand()) return handleCommand(i, client, guild)
+      if (i.isUserContextMenuCommand() || i.isMessageContextMenuCommand()) {
+        return handleContextCommand(i, client)
       }
-
-      // on modal submit
-      if (isModalSubmit) {
-        const { customId } = i
-        const commandFilePath = path.join(__dirname, "../context-commands", `${customId}.js`)
-
-        if (fs.existsSync(commandFilePath)) {
-          const command = require(commandFilePath)
-          if (command.handleModalSubmit) {
-            command.handleModalSubmit(i)
-          }
-        }
-
-        await sendCommandLog(i, client)
-        return
-      }
-
-      if (error) {
-        return i.editReply({
-          embeds: [
-            {
-              color,
-              description: error,
-            },
-          ],
-          flags: onlyShowToUser ? MessageFlags.Ephemeral : 0,
-        })
-      }
-
-      const { cooldown, disabled, run, search } = i.client.commands.get(i.commandName)
-
-      if (isAutocomplete) {
-        const results = await search(i)
-
-        if (results) {
-          i.respond(results.length > 0 ? results : [{ name: "❌ No matches", value: "no_match" }])
-        }
-
-        return
-      }
-
-      if (disabled) return warningMsg(i, ":tools: **This command has been temporarily disabled**.")
-
-      // check for cooldown in database
-      if (cooldown && guild?.cooldowns) {
-        const commandCooldown = guild?.cooldowns[i.commandName]
-        if (commandCooldown) {
-          const now = new Date()
-
-          if (now < commandCooldown) {
-            const timeRemainingStr = getTimeDifference(now, commandCooldown)
-
-            return warningMsg(i, `This command is on cooldown for **${timeRemainingStr}**.`)
-          }
-        }
-      }
-
-      // if a user @'s themselves send reminder above embed response
-      if (i.options._hoistedOptions.find((o) => o.name === "user")?.value === i.user.id)
-        await i.followUp(
-          `:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`,
-        )
-
-      run(i, client)
-      sendCommandLog(i, client)
+      if (i.isModalSubmit()) return handleModalSubmit(i, client)
     } catch (e) {
-      console.log("INTERACTION CREATE", i?.commandName, e)
-      console.log(e?.requestBody?.json)
+      console.error("INTERACTION CREATE ERROR", i?.commandName, e)
     }
   },
 }

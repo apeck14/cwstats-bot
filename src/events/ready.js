@@ -1,7 +1,9 @@
 const { ActivityType, Events, WebhookClient } = require("discord.js")
 const registerSlashCommands = require("../util/slash")
-const { BOT_WEBHOOK_URL, COMMANDS_WEBHOOK_URL } = require("../../config")
+const { BOT_WEBHOOK_URL, COMMANDS_WEBHOOK_URL, NODE_ENV } = require("../../config")
 const { initializeCommands, initializeEmojis } = require("../util/initialize")
+
+const isDev = NODE_ENV === "dev"
 
 module.exports = {
   name: Events.ClientReady,
@@ -13,8 +15,10 @@ module.exports = {
       console.log(`🌐 Connected to ${client.guilds.cache.size} guilds`)
       console.log(`👥 Cached users: ${client.users.cache.size}`)
 
-      // client.commandsWebhook = COMMANDS_WEBHOOK_URL ? new WebhookClient({ url: COMMANDS_WEBHOOK_URL }) : null
-      // client.botWebhook = BOT_WEBHOOK_URL ? new WebhookClient({ url: BOT_WEBHOOK_URL }) : null
+      if (!isDev) {
+        client.commandsWebhook = new WebhookClient({ url: COMMANDS_WEBHOOK_URL })
+        client.botWebhook = new WebhookClient({ url: BOT_WEBHOOK_URL })
+      }
 
       // Load commands (slash + context)
       const commandsArray = await initializeCommands(client)

@@ -1,4 +1,5 @@
 const logToSupportServer = async (client, embed, isCommand = true) => {
+  // ignore dev environment
   const webhook = isCommand ? client.commandsWebhook : client.botWebhook
 
   if (!webhook) return

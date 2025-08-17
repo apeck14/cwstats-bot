@@ -1,20 +1,21 @@
 const fs = require("fs")
 const { Client, Collection, GatewayIntentBits } = require("discord.js")
 const path = require("path")
-const { CLIENT_TOKEN } = require("../../config")
+const { CLIENT_TOKEN, NODE_ENV, TEST_CLIENT_TOKEN } = require("../../config")
 const { bulkAddEmojis } = require("./services")
 const ownerIds = require("../static/ownerIds")
+
+const isDev = NODE_ENV === "dev"
 
 const events = fs.readdirSync("src/events")
 
 const initializeEvents = (client) => {
   for (const event of events) {
     const eventFile = require(`../events/${event}`)
-    if (eventFile.once) client.once(eventFile.name, (...args) => eventFile.run(client, ...args))
-    else client.on(eventFile.name, (...args) => eventFile.run(client, ...args))
+    client.on(eventFile.name, (...args) => eventFile.run(client, ...args))
   }
 
-  console.log("DiscordJS Events Initalized!")
+  console.log("✅ DiscordJS Events Initalized!")
 
   return client
 }
@@ -36,7 +37,7 @@ const initializeClient = async () => {
   client.contextCommands = new Collection()
   client.cwEmojis = new Collection()
 
-  await client.login(CLIENT_TOKEN)
+  await client.login(isDev ? TEST_CLIENT_TOKEN : CLIENT_TOKEN)
 
   console.log("Client Initialized!")
 

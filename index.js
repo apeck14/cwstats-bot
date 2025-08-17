@@ -2,7 +2,9 @@ require("dotenv").config()
 
 const { AutoPoster } = require("topgg-autoposter")
 const { initializeClient, initializeEvents } = require("./src/util/initialize")
-const { TOPGG_TOKEN } = require("./config")
+const { NODE_ENV, TOPGG_TOKEN } = require("./config")
+
+const isDev = NODE_ENV === "dev"
 
 let client // store reference for cleanup
 
@@ -11,7 +13,7 @@ initializeClient()
     client = c
     return initializeEvents(client)
   })
-  .then((c) => AutoPoster(TOPGG_TOKEN, c))
+  .then((c) => !isDev && AutoPoster(TOPGG_TOKEN, c))
   .catch((err) => {
     console.error("Initialization error:", err)
   })

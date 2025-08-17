@@ -1,9 +1,11 @@
 const { REST, Routes } = require("discord.js")
-const { CLIENT_TOKEN } = require("../../config")
+const { CLIENT_TOKEN, NODE_ENV, TEST_CLIENT_TOKEN, TEST_GUILD_ID } = require("../../config")
+
+const isDev = NODE_ENV === "dev"
 
 const rest = new REST({
   version: "10",
-}).setToken(CLIENT_TOKEN)
+}).setToken(isDev ? TEST_CLIENT_TOKEN : CLIENT_TOKEN)
 
 const normalizeCommand = (cmd) => ({
   description: cmd.description,
@@ -59,20 +61,29 @@ const getChangedSlashCommands = async (CLIENT_ID, localCommands) => {
  */
 const registerSlashCommands = async (CLIENT_ID, commands) => {
   try {
-    const changed = await getChangedSlashCommands(CLIENT_ID, commands)
+    // if dev, register commands for test guild
+    if (isDev) {
+      await rest.put(Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID), {
+        body: commands,
+      })
 
-    if (changed.length === 0) {
-      console.log("✅ No command changes detected.")
-      return
+      console.log(`✅ Loaded Guild Commands (dev)`)
+    } else {
+      const changed = await getChangedSlashCommands(CLIENT_ID, commands)
+
+      if (changed.length === 0) {
+        console.log("✅ No command changes detected.")
+        return
+      }
+
+      // Overwrite (add/update) changed commands one by one
+      for (const cmd of changed) {
+        await rest.post(Routes.applicationCommands(CLIENT_ID), { body: cmd })
+        console.log(`🔄 Updated command: ${cmd.name}`)
+      }
+
+      console.log(`✅ Commands updated: ${changed.length}`)
     }
-
-    // Overwrite (add/update) changed commands one by one
-    for (const cmd of changed) {
-      await rest.post(Routes.applicationCommands(CLIENT_ID), { body: cmd })
-      console.log(`🔄 Updated command: ${cmd.name}`)
-    }
-
-    console.log(`✅ Commands updated: ${changed.length}`)
   } catch (error) {
     console.error(`❌ Could not register Commands: \n`, error)
   }

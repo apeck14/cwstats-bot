@@ -1,8 +1,9 @@
 const axios = require("axios")
 const { formatTag } = require("./formatting")
-const { INTERNAL_API_KEY } = require("../../config")
+const { INTERNAL_API_KEY, NODE_ENV } = require("../../config")
 
-const BASE_URL = "https://api.cwstats.com"
+const isDev = NODE_ENV === "dev"
+const BASE_URL = isDev ? "http://localhost:5000" : "https://api.cwstats.com"
 
 const api = axios.create({
   baseURL: BASE_URL,

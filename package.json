@@ -4,6 +4,7 @@
   "description": "Discord bot to track everything CW related!",
   "main": "index.js",
   "scripts": {
+    "dev": "concurrently \"npm run start\" \"npm --prefix \"../../APIs/cwstats-api\" run dev\"",
     "clean": "rm -rf node_modules",
     "reinstall": "npm run clean && npm install",
     "lint": "eslint . --ext .js --fix",
@@ -22,6 +23,7 @@
     "topgg-autoposter": "^2.0.2"
   },
   "devDependencies": {
+    "concurrently": "^9.2.0",
     "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^9.1.2",
