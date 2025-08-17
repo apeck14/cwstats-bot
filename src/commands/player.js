@@ -114,6 +114,8 @@ module.exports = {
 
     const playerEmbedData = createPlayerEmbed(client, player, clanBadge)
 
-    i.editReply(playerEmbedData)
+    console.log(playerEmbedData)
+
+    await i.editReply(playerEmbedData)
   },
 }
