@@ -69,6 +69,11 @@ const registerSlashCommands = async (CLIENT_ID, commands) => {
 
       console.log(`✅ Loaded Guild Commands (dev)`)
     } else {
+      await rest.put(Routes.applicationCommands(CLIENT_ID), {
+        body: [],
+      })
+      console.log("🗑️ Cleared all Global Commands")
+
       const changed = await getChangedSlashCommands(CLIENT_ID, commands)
 
       if (changed.length === 0) {
