@@ -116,6 +116,8 @@ module.exports = {
 
     console.log(playerEmbedData)
 
+    console.log(i.deferred, i.replied)
+
     await i.editReply(playerEmbedData)
   },
 }
