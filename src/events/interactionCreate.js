@@ -88,11 +88,11 @@ async function handleContextCommand(i, client, guild) {
 
     await cmd.run(i, client)
   } else {
-    await i.deferReply({ flags: MessageFlags.Ephemeral })
-
     if (error) {
-      return i.editReply({ embeds: [{ color, description: error }] })
+      return i.reply({ embeds: [{ color, description: error }], ephemeral: true })
     }
+
+    await i.deferReply()
 
     await cmd.run(i, client)
   }
