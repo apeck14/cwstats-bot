@@ -73,16 +73,29 @@ async function handleCommand(i, client, guild) {
   sendCommandLog(i, client)
 }
 
-async function handleContextCommand(i, client) {
-  const { color, error } = validate(i, null, client, true)
-  await i.deferReply({ flags: MessageFlags.Ephemeral })
-
-  if (error) {
-    return i.editReply({ embeds: [{ color, description: error }] })
-  }
+async function handleContextCommand(i, client, guild) {
+  const { color, error } = validate(i, guild, client, true)
 
   const cmd = i.client.contextCommands.get(i.commandName)
-  await cmd.run(i, client)
+
+  if (cmd?.handleModalSubmit) {
+    if (error) {
+      return i.reply({
+        embeds: [{ color, description: error }],
+        ephemeral: true,
+      })
+    }
+
+    await cmd.run(i, client)
+  } else {
+    await i.deferReply({ flags: MessageFlags.Ephemeral })
+
+    if (error) {
+      return i.editReply({ embeds: [{ color, description: error }] })
+    }
+
+    await cmd.run(i, client)
+  }
 
   sendCommandLog(i, client)
 }
@@ -129,10 +142,10 @@ module.exports = {
 
       if (i.isAutocomplete()) return handleAutocomplete(i, client)
       if (i.isChatInputCommand()) return handleCommand(i, client, guild)
-      if (i.isUserContextMenuCommand() || i.isMessageContextMenuCommand()) {
-        return handleContextCommand(i, client)
-      }
       if (i.isModalSubmit()) return handleModalSubmit(i, client)
+      if (i.isUserContextMenuCommand() || i.isMessageContextMenuCommand()) {
+        return handleContextCommand(i, client, guild)
+      }
     } catch (e) {
       console.error("INTERACTION CREATE ERROR", i?.commandName, e)
     }
