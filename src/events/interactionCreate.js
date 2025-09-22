@@ -100,13 +100,12 @@ async function handleContextCommand(i, client, guild) {
   sendCommandLog(i, client)
 }
 
-async function handleModalSubmit(i, client) {
+async function handleModalSubmit(i) {
   const file = path.join(__dirname, "../context-commands", `${i.customId}.js`)
   if (fs.existsSync(file)) {
     const command = require(file)
     if (command.handleModalSubmit) await command.handleModalSubmit(i)
   }
-  sendCommandLog(i, client)
 }
 
 async function handleAutocomplete(i, client) {
@@ -142,7 +141,7 @@ module.exports = {
 
       if (i.isAutocomplete()) return handleAutocomplete(i, client)
       if (i.isChatInputCommand()) return handleCommand(i, client, guild)
-      if (i.isModalSubmit()) return handleModalSubmit(i, client)
+      if (i.isModalSubmit()) return handleModalSubmit(i)
       if (i.isUserContextMenuCommand() || i.isMessageContextMenuCommand()) {
         return handleContextCommand(i, client, guild)
       }
