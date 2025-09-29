@@ -11,6 +11,8 @@ module.exports = {
       fr: "joueur",
       it: "giocatore",
       nl: "speler",
+      "pt-BR": "jogador",
+      "pt-PT": "jogador",
       tr: "oyuncu",
     },
     type: ApplicationCommandType.Message,
