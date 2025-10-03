@@ -166,18 +166,15 @@ const createPlayerEmbed = (client, player, clanBadge) => {
   } = player
 
   // ! bug with supercell's API for current POL season rank
-  const currentPOLSeasonStr =
-    currentPOLObj?.leagueNumber === 10 ? `${polMedalsEmoji} **${currentPOLObj.trophies}**` : "N/A"
+  const currentPOLSeasonStr = currentPOLObj?.trophies ? `${polMedalsEmoji} **${currentPOLObj.trophies}**` : "N/A"
 
-  const bestPOLSeasonStr =
-    bestPOLObj?.leagueNumber === 10
-      ? `${polMedalsEmoji} **${bestPOLObj.trophies}**${bestPOLObj.rank ? ` (#${bestPOLObj.rank})` : ""}`
-      : "N/A"
+  const bestPOLSeasonStr = bestPOLObj?.trophies
+    ? `${polMedalsEmoji} **${bestPOLObj.trophies}**${bestPOLObj.rank ? ` (#${bestPOLObj.rank})` : ""}`
+    : "N/A"
 
-  const lastPOLSeasonStr =
-    lastPOLObj?.leagueNumber === 10
-      ? `${polMedalsEmoji} **${lastPOLObj.trophies}**${lastPOLObj.rank ? ` (#${lastPOLObj.rank})` : ""}`
-      : "N/A"
+  const lastPOLSeasonStr = lastPOLObj?.trophies
+    ? `${polMedalsEmoji} **${lastPOLObj.trophies}**${lastPOLObj.rank ? ` (#${lastPOLObj.rank})` : ""}`
+    : "N/A"
 
   embed.description += `\n\n**__POL__**`
   embed.description += `\n**Current Season**: ${currentPOLSeasonStr}`
