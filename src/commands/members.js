@@ -1,7 +1,7 @@
 const { getClan, getGuild } = require("../util/services")
 const { pink } = require("../static/colors")
 const { errorMsg, warningMsg } = require("../util/functions")
-const { formatStr } = require("../util/formatting")
+const { formatRole, formatStr } = require("../util/formatting")
 
 module.exports = {
   data: {
@@ -87,6 +87,18 @@ module.exports = {
     // Sort members alphabetically
     memberList.sort((a, b) => a.name.localeCompare(b.name))
 
+    // Group by role
+    const roles = {
+      coLeader: [],
+      elder: [],
+      leader: [],
+      member: [],
+    }
+
+    for (const m of memberList) {
+      if (roles[m.role]) roles[m.role].push(m)
+    }
+
     const embed = {
       color: pink,
       description: "",
@@ -94,9 +106,20 @@ module.exports = {
       url: `https://cwstats.com/clan/${tag.substring(1)}`,
     }
 
-    // Add total member count and the list
-    embed.description += `${badgeEmoji} **${name}**\n${socialEmoji} **${memberList.length}**/50\n\n`
-    embed.description += memberList.map((m) => `• ${formatStr(m.name)}`).join("\n")
+    embed.description += `${badgeEmoji} **${name}**\n${socialEmoji} **${memberList.length}**/50\n`
+
+    // Build role sections in order
+    const roleOrder = ["leader", "coLeader", "elder", "member"]
+
+    for (const roleKey of roleOrder) {
+      const group = roles[roleKey]
+      if (group.length === 0) continue
+
+      const isLeader = roleKey === "leader"
+
+      embed.description += `\n${isLeader ? "" : "\n"}**__${formatRole(roleKey)}__** ${isLeader ? "" : `(${group.length})`}\n`
+      embed.description += group.map((m) => `• ${formatStr(m.name)}`).join("\n")
+    }
 
     return i.editReply({ embeds: [embed] })
   },
