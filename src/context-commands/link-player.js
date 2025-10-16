@@ -20,7 +20,6 @@ module.exports = {
       it: "Collega giocatore (AMMIN)",
       nl: "Speler koppelen (BEHEERDER)",
       "pt-BR": "Vincular jogador (ADMIN)",
-      "pt-PT": "Vincular jogador (ADMIN)",
       tr: "Oyuncu bağla (Yönetici)",
     },
     type: ApplicationCommandType.User,

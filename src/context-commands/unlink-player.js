@@ -19,7 +19,6 @@ module.exports = {
       it: "Scollega giocatore (AMMIN)",
       nl: "Speler ontkoppelen (BEHEERDER)",
       "pt-BR": "Desvincular jogador (ADMIN)",
-      "pt-PT": "Desvincular jogador (ADMIN)",
       tr: "Oyuncu çıkar (Yönetici)",
     },
     type: ApplicationCommandType.User,
