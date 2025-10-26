@@ -1,27 +1,21 @@
-const {
-  ActionRowBuilder,
-  ApplicationCommandType,
-  MessageFlags,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle,
-} = require("discord.js")
-const { green, orange, red } = require("../static/colors")
-const { deleteNudgeLink } = require("../util/services")
+/* eslint-disable camelcase */
+const { ActionRowBuilder, ApplicationCommandType, MessageFlags, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js')
+const { green, orange, red } = require('../static/colors')
+const { deleteNudgeLink } = require('../util/services')
 
 module.exports = {
   data: {
-    name: "Unlink Player (ADMIN)",
+    name: 'Unlink Player (ADMIN)',
     name_localizations: {
-      de: "Spieler trennen (ADMIN)",
-      "es-ES": "Desvincular jugador (ADMIN)",
-      fr: "Délier joueur (ADMIN)",
-      it: "Scollega giocatore (AMMIN)",
-      nl: "Speler ontkoppelen (BEHEERDER)",
-      "pt-BR": "Desvincular jogador (ADMIN)",
-      tr: "Oyuncu çıkar (Yönetici)",
+      de: 'Spieler trennen (ADMIN)',
+      'es-ES': 'Desvincular jugador (ADMIN)',
+      fr: 'Délier joueur (ADMIN)',
+      it: 'Scollega giocatore (AMMIN)',
+      nl: 'Speler ontkoppelen (BEHEERDER)',
+      'pt-BR': 'Desvincular jogador (ADMIN)',
+      tr: 'Oyuncu çıkar (Yönetici)'
     },
-    type: ApplicationCommandType.User,
+    type: ApplicationCommandType.User
   },
   handleModalSubmit: async (i) => {
     try {
@@ -37,10 +31,10 @@ module.exports = {
           embeds: [
             {
               color: orange,
-              description: `**${error}**`,
-            },
+              description: `**${error}**`
+            }
           ],
-          flags: MessageFlags.Ephemeral,
+          flags: MessageFlags.Ephemeral
         })
       }
 
@@ -48,21 +42,21 @@ module.exports = {
         embeds: [
           {
             color: green,
-            description: `:white_check_mark: **${tag}** was successfully unlinked!`,
-          },
+            description: `:white_check_mark: **${tag}** was successfully unlinked!`
+          }
         ],
-        flags: MessageFlags.Ephemeral,
+        flags: MessageFlags.Ephemeral
       })
     } catch (e) {
-      console.log("unlink-player", e)
+      console.log('unlink-player', e)
       return i.editReply({
         embeds: [
           {
             color: red,
-            description: "**Unexpected error.**",
-          },
+            description: '**Unexpected error.**'
+          }
         ],
-        flags: MessageFlags.Ephemeral,
+        flags: MessageFlags.Ephemeral
       })
     }
   },
@@ -74,7 +68,7 @@ module.exports = {
     // Create input fields for the modal
     const input = new TextInputBuilder()
       .setCustomId(targetUser.id)
-      .setLabel("PLAYER TAG (#ABC123):")
+      .setLabel('PLAYER TAG (#ABC123):')
       .setStyle(TextInputStyle.Short)
       .setRequired(true)
       .setMinLength(3)
@@ -86,5 +80,5 @@ module.exports = {
 
     // Show the modal
     i.showModal(modal)
-  },
+  }
 }

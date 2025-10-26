@@ -1,11 +1,11 @@
-const { Events, MessageFlags } = require("discord.js")
-const path = require("path")
-const fs = require("fs")
-const { pink } = require("../static/colors")
-const { logToSupportServer } = require("../util/logging")
-const { createGuild, getGuild } = require("../util/services")
-const { errorMsg, warningMsg } = require("../util/functions")
-const validate = require("../util/validate")
+const { Events, MessageFlags } = require('discord.js')
+const path = require('path')
+const fs = require('fs')
+const { pink } = require('../static/colors')
+const { logToSupportServer } = require('../util/logging')
+const { createGuild, getGuild } = require('../util/services')
+const { errorMsg, warningMsg } = require('../util/functions')
+const validate = require('../util/validate')
 
 const sendCommandLog = (i, client) => {
   try {
@@ -16,20 +16,20 @@ const sendCommandLog = (i, client) => {
 
     const hasOptions = i?.options?._hoistedOptions?.length > 0
     const hasFields = i?.fields?.fields?.size > 0
-    let data = "*None*"
+    let data = '*None*'
 
-    if (hasOptions) data = `${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join("\n")}`
-    else if (hasFields) data = `${i.fields.fields.map((o) => `• **${o.customId}**: ${o.value}`).join("\n")}`
+    if (hasOptions) data = `${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join('\n')}`
+    else if (hasFields) data = `${i.fields.fields.map((o) => `• **${o.customId}**: ${o.value}`).join('\n')}`
 
     desc += `\n\n**Fields**: \n${data}`
 
     logToSupportServer(client, {
       color: pink,
       description: desc,
-      title: `__/${i.commandName || i.customId}__`,
+      title: `__/${i.commandName || i.customId}__`
     })
   } catch (e) {
-    console.error("Error sending command log:", e)
+    console.error('Error sending command log:', e)
   }
 }
 
@@ -66,7 +66,7 @@ async function handleCommand(i, client, guild) {
   }
 
   // if a user @'s themselves send reminder above embed response
-  if (i.options._hoistedOptions.find((o) => o.name === "user")?.value === i.user.id)
+  if (i.options._hoistedOptions.find((o) => o.name === 'user')?.value === i.user.id)
     await i.followUp(`:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`)
 
   await cmd.run(i, client)
@@ -82,7 +82,7 @@ async function handleContextCommand(i, client, guild) {
     if (error) {
       return i.reply({
         embeds: [{ color, description: error }],
-        ephemeral: true,
+        ephemeral: true
       })
     }
 
@@ -101,7 +101,7 @@ async function handleContextCommand(i, client, guild) {
 }
 
 async function handleModalSubmit(i) {
-  const file = path.join(__dirname, "../context-commands", `${i.customId}.js`)
+  const file = path.join(__dirname, '../context-commands', `${i.customId}.js`)
   if (fs.existsSync(file)) {
     const command = require(file)
     if (command.handleModalSubmit) await command.handleModalSubmit(i)
@@ -112,7 +112,7 @@ async function handleAutocomplete(i, client) {
   const cmd = i.client.commands.get(i.commandName)
   if (!cmd?.search) return
   const results = await cmd.search(i)
-  await i.respond(results?.length ? results : [{ name: "❌ No matches", value: "no_match" }])
+  await i.respond(results?.length ? results : [{ name: '❌ No matches', value: 'no_match' }])
   sendCommandLog(i, client)
 }
 
@@ -128,7 +128,7 @@ module.exports = {
       if (!i.guild)
         return warningMsg(
           i,
-          `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=2147797184&scope=bot+applications.commands) me to a server to use my commands!**`,
+          `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=2147797184&scope=bot+applications.commands) me to a server to use my commands!**`
         )
 
       const { data: guild } = await getGuild(i.guildId)
@@ -136,7 +136,7 @@ module.exports = {
       // guild not in database, create it
       if (!guild) {
         await createGuild(i.guildId)
-        return errorMsg(i, "**Unexpected error.** Please try again.")
+        return errorMsg(i, '**Unexpected error.** Please try again.')
       }
 
       if (i.isAutocomplete()) return handleAutocomplete(i, client)
@@ -146,7 +146,7 @@ module.exports = {
         return handleContextCommand(i, client, guild)
       }
     } catch (e) {
-      console.error("INTERACTION CREATE ERROR", i?.commandName, e)
+      console.error('INTERACTION CREATE ERROR', i?.commandName, e)
     }
-  },
+  }
 }

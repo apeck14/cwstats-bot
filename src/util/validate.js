@@ -1,12 +1,12 @@
-const { PermissionFlagsBits, PermissionsBitField } = require("discord.js")
-const startCase = require("lodash/startCase")
-const { orange, red } = require("../static/colors")
+const { PermissionFlagsBits, PermissionsBitField } = require('discord.js')
+const startCase = require('lodash/startCase')
+const { orange, red } = require('../static/colors')
 
 const missingPermissionsToStr = (permissions, requiredFlags) => {
   const serializedPermissions = permissions.serialize()
   const requiredPermissionsArr = new PermissionsBitField(requiredFlags).toArray()
 
-  let str = ""
+  let str = ''
 
   for (const perm of requiredPermissionsArr) {
     if (!serializedPermissions[perm]) str += `❌ \`${startCase(perm)}\`\n`
@@ -15,32 +15,29 @@ const missingPermissionsToStr = (permissions, requiredFlags) => {
   return str
 }
 
-const ADMIN_COMMANDS = ["nudge", "Link Player (ADMIN)", "Unlink Player (ADMIN)"]
+const ADMIN_COMMANDS = ['nudge', 'Link Player (ADMIN)', 'Unlink Player (ADMIN)']
 
 const checkPermissions = (i, guild, client) => {
   const { adminRoleID, channels } = guild
   const { applicationsChannelID } = channels
 
-  if (i.commandName === "apply") {
+  if (i.commandName === 'apply') {
     const applicationsChannelPermissions = client.channels.cache.get(applicationsChannelID).permissionsFor(client.user)
 
     const requiredFlags = [
       PermissionFlagsBits.ViewChannel,
       PermissionFlagsBits.SendMessages,
       PermissionFlagsBits.EmbedLinks,
-      PermissionFlagsBits.UseExternalEmojis,
+      PermissionFlagsBits.UseExternalEmojis
     ]
 
     if (!applicationsChannelPermissions.has(requiredFlags)) {
       return {
-        error: `**Missing permissions in** <#${applicationsChannelID}>.\n\n${missingPermissionsToStr(
-          applicationsChannelPermissions,
-          requiredFlags,
-        )}`,
+        error: `**Missing permissions in** <#${applicationsChannelID}>.\n\n${missingPermissionsToStr(applicationsChannelPermissions, requiredFlags)}`
       }
     }
   } else {
-    const isNotMe = i.user.id !== "493245767448789023"
+    const isNotMe = i.user.id !== '493245767448789023'
     const isAdminCommand = ADMIN_COMMANDS.includes(i.commandName)
 
     if (isNotMe && isAdminCommand) {
@@ -49,7 +46,7 @@ const checkPermissions = (i, guild, client) => {
 
       if (!hasPermissions && !hasAdminRole) {
         return {
-          error: "**You do not have permissions to use this command.**",
+          error: '**You do not have permissions to use this command.**'
         }
       }
     }
@@ -58,7 +55,7 @@ const checkPermissions = (i, guild, client) => {
 
     if (!channel)
       return {
-        error: "**Channel not found.**",
+        error: '**Channel not found.**'
       }
 
     const channelPermissions = channel.permissionsFor(client.user)
@@ -67,7 +64,7 @@ const checkPermissions = (i, guild, client) => {
 
     if (!channelPermissions.has(requiredFlags)) {
       return {
-        error: `__**Missing permissions**__\n\n${missingPermissionsToStr(channelPermissions, requiredFlags)}`,
+        error: `__**Missing permissions**__\n\n${missingPermissionsToStr(channelPermissions, requiredFlags)}`
       }
     }
   }
@@ -83,40 +80,38 @@ const validate = (i, guild, client, validateChannel) => {
   let onlyShowToUser = false
 
   if (validateChannel) {
-    if (i.commandName === "apply") {
-      let error = ""
+    if (i.commandName === 'apply') {
+      let error = ''
 
-      if (!applyChannelID) error = "**No apply channel set.**"
+      if (!applyChannelID) error = '**No apply channel set.**'
       else if (applyChannelID !== channelId) {
         error = `You can only use this command in the set **apply channel**! (<#${applyChannelID}>)`
         onlyShowToUser = true
-      } else if (!applicationsChannelID) error = "**No applications channel set.**"
+      } else if (!applicationsChannelID) error = '**No applications channel set.**'
 
       return {
         color,
         error,
-        onlyShowToUser,
+        onlyShowToUser
       }
     }
 
-    const formattedKeyword = commandChannelKeyword
-      ? `- Any channel containing \`${commandChannelKeyword.toLowerCase()}\`\n`
-      : ""
+    const formattedKeyword = commandChannelKeyword ? `- Any channel containing \`${commandChannelKeyword.toLowerCase()}\`\n` : ''
 
     let channelsToShow = commandChannelIDs
-    let suffix = ""
+    let suffix = ''
 
     if (commandChannelIDs.length > 5) {
       channelsToShow = commandChannelIDs.slice(0, 5)
       suffix = `\n- ${commandChannelIDs.length - 5} more...`
     }
 
-    const formattedChannels = channelsToShow.map((id) => `- <#${id}>`).join("\n") + suffix
+    const formattedChannels = channelsToShow.map((id) => `- <#${id}>`).join('\n') + suffix
 
     const notCommandChannelEmbed = {
       color,
       error: `### You can only use this command in a set __command channel__:\n${formattedKeyword}${formattedChannels}`,
-      onlyShowToUser: true,
+      onlyShowToUser: true
     }
 
     let showCommandChannelEmbed = true
@@ -134,7 +129,7 @@ const validate = (i, guild, client, validateChannel) => {
     return {
       color: red,
       error,
-      onlyShowToUser,
+      onlyShowToUser
     }
   }
 

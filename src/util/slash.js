@@ -1,10 +1,10 @@
-const { REST, Routes } = require("discord.js")
-const { CLIENT_TOKEN, NODE_ENV, TEST_CLIENT_TOKEN, TEST_GUILD_ID } = require("../../config")
+const { REST, Routes } = require('discord.js')
+const { CLIENT_TOKEN, NODE_ENV, TEST_CLIENT_TOKEN, TEST_GUILD_ID } = require('../../config')
 
-const isDev = NODE_ENV === "dev"
+const isDev = NODE_ENV === 'dev'
 
 const rest = new REST({
-  version: "10",
+  version: '10'
 }).setToken(isDev ? TEST_CLIENT_TOKEN : CLIENT_TOKEN)
 
 const normalizeCommand = (cmd) => ({
@@ -15,13 +15,13 @@ const normalizeCommand = (cmd) => ({
     description: opt.description,
     name: opt.name,
     required: opt.required ?? false,
-    type: opt.type,
-  })),
+    type: opt.type
+  }))
 })
 
 const normalizeContextCommand = (cmd) => ({
   name: cmd.name,
-  type: cmd.type,
+  type: cmd.type
 })
 
 /**
@@ -49,7 +49,7 @@ const getChangedSlashCommands = async (CLIENT_ID, localCommands) => {
 
     return changed
   } catch (error) {
-    console.error("❌ Failed to fetch remote commands:", error)
+    console.error('❌ Failed to fetch remote commands:', error)
     return localCommands // fallback: re-register everything
   }
 }
@@ -64,7 +64,7 @@ const registerSlashCommands = async (CLIENT_ID, commands) => {
     // if dev, register commands for test guild
     if (isDev) {
       await rest.put(Routes.applicationGuildCommands(CLIENT_ID, TEST_GUILD_ID), {
-        body: commands,
+        body: commands
       })
 
       console.log(`✅ Loaded Guild Commands (dev)`)
@@ -72,7 +72,7 @@ const registerSlashCommands = async (CLIENT_ID, commands) => {
       const changed = await getChangedSlashCommands(CLIENT_ID, commands)
 
       if (changed.length === 0) {
-        console.log("✅ No command changes detected.")
+        console.log('✅ No command changes detected.')
         return
       }
 

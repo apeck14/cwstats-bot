@@ -1,16 +1,16 @@
-const { ActivityType, Events, WebhookClient } = require("discord.js")
-const registerSlashCommands = require("../util/slash")
-const { BOT_WEBHOOK_URL, COMMANDS_WEBHOOK_URL, NODE_ENV } = require("../../config")
-const { initializeCommands, initializeEmojis } = require("../util/initialize")
-const { logToSupportServer } = require("../util/logging")
-const { orange } = require("../static/colors")
+const { ActivityType, Events, WebhookClient } = require('discord.js')
+const registerSlashCommands = require('../util/slash')
+const { BOT_WEBHOOK_URL, COMMANDS_WEBHOOK_URL, NODE_ENV } = require('../../config')
+const { initializeCommands, initializeEmojis } = require('../util/initialize')
+const { logToSupportServer } = require('../util/logging')
+const { orange } = require('../static/colors')
 
-const isDev = NODE_ENV === "dev"
+const isDev = NODE_ENV === 'dev'
 
 module.exports = {
   name: Events.ClientReady,
   run: async (client) => {
-    console.time("✅ Bot Ready Time")
+    console.time('✅ Bot Ready Time')
 
     try {
       console.log(`✅ Logged in as ${client.user.tag}`)
@@ -28,7 +28,7 @@ module.exports = {
       // Register slash commands
       await registerSlashCommands(
         client.user.id,
-        commandsArray.map((c) => c.data),
+        commandsArray.map((c) => c.data)
       )
 
       initializeEmojis(client)
@@ -37,7 +37,7 @@ module.exports = {
 
       client.user.setPresence({
         activities: [{ name: `/help | CWStats.com | ${guildCount}+ servers`, type: ActivityType.Watching }],
-        status: "online",
+        status: 'online'
       })
 
       logToSupportServer(
@@ -45,14 +45,14 @@ module.exports = {
         {
           color: orange,
           description: `Guilds: ${guildCount}`,
-          title: "✅ Bot restarted and ready!",
+          title: '✅ Bot restarted and ready!'
         },
-        false,
+        false
       )
     } catch (e) {
-      console.error("❌ Error in ready event:", e)
+      console.error('❌ Error in ready event:', e)
     } finally {
-      console.timeEnd("✅ Bot Ready Time")
+      console.timeEnd('✅ Bot Ready Time')
     }
-  },
+  }
 }

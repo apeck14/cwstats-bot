@@ -1,82 +1,83 @@
-const { addPlayer, getClan, getLinkedAccount, getPlayer } = require("../util/services")
-const { createPlayerEmbed, errorMsg, warningMsg } = require("../util/functions")
+/* eslint-disable camelcase */
+const { addPlayer, getClan, getLinkedAccount, getPlayer } = require('../util/services')
+const { createPlayerEmbed, errorMsg, warningMsg } = require('../util/functions')
 
 module.exports = {
   data: {
-    description: "View player profile stats.",
+    description: 'View player profile stats.',
     description_localizations: {
-      de: "Spielerstatistiken anzeigen.",
-      "es-ES": "Ver estadísticas del jugador.",
-      fr: "Afficher les statistiques du joueur.",
-      it: "Visualizza le statistiche del giocatore.",
-      nl: "Bekijk spelersstatistieken.",
-      "pt-BR": "Ver estatísticas do perfil do jogador.",
-      tr: "Oyuncu istatistiklerini görüntüleyin.",
+      de: 'Spielerstatistiken anzeigen.',
+      'es-ES': 'Ver estadísticas del jugador.',
+      fr: 'Afficher les statistiques du joueur.',
+      it: 'Visualizza le statistiche del giocatore.',
+      nl: 'Bekijk spelersstatistieken.',
+      'pt-BR': 'Ver estatísticas do perfil do jogador.',
+      tr: 'Oyuncu istatistiklerini görüntüleyin.'
     },
-    name: "player",
+    name: 'player',
     name_localizations: {
-      de: "spieler",
-      "es-ES": "jugador",
-      fr: "joueur",
-      it: "giocatore",
-      nl: "speler",
-      "pt-BR": "jogador",
-      tr: "oyuncu",
+      de: 'spieler',
+      'es-ES': 'jugador',
+      fr: 'joueur',
+      it: 'giocatore',
+      nl: 'speler',
+      'pt-BR': 'jogador',
+      tr: 'oyuncu'
     },
     options: [
       {
-        description: "Player tag (#ABC123)",
+        description: 'Player tag (#ABC123)',
         description_localizations: {
-          de: "Spielertag (#ABC123)",
-          "es-ES": "Etiqueta del jugador (#ABC123)",
-          fr: "Tag du joueur (#ABC123)",
-          it: "Tag del giocatore (#ABC123)",
-          nl: "Spelertag (#ABC123)",
-          "pt-BR": "Tag do jogador (#ABC123)",
-          tr: "Oyuncu etiketi (#ABC123)",
+          de: 'Spielertag (#ABC123)',
+          'es-ES': 'Etiqueta del jugador (#ABC123)',
+          fr: 'Tag du joueur (#ABC123)',
+          it: 'Tag del giocatore (#ABC123)',
+          nl: 'Spelertag (#ABC123)',
+          'pt-BR': 'Tag do jogador (#ABC123)',
+          tr: 'Oyuncu etiketi (#ABC123)'
         },
-        name: "tag",
+        name: 'tag',
         name_localizations: {
-          de: "kennzeichnung",
-          "es-ES": "etiqueta",
-          fr: "balise",
-          it: "tag",
-          nl: "tag",
-          "pt-BR": "tag",
-          tr: "etiket",
+          de: 'kennzeichnung',
+          'es-ES': 'etiqueta',
+          fr: 'balise',
+          it: 'tag',
+          nl: 'tag',
+          'pt-BR': 'tag',
+          tr: 'etiket'
         },
         required: false,
-        type: 3,
+        type: 3
       },
       {
-        description: "Select a Discord user",
+        description: 'Select a Discord user',
         description_localizations: {
-          de: "Wähle einen Discord-Benutzer",
-          "es-ES": "Seleccionar un usuario de Discord",
-          fr: "Sélectionnez un utilisateur Discord",
-          it: "Seleziona un utente Discord",
-          nl: "Selecteer een Discord-gebruiker",
-          "pt-BR": "Selecione um usuário do Discord",
-          tr: "Bir Discord kullanıcısı seçin",
+          de: 'Wähle einen Discord-Benutzer',
+          'es-ES': 'Seleccionar un usuario de Discord',
+          fr: 'Sélectionnez un utilisateur Discord',
+          it: 'Seleziona un utente Discord',
+          nl: 'Selecteer een Discord-gebruiker',
+          'pt-BR': 'Selecione um usuário do Discord',
+          tr: 'Bir Discord kullanıcısı seçin'
         },
-        name: "user",
+        name: 'user',
         name_localizations: {
-          de: "benutzer",
-          "es-ES": "usuario",
-          fr: "utilisateur",
-          it: "utente",
-          nl: "gebruiker",
-          "pt-BR": "usuário",
-          tr: "kullanıcı",
+          de: 'benutzer',
+          'es-ES': 'usuario',
+          fr: 'utilisateur',
+          it: 'utente',
+          nl: 'gebruiker',
+          'pt-BR': 'usuário',
+          tr: 'kullanıcı'
         },
         required: false,
-        type: 6,
-      },
-    ],
+        type: 6
+      }
+    ]
   },
   run: async (i, client) => {
-    const iUser = i.options.getUser("user")
-    const iTag = i.options.getString("tag")
+    const iUser = i.options.getUser('user')
+    const iTag = i.options.getString('tag')
 
     let tag
 
@@ -101,14 +102,14 @@ module.exports = {
 
     const { data: player, error: playerError } = await getPlayer(tag)
 
-    if (playerError || !player) return errorMsg(i, playerError || "**Player not found.**")
+    if (playerError || !player) return errorMsg(i, playerError || '**Player not found.**')
 
     // add player for website searching
     addPlayer(player.tag)
 
     const inClan = !!player.clan
 
-    let clanBadge = "no_clan"
+    let clanBadge = 'no_clan'
 
     if (inClan) {
       const { data: clan, error: clanError } = await getClan(player.clan.tag, true)
@@ -121,5 +122,5 @@ module.exports = {
     const playerEmbedData = createPlayerEmbed(client, player, clanBadge)
 
     await i.editReply(playerEmbedData)
-  },
+  }
 }

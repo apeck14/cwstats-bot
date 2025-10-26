@@ -1,55 +1,56 @@
-const { addPlayer, getClan, getGuild, getPlayer } = require("../util/services")
-const { createPlayerEmbed, errorMsg, successMsg, warningMsg } = require("../util/functions")
-const { formatStr } = require("../util/formatting")
+/* eslint-disable camelcase */
+const { addPlayer, getClan, getGuild, getPlayer } = require('../util/services')
+const { createPlayerEmbed, errorMsg, successMsg, warningMsg } = require('../util/functions')
+const { formatStr } = require('../util/formatting')
 
 module.exports = {
   data: {
-    description: "Apply to join the clan.",
+    description: 'Apply to join the clan.',
     description_localizations: {
-      de: "Bewerben Sie sich, um dem Clan beizutreten.",
-      "es-ES": "Solicita unirte al clan.",
-      fr: "Postulez pour rejoindre le clan.",
-      it: "Richiedi di unirti al clan.",
-      nl: "Solliciteer om lid te worden van de clan.",
-      "pt-BR": "Candidate-se para entrar no clã.",
-      tr: "Klana katılmak için başvurun.",
+      de: 'Bewerben Sie sich, um dem Clan beizutreten.',
+      'es-ES': 'Solicita unirte al clan.',
+      fr: 'Postulez pour rejoindre le clan.',
+      it: 'Richiedi di unirti al clan.',
+      nl: 'Solliciteer om lid te worden van de clan.',
+      'pt-BR': 'Candidate-se para entrar no clã.',
+      tr: 'Klana katılmak için başvurun.'
     },
-    name: "apply",
+    name: 'apply',
     name_localizations: {
-      de: "bewerben",
-      "es-ES": "solicitar",
-      fr: "postuler",
-      it: "applica",
-      nl: "solliciteren",
-      "pt-BR": "candidatar",
-      tr: "başvur",
+      de: 'bewerben',
+      'es-ES': 'solicitar',
+      fr: 'postuler',
+      it: 'applica',
+      nl: 'solliciteren',
+      'pt-BR': 'candidatar',
+      tr: 'başvur'
     },
     options: [
       {
-        description: "Player tag (#ABC123)",
+        description: 'Player tag (#ABC123)',
         description_localizations: {
-          de: "Spielertag (#ABC123)",
-          "es-ES": "Etiqueta del jugador (#ABC123)",
-          fr: "Tag du joueur (#ABC123)",
-          it: "Tag del giocatore (#ABC123)",
-          nl: "Spelertag (#ABC123)",
-          "pt-BR": "Tag do jogador (#ABC123)",
-          tr: "Oyuncu etiketi (#ABC123)",
+          de: 'Spielertag (#ABC123)',
+          'es-ES': 'Etiqueta del jugador (#ABC123)',
+          fr: 'Tag du joueur (#ABC123)',
+          it: 'Tag del giocatore (#ABC123)',
+          nl: 'Spelertag (#ABC123)',
+          'pt-BR': 'Tag do jogador (#ABC123)',
+          tr: 'Oyuncu etiketi (#ABC123)'
         },
-        name: "tag",
+        name: 'tag',
         name_localizations: {
-          de: "kennzeichnung",
-          "es-ES": "etiqueta",
-          fr: "balise",
-          it: "tag",
-          nl: "tag",
-          "pt-BR": "tag",
-          tr: "etiket",
+          de: 'kennzeichnung',
+          'es-ES': 'etiqueta',
+          fr: 'balise',
+          it: 'tag',
+          nl: 'tag',
+          'pt-BR': 'tag',
+          tr: 'etiket'
         },
         required: true,
-        type: 3,
-      },
-    ],
+        type: 3
+      }
+    ]
   },
   run: async (i, client) => {
     const { data: guild, error: guildError } = await getGuild(i.guildId, true)
@@ -67,7 +68,7 @@ module.exports = {
       return warningMsg(i, msg)
     }
 
-    const iTag = i.options.getString("tag")
+    const iTag = i.options.getString('tag')
 
     const { data: player, error: playerError } = await getPlayer(iTag)
 
@@ -80,7 +81,7 @@ module.exports = {
 
     const inClan = !!player.clan
 
-    let clanBadge = "no_clan"
+    let clanBadge = 'no_clan'
 
     if (inClan) {
       const { data: clan, error: clanError } = await getClan(player.clan.tag)
@@ -99,5 +100,5 @@ module.exports = {
     successMsg(i, `✅ Request sent for **${formatStr(player.name)}**! A Co-Leader will contact you shortly.`)
 
     return APPLICATIONS_CHANNEL.send(playerEmbedData)
-  },
+  }
 }

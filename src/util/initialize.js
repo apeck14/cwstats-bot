@@ -1,13 +1,13 @@
-const fs = require("fs")
-const { Client, Collection, GatewayIntentBits } = require("discord.js")
-const path = require("path")
-const { CLIENT_TOKEN, NODE_ENV, TEST_CLIENT_TOKEN } = require("../../config")
-const { bulkAddEmojis } = require("./services")
-const ownerIds = require("../static/ownerIds")
+const fs = require('fs')
+const { Client, Collection, GatewayIntentBits } = require('discord.js')
+const path = require('path')
+const { CLIENT_TOKEN, NODE_ENV, TEST_CLIENT_TOKEN } = require('../../config')
+const { bulkAddEmojis } = require('./services')
+const ownerIds = require('../static/ownerIds')
 
-const isDev = NODE_ENV === "dev"
+const isDev = NODE_ENV === 'dev'
 
-const events = fs.readdirSync("src/events")
+const events = fs.readdirSync('src/events')
 
 const initializeEvents = (client) => {
   for (const event of events) {
@@ -15,7 +15,7 @@ const initializeEvents = (client) => {
     client.on(eventFile.name, (...args) => eventFile.run(client, ...args))
   }
 
-  console.log("✅ DiscordJS Events Initalized!")
+  console.log('✅ DiscordJS Events Initalized!')
 
   return client
 }
@@ -28,9 +28,9 @@ const initializeClient = async () => {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildMessageTyping,
       GatewayIntentBits.GuildMessageReactions,
-      GatewayIntentBits.GuildExpressions,
+      GatewayIntentBits.GuildExpressions
     ],
-    shards: "auto",
+    shards: 'auto'
   })
 
   client.commands = new Collection()
@@ -39,7 +39,7 @@ const initializeClient = async () => {
 
   await client.login(isDev ? TEST_CLIENT_TOKEN : CLIENT_TOKEN)
 
-  console.log("Client Initialized!")
+  console.log('Client Initialized!')
 
   return client
 }
@@ -47,11 +47,11 @@ const initializeClient = async () => {
 async function initializeCommands(client) {
   const commandsArray = []
 
-  const commandDir = path.join(__dirname, "../commands")
-  const contextDir = path.join(__dirname, "../context-commands")
+  const commandDir = path.join(__dirname, '../commands')
+  const contextDir = path.join(__dirname, '../context-commands')
 
-  const commandFiles = fs.readdirSync(commandDir).filter((f) => f.endsWith(".js"))
-  const contextFiles = fs.readdirSync(contextDir).filter((f) => f.endsWith(".js"))
+  const commandFiles = fs.readdirSync(commandDir).filter((f) => f.endsWith('.js'))
+  const contextFiles = fs.readdirSync(contextDir).filter((f) => f.endsWith('.js'))
 
   for (const file of commandFiles) {
     const command = require(`${commandDir}/${file}`)
@@ -70,7 +70,7 @@ async function initializeCommands(client) {
 }
 
 function initializeEmojis(client) {
-  console.time("🎨 Emoji Load Time")
+  console.time('🎨 Emoji Load Time')
 
   const emojis = []
 
@@ -85,12 +85,12 @@ function initializeEmojis(client) {
 
   bulkAddEmojis(emojis)
   console.log(`🎨 Loaded ${emojis.length} emojis into memory`)
-  console.timeEnd("🎨 Emoji Load Time")
+  console.timeEnd('🎨 Emoji Load Time')
 }
 
 module.exports = {
   initializeClient,
   initializeCommands,
   initializeEmojis,
-  initializeEvents,
+  initializeEvents
 }

@@ -1,7 +1,7 @@
-const { Events } = require("discord.js")
-const ownerIds = require("../static/ownerIds")
-const { red } = require("../static/colors")
-const { logToSupportServer } = require("../util/logging")
+const { Events } = require('discord.js')
+const ownerIds = require('../static/ownerIds')
+const { red } = require('../static/colors')
+const { logToSupportServer } = require('../util/logging')
 
 module.exports = {
   name: Events.GuildEmojiDelete,
@@ -16,11 +16,11 @@ module.exports = {
         color: red,
         description: `**Name**: ${emoji.name}\n**ID**: ${emoji.id}`,
         thumbnail: {
-          url: emoji.imageURL(),
+          url: emoji.imageURL()
         },
-        title: "__Emoji Deleted!__",
+        title: '__Emoji Deleted!__'
       },
-      false,
+      false
     )
-  },
+  }
 }

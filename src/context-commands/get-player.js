@@ -1,25 +1,26 @@
-const { ApplicationCommandType } = require("discord.js")
-const { addPlayer, getClan, getPlayer } = require("../util/services")
-const { createPlayerEmbed, errorMsg } = require("../util/functions")
+/* eslint-disable camelcase */
+const { ApplicationCommandType } = require('discord.js')
+const { addPlayer, getClan, getPlayer } = require('../util/services')
+const { createPlayerEmbed, errorMsg } = require('../util/functions')
 
 module.exports = {
   data: {
-    name: "Get Player",
+    name: 'Get Player',
     name_localizations: {
-      de: "spieler",
-      "es-ES": "jugador",
-      fr: "joueur",
-      it: "giocatore",
-      nl: "speler",
-      "pt-BR": "jogador",
-      tr: "oyuncu",
+      de: 'spieler',
+      'es-ES': 'jugador',
+      fr: 'joueur',
+      it: 'giocatore',
+      nl: 'speler',
+      'pt-BR': 'jogador',
+      tr: 'oyuncu'
     },
-    type: ApplicationCommandType.Message,
+    type: ApplicationCommandType.Message
   },
   run: async (i, client) => {
     const iTag = i.targetMessage.content
 
-    if (!iTag) return errorMsg(i, "**This message has no text content.**")
+    if (!iTag) return errorMsg(i, '**This message has no text content.**')
 
     const { data: player, error: playerError } = await getPlayer(iTag)
 
@@ -30,7 +31,7 @@ module.exports = {
 
     const inClan = !!player.clan
 
-    let clanBadge = "no_clan"
+    let clanBadge = 'no_clan'
 
     if (inClan) {
       const { data: clan, error: clanError } = await getClan(player.clan.tag, true)
@@ -43,5 +44,5 @@ module.exports = {
     const playerEmbedData = createPlayerEmbed(client, player, clanBadge)
 
     i.editReply(playerEmbedData)
-  },
+  }
 }

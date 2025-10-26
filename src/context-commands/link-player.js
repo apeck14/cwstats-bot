@@ -1,28 +1,22 @@
-const {
-  ActionRowBuilder,
-  ApplicationCommandType,
-  MessageFlags,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle,
-} = require("discord.js")
-const { formatStr, formatTag } = require("../util/formatting")
-const { green, orange, red } = require("../static/colors")
-const { addNudgeLink } = require("../util/services")
+/* eslint-disable camelcase */
+const { ActionRowBuilder, ApplicationCommandType, MessageFlags, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js')
+const { formatStr, formatTag } = require('../util/formatting')
+const { green, orange, red } = require('../static/colors')
+const { addNudgeLink } = require('../util/services')
 
 module.exports = {
   data: {
-    name: "Link Player (ADMIN)",
+    name: 'Link Player (ADMIN)',
     name_localizations: {
-      de: "Spieler verknüpfen (ADMIN)",
-      "es-ES": "Vincular jugador (ADMIN)",
-      fr: "Lier joueur (ADMIN)",
-      it: "Collega giocatore (AMMIN)",
-      nl: "Speler koppelen (BEHEERDER)",
-      "pt-BR": "Vincular jogador (ADMIN)",
-      tr: "Oyuncu bağla (Yönetici)",
+      de: 'Spieler verknüpfen (ADMIN)',
+      'es-ES': 'Vincular jugador (ADMIN)',
+      fr: 'Lier joueur (ADMIN)',
+      it: 'Collega giocatore (AMMIN)',
+      nl: 'Speler koppelen (BEHEERDER)',
+      'pt-BR': 'Vincular jogador (ADMIN)',
+      tr: 'Oyuncu bağla (Yönetici)'
     },
-    type: ApplicationCommandType.User,
+    type: ApplicationCommandType.User
   },
   handleModalSubmit: async (i) => {
     try {
@@ -40,10 +34,10 @@ module.exports = {
           embeds: [
             {
               color: orange,
-              description: `**${error}**`,
-            },
+              description: `**${error}**`
+            }
           ],
-          flags: MessageFlags.Ephemeral,
+          flags: MessageFlags.Ephemeral
         })
       }
 
@@ -51,20 +45,20 @@ module.exports = {
         embeds: [
           {
             color: green,
-            description: `:white_check_mark: **${formatStr(name)}** successfully linked to user!`,
-          },
+            description: `:white_check_mark: **${formatStr(name)}** successfully linked to user!`
+          }
         ],
-        flags: MessageFlags.Ephemeral,
+        flags: MessageFlags.Ephemeral
       })
     } catch (e) {
       i.editReply({
         embeds: [
           {
             color: red,
-            description: "**Unexpected error.** Please try again.",
-          },
+            description: '**Unexpected error.** Please try again.'
+          }
         ],
-        flags: MessageFlags.Ephemeral,
+        flags: MessageFlags.Ephemeral
       })
     }
   },
@@ -76,7 +70,7 @@ module.exports = {
     // Create input fields for the modal
     const input = new TextInputBuilder()
       .setCustomId(targetUser.id)
-      .setLabel("PLAYER TAG (#ABC123):")
+      .setLabel('PLAYER TAG (#ABC123):')
       .setStyle(TextInputStyle.Short)
       .setRequired(true)
       .setMinLength(3)
@@ -88,5 +82,5 @@ module.exports = {
 
     // Show the modal
     i.showModal(modal)
-  },
+  }
 }

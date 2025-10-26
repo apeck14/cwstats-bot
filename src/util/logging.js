@@ -5,10 +5,10 @@ const logToSupportServer = async (client, embed, isCommand = true) => {
   if (!webhook) return
 
   webhook.send({ embeds: [embed] }).catch((e) => {
-    console.error("Error sending embed to Support Server:", e)
+    console.error('Error sending embed to Support Server:', e)
   })
 }
 
 module.exports = {
-  logToSupportServer,
+  logToSupportServer
 }

@@ -1,56 +1,57 @@
-const { getClan, getGuild, getRace } = require("../util/services")
-const { pink } = require("../static/colors")
-const { errorMsg, warningMsg } = require("../util/functions")
-const { formatStr } = require("../util/formatting")
+/* eslint-disable camelcase */
+const { getClan, getGuild, getRace } = require('../util/services')
+const { pink } = require('../static/colors')
+const { errorMsg, warningMsg } = require('../util/functions')
+const { formatStr } = require('../util/formatting')
 
 module.exports = {
   data: {
-    description: "View players with remaining attacks.",
+    description: 'View players with remaining attacks.',
     description_localizations: {
-      de: "Spieler mit verbleibenden Angriffen anzeigen.",
-      "es-ES": "Ver jugadores con ataques restantes.",
-      fr: "Afficher les joueurs ayant encore des attaques.",
-      it: "Visualizza i giocatori con attacchi rimanenti.",
-      nl: "Bekijk spelers met resterende aanvallen.",
-      "pt-BR": "Ver jogadores com ataques restantes.",
-      tr: "Kalan saldırıları olan oyuncuları görüntüleyin.",
+      de: 'Spieler mit verbleibenden Angriffen anzeigen.',
+      'es-ES': 'Ver jugadores con ataques restantes.',
+      fr: 'Afficher les joueurs ayant encore des attaques.',
+      it: 'Visualizza i giocatori con attacchi rimanenti.',
+      nl: 'Bekijk spelers met resterende aanvallen.',
+      'pt-BR': 'Ver jogadores com ataques restantes.',
+      tr: 'Kalan saldırıları olan oyuncuları görüntüleyin.'
     },
-    name: "attacks",
+    name: 'attacks',
     name_localizations: {
-      de: "angriffe",
-      "es-ES": "ataques",
-      fr: "attaques",
-      it: "attacchi",
-      nl: "aanvallen",
-      "pt-BR": "ataques",
-      tr: "saldırılar",
+      de: 'angriffe',
+      'es-ES': 'ataques',
+      fr: 'attaques',
+      it: 'attacchi',
+      nl: 'aanvallen',
+      'pt-BR': 'ataques',
+      tr: 'saldırılar'
     },
     options: [
       {
-        description: "Clan tag (#ABC123) or abbreviation",
+        description: 'Clan tag (#ABC123) or abbreviation',
         description_localizations: {
-          de: "Clan-Tag (#ABC123) oder Abkürzung",
-          "es-ES": "Etiqueta del clan (#ABC123) o abreviatura",
-          fr: "Tag du clan (#ABC123) ou abréviation",
-          it: "Tag del clan (#ABC123) o abbreviazione",
-          nl: "Clan tag (#ABC123) of afkorting",
-          "pt-BR": "Tag do clã (#ABC123) ou abreviação",
-          tr: "Klan etiketi (#ABC123) veya kısaltma",
+          de: 'Clan-Tag (#ABC123) oder Abkürzung',
+          'es-ES': 'Etiqueta del clan (#ABC123) o abreviatura',
+          fr: 'Tag du clan (#ABC123) ou abréviation',
+          it: 'Tag del clan (#ABC123) o abbreviazione',
+          nl: 'Clan tag (#ABC123) of afkorting',
+          'pt-BR': 'Tag do clã (#ABC123) ou abreviação',
+          tr: 'Klan etiketi (#ABC123) veya kısaltma'
         },
-        name: "tag",
+        name: 'tag',
         name_localizations: {
-          de: "kennzeichnung",
-          "es-ES": "etiqueta",
-          fr: "balise",
-          it: "tag",
-          nl: "tag",
-          "pt-BR": "tag",
-          tr: "etiket",
+          de: 'kennzeichnung',
+          'es-ES': 'etiqueta',
+          fr: 'balise',
+          it: 'tag',
+          nl: 'tag',
+          'pt-BR': 'tag',
+          tr: 'etiket'
         },
         required: false,
-        type: 3,
-      },
-    ],
+        type: 3
+      }
+    ]
   },
   run: async (i, client) => {
     const { data: guild, error: guildError } = await getGuild(i.guildId, true)
@@ -59,33 +60,26 @@ module.exports = {
 
     const { abbreviations, defaultClan } = guild
 
-    let iTag = i.options.getString("tag")
+    let iTag = i.options.getString('tag')
 
     // default clan
     if (!iTag) {
       if (defaultClan?.tag) iTag = defaultClan.tag
-      else
-        return warningMsg(
-          i,
-          `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`,
-        )
+      else return warningMsg(i, `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`)
     } else {
       // abbreviation
       const UPPERCASE_ABBR = iTag.toUpperCase()
       const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
 
       if (abbr) iTag = abbr.tag
-      else if (iTag.length < 3) return warningMsg(i, "**Abbreviation does not exist.**")
+      else if (iTag.length < 3) return warningMsg(i, '**Abbreviation does not exist.**')
     }
 
-    const [{ data: race, error: raceError }, { data: clan, error: clanError }] = await Promise.all([
-      getRace(iTag),
-      getClan(iTag),
-    ])
+    const [{ data: race, error: raceError }, { data: clan, error: clanError }] = await Promise.all([getRace(iTag), getClan(iTag)])
 
     if (raceError || clanError) return errorMsg(i, raceError || clanError)
-    if (race.state === "matchmaking") return warningMsg(i, ":mag: **Matchmaking is underway!**")
-    if (!race.clans || race.clans.length <= 1) return warningMsg(i, "**Clan is not in a river race.**")
+    if (race.state === 'matchmaking') return warningMsg(i, ':mag: **Matchmaking is underway!**')
+    if (!race.clans || race.clans.length <= 1) return warningMsg(i, '**Clan is not in a river race.**')
 
     const { memberList } = clan
     const { clanIndex, dayIndex, isTraining, sectionIndex } = race
@@ -94,7 +88,7 @@ module.exports = {
     const decksRemaining = 200 - decksUsed
     const slotsRemaining = 50 - slotsUsed
     const week = sectionIndex + 1
-    const dayType = isTraining ? "Training" : "War"
+    const dayType = isTraining ? 'Training' : 'War'
     const dayNum = isTraining ? dayIndex + 1 : dayIndex - 2
 
     const memberTagSet = new Set(memberList.map((m) => m.tag))
@@ -112,7 +106,7 @@ module.exports = {
         attackBuckets[0].push(p)
       } else if (decksRemaining > 0 && decksRemaining < 4) {
         if (!inClan) {
-          p.name += "*"
+          p.name += '*'
           showFooter = true
         }
         attackBuckets[4 - decksRemaining].push(p)
@@ -126,39 +120,39 @@ module.exports = {
 
     const embed = {
       author: {
-        name: `Week ${week} | ${dayType} Day ${dayNum}`,
+        name: `Week ${week} | ${dayType} Day ${dayNum}`
       },
       color: pink,
-      description: "",
+      description: '',
       footer: {
-        text: showFooter ? `* = Not in clan` : ``,
+        text: showFooter ? `* = Not in clan` : ``
       },
       title: `**__Remaining Attacks__**`,
-      url: `https://cwstats.com/clan/${tag.substring(1)}/race`,
+      url: `https://cwstats.com/clan/${tag.substring(1)}/race`
     }
 
     const badgeEmoji = client.cwEmojis.get(badge)
-    const fameEmoji = client.cwEmojis.get("fame")
-    const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
-    const slotsRemainingEmoji = client.cwEmojis.get("remainingSlots")
+    const fameEmoji = client.cwEmojis.get('fame')
+    const decksRemainingEmoji = client.cwEmojis.get('decksRemaining')
+    const slotsRemainingEmoji = client.cwEmojis.get('remainingSlots')
 
     embed.description += `\u202A${badgeEmoji} **${formatStr(
-      name,
+      name
     )}**\n${fameEmoji} **${fame}**\n${decksRemainingEmoji} **${decksRemaining}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n`
 
-    const labels = ["4 Attacks", "3 Attacks", "2 Attacks", "1 Attack"]
+    const labels = ['4 Attacks', '3 Attacks', '2 Attacks', '1 Attack']
 
     for (let i = 0; i < attackBuckets.length; i++) {
       const group = attackBuckets[i]
 
       if (group.length > 0) {
         embed.description += `\n**__${labels[i]}__** (${group.length})\n`
-        embed.description += group.map((p) => `• ${formatStr(p.name)}\n`).join("")
+        embed.description += group.map((p) => `• ${formatStr(p.name)}\n`).join('')
       }
     }
 
     return i.editReply({
-      embeds: [embed],
+      embeds: [embed]
     })
-  },
+  }
 }

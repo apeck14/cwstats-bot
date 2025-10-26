@@ -1,112 +1,107 @@
-const { getGuild, getRace } = require("../util/services")
-const { pink } = require("../static/colors")
-const { errorMsg, warningMsg } = require("../util/functions")
-const { formatPlace, formatStr } = require("../util/formatting")
+/* eslint-disable camelcase */
+const { getGuild, getRace } = require('../util/services')
+const { pink } = require('../static/colors')
+const { errorMsg, warningMsg } = require('../util/functions')
+const { formatPlace, formatStr } = require('../util/formatting')
 
 module.exports = {
   data: {
-    description: "View current river race stats and projections.",
+    description: 'View current river race stats and projections.',
     description_localizations: {
-      de: "Aktuelle Flussrennen-Statistiken und Prognosen anzeigen.",
-      "es-ES": "Ver estadísticas y proyecciones de la carrera fluvial actual.",
-      fr: "Afficher les statistiques et les projections de la course sur la rivière en cours.",
-      it: "Visualizza le statistiche e le previsioni della gara fluviale in corso.",
-      nl: "Bekijk de huidige rivier race statistieken en projecties.",
-      "pt-BR": "Ver estatísticas e projeções da corrida atual do rio.",
-      tr: "Mevcut nehir yarışı istatistiklerini ve projeksiyonlarını görüntüleyin.",
+      de: 'Aktuelle Flussrennen-Statistiken und Prognosen anzeigen.',
+      'es-ES': 'Ver estadísticas y proyecciones de la carrera fluvial actual.',
+      fr: 'Afficher les statistiques et les projections de la course sur la rivière en cours.',
+      it: 'Visualizza le statistiche e le previsioni della gara fluviale in corso.',
+      nl: 'Bekijk de huidige rivier race statistieken en projecties.',
+      'pt-BR': 'Ver estatísticas e projeções da corrida atual do rio.',
+      tr: 'Mevcut nehir yarışı istatistiklerini ve projeksiyonlarını görüntüleyin.'
     },
-    name: "race",
+    name: 'race',
     name_localizations: {
-      de: "rennen",
-      "es-ES": "carrera",
-      fr: "course",
-      it: "corsa",
-      nl: "race",
-      "pt-BR": "corrida",
-      tr: "yarış",
+      de: 'rennen',
+      'es-ES': 'carrera',
+      fr: 'course',
+      it: 'corsa',
+      nl: 'race',
+      'pt-BR': 'corrida',
+      tr: 'yarış'
     },
     options: [
       {
-        description: "Clan tag (#ABC123) or abbreviation",
+        description: 'Clan tag (#ABC123) or abbreviation',
         description_localizations: {
-          de: "Clan-Tag (#ABC123) oder Abkürzung",
-          "es-ES": "Etiqueta del clan (#ABC123) o abreviatura",
-          fr: "Tag du clan (#ABC123) ou abréviation",
-          it: "Tag del clan (#ABC123) o abbreviazione",
-          nl: "Clan tag (#ABC123) of afkorting",
-          "pt-BR": "Tag do clã (#ABC123) ou abreviação",
-          tr: "Klan etiketi (#ABC123) veya kısaltma",
+          de: 'Clan-Tag (#ABC123) oder Abkürzung',
+          'es-ES': 'Etiqueta del clan (#ABC123) o abreviatura',
+          fr: 'Tag du clan (#ABC123) ou abréviation',
+          it: 'Tag del clan (#ABC123) o abbreviazione',
+          nl: 'Clan tag (#ABC123) of afkorting',
+          'pt-BR': 'Tag do clã (#ABC123) ou abreviação',
+          tr: 'Klan etiketi (#ABC123) veya kısaltma'
         },
-        name: "tag",
+        name: 'tag',
         name_localizations: {
-          de: "kennzeichnung",
-          "es-ES": "etiqueta",
-          fr: "balise",
-          it: "tag",
-          nl: "tag",
-          "pt-BR": "tag",
-          tr: "etiket",
+          de: 'kennzeichnung',
+          'es-ES': 'etiqueta',
+          fr: 'balise',
+          it: 'tag',
+          nl: 'tag',
+          'pt-BR': 'tag',
+          tr: 'etiket'
         },
         required: false,
-        type: 3,
-      },
-    ],
+        type: 3
+      }
+    ]
   },
   run: async (i, client) => {
     const { data: guild, error: guildError } = await getGuild(i.guildId, true)
 
-    if (guildError || !guild) return errorMsg(i, guildError || "**Guild not found.**")
+    if (guildError || !guild) return errorMsg(i, guildError || '**Guild not found.**')
 
-    let tag = i.options.getString("tag")
+    let tag = i.options.getString('tag')
     const { abbreviations, defaultClan } = guild
 
     // default clan
     if (!tag) {
       if (defaultClan?.tag) tag = defaultClan.tag
-      else
-        return warningMsg(
-          i,
-          `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`,
-        )
+      else return warningMsg(i, `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`)
     } else {
       // abbreviation
       const UPPERCASE_ABBR = tag.toUpperCase()
       const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
 
       if (abbr) tag = abbr.tag
-      else if (tag.length < 3) return warningMsg(i, "**Abbreviation does not exist.**")
+      else if (tag.length < 3) return warningMsg(i, '**Abbreviation does not exist.**')
     }
 
     const { data: race, error: raceError } = await getRace(tag)
 
     if (raceError) return errorMsg(i, raceError)
 
-    if (race.state === "matchmaking") return warningMsg(i, ":mag: **Matchmaking is underway!**")
-    if (!race.clans || !race.clans.length) return warningMsg(i, "**Clan is not in a river race.**")
+    if (race.state === 'matchmaking') return warningMsg(i, ':mag: **Matchmaking is underway!**')
+    if (!race.clans || !race.clans.length) return warningMsg(i, '**Clan is not in a river race.**')
 
     const { clanIndex, clans, dayIndex, isColosseum, isTraining, sectionIndex } = race
     const { tag: clanTag } = clans[clanIndex]
 
     const embed = {
       author: {
-        name: `Week ${sectionIndex + 1} | ${isTraining ? "Training" : "War"} Day ${
-          isTraining ? dayIndex + 1 : dayIndex - 2
-        }`,
+        name: `Week ${sectionIndex + 1} | ${isTraining ? 'Training' : 'War'} Day ${isTraining ? dayIndex + 1 : dayIndex - 2}`
       },
       color: pink,
-      description: "",
+      description: '',
       thumbnail: {
-        url: "https://i.imgur.com/VAPR8Jq.png",
+        url: 'https://i.imgur.com/VAPR8Jq.png'
       },
       title: isColosseum ? `**__Colosseum__**` : `**__River Race__**`,
-      url: `https://www.cwstats.com/clan/${clanTag.substring(1)}/race`,
+      url: `https://www.cwstats.com/clan/${clanTag.substring(1)}/race`
     }
 
-    const fameEmoji = client.cwEmojis.get("fame")
-    const fameAvgEmoji = client.cwEmojis.get("fameAvg")
-    const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
-    const projectionEmoji = client.cwEmojis.get("projection")
-    const flagEmoji = client.cwEmojis.get("flag")
+    const fameEmoji = client.cwEmojis.get('fame')
+    const fameAvgEmoji = client.cwEmojis.get('fameAvg')
+    const decksRemainingEmoji = client.cwEmojis.get('decksRemaining')
+    const projectionEmoji = client.cwEmojis.get('projection')
+    const flagEmoji = client.cwEmojis.get('flag')
 
     let passedFinishLine = true
 
@@ -115,10 +110,10 @@ module.exports = {
 
       const badgeEmoji = client.cwEmojis.get(badge)
       const isClan = tag === clanTag
-      const formattedClanName = `${badgeEmoji} **${isClan ? "__" : ""}${formatStr(name)}${isClan ? "__" : ""}**\n`
+      const formattedClanName = `${badgeEmoji} **${isClan ? '__' : ''}${formatStr(name)}${isClan ? '__' : ''}**\n`
 
       if (!crossedFinishLine && passedFinishLine) {
-        embed.description += "\n"
+        embed.description += '\n'
         passedFinishLine = false
       }
 
@@ -139,7 +134,7 @@ module.exports = {
     }
 
     i.editReply({
-      embeds: [embed],
+      embeds: [embed]
     })
-  },
+  }
 }

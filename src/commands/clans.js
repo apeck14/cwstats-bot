@@ -1,23 +1,19 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require("discord.js")
-const { errorMsg, getClanBadge } = require("../util/functions")
-const { pink } = require("../static/colors")
-const { formatStr } = require("../util/formatting")
-const {
-  getAllPlusClans,
-  getDailyLeaderboard,
-  getGuildLinkedClans,
-  getRace,
-  setCommandCooldown,
-} = require("../util/services")
+/* eslint-disable camelcase */
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js')
+const { formatStr } = require('../util/formatting')
+const { errorMsg, getClanBadge } = require('../util/functions')
+const { pink } = require('../static/colors')
+
+const { getAllPlusClans, getDailyLeaderboard, getGuildLinkedClans, getRace, setCommandCooldown } = require('../util/services')
 
 const ITEMS_PER_PAGE = 5
 
 const generateEmbed = ({ client, interaction, liveClanData, pageIndex }) => {
-  const decksRemainingEmoji = client.cwEmojis.get("decksRemaining")
-  const projectionEmoji = client.cwEmojis.get("projection")
-  const fameAvgEmoji = client.cwEmojis.get("fameAvg")
-  const flagEmoji = client.cwEmojis.get("flag")
-  const plusEmoji = client.cwEmojis.get("cwstats_plus")
+  const decksRemainingEmoji = client.cwEmojis.get('decksRemaining')
+  const projectionEmoji = client.cwEmojis.get('projection')
+  const fameAvgEmoji = client.cwEmojis.get('fameAvg')
+  const flagEmoji = client.cwEmojis.get('flag')
+  const plusEmoji = client.cwEmojis.get('cwstats_plus')
 
   const start = pageIndex * ITEMS_PER_PAGE
   const end = start + ITEMS_PER_PAGE
@@ -30,7 +26,7 @@ const generateEmbed = ({ client, interaction, liveClanData, pageIndex }) => {
           const badgeEmoji = client.cwEmojis.get(c.badgeEmoji)
           const url = `https://www.cwstats.com/clan/${c.tag.substring(1)}/race`
 
-          let entry = `\u202A${badgeEmoji} [**${formatStr(c.name)}**](${url})${c.isPlus ? ` ${plusEmoji}` : ""}`
+          let entry = `\u202A${badgeEmoji} [**${formatStr(c.name)}**](${url})${c.isPlus ? ` ${plusEmoji}` : ''}`
 
           if (c.isTraining || c.noData) return entry
           if (c.crossedFinishLine) {
@@ -41,7 +37,7 @@ const generateEmbed = ({ client, interaction, liveClanData, pageIndex }) => {
           entry += `\n${projectionEmoji} **${c.projPlace}** ${fameAvgEmoji} **${c.fameAvg.toFixed(2)}** ${decksRemainingEmoji} **${c.decksRemaining}**`
           return entry
         })
-        .join("\n\n")
+        .join('\n\n')
 
   const embed = new EmbedBuilder()
     .setTitle(`__Live River Races__`)
@@ -52,11 +48,11 @@ const generateEmbed = ({ client, interaction, liveClanData, pageIndex }) => {
   // set pages footer
   if (liveClanData.length) {
     embed.setFooter({
-      text: `Page ${pageIndex + 1} of ${Math.ceil(liveClanData.length / ITEMS_PER_PAGE)}`,
+      text: `Page ${pageIndex + 1} of ${Math.ceil(liveClanData.length / ITEMS_PER_PAGE)}`
     })
 
     // set cooldown timestamp (now + 1 min)
-    setCommandCooldown(interaction.guildId, "clans", 60000)
+    setCommandCooldown(interaction.guildId, 'clans', 60000)
   }
 
   return embed
@@ -65,47 +61,44 @@ const generateEmbed = ({ client, interaction, liveClanData, pageIndex }) => {
 const generateButtons = ({ liveClanData, pageIndex }) =>
   new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-      .setCustomId("prev_page")
-      .setLabel("◀️")
+      .setCustomId('prev_page')
+      .setLabel('◀️')
       .setStyle(ButtonStyle.Primary)
       .setDisabled(pageIndex === 0),
     new ButtonBuilder()
-      .setCustomId("next_page")
-      .setLabel("▶️")
+      .setCustomId('next_page')
+      .setLabel('▶️')
       .setStyle(ButtonStyle.Primary)
-      .setDisabled(pageIndex >= Math.ceil(liveClanData.length / ITEMS_PER_PAGE) - 1),
+      .setDisabled(pageIndex >= Math.ceil(liveClanData.length / ITEMS_PER_PAGE) - 1)
   )
 
 module.exports = {
   cooldown: true,
   data: {
-    description: "View real-time race data for all clans linked to your server.",
+    description: 'View real-time race data for all clans linked to your server.',
     description_localizations: {
-      de: "Zeige Echtzeit-Renndaten für alle verknüpften Clans in deinem Server an.",
-      "es-ES": "Ve datos de carrera en tiempo real para todos los clanes vinculados en tu servidor.",
-      fr: "Affichez les données de course en temps réel pour tous les clans liés sur votre serveur.",
-      it: "Visualizza i dati di gara in tempo reale per tutti i clan collegati nel tuo server.",
-      nl: "Bekijk realtime racedata voor alle gekoppelde clans in je server.",
-      "pt-BR": "Ver dados de corrida em tempo real para todos os clãs vinculados ao seu servidor.",
-      tr: "Sunucunuzdaki tüm bağlı klanlar için gerçek zamanlı yarış verilerini görüntüleyin.",
+      de: 'Zeige Echtzeit-Renndaten für alle verknüpften Clans in deinem Server an.',
+      'es-ES': 'Ve datos de carrera en tiempo real para todos los clanes vinculados en tu servidor.',
+      fr: 'Affichez les données de course en temps réel pour tous les clans liés sur votre serveur.',
+      it: 'Visualizza i dati di gara in tempo reale per tutti i clan collegati nel tuo server.',
+      nl: 'Bekijk realtime racedata voor alle gekoppelde clans in je server.',
+      'pt-BR': 'Ver dados de corrida em tempo real para todos os clãs vinculados ao seu servidor.',
+      tr: 'Sunucunuzdaki tüm bağlı klanlar için gerçek zamanlı yarış verilerini görüntüleyin.'
     },
-    name: "clans",
+    name: 'clans',
     name_localizations: {
-      de: "clans",
-      "es-ES": "clanes",
-      fr: "clans",
-      it: "clan",
-      nl: "clans",
-      "pt-BR": "clãs",
-      tr: "klanlar",
-    },
+      de: 'clans',
+      'es-ES': 'clanes',
+      fr: 'clans',
+      it: 'clan',
+      nl: 'clans',
+      'pt-BR': 'clãs',
+      tr: 'klanlar'
+    }
   },
   run: async (i, client) => {
-    const [
-      { data: linkedClans, error: linkedClansError },
-      { data: fullDailyLb, error: dailyLbError },
-      { data: plusTags, error: plusClansError },
-    ] = await Promise.all([getGuildLinkedClans(i.guildId), getDailyLeaderboard({}), getAllPlusClans(true)])
+    const [{ data: linkedClans, error: linkedClansError }, { data: fullDailyLb, error: dailyLbError }, { data: plusTags, error: plusClansError }] =
+      await Promise.all([getGuildLinkedClans(i.guildId), getDailyLeaderboard({}), getAllPlusClans(true)])
 
     if (linkedClansError || dailyLbError || plusClansError) {
       return errorMsg(i, linkedClansError || dailyLbError || plusClansError)
@@ -138,9 +131,9 @@ module.exports = {
             isPlus: true,
             isTraining,
             name: c.clanName,
-            projPlace: projPlace < 0 ? "N/A" : projPlace,
+            projPlace: projPlace < 0 ? 'N/A' : projPlace,
             tag: c.tag,
-            trophies: clanScore,
+            trophies: clanScore
           })
 
           continue
@@ -158,9 +151,9 @@ module.exports = {
             isPlus: false,
             isTraining: clan.isTraining,
             name: c.clanName,
-            projPlace: clan.projPlacement || "N/A",
+            projPlace: clan.projPlacement || 'N/A',
             tag: c.tag,
-            trophies: clan.clanScore,
+            trophies: clan.clanScore
           })
 
           continue
@@ -168,10 +161,10 @@ module.exports = {
 
         // clans that won't show data (non-plus & not on daily leaderboard)
         liveClanData.push({
-          badgeEmoji: c.clanBadge.replace(/-/g, ""),
+          badgeEmoji: c.clanBadge.replace(/-/g, ''),
           name: c.clanName,
           noData: true,
-          tag: c.tag,
+          tag: c.tag
         })
       } catch (e) {
         console.log(c.tag, e)
@@ -200,26 +193,40 @@ module.exports = {
 
     const message = await i.editReply({
       components: [generateButtons({ liveClanData, pageIndex: page })],
-      embeds: [generateEmbed({ client, interaction: i, liveClanData, pageIndex: page })],
-      fetchReply: true,
+      embeds: [
+        generateEmbed({
+          client,
+          interaction: i,
+          liveClanData,
+          pageIndex: page
+        })
+      ],
+      fetchReply: true
     })
 
     const collector = message.createMessageComponentCollector({ time: 60000 })
 
-    collector.on("collect", async (interaction) => {
+    collector.on('collect', async (interaction) => {
       if (!interaction.isButton()) return
 
-      if (interaction.customId === "prev_page" && page > 0) page--
-      if (interaction.customId === "next_page" && page < Math.ceil(liveClanData.length / ITEMS_PER_PAGE) - 1) page++
+      if (interaction.customId === 'prev_page' && page > 0) page--
+      if (interaction.customId === 'next_page' && page < Math.ceil(liveClanData.length / ITEMS_PER_PAGE) - 1) page++
 
       await interaction.update({
         components: [generateButtons({ liveClanData, pageIndex: page })],
-        embeds: [generateEmbed({ client, interaction: i, liveClanData, pageIndex: page })],
+        embeds: [
+          generateEmbed({
+            client,
+            interaction: i,
+            liveClanData,
+            pageIndex: page
+          })
+        ]
       })
     })
 
-    collector.on("end", async () => {
+    collector.on('end', async () => {
       await message.edit({ components: [] }) // Remove buttons when expired
     })
-  },
+  }
 }

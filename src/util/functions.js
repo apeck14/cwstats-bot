@@ -1,73 +1,73 @@
-const badges = require("../static/badges")
-const { green, orange, pink, red } = require("../static/colors")
-const { formatRole, formatStr } = require("./formatting")
+const badges = require('../static/badges')
+const { green, orange, pink, red } = require('../static/colors')
+const { formatRole, formatStr } = require('./formatting')
 
 const getClanBadge = (badgeId, trophyCount, returnEmojiPath = true) => {
-  if (badgeId === -1 || badgeId === null) return "no_clan" // no clan
+  if (badgeId === -1 || badgeId === null) return 'no_clan' // no clan
 
   const badgeName = badges.find((b) => b.id === badgeId).name
   let league
 
   if (returnEmojiPath) {
-    if (trophyCount >= 5000) league = "legendary3"
-    else if (trophyCount >= 4000) league = "legendary2"
-    else if (trophyCount >= 3000) league = "legendary1"
-    else if (trophyCount >= 2500) league = "gold3"
-    else if (trophyCount >= 2000) league = "gold2"
-    else if (trophyCount >= 1500) league = "gold1"
-    else if (trophyCount >= 1200) league = "silver3"
-    else if (trophyCount >= 900) league = "silver2"
-    else if (trophyCount >= 600) league = "silver1"
-    else if (trophyCount >= 400) league = "bronze3"
-    else if (trophyCount >= 200) league = "bronze2"
-    else league = "bronze1"
-  } else if (trophyCount >= 5000) league = "legendary-3"
-  else if (trophyCount >= 4000) league = "legendary-2"
-  else if (trophyCount >= 3000) league = "legendary-1"
-  else if (trophyCount >= 2500) league = "gold-3"
-  else if (trophyCount >= 2000) league = "gold-2"
-  else if (trophyCount >= 1500) league = "gold-1"
-  else if (trophyCount >= 1200) league = "silver-3"
-  else if (trophyCount >= 900) league = "silver-2"
-  else if (trophyCount >= 600) league = "silver-1"
-  else if (trophyCount >= 400) league = "bronze-3"
-  else if (trophyCount >= 200) league = "bronze-2"
-  else league = "bronze-1"
+    if (trophyCount >= 5000) league = 'legendary3'
+    else if (trophyCount >= 4000) league = 'legendary2'
+    else if (trophyCount >= 3000) league = 'legendary1'
+    else if (trophyCount >= 2500) league = 'gold3'
+    else if (trophyCount >= 2000) league = 'gold2'
+    else if (trophyCount >= 1500) league = 'gold1'
+    else if (trophyCount >= 1200) league = 'silver3'
+    else if (trophyCount >= 900) league = 'silver2'
+    else if (trophyCount >= 600) league = 'silver1'
+    else if (trophyCount >= 400) league = 'bronze3'
+    else if (trophyCount >= 200) league = 'bronze2'
+    else league = 'bronze1'
+  } else if (trophyCount >= 5000) league = 'legendary-3'
+  else if (trophyCount >= 4000) league = 'legendary-2'
+  else if (trophyCount >= 3000) league = 'legendary-1'
+  else if (trophyCount >= 2500) league = 'gold-3'
+  else if (trophyCount >= 2000) league = 'gold-2'
+  else if (trophyCount >= 1500) league = 'gold-1'
+  else if (trophyCount >= 1200) league = 'silver-3'
+  else if (trophyCount >= 900) league = 'silver-2'
+  else if (trophyCount >= 600) league = 'silver-1'
+  else if (trophyCount >= 400) league = 'bronze-3'
+  else if (trophyCount >= 200) league = 'bronze-2'
+  else league = 'bronze-1'
 
   return `${badgeName}_${league}`
 }
 
 const getArenaEmoji = (pb) => {
-  if (pb >= 8000) return "arena24"
-  if (pb >= 7600) return "arena23"
-  if (pb >= 7300) return "arena22"
-  if (pb >= 7000) return "arena21"
-  if (pb >= 6600) return "arena20"
-  if (pb >= 6300) return "arena19"
-  if (pb >= 6000) return "arena18"
-  if (pb >= 5600) return "arena17"
-  if (pb >= 5300) return "arena16"
-  if (pb >= 5000) return "arena15"
-  if (pb >= 4600) return "arena14"
-  if (pb >= 4200) return "arena13"
-  if (pb >= 3800) return "arena12"
-  if (pb >= 3400) return "arena11"
-  if (pb >= 3000) return "arena10"
-  if (pb >= 2600) return "arena9"
-  if (pb >= 2300) return "arena8"
-  if (pb >= 2000) return "arena7"
-  if (pb >= 1600) return "arena6"
-  if (pb >= 1300) return "arena5"
-  if (pb >= 1000) return "arena4"
-  if (pb >= 600) return "arena3"
-  if (pb >= 300) return "arena2"
-  return "arena1"
+  if (pb >= 8000) return 'arena24'
+  if (pb >= 7600) return 'arena23'
+  if (pb >= 7300) return 'arena22'
+  if (pb >= 7000) return 'arena21'
+  if (pb >= 6600) return 'arena20'
+  if (pb >= 6300) return 'arena19'
+  if (pb >= 6000) return 'arena18'
+  if (pb >= 5600) return 'arena17'
+  if (pb >= 5300) return 'arena16'
+  if (pb >= 5000) return 'arena15'
+  if (pb >= 4600) return 'arena14'
+  if (pb >= 4200) return 'arena13'
+  if (pb >= 3800) return 'arena12'
+  if (pb >= 3400) return 'arena11'
+  if (pb >= 3000) return 'arena10'
+  if (pb >= 2600) return 'arena9'
+  if (pb >= 2300) return 'arena8'
+  if (pb >= 2000) return 'arena7'
+  if (pb >= 1600) return 'arena6'
+  if (pb >= 1300) return 'arena5'
+  if (pb >= 1000) return 'arena4'
+  if (pb >= 600) return 'arena3'
+  if (pb >= 300) return 'arena2'
+  return 'arena1'
 }
 
 const errorMsg = async (i, message) => {
   const embed = {
     color: red,
-    description: message,
+    description: message
   }
 
   if (i.deferred || i.replied) {
@@ -80,7 +80,7 @@ const errorMsg = async (i, message) => {
 const warningMsg = async (i, message) => {
   const embed = {
     color: orange,
-    description: message,
+    description: message
   }
 
   if (i.deferred || i.replied) {
@@ -93,7 +93,7 @@ const warningMsg = async (i, message) => {
 const successMsg = async (i, message) => {
   const embed = {
     color: green,
-    description: message,
+    description: message
   }
 
   if (i.deferred || i.replied) {
@@ -108,7 +108,7 @@ const getPlayerCardData = (cards) => {
     evolutions: 0,
     lvl13: 0,
     lvl14: 0,
-    lvl15: 0,
+    lvl15: 0
   }
 
   for (const c of cards) {
@@ -129,17 +129,17 @@ const createPlayerEmbed = (client, player, clanBadge) => {
 
   const badgeEmoji = client.cwEmojis.get(clanBadge)
   const levelEmoji = client.cwEmojis.get(`level${player.expLevel}`)
-  const polMedalsEmoji = client.cwEmojis.get("polmedals")
+  const polMedalsEmoji = client.cwEmojis.get('polmedals')
   const ladderEmoji = client.cwEmojis.get(arenaEmoji)
   const pbEmoji = client.cwEmojis.get(getArenaEmoji(player.bestTrophies))
-  const level15 = client.cwEmojis.get("level15")
-  const level14 = client.cwEmojis.get("level14")
-  const level13 = client.cwEmojis.get("level13")
-  const wildShardEmoji = client.cwEmojis.get("wildshard")
+  const level15 = client.cwEmojis.get('level15')
+  const level14 = client.cwEmojis.get('level14')
+  const level13 = client.cwEmojis.get('level13')
+  const wildShardEmoji = client.cwEmojis.get('wildshard')
 
-  const ccWins = player.badges.find((b) => b.name === "Classic12Wins")?.progress || 0
-  const gcWins = player.badges.find((b) => b.name === "Grand12Wins")?.progress || 0
-  const cw2Wins = player.badges.find((b) => b.name === "ClanWarWins")?.progress || 0
+  const ccWins = player.badges.find((b) => b.name === 'Classic12Wins')?.progress || 0
+  const gcWins = player.badges.find((b) => b.name === 'Grand12Wins')?.progress || 0
+  const cw2Wins = player.badges.find((b) => b.name === 'ClanWarWins')?.progress || 0
 
   const { evolutions, lvl13, lvl14, lvl15 } = getPlayerCardData(player.cards)
 
@@ -147,34 +147,34 @@ const createPlayerEmbed = (client, player, clanBadge) => {
     color: pink,
     description: ``,
     thumbnail: {
-      url: "attachment://arena.png",
+      url: 'attachment://arena.png'
     },
     title: `\u202A${levelEmoji} **${player.name}**`,
-    url: `https://royaleapi.com/player/${player.tag.substring(1)}`,
+    url: `https://royaleapi.com/player/${player.tag.substring(1)}`
   }
 
-  const clanName = player?.clan?.name || "None"
+  const clanName = player?.clan?.name || 'None'
 
   embed.description += `${ladderEmoji} **${player.trophies}** / ${pbEmoji} ${
     player.bestTrophies
-  }\n\u202A${badgeEmoji} **${formatStr(clanName)}**${player.role ? ` (${formatRole(player.role)})` : ""}`
+  }\n\u202A${badgeEmoji} **${formatStr(clanName)}**${player.role ? ` (${formatRole(player.role)})` : ''}`
 
   const {
     bestPathOfLegendSeasonResult: bestPOLObj,
     currentPathOfLegendSeasonResult: currentPOLObj,
-    lastPathOfLegendSeasonResult: lastPOLObj,
+    lastPathOfLegendSeasonResult: lastPOLObj
   } = player
 
   // ! bug with supercell's API for current POL season rank
-  const currentPOLSeasonStr = currentPOLObj?.trophies ? `${polMedalsEmoji} **${currentPOLObj.trophies}**` : "N/A"
+  const currentPOLSeasonStr = currentPOLObj?.trophies ? `${polMedalsEmoji} **${currentPOLObj.trophies}**` : 'N/A'
 
   const bestPOLSeasonStr = bestPOLObj?.trophies
-    ? `${polMedalsEmoji} **${bestPOLObj.trophies}**${bestPOLObj.rank ? ` (#${bestPOLObj.rank})` : ""}`
-    : "N/A"
+    ? `${polMedalsEmoji} **${bestPOLObj.trophies}**${bestPOLObj.rank ? ` (#${bestPOLObj.rank})` : ''}`
+    : 'N/A'
 
   const lastPOLSeasonStr = lastPOLObj?.trophies
-    ? `${polMedalsEmoji} **${lastPOLObj.trophies}**${lastPOLObj.rank ? ` (#${lastPOLObj.rank})` : ""}`
-    : "N/A"
+    ? `${polMedalsEmoji} **${lastPOLObj.trophies}**${lastPOLObj.rank ? ` (#${lastPOLObj.rank})` : ''}`
+    : 'N/A'
 
   embed.description += `\n\n**__POL__**`
   embed.description += `\n**Current Season**: ${currentPOLSeasonStr}`
@@ -182,7 +182,7 @@ const createPlayerEmbed = (client, player, clanBadge) => {
   embed.description += `\n**Best Season**: ${bestPOLSeasonStr}`
 
   embed.description += `\n\n**__Stats__**\n**Legacy PB**: ${
-    player.legacyTrophyRoadHighScore || "None"
+    player.legacyTrophyRoadHighScore || 'None'
   }\n**CW1 Wins**: ${player.warDayWins}\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${
     player.challengeMaxWins
   }\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n`
@@ -193,9 +193,9 @@ const createPlayerEmbed = (client, player, clanBadge) => {
     files: [
       {
         attachment: `./src/static/images/arenas/${arenaEmoji}.png`,
-        name: "arena.png",
-      },
-    ],
+        name: 'arena.png'
+      }
+    ]
   }
 }
 
@@ -206,5 +206,5 @@ module.exports = {
   getClanBadge,
   getPlayerCardData,
   successMsg,
-  warningMsg,
+  warningMsg
 }

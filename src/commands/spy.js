@@ -1,20 +1,21 @@
-const { getClan, getPlayer, getPlayerBattleLog, getPlayerSearch } = require("../util/services")
-const { pink } = require("../static/colors")
-const { errorMsg } = require("../util/functions")
-const { formatStr, formatTag } = require("../util/formatting")
+/* eslint-disable camelcase */
+const { getClan, getPlayer, getPlayerBattleLog, getPlayerSearch } = require('../util/services')
+const { pink } = require('../static/colors')
+const { errorMsg } = require('../util/functions')
+const { formatStr, formatTag } = require('../util/formatting')
 
-const specialGamemodes = require("../static/specialGamemodes")
+const specialGamemodes = require('../static/specialGamemodes')
 
 function sharesCards(deck1, deck2) {
   const set2 = new Set(deck2)
   return deck1.some((card) => set2.has(card))
 }
 
-function addDeck(deck, duelDecks, singleDecks, type = "duel", emoji = "duel", duelSet = false) {
+function addDeck(deck, duelDecks, singleDecks, type = 'duel', emoji = 'duel', duelSet = false) {
   const alreadyExists = [...duelDecks, ...singleDecks].some((d) => sharesCards(d.cards, deck))
   if (alreadyExists) return
 
-  if (type === "duel" && !duelSet) {
+  if (type === 'duel' && !duelSet) {
     // Remove overlapping decks from singles
     for (let i = 0; i < singleDecks.length; i++) {
       if (sharesCards(singleDecks[i].cards, deck)) {
@@ -29,152 +30,152 @@ function addDeck(deck, duelDecks, singleDecks, type = "duel", emoji = "duel", du
 }
 
 function getCardEmoji(cardName, emojis) {
-  const normalized = cardName.toLowerCase().replace(/\s+/g, "_").replace(/\./g, "").replace(/-/g, "_")
-  return emojis.get(normalized) || emojis.get("unknown")
+  const normalized = cardName.toLowerCase().replace(/\s+/g, '_').replace(/\./g, '').replace(/-/g, '_')
+  return emojis.get(normalized) || emojis.get('unknown')
 }
 
 function formatDeck(cards) {
-  return cards.map((c) => `${c.name}${c.evolutionLevel ? " Evo" : ""}`)
+  return cards.map((c) => `${c.name}${c.evolutionLevel ? ' Evo' : ''}`)
 }
 
 module.exports = {
   data: {
     description: "View your opponent's war decks.",
     description_localizations: {
-      de: "Die Kriegsdecks deines Gegners anzeigen.",
-      "es-ES": "Ver los mazos de guerra de tu oponente.",
-      fr: "Afficher les decks de guerre de votre adversaire.",
-      it: "Visualizza i mazzi di guerra del tuo avversario.",
-      nl: "Bekijk de oorlogsdecks van je tegenstander.",
-      "pt-BR": "Veja os decks de guerra do seu oponente.",
-      tr: "Rakibinizin savaş destelerini görüntüleyin.",
+      de: 'Die Kriegsdecks deines Gegners anzeigen.',
+      'es-ES': 'Ver los mazos de guerra de tu oponente.',
+      fr: 'Afficher les decks de guerre de votre adversaire.',
+      it: 'Visualizza i mazzi di guerra del tuo avversario.',
+      nl: 'Bekijk de oorlogsdecks van je tegenstander.',
+      'pt-BR': 'Veja os decks de guerra do seu oponente.',
+      tr: 'Rakibinizin savaş destelerini görüntüleyin.'
     },
-    name: "spy",
+    name: 'spy',
     name_localizations: {
-      de: "spion",
-      "es-ES": "espía",
-      fr: "espion",
-      it: "spia",
-      nl: "spion",
-      "pt-BR": "espiar",
-      tr: "casus",
+      de: 'spion',
+      'es-ES': 'espía',
+      fr: 'espion',
+      it: 'spia',
+      nl: 'spion',
+      'pt-BR': 'espiar',
+      tr: 'casus'
     },
     options: [
       {
-        description: "Search by player tag",
+        description: 'Search by player tag',
         description_localizations: {
-          de: "Suche nach Spielertag",
-          "es-ES": "Búsqueda por etiqueta de jugador",
-          fr: "Recherche par tag de joueur",
-          it: "Ricerca per tag del giocatore",
-          nl: "Zoeken op spelertag",
-          "pt-BR": "Pesquisar por tag do jogador",
-          tr: "Oyuncu etiketine göre arama",
+          de: 'Suche nach Spielertag',
+          'es-ES': 'Búsqueda por etiqueta de jugador',
+          fr: 'Recherche par tag de joueur',
+          it: 'Ricerca per tag del giocatore',
+          nl: 'Zoeken op spelertag',
+          'pt-BR': 'Pesquisar por tag do jogador',
+          tr: 'Oyuncu etiketine göre arama'
         },
-        name: "-tag",
+        name: '-tag',
         name_localizations: {
-          de: "-kennzeichnung",
-          "es-ES": "-etiqueta",
-          fr: "-balise",
-          it: "-tag",
-          nl: "-tag",
-          "pt-BR": "-tag",
-          tr: "-etiket",
+          de: '-kennzeichnung',
+          'es-ES': '-etiqueta',
+          fr: '-balise',
+          it: '-tag',
+          nl: '-tag',
+          'pt-BR': '-tag',
+          tr: '-etiket'
         },
         options: [
           {
-            description: "Player tag (#ABC123)",
+            description: 'Player tag (#ABC123)',
             description_localizations: {
-              de: "Spielertag (#ABC123)",
-              "es-ES": "Etiqueta del jugador (#ABC123)",
-              fr: "Tag du joueur (#ABC123)",
-              it: "Tag del giocatore (#ABC123)",
-              nl: "Spelertag (#ABC123)",
-              "pt-BR": "Tag do jogador (#ABC123)",
-              tr: "Oyuncu etiketi (#ABC123)",
+              de: 'Spielertag (#ABC123)',
+              'es-ES': 'Etiqueta del jugador (#ABC123)',
+              fr: 'Tag du joueur (#ABC123)',
+              it: 'Tag del giocatore (#ABC123)',
+              nl: 'Spelertag (#ABC123)',
+              'pt-BR': 'Tag do jogador (#ABC123)',
+              tr: 'Oyuncu etiketi (#ABC123)'
             },
-            name: "tag",
+            name: 'tag',
             name_localizations: {
-              de: "kennzeichnung",
-              "es-ES": "etiqueta",
-              fr: "balise",
-              it: "tag",
-              nl: "tag",
-              "pt-BR": "tag",
-              tr: "etiket",
+              de: 'kennzeichnung',
+              'es-ES': 'etiqueta',
+              fr: 'balise',
+              it: 'tag',
+              nl: 'tag',
+              'pt-BR': 'tag',
+              tr: 'etiket'
             },
             required: true,
-            type: 3,
-          },
+            type: 3
+          }
         ],
-        type: 1,
+        type: 1
       },
       {
-        description: "Search by player name",
+        description: 'Search by player name',
         description_localizations: {
-          de: "Suche nach Spieler- und Clanname",
-          "es-ES": "Buscar por jugador y nombre del clan",
-          fr: "Rechercher par nom de joueur et de clan",
-          it: "Cerca per nome giocatore e nome clan",
-          nl: "Zoek op speler- en clannaam",
-          "pt-BR": "Pesquisar por nome do jogador",
-          tr: "Oyuncu ve klan adına göre ara",
+          de: 'Suche nach Spieler- und Clanname',
+          'es-ES': 'Buscar por jugador y nombre del clan',
+          fr: 'Rechercher par nom de joueur et de clan',
+          it: 'Cerca per nome giocatore e nome clan',
+          nl: 'Zoek op speler- en clannaam',
+          'pt-BR': 'Pesquisar por nome do jogador',
+          tr: 'Oyuncu ve klan adına göre ara'
         },
-        name: "-search",
+        name: '-search',
         name_localizations: {
-          de: "-suche",
-          "es-ES": "-búsqueda",
-          fr: "-recherche",
-          it: "-ricerca",
-          nl: "-zoeken",
-          "pt-BR": "-pesquisa",
-          tr: "-arama",
+          de: '-suche',
+          'es-ES': '-búsqueda',
+          fr: '-recherche',
+          it: '-ricerca',
+          nl: '-zoeken',
+          'pt-BR': '-pesquisa',
+          tr: '-arama'
         },
         options: [
           {
             autocomplete: true,
-            description: "Player name",
+            description: 'Player name',
             description_localizations: {
-              de: "Spielername",
-              "es-ES": "Nombre del jugador",
-              fr: "Nom du joueur",
-              it: "Nome del giocatore",
-              nl: "Spelersnaam",
-              "pt-BR": "Nome do jogador",
-              tr: "Oyuncu adı",
+              de: 'Spielername',
+              'es-ES': 'Nombre del jugador',
+              fr: 'Nom du joueur',
+              it: 'Nome del giocatore',
+              nl: 'Spelersnaam',
+              'pt-BR': 'Nome do jogador',
+              tr: 'Oyuncu adı'
             },
-            name: "player",
+            name: 'player',
             name_localizations: {
-              de: "spieler",
-              "es-ES": "jugador",
-              fr: "joueur",
-              it: "giocatore",
-              nl: "speler",
-              "pt-BR": "jogador",
-              tr: "oyuncu",
+              de: 'spieler',
+              'es-ES': 'jugador',
+              fr: 'joueur',
+              it: 'giocatore',
+              nl: 'speler',
+              'pt-BR': 'jogador',
+              tr: 'oyuncu'
             },
             required: true,
-            type: 3,
-          },
+            type: 3
+          }
         ],
-        type: 1,
-      },
-    ],
+        type: 1
+      }
+    ]
   },
   run: async (i, client) => {
     try {
-      const iTag = i.options.getString("tag")
-      const iPlayerSearch = i.options.getString("player")
+      const iTag = i.options.getString('tag')
+      const iPlayerSearch = i.options.getString('player')
 
       let log = []
       const opponent = {
         clan: {
-          badge: "no_clan",
-          name: "",
-          tag: "",
+          badge: 'no_clan',
+          name: '',
+          tag: ''
         },
-        name: "Not Found",
-        tag: "#",
+        name: 'Not Found',
+        tag: '#'
       }
 
       const formattedTag = formatTag(iTag || iPlayerSearch)
@@ -182,7 +183,7 @@ module.exports = {
       const { data, error } = await getPlayerBattleLog(formattedTag)
 
       if (error || data?.length === 0) {
-        const msg = data?.length === 0 ? "**No recent battles found for this player.**" : error
+        const msg = data?.length === 0 ? '**No recent battles found for this player.**' : error
 
         return errorMsg(i, msg)
       }
@@ -212,10 +213,10 @@ module.exports = {
         if (!opponent.clan.name) {
           const { data: player, error: playerError } = await getPlayer(formattedTag)
 
-          if (playerError) return errorMsg(i, "Error while retrieving player data.")
+          if (playerError) return errorMsg(i, 'Error while retrieving player data.')
 
           opponent.name = player.name
-          opponent.clan.name = player?.clan?.name || "None"
+          opponent.clan.name = player?.clan?.name || 'None'
           opponent.clan.tag = player?.clan?.tag
         }
       }
@@ -235,24 +236,24 @@ module.exports = {
       while (duelDecks.length + singleDecks.length < 4 && index < log.length) {
         const m = log[index]
 
-        if (m.type === "riverRacePvP") {
-          let emoji = "normal"
+        if (m.type === 'riverRacePvP') {
+          let emoji = 'normal'
 
-          if (m.gameMode.name !== "CW_Battle_1v1") {
+          if (m.gameMode.name !== 'CW_Battle_1v1') {
             const modeExists = specialGamemodes.find((gm) => gm.name === m.gameMode.name)
             if (modeExists) emoji = modeExists.emoji
           }
 
           const deck = formatDeck(m.team[0].cards)
 
-          addDeck(deck, duelDecks, singleDecks, "single", emoji, duelSet)
-        } else if (m.type === "riverRaceDuel" || m.type === "riverRaceDuelColosseum") {
+          addDeck(deck, duelDecks, singleDecks, 'single', emoji, duelSet)
+        } else if (m.type === 'riverRaceDuel' || m.type === 'riverRaceDuelColosseum') {
           const { rounds } = m.team[0]
 
           for (const r of rounds) {
             const deck = formatDeck(r.cards)
 
-            addDeck(deck, duelDecks, singleDecks, "duel", "duel", duelSet)
+            addDeck(deck, duelDecks, singleDecks, 'duel', 'duel', duelSet)
           }
 
           duelSet = true
@@ -262,12 +263,12 @@ module.exports = {
       }
 
       const badgeEmoji = client.cwEmojis.get(opponent.clan.badge)
-      const duelEmoji = client.cwEmojis.get("duel")
+      const duelEmoji = client.cwEmojis.get('duel')
 
       const embed = {
         color: pink,
         title: opponent.name,
-        url: `https://cwstats.com/player/${opponent.tag.slice(1)}`,
+        url: `https://cwstats.com/player/${opponent.tag.slice(1)}`
       }
 
       const clanName = opponent.clan.tag
@@ -286,7 +287,7 @@ module.exports = {
             duelStr += getCardEmoji(c, client.cwEmojis)
           }
 
-          duelStr += "\n"
+          duelStr += '\n'
           description += duelStr
         }
       }
@@ -312,14 +313,14 @@ module.exports = {
         description += `\n**${4 - duelDecks.length - singleDecks.length}** deck(s) not found.`
 
         embed.footer = {
-          text: "Battle logs only contain last 25 matches.",
+          text: 'Battle logs only contain last 25 matches.'
         }
       }
 
       embed.description = description
 
       i.editReply({
-        embeds: [embed],
+        embeds: [embed]
       })
     } catch (err) {
       console.log(err)
@@ -330,17 +331,17 @@ module.exports = {
     const query = i.options.getFocused()
 
     if (!query || query.length < 2) {
-      i.respond([{ name: "🔎 Search by player name", value: "no_match" }])
+      i.respond([{ name: '🔎 Search by player name', value: 'no_match' }])
       return
     }
 
     const { data: players } = await getPlayerSearch(query, 25)
 
     const mappedPlayers = players.map((p) => ({
-      name: `${p.name} ${p.clanName ? `(${p.clanName})` : ""}`,
-      value: p.tag,
+      name: `${p.name} ${p.clanName ? `(${p.clanName})` : ''}`,
+      value: p.tag
     }))
 
     return mappedPlayers
-  },
+  }
 }
