@@ -1,1618 +1,1619 @@
+/* eslint-disable max-lines */
 module.exports = [
   {
-    id: "global",
+    id: 'global',
     isCountry: false,
-    key: "global",
-    name: "Global",
+    key: 'global',
+    name: 'Global'
   },
   {
     id: 57000000,
     isCountry: false,
-    key: "_EU",
-    name: "Europe",
+    key: '_EU',
+    name: 'Europe'
   },
   {
-    flagEmoji: "<:na:1281504885619036160>",
+    flagEmoji: '<:na:1281504885619036160>',
     id: 57000001,
     isAdded: true,
     isCountry: false,
-    key: "_NA",
-    name: "North America",
+    key: '_NA',
+    name: 'North America'
   },
   {
     id: 57000002,
     isCountry: false,
-    key: "_SA",
-    name: "South America",
+    key: '_SA',
+    name: 'South America'
   },
   {
     id: 57000003,
     isCountry: false,
-    key: "_AS",
-    name: "Asia",
+    key: '_AS',
+    name: 'Asia'
   },
   {
     id: 57000004,
     isCountry: false,
-    key: "_AU",
-    name: "Oceania",
+    key: '_AU',
+    name: 'Oceania'
   },
   {
     id: 57000005,
     isCountry: false,
-    key: "_AF",
-    name: "Africa",
+    key: '_AF',
+    name: 'Africa'
   },
   {
     id: 57000006,
     isCountry: false,
-    key: "_INT",
-    name: "International",
+    key: '_INT',
+    name: 'International'
   },
   {
     id: 57000007,
     isCountry: true,
-    key: "AF",
-    name: "Afghanistan",
+    key: 'AF',
+    name: 'Afghanistan'
   },
   {
     id: 57000008,
     isCountry: true,
-    key: "AX",
-    name: "Åland Islands",
+    key: 'AX',
+    name: 'Åland Islands'
   },
   {
     id: 57000009,
     isCountry: true,
-    key: "AL",
-    name: "Albania",
+    key: 'AL',
+    name: 'Albania'
   },
   {
     id: 57000010,
     isCountry: true,
-    key: "DZ",
-    name: "Algeria",
+    key: 'DZ',
+    name: 'Algeria'
   },
   {
     id: 57000011,
     isCountry: true,
-    key: "AS",
-    name: "American Samoa",
+    key: 'AS',
+    name: 'American Samoa'
   },
   {
     id: 57000012,
     isCountry: true,
-    key: "AD",
-    name: "Andorra",
+    key: 'AD',
+    name: 'Andorra'
   },
   {
     id: 57000013,
     isCountry: true,
-    key: "AO",
-    name: "Angola",
+    key: 'AO',
+    name: 'Angola'
   },
   {
     id: 57000014,
     isCountry: true,
-    key: "AI",
-    name: "Anguilla",
+    key: 'AI',
+    name: 'Anguilla'
   },
   {
     id: 57000015,
     isCountry: true,
-    key: "AQ",
-    name: "Antarctica",
+    key: 'AQ',
+    name: 'Antarctica'
   },
   {
     id: 57000016,
     isCountry: true,
-    key: "AG",
-    name: "Antigua and Barbuda",
+    key: 'AG',
+    name: 'Antigua and Barbuda'
   },
   {
-    flagEmoji: ":flag_ar:",
+    flagEmoji: ':flag_ar:',
     id: 57000017,
     isAdded: true,
     isCountry: true,
-    key: "AR",
-    name: "Argentina",
+    key: 'AR',
+    name: 'Argentina'
   },
   {
     id: 57000018,
     isCountry: true,
-    key: "AM",
-    name: "Armenia",
+    key: 'AM',
+    name: 'Armenia'
   },
   {
     id: 57000019,
     isCountry: true,
-    key: "AW",
-    name: "Aruba",
+    key: 'AW',
+    name: 'Aruba'
   },
   {
     id: 57000020,
     isCountry: true,
-    key: "AC",
-    name: "Ascension Island",
+    key: 'AC',
+    name: 'Ascension Island'
   },
   {
     id: 57000021,
     isCountry: true,
-    key: "AU",
-    name: "Australia",
+    key: 'AU',
+    name: 'Australia'
   },
   {
     id: 57000022,
     isCountry: true,
-    key: "AT",
-    name: "Austria",
+    key: 'AT',
+    name: 'Austria'
   },
   {
     id: 57000023,
     isCountry: true,
-    key: "AZ",
-    name: "Azerbaijan",
+    key: 'AZ',
+    name: 'Azerbaijan'
   },
   {
     id: 57000024,
     isCountry: true,
-    key: "BS",
-    name: "Bahamas",
+    key: 'BS',
+    name: 'Bahamas'
   },
   {
     id: 57000025,
     isCountry: true,
-    key: "BH",
-    name: "Bahrain",
+    key: 'BH',
+    name: 'Bahrain'
   },
   {
     id: 57000026,
     isCountry: true,
-    key: "BD",
-    name: "Bangladesh",
+    key: 'BD',
+    name: 'Bangladesh'
   },
   {
     id: 57000027,
     isCountry: true,
-    key: "BB",
-    name: "Barbados",
+    key: 'BB',
+    name: 'Barbados'
   },
   {
     id: 57000028,
     isCountry: true,
-    key: "BY",
-    name: "Belarus",
+    key: 'BY',
+    name: 'Belarus'
   },
   {
     id: 57000029,
     isCountry: true,
-    key: "BE",
-    name: "Belgium",
+    key: 'BE',
+    name: 'Belgium'
   },
   {
     id: 57000030,
     isCountry: true,
-    key: "BZ",
-    name: "Belize",
+    key: 'BZ',
+    name: 'Belize'
   },
   {
     id: 57000031,
     isCountry: true,
-    key: "BJ",
-    name: "Benin",
+    key: 'BJ',
+    name: 'Benin'
   },
   {
     id: 57000032,
     isCountry: true,
-    key: "BM",
-    name: "Bermuda",
+    key: 'BM',
+    name: 'Bermuda'
   },
   {
     id: 57000033,
     isCountry: true,
-    key: "BT",
-    name: "Bhutan",
+    key: 'BT',
+    name: 'Bhutan'
   },
   {
     id: 57000034,
     isCountry: true,
-    key: "BO",
-    name: "Bolivia",
+    key: 'BO',
+    name: 'Bolivia'
   },
   {
     id: 57000035,
     isCountry: true,
-    key: "BA",
-    name: "Bosnia and Herzegovina",
+    key: 'BA',
+    name: 'Bosnia and Herzegovina'
   },
   {
     id: 57000036,
     isCountry: true,
-    key: "BW",
-    name: "Botswana",
+    key: 'BW',
+    name: 'Botswana'
   },
   {
     id: 57000037,
     isCountry: true,
-    key: "BV",
-    name: "Bouvet Island",
+    key: 'BV',
+    name: 'Bouvet Island'
   },
   {
-    flagEmoji: ":flag_br:",
+    flagEmoji: ':flag_br:',
     id: 57000038,
     isAdded: true,
     isCountry: true,
-    key: "BR",
-    name: "Brazil",
+    key: 'BR',
+    name: 'Brazil'
   },
   {
     id: 57000039,
     isCountry: true,
-    key: "IO",
-    name: "British Indian Ocean Territory",
+    key: 'IO',
+    name: 'British Indian Ocean Territory'
   },
   {
     id: 57000040,
     isCountry: true,
-    key: "VG",
-    name: "British Virgin Islands",
+    key: 'VG',
+    name: 'British Virgin Islands'
   },
   {
     id: 57000041,
     isCountry: true,
-    key: "BN",
-    name: "Brunei",
+    key: 'BN',
+    name: 'Brunei'
   },
   {
     id: 57000042,
     isCountry: true,
-    key: "BG",
-    name: "Bulgaria",
+    key: 'BG',
+    name: 'Bulgaria'
   },
   {
     id: 57000043,
     isCountry: true,
-    key: "BF",
-    name: "Burkina Faso",
+    key: 'BF',
+    name: 'Burkina Faso'
   },
   {
     id: 57000044,
     isCountry: true,
-    key: "BI",
-    name: "Burundi",
+    key: 'BI',
+    name: 'Burundi'
   },
   {
     id: 57000045,
     isCountry: true,
-    key: "KH",
-    name: "Cambodia",
+    key: 'KH',
+    name: 'Cambodia'
   },
   {
     id: 57000046,
     isCountry: true,
-    key: "CM",
-    name: "Cameroon",
+    key: 'CM',
+    name: 'Cameroon'
   },
   {
-    flagEmoji: ":flag_ca:",
+    flagEmoji: ':flag_ca:',
     id: 57000047,
     isAdded: true,
     isCountry: true,
-    key: "CA",
-    name: "Canada",
+    key: 'CA',
+    name: 'Canada'
   },
   {
     id: 57000048,
     isCountry: true,
-    key: "IC",
-    name: "Canary Islands",
+    key: 'IC',
+    name: 'Canary Islands'
   },
   {
     id: 57000049,
     isCountry: true,
-    key: "CV",
-    name: "Cape Verde",
+    key: 'CV',
+    name: 'Cape Verde'
   },
   {
     id: 57000050,
     isCountry: true,
-    key: "BQ",
-    name: "Caribbean Netherlands",
+    key: 'BQ',
+    name: 'Caribbean Netherlands'
   },
   {
     id: 57000051,
     isCountry: true,
-    key: "KY",
-    name: "Cayman Islands",
+    key: 'KY',
+    name: 'Cayman Islands'
   },
   {
     id: 57000052,
     isCountry: true,
-    key: "CF",
-    name: "Central African Republic",
+    key: 'CF',
+    name: 'Central African Republic'
   },
   {
     id: 57000053,
     isCountry: true,
-    key: "EA",
-    name: "Ceuta and Melilla",
+    key: 'EA',
+    name: 'Ceuta and Melilla'
   },
   {
     id: 57000054,
     isCountry: true,
-    key: "TD",
-    name: "Chad",
+    key: 'TD',
+    name: 'Chad'
   },
   {
-    flagEmoji: ":flag_cl:",
+    flagEmoji: ':flag_cl:',
     id: 57000055,
     isAdded: true,
     isCountry: true,
-    key: "CL",
-    name: "Chile",
+    key: 'CL',
+    name: 'Chile'
   },
   {
     id: 57000056,
     isCountry: true,
-    key: "CN",
-    name: "China",
+    key: 'CN',
+    name: 'China'
   },
   {
     id: 57000057,
     isCountry: true,
-    key: "CX",
-    name: "Christmas Island",
+    key: 'CX',
+    name: 'Christmas Island'
   },
   {
     id: 57000058,
     isCountry: true,
-    key: "CC",
-    name: "Cocos (Keeling) Islands",
+    key: 'CC',
+    name: 'Cocos (Keeling) Islands'
   },
   {
     id: 57000059,
     isCountry: true,
-    key: "CO",
-    name: "Colombia",
+    key: 'CO',
+    name: 'Colombia'
   },
   {
     id: 57000060,
     isCountry: true,
-    key: "KM",
-    name: "Comoros",
+    key: 'KM',
+    name: 'Comoros'
   },
   {
     id: 57000061,
     isCountry: true,
-    key: "CG",
-    name: "Congo (DRC)",
+    key: 'CG',
+    name: 'Congo (DRC)'
   },
   {
     id: 57000062,
     isCountry: true,
-    key: "CD",
-    name: "Congo (Republic)",
+    key: 'CD',
+    name: 'Congo (Republic)'
   },
   {
     id: 57000063,
     isCountry: true,
-    key: "CK",
-    name: "Cook Islands",
+    key: 'CK',
+    name: 'Cook Islands'
   },
   {
     id: 57000064,
     isCountry: true,
-    key: "CR",
-    name: "Costa Rica",
+    key: 'CR',
+    name: 'Costa Rica'
   },
   {
     id: 57000065,
     isCountry: true,
-    key: "CI",
-    name: "Côte d’Ivoire",
+    key: 'CI',
+    name: 'Côte d’Ivoire'
   },
   {
     id: 57000066,
     isCountry: true,
-    key: "HR",
-    name: "Croatia",
+    key: 'HR',
+    name: 'Croatia'
   },
   {
     id: 57000067,
     isCountry: true,
-    key: "CU",
-    name: "Cuba",
+    key: 'CU',
+    name: 'Cuba'
   },
   {
     id: 57000068,
     isCountry: true,
-    key: "CW",
-    name: "Curaçao",
+    key: 'CW',
+    name: 'Curaçao'
   },
   {
     id: 57000069,
     isCountry: true,
-    key: "CY",
-    name: "Cyprus",
+    key: 'CY',
+    name: 'Cyprus'
   },
   {
-    flagEmoji: ":flag_cz:",
+    flagEmoji: ':flag_cz:',
     id: 57000070,
     isAdded: true,
     isCountry: true,
-    key: "CZ",
-    name: "Czech Republic",
+    key: 'CZ',
+    name: 'Czech Republic'
   },
   {
     id: 57000071,
     isCountry: true,
-    key: "DK",
-    name: "Denmark",
+    key: 'DK',
+    name: 'Denmark'
   },
   {
     id: 57000072,
     isCountry: true,
-    key: "DG",
-    name: "Diego Garcia",
+    key: 'DG',
+    name: 'Diego Garcia'
   },
   {
     id: 57000073,
     isCountry: true,
-    key: "DJ",
-    name: "Djibouti",
+    key: 'DJ',
+    name: 'Djibouti'
   },
   {
     id: 57000074,
     isCountry: true,
-    key: "DM",
-    name: "Dominica",
+    key: 'DM',
+    name: 'Dominica'
   },
   {
     id: 57000075,
     isCountry: true,
-    key: "DO",
-    name: "Dominican Republic",
+    key: 'DO',
+    name: 'Dominican Republic'
   },
   {
     id: 57000076,
     isCountry: true,
-    key: "EC",
-    name: "Ecuador",
+    key: 'EC',
+    name: 'Ecuador'
   },
   {
     id: 57000077,
     isCountry: true,
-    key: "EG",
-    name: "Egypt",
+    key: 'EG',
+    name: 'Egypt'
   },
   {
     id: 57000078,
     isCountry: true,
-    key: "SV",
-    name: "El Salvador",
+    key: 'SV',
+    name: 'El Salvador'
   },
   {
     id: 57000079,
     isCountry: true,
-    key: "GQ",
-    name: "Equatorial Guinea",
+    key: 'GQ',
+    name: 'Equatorial Guinea'
   },
   {
     id: 57000080,
     isCountry: true,
-    key: "ER",
-    name: "Eritrea",
+    key: 'ER',
+    name: 'Eritrea'
   },
   {
     id: 57000081,
     isCountry: true,
-    key: "EE",
-    name: "Estonia",
+    key: 'EE',
+    name: 'Estonia'
   },
   {
     id: 57000082,
     isCountry: true,
-    key: "ET",
-    name: "Ethiopia",
+    key: 'ET',
+    name: 'Ethiopia'
   },
   {
     id: 57000083,
     isCountry: true,
-    key: "FK",
-    name: "Falkland Islands",
+    key: 'FK',
+    name: 'Falkland Islands'
   },
   {
     id: 57000084,
     isCountry: true,
-    key: "FO",
-    name: "Faroe Islands",
+    key: 'FO',
+    name: 'Faroe Islands'
   },
   {
     id: 57000085,
     isCountry: true,
-    key: "FJ",
-    name: "Fiji",
+    key: 'FJ',
+    name: 'Fiji'
   },
   {
     id: 57000086,
     isCountry: true,
-    key: "FI",
-    name: "Finland",
+    key: 'FI',
+    name: 'Finland'
   },
   {
-    flagEmoji: ":flag_fr:",
+    flagEmoji: ':flag_fr:',
     id: 57000087,
     isAdded: true,
     isCountry: true,
-    key: "FR",
-    name: "France",
+    key: 'FR',
+    name: 'France'
   },
   {
     id: 57000088,
     isCountry: true,
-    key: "GF",
-    name: "French Guiana",
+    key: 'GF',
+    name: 'French Guiana'
   },
   {
     id: 57000089,
     isCountry: true,
-    key: "PF",
-    name: "French Polynesia",
+    key: 'PF',
+    name: 'French Polynesia'
   },
   {
     id: 57000090,
     isCountry: true,
-    key: "TF",
-    name: "French Southern Territories",
+    key: 'TF',
+    name: 'French Southern Territories'
   },
   {
     id: 57000091,
     isCountry: true,
-    key: "GA",
-    name: "Gabon",
+    key: 'GA',
+    name: 'Gabon'
   },
   {
     id: 57000092,
     isCountry: true,
-    key: "GM",
-    name: "Gambia",
+    key: 'GM',
+    name: 'Gambia'
   },
   {
     id: 57000093,
     isCountry: true,
-    key: "GE",
-    name: "Georgia",
+    key: 'GE',
+    name: 'Georgia'
   },
   {
-    flagEmoji: ":flag_de:",
+    flagEmoji: ':flag_de:',
     id: 57000094,
     isAdded: true,
     isCountry: true,
-    key: "DE",
-    name: "Germany",
+    key: 'DE',
+    name: 'Germany'
   },
   {
     id: 57000095,
     isCountry: true,
-    key: "GH",
-    name: "Ghana",
+    key: 'GH',
+    name: 'Ghana'
   },
   {
     id: 57000096,
     isCountry: true,
-    key: "GI",
-    name: "Gibraltar",
+    key: 'GI',
+    name: 'Gibraltar'
   },
   {
     id: 57000097,
     isCountry: true,
-    key: "GR",
-    name: "Greece",
+    key: 'GR',
+    name: 'Greece'
   },
   {
     id: 57000098,
     isCountry: true,
-    key: "GL",
-    name: "Greenland",
+    key: 'GL',
+    name: 'Greenland'
   },
   {
     id: 57000099,
     isCountry: true,
-    key: "GD",
-    name: "Grenada",
+    key: 'GD',
+    name: 'Grenada'
   },
   {
     id: 57000100,
     isCountry: true,
-    key: "GP",
-    name: "Guadeloupe",
+    key: 'GP',
+    name: 'Guadeloupe'
   },
   {
     id: 57000101,
     isCountry: true,
-    key: "GU",
-    name: "Guam",
+    key: 'GU',
+    name: 'Guam'
   },
   {
     id: 57000102,
     isCountry: true,
-    key: "GT",
-    name: "Guatemala",
+    key: 'GT',
+    name: 'Guatemala'
   },
   {
     id: 57000103,
     isCountry: true,
-    key: "GG",
-    name: "Guernsey",
+    key: 'GG',
+    name: 'Guernsey'
   },
   {
     id: 57000104,
     isCountry: true,
-    key: "GN",
-    name: "Guinea",
+    key: 'GN',
+    name: 'Guinea'
   },
   {
     id: 57000105,
     isCountry: true,
-    key: "GW",
-    name: "Guinea-Bissau",
+    key: 'GW',
+    name: 'Guinea-Bissau'
   },
   {
     id: 57000106,
     isCountry: true,
-    key: "GY",
-    name: "Guyana",
+    key: 'GY',
+    name: 'Guyana'
   },
   {
     id: 57000107,
     isCountry: true,
-    key: "HT",
-    name: "Haiti",
+    key: 'HT',
+    name: 'Haiti'
   },
   {
     id: 57000108,
     isCountry: true,
-    key: "HM",
-    name: "Heard & McDonald Islands",
+    key: 'HM',
+    name: 'Heard & McDonald Islands'
   },
   {
     id: 57000109,
     isCountry: true,
-    key: "HN",
-    name: "Honduras",
+    key: 'HN',
+    name: 'Honduras'
   },
   {
     id: 57000110,
     isCountry: true,
-    key: "HK",
-    name: "Hong Kong",
+    key: 'HK',
+    name: 'Hong Kong'
   },
   {
     id: 57000111,
     isCountry: true,
-    key: "HU",
-    name: "Hungary",
+    key: 'HU',
+    name: 'Hungary'
   },
   {
     id: 57000112,
     isCountry: true,
-    key: "IS",
-    name: "Iceland",
+    key: 'IS',
+    name: 'Iceland'
   },
   {
-    flagEmoji: ":flag_in:",
+    flagEmoji: ':flag_in:',
     id: 57000113,
     isAdded: true,
     isCountry: true,
-    key: "IN",
-    name: "India",
+    key: 'IN',
+    name: 'India'
   },
   {
     id: 57000114,
     isCountry: true,
-    key: "ID",
-    name: "Indonesia",
+    key: 'ID',
+    name: 'Indonesia'
   },
   {
-    flagEmoji: ":flag_ir:",
+    flagEmoji: ':flag_ir:',
     id: 57000115,
     isAdded: true,
     isCountry: true,
-    key: "IR",
-    name: "Iran",
+    key: 'IR',
+    name: 'Iran'
   },
   {
     id: 57000116,
     isCountry: true,
-    key: "IQ",
-    name: "Iraq",
+    key: 'IQ',
+    name: 'Iraq'
   },
   {
     id: 57000117,
     isCountry: true,
-    key: "IE",
-    name: "Ireland",
+    key: 'IE',
+    name: 'Ireland'
   },
   {
     id: 57000118,
     isCountry: true,
-    key: "IM",
-    name: "Isle of Man",
+    key: 'IM',
+    name: 'Isle of Man'
   },
   {
     id: 57000119,
     isCountry: true,
-    key: "IL",
-    name: "Israel",
+    key: 'IL',
+    name: 'Israel'
   },
   {
-    flagEmoji: ":flag_it:",
+    flagEmoji: ':flag_it:',
     id: 57000120,
     isAdded: true,
     isCountry: true,
-    key: "IT",
-    name: "Italy",
+    key: 'IT',
+    name: 'Italy'
   },
   {
     id: 57000121,
     isCountry: true,
-    key: "JM",
-    name: "Jamaica",
+    key: 'JM',
+    name: 'Jamaica'
   },
   {
-    flagEmoji: ":flag_jp:",
+    flagEmoji: ':flag_jp:',
     id: 57000122,
     isAdded: true,
     isCountry: true,
-    key: "JP",
-    name: "Japan",
+    key: 'JP',
+    name: 'Japan'
   },
   {
     id: 57000123,
     isCountry: true,
-    key: "JE",
-    name: "Jersey",
+    key: 'JE',
+    name: 'Jersey'
   },
   {
     id: 57000124,
     isCountry: true,
-    key: "JO",
-    name: "Jordan",
+    key: 'JO',
+    name: 'Jordan'
   },
   {
     id: 57000125,
     isCountry: true,
-    key: "KZ",
-    name: "Kazakhstan",
+    key: 'KZ',
+    name: 'Kazakhstan'
   },
   {
     id: 57000126,
     isCountry: true,
-    key: "KE",
-    name: "Kenya",
+    key: 'KE',
+    name: 'Kenya'
   },
   {
     id: 57000127,
     isCountry: true,
-    key: "KI",
-    name: "Kiribati",
+    key: 'KI',
+    name: 'Kiribati'
   },
   {
     id: 57000128,
     isCountry: true,
-    key: "XK",
-    name: "Kosovo",
+    key: 'XK',
+    name: 'Kosovo'
   },
   {
     id: 57000129,
     isCountry: true,
-    key: "KW",
-    name: "Kuwait",
+    key: 'KW',
+    name: 'Kuwait'
   },
   {
     id: 57000130,
     isCountry: true,
-    key: "KG",
-    name: "Kyrgyzstan",
+    key: 'KG',
+    name: 'Kyrgyzstan'
   },
   {
     id: 57000131,
     isCountry: true,
-    key: "LA",
-    name: "Laos",
+    key: 'LA',
+    name: 'Laos'
   },
   {
     id: 57000132,
     isCountry: true,
-    key: "LV",
-    name: "Latvia",
+    key: 'LV',
+    name: 'Latvia'
   },
   {
     id: 57000133,
     isCountry: true,
-    key: "LB",
-    name: "Lebanon",
+    key: 'LB',
+    name: 'Lebanon'
   },
   {
     id: 57000134,
     isCountry: true,
-    key: "LS",
-    name: "Lesotho",
+    key: 'LS',
+    name: 'Lesotho'
   },
   {
     id: 57000135,
     isCountry: true,
-    key: "LR",
-    name: "Liberia",
+    key: 'LR',
+    name: 'Liberia'
   },
   {
     id: 57000136,
     isCountry: true,
-    key: "LY",
-    name: "Libya",
+    key: 'LY',
+    name: 'Libya'
   },
   {
     id: 57000137,
     isCountry: true,
-    key: "LI",
-    name: "Liechtenstein",
+    key: 'LI',
+    name: 'Liechtenstein'
   },
   {
     id: 57000138,
     isCountry: true,
-    key: "LT",
-    name: "Lithuania",
+    key: 'LT',
+    name: 'Lithuania'
   },
   {
     id: 57000139,
     isCountry: true,
-    key: "LU",
-    name: "Luxembourg",
+    key: 'LU',
+    name: 'Luxembourg'
   },
   {
     id: 57000140,
     isCountry: true,
-    key: "MO",
-    name: "Macau",
+    key: 'MO',
+    name: 'Macau'
   },
   {
     id: 57000141,
     isCountry: true,
-    key: "MK",
-    name: "Macedonia (FYROM)",
+    key: 'MK',
+    name: 'Macedonia (FYROM)'
   },
   {
     id: 57000142,
     isCountry: true,
-    key: "MG",
-    name: "Madagascar",
+    key: 'MG',
+    name: 'Madagascar'
   },
   {
     id: 57000143,
     isCountry: true,
-    key: "MW",
-    name: "Malawi",
+    key: 'MW',
+    name: 'Malawi'
   },
   {
     id: 57000144,
     isCountry: true,
-    key: "MY",
-    name: "Malaysia",
+    key: 'MY',
+    name: 'Malaysia'
   },
   {
     id: 57000145,
     isCountry: true,
-    key: "MV",
-    name: "Maldives",
+    key: 'MV',
+    name: 'Maldives'
   },
   {
     id: 57000146,
     isCountry: true,
-    key: "ML",
-    name: "Mali",
+    key: 'ML',
+    name: 'Mali'
   },
   {
     id: 57000147,
     isCountry: true,
-    key: "MT",
-    name: "Malta",
+    key: 'MT',
+    name: 'Malta'
   },
   {
     id: 57000148,
     isCountry: true,
-    key: "MH",
-    name: "Marshall Islands",
+    key: 'MH',
+    name: 'Marshall Islands'
   },
   {
     id: 57000149,
     isCountry: true,
-    key: "MQ",
-    name: "Martinique",
+    key: 'MQ',
+    name: 'Martinique'
   },
   {
     id: 57000150,
     isCountry: true,
-    key: "MR",
-    name: "Mauritania",
+    key: 'MR',
+    name: 'Mauritania'
   },
   {
     id: 57000151,
     isCountry: true,
-    key: "MU",
-    name: "Mauritius",
+    key: 'MU',
+    name: 'Mauritius'
   },
   {
     id: 57000152,
     isCountry: true,
-    key: "YT",
-    name: "Mayotte",
+    key: 'YT',
+    name: 'Mayotte'
   },
   {
-    flagEmoji: ":flag_mx:",
+    flagEmoji: ':flag_mx:',
     id: 57000153,
     isAdded: true,
     isCountry: true,
-    key: "MX",
-    name: "Mexico",
+    key: 'MX',
+    name: 'Mexico'
   },
   {
     id: 57000154,
     isCountry: true,
-    key: "FM",
-    name: "Micronesia",
+    key: 'FM',
+    name: 'Micronesia'
   },
   {
     id: 57000155,
     isCountry: true,
-    key: "MD",
-    name: "Moldova",
+    key: 'MD',
+    name: 'Moldova'
   },
   {
     id: 57000156,
     isCountry: true,
-    key: "MC",
-    name: "Monaco",
+    key: 'MC',
+    name: 'Monaco'
   },
   {
     id: 57000157,
     isCountry: true,
-    key: "MN",
-    name: "Mongolia",
+    key: 'MN',
+    name: 'Mongolia'
   },
   {
     id: 57000158,
     isCountry: true,
-    key: "ME",
-    name: "Montenegro",
+    key: 'ME',
+    name: 'Montenegro'
   },
   {
     id: 57000159,
     isCountry: true,
-    key: "MS",
-    name: "Montserrat",
+    key: 'MS',
+    name: 'Montserrat'
   },
   {
     id: 57000160,
     isCountry: true,
-    key: "MA",
-    name: "Morocco",
+    key: 'MA',
+    name: 'Morocco'
   },
   {
     id: 57000161,
     isCountry: true,
-    key: "MZ",
-    name: "Mozambique",
+    key: 'MZ',
+    name: 'Mozambique'
   },
   {
     id: 57000162,
     isCountry: true,
-    key: "MM",
-    name: "Myanmar (Burma)",
+    key: 'MM',
+    name: 'Myanmar (Burma)'
   },
   {
     id: 57000163,
     isCountry: true,
-    key: "NA",
-    name: "Namibia",
+    key: 'NA',
+    name: 'Namibia'
   },
   {
     id: 57000164,
     isCountry: true,
-    key: "NR",
-    name: "Nauru",
+    key: 'NR',
+    name: 'Nauru'
   },
   {
     id: 57000165,
     isCountry: true,
-    key: "NP",
-    name: "Nepal",
+    key: 'NP',
+    name: 'Nepal'
   },
   {
-    flagEmoji: ":flag_nl:",
+    flagEmoji: ':flag_nl:',
     id: 57000166,
     isAdded: true,
     isCountry: true,
-    key: "NL",
-    name: "Netherlands",
+    key: 'NL',
+    name: 'Netherlands'
   },
   {
     id: 57000167,
     isCountry: true,
-    key: "NC",
-    name: "New Caledonia",
+    key: 'NC',
+    name: 'New Caledonia'
   },
   {
     id: 57000168,
     isCountry: true,
-    key: "NZ",
-    name: "New Zealand",
+    key: 'NZ',
+    name: 'New Zealand'
   },
   {
     id: 57000169,
     isCountry: true,
-    key: "NI",
-    name: "Nicaragua",
+    key: 'NI',
+    name: 'Nicaragua'
   },
   {
     id: 57000170,
     isCountry: true,
-    key: "NE",
-    name: "Niger",
+    key: 'NE',
+    name: 'Niger'
   },
   {
     id: 57000171,
     isCountry: true,
-    key: "NG",
-    name: "Nigeria",
+    key: 'NG',
+    name: 'Nigeria'
   },
   {
     id: 57000172,
     isCountry: true,
-    key: "NU",
-    name: "Niue",
+    key: 'NU',
+    name: 'Niue'
   },
   {
     id: 57000173,
     isCountry: true,
-    key: "NF",
-    name: "Norfolk Island",
+    key: 'NF',
+    name: 'Norfolk Island'
   },
   {
     id: 57000174,
     isCountry: true,
-    key: "KP",
-    name: "North Korea",
+    key: 'KP',
+    name: 'North Korea'
   },
   {
     id: 57000175,
     isCountry: true,
-    key: "MP",
-    name: "Northern Mariana Islands",
+    key: 'MP',
+    name: 'Northern Mariana Islands'
   },
   {
     id: 57000176,
     isCountry: true,
-    key: "NO",
-    name: "Norway",
+    key: 'NO',
+    name: 'Norway'
   },
   {
     id: 57000177,
     isCountry: true,
-    key: "OM",
-    name: "Oman",
+    key: 'OM',
+    name: 'Oman'
   },
   {
     id: 57000178,
     isCountry: true,
-    key: "PK",
-    name: "Pakistan",
+    key: 'PK',
+    name: 'Pakistan'
   },
   {
     id: 57000179,
     isCountry: true,
-    key: "PW",
-    name: "Palau",
+    key: 'PW',
+    name: 'Palau'
   },
   {
     id: 57000180,
     isCountry: true,
-    key: "PS",
-    name: "Palestine",
+    key: 'PS',
+    name: 'Palestine'
   },
   {
     id: 57000181,
     isCountry: true,
-    key: "PA",
-    name: "Panama",
+    key: 'PA',
+    name: 'Panama'
   },
   {
     id: 57000182,
     isCountry: true,
-    key: "PG",
-    name: "Papua New Guinea",
+    key: 'PG',
+    name: 'Papua New Guinea'
   },
   {
     id: 57000183,
     isCountry: true,
-    key: "PY",
-    name: "Paraguay",
+    key: 'PY',
+    name: 'Paraguay'
   },
   {
     id: 57000184,
     isCountry: true,
-    key: "PE",
-    name: "Peru",
+    key: 'PE',
+    name: 'Peru'
   },
   {
     id: 57000185,
     isCountry: true,
-    key: "PH",
-    name: "Philippines",
+    key: 'PH',
+    name: 'Philippines'
   },
   {
     id: 57000186,
     isCountry: true,
-    key: "PN",
-    name: "Pitcairn Islands",
+    key: 'PN',
+    name: 'Pitcairn Islands'
   },
   {
-    flagEmoji: ":flag_pl:",
+    flagEmoji: ':flag_pl:',
     id: 57000187,
     isAdded: true,
     isCountry: true,
-    key: "PL",
-    name: "Poland",
+    key: 'PL',
+    name: 'Poland'
   },
   {
     id: 57000188,
     isCountry: true,
-    key: "PT",
-    name: "Portugal",
+    key: 'PT',
+    name: 'Portugal'
   },
   {
     id: 57000189,
     isCountry: true,
-    key: "PR",
-    name: "Puerto Rico",
+    key: 'PR',
+    name: 'Puerto Rico'
   },
   {
     id: 57000190,
     isCountry: true,
-    key: "QA",
-    name: "Qatar",
+    key: 'QA',
+    name: 'Qatar'
   },
   {
     id: 57000191,
     isCountry: true,
-    key: "RE",
-    name: "Réunion",
+    key: 'RE',
+    name: 'Réunion'
   },
   {
-    flagEmoji: ":flag_ro:",
+    flagEmoji: ':flag_ro:',
     id: 57000192,
     isAdded: true,
     isCountry: true,
-    key: "RO",
-    name: "Romania",
+    key: 'RO',
+    name: 'Romania'
   },
   {
-    flagEmoji: ":flag_ru:",
+    flagEmoji: ':flag_ru:',
     id: 57000193,
     isAdded: true,
     isCountry: true,
-    key: "RU",
-    name: "Russia",
+    key: 'RU',
+    name: 'Russia'
   },
   {
     id: 57000194,
     isCountry: true,
-    key: "RW",
-    name: "Rwanda",
+    key: 'RW',
+    name: 'Rwanda'
   },
   {
     id: 57000195,
     isCountry: true,
-    key: "BL",
-    name: "Saint Barthélemy",
+    key: 'BL',
+    name: 'Saint Barthélemy'
   },
   {
     id: 57000196,
     isCountry: true,
-    key: "SH",
-    name: "Saint Helena",
+    key: 'SH',
+    name: 'Saint Helena'
   },
   {
     id: 57000197,
     isCountry: true,
-    key: "KN",
-    name: "Saint Kitts and Nevis",
+    key: 'KN',
+    name: 'Saint Kitts and Nevis'
   },
   {
     id: 57000198,
     isCountry: true,
-    key: "LC",
-    name: "Saint Lucia",
+    key: 'LC',
+    name: 'Saint Lucia'
   },
   {
     id: 57000199,
     isCountry: true,
-    key: "MF",
-    name: "Saint Martin",
+    key: 'MF',
+    name: 'Saint Martin'
   },
   {
     id: 57000200,
     isCountry: true,
-    key: "PM",
-    name: "Saint Pierre and Miquelon",
+    key: 'PM',
+    name: 'Saint Pierre and Miquelon'
   },
   {
     id: 57000201,
     isCountry: true,
-    key: "WS",
-    name: "Samoa",
+    key: 'WS',
+    name: 'Samoa'
   },
   {
     id: 57000202,
     isCountry: true,
-    key: "SM",
-    name: "San Marino",
+    key: 'SM',
+    name: 'San Marino'
   },
   {
     id: 57000203,
     isCountry: true,
-    key: "ST",
-    name: "São Tomé and Príncipe",
+    key: 'ST',
+    name: 'São Tomé and Príncipe'
   },
   {
     id: 57000204,
     isCountry: true,
-    key: "SA",
-    name: "Saudi Arabia",
+    key: 'SA',
+    name: 'Saudi Arabia'
   },
   {
     id: 57000205,
     isCountry: true,
-    key: "SN",
-    name: "Senegal",
+    key: 'SN',
+    name: 'Senegal'
   },
   {
     id: 57000206,
     isCountry: true,
-    key: "RS",
-    name: "Serbia",
+    key: 'RS',
+    name: 'Serbia'
   },
   {
     id: 57000207,
     isCountry: true,
-    key: "SC",
-    name: "Seychelles",
+    key: 'SC',
+    name: 'Seychelles'
   },
   {
     id: 57000208,
     isCountry: true,
-    key: "SL",
-    name: "Sierra Leone",
+    key: 'SL',
+    name: 'Sierra Leone'
   },
   {
     id: 57000209,
     isCountry: true,
-    key: "SG",
-    name: "Singapore",
+    key: 'SG',
+    name: 'Singapore'
   },
   {
     id: 57000210,
     isCountry: true,
-    key: "SX",
-    name: "Sint Maarten",
+    key: 'SX',
+    name: 'Sint Maarten'
   },
   {
     id: 57000211,
     isCountry: true,
-    key: "SK",
-    name: "Slovakia",
+    key: 'SK',
+    name: 'Slovakia'
   },
   {
     id: 57000212,
     isCountry: true,
-    key: "SI",
-    name: "Slovenia",
+    key: 'SI',
+    name: 'Slovenia'
   },
   {
     id: 57000213,
     isCountry: true,
-    key: "SB",
-    name: "Solomon Islands",
+    key: 'SB',
+    name: 'Solomon Islands'
   },
   {
     id: 57000214,
     isCountry: true,
-    key: "SO",
-    name: "Somalia",
+    key: 'SO',
+    name: 'Somalia'
   },
   {
     id: 57000215,
     isCountry: true,
-    key: "ZA",
-    name: "South Africa",
+    key: 'ZA',
+    name: 'South Africa'
   },
   {
     id: 57000216,
     isCountry: true,
-    key: "KR",
-    name: "South Korea",
+    key: 'KR',
+    name: 'South Korea'
   },
   {
     id: 57000217,
     isCountry: true,
-    key: "SS",
-    name: "South Sudan",
+    key: 'SS',
+    name: 'South Sudan'
   },
   {
-    flagEmoji: ":flag_es:",
+    flagEmoji: ':flag_es:',
     id: 57000218,
     isAdded: true,
     isCountry: true,
-    key: "ES",
-    name: "Spain",
+    key: 'ES',
+    name: 'Spain'
   },
   {
     id: 57000219,
     isCountry: true,
-    key: "LK",
-    name: "Sri Lanka",
+    key: 'LK',
+    name: 'Sri Lanka'
   },
   {
     id: 57000220,
     isCountry: true,
-    key: "VC",
-    name: "St. Vincent & Grenadines",
+    key: 'VC',
+    name: 'St. Vincent & Grenadines'
   },
   {
     id: 57000221,
     isCountry: true,
-    key: "SD",
-    name: "Sudan",
+    key: 'SD',
+    name: 'Sudan'
   },
   {
     id: 57000222,
     isCountry: true,
-    key: "SR",
-    name: "Suriname",
+    key: 'SR',
+    name: 'Suriname'
   },
   {
     id: 57000223,
     isCountry: true,
-    key: "SJ",
-    name: "Svalbard and Jan Mayen",
+    key: 'SJ',
+    name: 'Svalbard and Jan Mayen'
   },
   {
     id: 57000224,
     isCountry: true,
-    key: "SZ",
-    name: "Swaziland",
+    key: 'SZ',
+    name: 'Swaziland'
   },
   {
     id: 57000225,
     isCountry: true,
-    key: "SE",
-    name: "Sweden",
+    key: 'SE',
+    name: 'Sweden'
   },
   {
     id: 57000226,
     isCountry: true,
-    key: "CH",
-    name: "Switzerland",
+    key: 'CH',
+    name: 'Switzerland'
   },
   {
     id: 57000227,
     isCountry: true,
-    key: "SY",
-    name: "Syria",
+    key: 'SY',
+    name: 'Syria'
   },
   {
     id: 57000228,
     isCountry: true,
-    key: "TW",
-    name: "Taiwan",
+    key: 'TW',
+    name: 'Taiwan'
   },
   {
     id: 57000229,
     isCountry: true,
-    key: "TJ",
-    name: "Tajikistan",
+    key: 'TJ',
+    name: 'Tajikistan'
   },
   {
     id: 57000230,
     isCountry: true,
-    key: "TZ",
-    name: "Tanzania",
+    key: 'TZ',
+    name: 'Tanzania'
   },
   {
     id: 57000231,
     isCountry: true,
-    key: "TH",
-    name: "Thailand",
+    key: 'TH',
+    name: 'Thailand'
   },
   {
     id: 57000232,
     isCountry: true,
-    key: "TL",
-    name: "Timor-Leste",
+    key: 'TL',
+    name: 'Timor-Leste'
   },
   {
     id: 57000233,
     isCountry: true,
-    key: "TG",
-    name: "Togo",
+    key: 'TG',
+    name: 'Togo'
   },
   {
     id: 57000234,
     isCountry: true,
-    key: "TK",
-    name: "Tokelau",
+    key: 'TK',
+    name: 'Tokelau'
   },
   {
     id: 57000235,
     isCountry: true,
-    key: "TO",
-    name: "Tonga",
+    key: 'TO',
+    name: 'Tonga'
   },
   {
     id: 57000236,
     isCountry: true,
-    key: "TT",
-    name: "Trinidad and Tobago",
+    key: 'TT',
+    name: 'Trinidad and Tobago'
   },
   {
     id: 57000237,
     isCountry: true,
-    key: "TA",
-    name: "Tristan da Cunha",
+    key: 'TA',
+    name: 'Tristan da Cunha'
   },
   {
     id: 57000238,
     isCountry: true,
-    key: "TN",
-    name: "Tunisia",
+    key: 'TN',
+    name: 'Tunisia'
   },
   {
-    flagEmoji: ":flag_tr:",
+    flagEmoji: ':flag_tr:',
     id: 57000239,
     isAdded: true,
     isCountry: true,
-    key: "TR",
-    name: "Turkey",
+    key: 'TR',
+    name: 'Turkey'
   },
   {
     id: 57000240,
     isCountry: true,
-    key: "TM",
-    name: "Turkmenistan",
+    key: 'TM',
+    name: 'Turkmenistan'
   },
   {
     id: 57000241,
     isCountry: true,
-    key: "TC",
-    name: "Turks and Caicos Islands",
+    key: 'TC',
+    name: 'Turks and Caicos Islands'
   },
   {
     id: 57000242,
     isCountry: true,
-    key: "TV",
-    name: "Tuvalu",
+    key: 'TV',
+    name: 'Tuvalu'
   },
   {
     id: 57000243,
     isCountry: true,
-    key: "UM",
-    name: "U.S. Outlying Islands",
+    key: 'UM',
+    name: 'U.S. Outlying Islands'
   },
   {
     id: 57000244,
     isCountry: true,
-    key: "VI",
-    name: "U.S. Virgin Islands",
+    key: 'VI',
+    name: 'U.S. Virgin Islands'
   },
   {
     id: 57000245,
     isCountry: true,
-    key: "UG",
-    name: "Uganda",
+    key: 'UG',
+    name: 'Uganda'
   },
   {
-    flagEmoji: ":flag_ua:",
+    flagEmoji: ':flag_ua:',
     id: 57000246,
     isAdded: true,
     isCountry: true,
-    key: "UA",
-    name: "Ukraine",
+    key: 'UA',
+    name: 'Ukraine'
   },
   {
     id: 57000247,
     isCountry: true,
-    key: "AE",
-    name: "United Arab Emirates",
+    key: 'AE',
+    name: 'United Arab Emirates'
   },
   {
-    flagEmoji: ":flag_gb:",
+    flagEmoji: ':flag_gb:',
     id: 57000248,
     isAdded: true,
     isCountry: true,
-    key: "GB",
-    name: "United Kingdom",
+    key: 'GB',
+    name: 'United Kingdom'
   },
   {
-    flagEmoji: ":flag_us:",
+    flagEmoji: ':flag_us:',
     id: 57000249,
     isAdded: true,
     isCountry: true,
-    key: "US",
-    name: "United States",
+    key: 'US',
+    name: 'United States'
   },
   {
     id: 57000250,
     isCountry: true,
-    key: "UY",
-    name: "Uruguay",
+    key: 'UY',
+    name: 'Uruguay'
   },
   {
     id: 57000251,
     isCountry: true,
-    key: "UZ",
-    name: "Uzbekistan",
+    key: 'UZ',
+    name: 'Uzbekistan'
   },
   {
     id: 57000252,
     isCountry: true,
-    key: "VU",
-    name: "Vanuatu",
+    key: 'VU',
+    name: 'Vanuatu'
   },
   {
     id: 57000253,
     isCountry: true,
-    key: "VA",
-    name: "Vatican City",
+    key: 'VA',
+    name: 'Vatican City'
   },
   {
     id: 57000254,
     isCountry: true,
-    key: "VE",
-    name: "Venezuela",
+    key: 'VE',
+    name: 'Venezuela'
   },
   {
     id: 57000255,
     isCountry: true,
-    key: "VN",
-    name: "Vietnam",
+    key: 'VN',
+    name: 'Vietnam'
   },
   {
     id: 57000256,
     isCountry: true,
-    key: "WF",
-    name: "Wallis and Futuna",
+    key: 'WF',
+    name: 'Wallis and Futuna'
   },
   {
     id: 57000257,
     isCountry: true,
-    key: "EH",
-    name: "Western Sahara",
+    key: 'EH',
+    name: 'Western Sahara'
   },
   {
     id: 57000258,
     isCountry: true,
-    key: "YE",
-    name: "Yemen",
+    key: 'YE',
+    name: 'Yemen'
   },
   {
     id: 57000259,
     isCountry: true,
-    key: "ZM",
-    name: "Zambia",
+    key: 'ZM',
+    name: 'Zambia'
   },
   {
     id: 57000260,
     isCountry: true,
-    key: "ZW",
-    name: "Zimbabwe",
-  },
+    key: 'ZW',
+    name: 'Zimbabwe'
+  }
 ]
