@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { ActivityType, Events, WebhookClient } = require('discord.js')
 const registerSlashCommands = require('../util/slash')
 const { BOT_WEBHOOK_URL, COMMANDS_WEBHOOK_URL, NODE_ENV } = require('../../config')

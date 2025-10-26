@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { REST, Routes } = require('discord.js')
 const { CLIENT_TOKEN, NODE_ENV, TEST_CLIENT_TOKEN, TEST_GUILD_ID } = require('../../config')
 

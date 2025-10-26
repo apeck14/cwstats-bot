@@ -25,6 +25,6 @@
   },
   "devDependencies": {
     "concurrently": "^9.2.0",
-    "xo-wrapper": "^3.3.1"
+    "xo-wrapper": "^3.4.15"
   }
 }

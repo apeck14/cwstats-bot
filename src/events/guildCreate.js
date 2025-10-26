@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { Events } = require('discord.js')
 const { green, pink } = require('../static/colors')
 const { logToSupportServer } = require('../util/logging')
@@ -25,6 +26,7 @@ module.exports = {
 
           client.users.cache.get(executorId).send({ embeds: [welcomeEmbed] })
         }
+        return
       })
       .catch(console.error)
 

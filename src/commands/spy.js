@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable camelcase */
 const { getClan, getPlayer, getPlayerBattleLog, getPlayerSearch } = require('../util/services')
 const { pink } = require('../static/colors')

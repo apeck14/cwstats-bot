@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const logToSupportServer = async (client, embed, isCommand = true) => {
   // ignore dev environment
   const webhook = isCommand ? client.commandsWebhook : client.botWebhook

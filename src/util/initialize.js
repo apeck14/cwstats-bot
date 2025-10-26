@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const fs = require('fs')
 const { Client, Collection, GatewayIntentBits } = require('discord.js')
 const path = require('path')

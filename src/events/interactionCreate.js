@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const { Events, MessageFlags } = require('discord.js')
 const path = require('path')
 const fs = require('fs')
