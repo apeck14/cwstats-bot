@@ -77,7 +77,7 @@ module.exports = {
       }
     ]
   },
-  run: async (i) => {
+  async run(i) {
     const iUser = i.options.getUser('user')
     const iTag = i.options.getString('tag')
 
@@ -87,34 +87,49 @@ module.exports = {
       // linked account
       const { data: linkedAccount, error } = await getLinkedAccount(i.user.id)
 
-      if (error) return errorMsg(i, error)
+      if (error) {
+        return errorMsg(i, error)
+      }
 
-      if (linkedAccount?.tag) tag = linkedAccount.tag
-      else return warningMsg(i, `**No tag linked!** Use </link:960088363417882631> to link your tag.`)
-    } else if (iTag) tag = iTag
-    else {
+      if (linkedAccount?.tag) {
+        tag = linkedAccount.tag
+      } else {
+        return warningMsg(i, '**No tag linked!** Use </link:960088363417882631> to link your tag.')
+      }
+    } else if (iTag) {
+      tag = iTag
+    } else {
       // user
       const { data: linkedAccount, error } = await getLinkedAccount(iUser.id)
 
-      if (error) return errorMsg(i, error)
+      if (error) {
+        return errorMsg(i, error)
+      }
 
-      if (linkedAccount?.tag) tag = linkedAccount.tag
-      else return warningMsg(i, `<@!${iUser.id}> **does not have an account linked.**`)
+      if (linkedAccount?.tag) {
+        tag = linkedAccount.tag
+      } else {
+        return warningMsg(i, `<@!${iUser.id}> **does not have an account linked.**`)
+      }
     }
 
     const { data: scores, error } = await getPlayerScores(tag)
 
-    if (error) return errorMsg(i, error)
+    if (error) {
+      return errorMsg(i, error)
+    }
 
     const keys = Object.keys(scores || {})
 
-    if (!keys.length) return warningMsg(i, '**No scores found for this player.**')
+    if (!keys.length) {
+      return warningMsg(i, '**No scores found for this player.**')
+    }
 
     const name = scores[keys[0]][0]?.name || 'Unknown Player'
 
     const embed = {
       color: pink,
-      description: ``,
+      description: '',
       thumbnail: {
         url: 'https://i.imgur.com/VAPR8Jq.png'
       },

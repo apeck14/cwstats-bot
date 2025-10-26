@@ -52,7 +52,7 @@ module.exports = {
       }
     ]
   },
-  run: async (i) => {
+  async run(i) {
     const iTag = i.options.getString('tag')
     const formattedTag = formatTag(iTag, false)
 

@@ -4,7 +4,13 @@ const { formatStr } = require('../util/formatting')
 const { errorMsg, getClanBadge } = require('../util/functions')
 const { pink } = require('../static/colors')
 
-const { getAllPlusClans, getDailyLeaderboard, getGuildLinkedClans, getRace, setCommandCooldown } = require('../util/services')
+const {
+  getAllPlusClans,
+  getDailyLeaderboard,
+  getGuildLinkedClans,
+  getRace,
+  setCommandCooldown
+} = require('../util/services')
 
 const ITEMS_PER_PAGE = 5
 
@@ -28,7 +34,10 @@ const generateEmbed = ({ client, interaction, liveClanData, pageIndex }) => {
 
           let entry = `\u202A${badgeEmoji} [**${formatStr(c.name)}**](${url})${c.isPlus ? ` ${plusEmoji}` : ''}`
 
-          if (c.isTraining || c.noData) return entry
+          if (c.isTraining || c.noData) {
+            return entry
+          }
+
           if (c.crossedFinishLine) {
             entry += `\n${flagEmoji} *Crossed finish line*`
             return entry
@@ -40,7 +49,7 @@ const generateEmbed = ({ client, interaction, liveClanData, pageIndex }) => {
         .join('\n\n')
 
   const embed = new EmbedBuilder()
-    .setTitle(`__Live River Races__`)
+    .setTitle('__Live River Races__')
     .setDescription(description)
     .setThumbnail(interaction.guild.iconURL({ dynamic: true, size: 1024 }))
     .setColor(pink)
@@ -96,9 +105,12 @@ module.exports = {
       tr: 'klanlar'
     }
   },
-  run: async (i, client) => {
-    const [{ data: linkedClans, error: linkedClansError }, { data: fullDailyLb, error: dailyLbError }, { data: plusTags, error: plusClansError }] =
-      await Promise.all([getGuildLinkedClans(i.guildId), getDailyLeaderboard({}), getAllPlusClans(true)])
+  async run(i, client) {
+    const [
+      { data: linkedClans, error: linkedClansError },
+      { data: fullDailyLb, error: dailyLbError },
+      { data: plusTags, error: plusClansError }
+    ] = await Promise.all([getGuildLinkedClans(i.guildId), getDailyLeaderboard({}), getAllPlusClans(true)])
 
     if (linkedClansError || dailyLbError || plusClansError) {
       return errorMsg(i, linkedClansError || dailyLbError || plusClansError)
@@ -118,7 +130,9 @@ module.exports = {
         if (isPlus) {
           const { data: race, error } = await getRace(c.tag)
 
-          if (error) continue
+          if (error) {
+            continue
+          }
 
           const { clanIndex, clans, isTraining } = race
           const { badge, clanScore, crossedFinishLine, decksUsed, fameAvg, projPlace } = clans[clanIndex]
@@ -174,8 +188,14 @@ module.exports = {
 
     liveClanData.sort((a, b) => {
       // Move noData: true clans to the end, then sort them alphabetically by name
-      if (a.noData && !b.noData) return 1
-      if (b.noData && !a.noData) return -1
+      if (a.noData && !b.noData) {
+        return 1
+      }
+
+      if (b.noData && !a.noData) {
+        return -1
+      }
+
       if (a.noData && b.noData) {
         return a.name.localeCompare(b.name)
       }
@@ -207,10 +227,17 @@ module.exports = {
     const collector = message.createMessageComponentCollector({ time: 60000 })
 
     collector.on('collect', async (interaction) => {
-      if (!interaction.isButton()) return
+      if (!interaction.isButton()) {
+        return
+      }
 
-      if (interaction.customId === 'prev_page' && page > 0) page--
-      if (interaction.customId === 'next_page' && page < Math.ceil(liveClanData.length / ITEMS_PER_PAGE) - 1) page++
+      if (interaction.customId === 'prev_page' && page > 0) {
+        page--
+      }
+
+      if (interaction.customId === 'next_page' && page < Math.ceil(liveClanData.length / ITEMS_PER_PAGE) - 1) {
+        page++
+      }
 
       await interaction.update({
         components: [generateButtons({ liveClanData, pageIndex: page })],

@@ -95,7 +95,7 @@ module.exports = {
       }
     ]
   },
-  run: async (i, client) => {
+  async run(i, client) {
     const iName = i.options.getString('location')
     const iLeague = i.options.getString('league')
 
@@ -129,8 +129,11 @@ module.exports = {
 
     let embedUrl = `https://www.cwstats.com/leaderboard/daily/${location?.key || 'global'}`
 
-    if (minTrophies === 4000) embedUrl += `?league=4000`
-    else if (minTrophies === 5000) embedUrl += `?league=5000`
+    if (minTrophies === 4000) {
+      embedUrl += '?league=4000'
+    } else if (minTrophies === 5000) {
+      embedUrl += '?league=5000'
+    }
 
     const embed = {
       color: pink,
@@ -141,7 +144,7 @@ module.exports = {
       thumbnail: {
         url: 'https://i.imgur.com/VAPR8Jq.png'
       },
-      title: `**__Daily War Leaderboard__**`,
+      title: '**__Daily War Leaderboard__**',
       url: embedUrl
     }
 
@@ -162,14 +165,18 @@ module.exports = {
       const badgeEmoji = client.cwEmojis.get(badgeName)
       const isPlus = plusTags.includes(clan.tag) ? cwstatsPlusEmoji : ''
 
-      if (clan.notRanked) showNRFooter = true
+      if (clan.notRanked) {
+        showNRFooter = true
+      }
 
       embed.description += `\u202A**${clan.notRanked ? 'NR' : i + 1}.** ${badgeEmoji} [**${formatStr(clan.name)}**](${url})${isPlus}\n`
       embed.description += `${fameAvgEmoji} **${clan.fameAvg.toFixed(2)}** ${decksRemainingEmoji} ${clan.decksRemaining} :earth_americas: `
-      embed.description += Number.isInteger(clan.rank) ? `#${clan.rank}\n` : `N/A\n`
+      embed.description += Number.isInteger(clan.rank) ? `#${clan.rank}\n` : 'N/A\n'
     }
 
-    if (showNRFooter) embed.footer.text += ' | NR = Not Ranked'
+    if (showNRFooter) {
+      embed.footer.text += ' | NR = Not Ranked'
+    }
 
     return i.editReply({
       embeds: [embed]

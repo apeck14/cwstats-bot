@@ -52,10 +52,12 @@ module.exports = {
       }
     ]
   },
-  run: async (i, client) => {
+  async run(i, client) {
     const { data: guild, error } = await getGuild(i.guildId)
 
-    if (error) return errorMsg(i, error)
+    if (error) {
+      return errorMsg(i, error)
+    }
 
     const { abbreviations, defaultClan, nudges } = guild
     const { ignoreLeaders, links, message } = nudges || {}
@@ -64,28 +66,50 @@ module.exports = {
 
     // default clan
     if (!tag) {
-      if (defaultClan?.tag) tag = defaultClan?.tag
-      else return warningMsg(i, `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`)
+      if (defaultClan?.tag) {
+        tag = defaultClan?.tag
+      } else {
+        return warningMsg(
+          i,
+          `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`
+        )
+      }
     } else {
       // abbreviation
       const UPPERCASE_ABBR = tag.toUpperCase()
       const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
 
-      if (abbr) tag = abbr.tag
-      else if (tag.length < 3) return warningMsg(i, '**Abbreviation does not exist.**')
+      if (abbr) {
+        tag = abbr.tag
+      } else if (tag.length < 3) {
+        return warningMsg(i, '**Abbreviation does not exist.**')
+      }
     }
 
-    const [{ data: race, error: raceError }, { data: clan, error: clanError }] = await Promise.all([getRace(tag, true), getClan(tag)])
+    const [{ data: race, error: raceError }, { data: clan, error: clanError }] = await Promise.all([
+      getRace(tag, true),
+      getClan(tag)
+    ])
 
-    if (raceError || clanError) return errorMsg(i, raceError || clanError)
+    if (raceError || clanError) {
+      return errorMsg(i, raceError || clanError)
+    }
 
     const { clanIndex, clans, isTraining, state } = race
     const { participants } = clans[clanIndex]
     const { badge, memberList } = clan
 
-    if (state === 'matchmaking') return warningMsg(i, ':mag: **Matchmaking is underway!**')
-    if (!clans || clans.length <= 1) return warningMsg(i, '**Clan is not in a river race.**')
-    if (isTraining) return warningMsg(i, '**Cannot send nudges on training days!**')
+    if (state === 'matchmaking') {
+      return warningMsg(i, ':mag: **Matchmaking is underway!**')
+    }
+
+    if (!clans || clans.length <= 1) {
+      return warningMsg(i, '**Clan is not in a river race.**')
+    }
+
+    if (isTraining) {
+      return warningMsg(i, '**Cannot send nudges on training days!**')
+    }
 
     const linkedDiscordIDs = new Map()
     const alphabetizedParticipants = participants
@@ -122,7 +146,9 @@ module.exports = {
       const inClan = memberList.find((m) => m.tag === p.tag)
       const isLeader = inClan?.role === 'coLeader' || inClan?.role === 'leader'
 
-      const displayName = p.discordID ? `- <@${p.discordID}>${linkedDiscordIDs.get(p.discordID) > 1 ? ` (${p.name})` : ''}` : `- ${p.name}`
+      const displayName = p.discordID
+        ? `- <@${p.discordID}>${linkedDiscordIDs.get(p.discordID) > 1 ? ` (${p.name})` : ''}`
+        : `- ${p.name}`
 
       const remainingAttacks = 4 - used
       if (attackGroups[remainingAttacks] && inClan) {
@@ -134,9 +160,7 @@ module.exports = {
     const decksRemainingEmoji = client.cwEmojis.get('decksRemaining')
     const slotsRemainingEmoji = client.cwEmojis.get('remainingSlots')
 
-    let nudgeMessage = `\u202A${badgeEmoji} **${formatStr(
-      clan.name
-    )}**\n${decksRemainingEmoji} **${attacksRemaining}**\n${slotsRemainingEmoji} **${slotsRemaining}**`
+    let nudgeMessage = `\u202A${badgeEmoji} **${formatStr(clan.name)}**\n${decksRemainingEmoji} **${attacksRemaining}**\n${slotsRemainingEmoji} **${slotsRemaining}**`
 
     const labels = {
       1: '1 Attack',

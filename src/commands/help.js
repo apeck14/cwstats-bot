@@ -24,10 +24,11 @@ module.exports = {
       tr: 'yardım'
     }
   },
-  run: async (i) => {
+  async run(i) {
     const embed = {
       color: pink,
-      description: `### [**Getting Started**](https://www.cwstats.com/docs/getting-started)\nFollow simple setup instructions to help you get started using CWStats!\n### [**Support Server**](https://discord.com/invite/fFY3cnMmnH)\nHave questions, feature requests, or bug findings? Join the Support Server.`,
+      description:
+        '### [**Getting Started**](https://www.cwstats.com/docs/getting-started)\nFollow simple setup instructions to help you get started using CWStats!\n### [**Support Server**](https://discord.com/invite/fFY3cnMmnH)\nHave questions, feature requests, or bug findings? Join the Support Server.',
       thumbnail: {
         url: 'https://i.imgur.com/VAPR8Jq.png'
       },

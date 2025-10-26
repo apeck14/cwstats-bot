@@ -1,5 +1,12 @@
 /* eslint-disable camelcase */
-const { ActionRowBuilder, ApplicationCommandType, MessageFlags, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js')
+const {
+  ActionRowBuilder,
+  ApplicationCommandType,
+  MessageFlags,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle
+} = require('discord.js')
 const { formatStr, formatTag } = require('../util/formatting')
 const { green, orange, red } = require('../static/colors')
 const { addNudgeLink } = require('../util/services')
@@ -18,7 +25,7 @@ module.exports = {
     },
     type: ApplicationCommandType.User
   },
-  handleModalSubmit: async (i) => {
+  async handleModalSubmit(i) {
     try {
       await i.deferReply({ flags: MessageFlags.Ephemeral })
 
@@ -50,7 +57,7 @@ module.exports = {
         ],
         flags: MessageFlags.Ephemeral
       })
-    } catch (e) {
+    } catch {
       i.editReply({
         embeds: [
           {
@@ -62,10 +69,10 @@ module.exports = {
       })
     }
   },
-  run: async (i) => {
+  async run(i) {
     const { targetUser } = i
 
-    const modal = new ModalBuilder().setCustomId(`link-player`).setTitle(`Link Player: ${targetUser.tag}`)
+    const modal = new ModalBuilder().setCustomId('link-player').setTitle(`Link Player: ${targetUser.tag}`)
 
     // Create input fields for the modal
     const input = new TextInputBuilder()

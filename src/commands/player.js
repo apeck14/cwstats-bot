@@ -75,7 +75,7 @@ module.exports = {
       }
     ]
   },
-  run: async (i, client) => {
+  async run(i, client) {
     const iUser = i.options.getUser('user')
     const iTag = i.options.getString('tag')
 
@@ -85,24 +85,37 @@ module.exports = {
       // linked account
       const { data: linkedAccount, error } = await getLinkedAccount(i.user.id)
 
-      if (error) return errorMsg(i, error)
+      if (error) {
+        return errorMsg(i, error)
+      }
 
-      if (linkedAccount?.tag) tag = linkedAccount.tag
-      else return warningMsg(i, `**No tag linked!** Use </link:960088363417882631> to link your tag.`)
-    } else if (iTag) tag = iTag
-    else {
+      if (linkedAccount?.tag) {
+        tag = linkedAccount.tag
+      } else {
+        return warningMsg(i, '**No tag linked!** Use </link:960088363417882631> to link your tag.')
+      }
+    } else if (iTag) {
+      tag = iTag
+    } else {
       // user
       const { data: linkedAccount, error } = await getLinkedAccount(iUser.id)
 
-      if (error) return errorMsg(i, error)
+      if (error) {
+        return errorMsg(i, error)
+      }
 
-      if (linkedAccount?.tag) tag = linkedAccount.tag
-      else return warningMsg(i, `<@!${iUser.id}> **does not have an account linked.**`)
+      if (linkedAccount?.tag) {
+        tag = linkedAccount.tag
+      } else {
+        return warningMsg(i, `<@!${iUser.id}> **does not have an account linked.**`)
+      }
     }
 
     const { data: player, error: playerError } = await getPlayer(tag)
 
-    if (playerError || !player) return errorMsg(i, playerError || '**Player not found.**')
+    if (playerError || !player) {
+      return errorMsg(i, playerError || '**Player not found.**')
+    }
 
     // add player for website searching
     addPlayer(player.tag)
@@ -114,7 +127,9 @@ module.exports = {
     if (inClan) {
       const { data: clan, error: clanError } = await getClan(player.clan.tag, true)
 
-      if (clanError) return errorMsg(i, clanError)
+      if (clanError) {
+        return errorMsg(i, clanError)
+      }
 
       clanBadge = clan.badge
     }

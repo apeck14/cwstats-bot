@@ -52,7 +52,7 @@ module.exports = {
       }
     ]
   },
-  run: async (i, client) => {
+  async run(i, client) {
     const { data: guild, error: guildError } = await getGuild(i.guildId, true)
 
     if (guildError) {

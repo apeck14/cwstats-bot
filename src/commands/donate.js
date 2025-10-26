@@ -24,7 +24,7 @@ module.exports = {
       tr: 'bağış-yap'
     }
   },
-  run: async (i) => {
+  async run(i) {
     const row = {
       components: [
         {
@@ -54,7 +54,8 @@ module.exports = {
       embeds: [
         {
           color: pink,
-          description: `CWStats strives to aid all competitive war clans with game-changing data & stats! All proceeds help expand the capabilities of the bot & website.`,
+          description:
+            'CWStats strives to aid all competitive war clans with game-changing data & stats! All proceeds help expand the capabilities of the bot & website.',
           thumbnail: {
             url: 'https://i.imgur.com/VAPR8Jq.png'
           },

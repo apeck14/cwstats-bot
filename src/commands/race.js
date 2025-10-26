@@ -53,33 +53,51 @@ module.exports = {
       }
     ]
   },
-  run: async (i, client) => {
+  async run(i, client) {
     const { data: guild, error: guildError } = await getGuild(i.guildId, true)
 
-    if (guildError || !guild) return errorMsg(i, guildError || '**Guild not found.**')
+    if (guildError || !guild) {
+      return errorMsg(i, guildError || '**Guild not found.**')
+    }
 
     let tag = i.options.getString('tag')
     const { abbreviations, defaultClan } = guild
 
     // default clan
     if (!tag) {
-      if (defaultClan?.tag) tag = defaultClan.tag
-      else return warningMsg(i, `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`)
+      if (defaultClan?.tag) {
+        tag = defaultClan.tag
+      } else {
+        return warningMsg(
+          i,
+          `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`
+        )
+      }
     } else {
       // abbreviation
       const UPPERCASE_ABBR = tag.toUpperCase()
       const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
 
-      if (abbr) tag = abbr.tag
-      else if (tag.length < 3) return warningMsg(i, '**Abbreviation does not exist.**')
+      if (abbr) {
+        tag = abbr.tag
+      } else if (tag.length < 3) {
+        return warningMsg(i, '**Abbreviation does not exist.**')
+      }
     }
 
     const { data: race, error: raceError } = await getRace(tag)
 
-    if (raceError) return errorMsg(i, raceError)
+    if (raceError) {
+      return errorMsg(i, raceError)
+    }
 
-    if (race.state === 'matchmaking') return warningMsg(i, ':mag: **Matchmaking is underway!**')
-    if (!race.clans || !race.clans.length) return warningMsg(i, '**Clan is not in a river race.**')
+    if (race.state === 'matchmaking') {
+      return warningMsg(i, ':mag: **Matchmaking is underway!**')
+    }
+
+    if (!race.clans || !race.clans.length) {
+      return warningMsg(i, '**Clan is not in a river race.**')
+    }
 
     const { clanIndex, clans, dayIndex, isColosseum, isTraining, sectionIndex } = race
     const { tag: clanTag } = clans[clanIndex]
@@ -93,7 +111,7 @@ module.exports = {
       thumbnail: {
         url: 'https://i.imgur.com/VAPR8Jq.png'
       },
-      title: isColosseum ? `**__Colosseum__**` : `**__River Race__**`,
+      title: isColosseum ? '**__Colosseum__**' : '**__River Race__**',
       url: `https://www.cwstats.com/clan/${clanTag.substring(1)}/race`
     }
 

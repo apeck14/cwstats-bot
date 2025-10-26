@@ -13,7 +13,9 @@ function sharesCards(deck1, deck2) {
 
 function addDeck(deck, duelDecks, singleDecks, type = 'duel', emoji = 'duel', duelSet = false) {
   const alreadyExists = [...duelDecks, ...singleDecks].some((d) => sharesCards(d.cards, deck))
-  if (alreadyExists) return
+  if (alreadyExists) {
+    return
+  }
 
   if (type === 'duel' && !duelSet) {
     // Remove overlapping decks from singles
@@ -23,6 +25,7 @@ function addDeck(deck, duelDecks, singleDecks, type = 'duel', emoji = 'duel', du
         i--
       }
     }
+
     duelDecks.push({ cards: deck, emoji })
   } else {
     singleDecks.push({ cards: deck, emoji })
@@ -162,7 +165,7 @@ module.exports = {
       }
     ]
   },
-  run: async (i, client) => {
+  async run(i, client) {
     try {
       const iTag = i.options.getString('tag')
       const iPlayerSearch = i.options.getString('player')
@@ -199,7 +202,9 @@ module.exports = {
       } else {
         // loop through log to find clan data
         for (const m of data) {
-          if (opponent.clan.name) break
+          if (opponent.clan.name) {
+            break
+          }
 
           const opp = m.team.find((p) => p.tag === formattedTag)
 
@@ -213,7 +218,9 @@ module.exports = {
         if (!opponent.clan.name) {
           const { data: player, error: playerError } = await getPlayer(formattedTag)
 
-          if (playerError) return errorMsg(i, 'Error while retrieving player data.')
+          if (playerError) {
+            return errorMsg(i, 'Error while retrieving player data.')
+          }
 
           opponent.name = player.name
           opponent.clan.name = player?.clan?.name || 'None'
@@ -223,9 +230,14 @@ module.exports = {
 
       const { data: clan, error: clanError, status } = await getClan(opponent.clan.tag, true)
 
-      if (clanError && status !== 404) return errorMsg(i, clanError)
+      if (clanError && status !== 404) {
+        return errorMsg(i, clanError)
+      }
 
-      if (clan) opponent.clan.badge = clan.badge
+      if (clan) {
+        opponent.clan.badge = clan.badge
+      }
+
       log = data
 
       const duelDecks = [] // { emoji: "", cards: [] }
@@ -241,7 +253,9 @@ module.exports = {
 
           if (m.gameMode.name !== 'CW_Battle_1v1') {
             const modeExists = specialGamemodes.find((gm) => gm.name === m.gameMode.name)
-            if (modeExists) emoji = modeExists.emoji
+            if (modeExists) {
+              emoji = modeExists.emoji
+            }
           }
 
           const deck = formatDeck(m.team[0].cards)
@@ -293,7 +307,7 @@ module.exports = {
       }
 
       if (singleDecks.length > 0) {
-        description += `\n__**Singles**__\n`
+        description += '\n__**Singles**__\n'
 
         for (let i = 0; i < singleDecks.length; i++) {
           const matchEmoji = client.cwEmojis.get(singleDecks[i].emoji)
@@ -304,7 +318,7 @@ module.exports = {
             str += getCardEmoji(c, client.cwEmojis)
           }
 
-          str += `\n`
+          str += '\n'
           description += str
         }
       }
@@ -327,7 +341,7 @@ module.exports = {
       console.log(i?.options?._hoistedOptions || i?.options)
     }
   },
-  search: async (i) => {
+  async search(i) {
     const query = i.options.getFocused()
 
     if (!query || query.length < 2) {

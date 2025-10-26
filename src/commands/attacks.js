@@ -53,10 +53,12 @@ module.exports = {
       }
     ]
   },
-  run: async (i, client) => {
+  async run(i, client) {
     const { data: guild, error: guildError } = await getGuild(i.guildId, true)
 
-    if (guildError) return errorMsg(i, guildError)
+    if (guildError) {
+      return errorMsg(i, guildError)
+    }
 
     const { abbreviations, defaultClan } = guild
 
@@ -64,22 +66,42 @@ module.exports = {
 
     // default clan
     if (!iTag) {
-      if (defaultClan?.tag) iTag = defaultClan.tag
-      else return warningMsg(i, `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`)
+      if (defaultClan?.tag) {
+        iTag = defaultClan.tag
+      } else {
+        return warningMsg(
+          i,
+          `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`
+        )
+      }
     } else {
       // abbreviation
       const UPPERCASE_ABBR = iTag.toUpperCase()
       const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
 
-      if (abbr) iTag = abbr.tag
-      else if (iTag.length < 3) return warningMsg(i, '**Abbreviation does not exist.**')
+      if (abbr) {
+        iTag = abbr.tag
+      } else if (iTag.length < 3) {
+        return warningMsg(i, '**Abbreviation does not exist.**')
+      }
     }
 
-    const [{ data: race, error: raceError }, { data: clan, error: clanError }] = await Promise.all([getRace(iTag), getClan(iTag)])
+    const [{ data: race, error: raceError }, { data: clan, error: clanError }] = await Promise.all([
+      getRace(iTag),
+      getClan(iTag)
+    ])
 
-    if (raceError || clanError) return errorMsg(i, raceError || clanError)
-    if (race.state === 'matchmaking') return warningMsg(i, ':mag: **Matchmaking is underway!**')
-    if (!race.clans || race.clans.length <= 1) return warningMsg(i, '**Clan is not in a river race.**')
+    if (raceError || clanError) {
+      return errorMsg(i, raceError || clanError)
+    }
+
+    if (race.state === 'matchmaking') {
+      return warningMsg(i, ':mag: **Matchmaking is underway!**')
+    }
+
+    if (!race.clans || race.clans.length <= 1) {
+      return warningMsg(i, '**Clan is not in a river race.**')
+    }
 
     const { memberList } = clan
     const { clanIndex, dayIndex, isTraining, sectionIndex } = race
@@ -109,6 +131,7 @@ module.exports = {
           p.name += '*'
           showFooter = true
         }
+
         attackBuckets[4 - decksRemaining].push(p)
       }
     }
@@ -125,9 +148,9 @@ module.exports = {
       color: pink,
       description: '',
       footer: {
-        text: showFooter ? `* = Not in clan` : ``
+        text: showFooter ? '* = Not in clan' : ''
       },
-      title: `**__Remaining Attacks__**`,
+      title: '**__Remaining Attacks__**',
       url: `https://cwstats.com/clan/${tag.substring(1)}/race`
     }
 
@@ -136,9 +159,7 @@ module.exports = {
     const decksRemainingEmoji = client.cwEmojis.get('decksRemaining')
     const slotsRemainingEmoji = client.cwEmojis.get('remainingSlots')
 
-    embed.description += `\u202A${badgeEmoji} **${formatStr(
-      name
-    )}**\n${fameEmoji} **${fame}**\n${decksRemainingEmoji} **${decksRemaining}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n`
+    embed.description += `\u202A${badgeEmoji} **${formatStr(name)}**\n${fameEmoji} **${fame}**\n${decksRemainingEmoji} **${decksRemaining}**\n${slotsRemainingEmoji} **${slotsRemaining}**\n`
 
     const labels = ['4 Attacks', '3 Attacks', '2 Attacks', '1 Attack']
 

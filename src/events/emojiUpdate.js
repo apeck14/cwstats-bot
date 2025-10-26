@@ -5,8 +5,10 @@ const { logToSupportServer } = require('../util/logging')
 
 module.exports = {
   name: Events.GuildEmojiUpdate,
-  run: async (client, oldEmoji, newEmoji) => {
-    if (!ownerIds.includes(newEmoji.guild.ownerId)) return
+  async run(client, oldEmoji, newEmoji) {
+    if (!ownerIds.includes(newEmoji.guild.ownerId)) {
+      return
+    }
 
     client.cwEmojis.delete(oldEmoji.name)
     client.cwEmojis.set(newEmoji.name, `<:${newEmoji.name}:${newEmoji.id}>`)

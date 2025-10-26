@@ -27,7 +27,7 @@ module.exports = {
       tr: 'kısaltmalar'
     }
   },
-  run: async (i) => {
+  async run(i) {
     const { data: guild, error } = await getGuild(i.guildId, true)
     const { abbreviations, defaultClan } = guild || {}
 
@@ -53,7 +53,9 @@ module.exports = {
       abbreviations.sort((a, b) => a.abbr.localeCompare(b.abbr))
 
       embed.description += `${abbreviations.map((a) => `\n\u202A• **${a.abbr.toLowerCase()}**: ${formatStr(a.name)}`).join('')}`
-    } else embed.description += '\n*None*'
+    } else {
+      embed.description += '\n*None*'
+    }
 
     return i.editReply({
       embeds: [embed]

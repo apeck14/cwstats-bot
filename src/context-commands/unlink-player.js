@@ -1,5 +1,12 @@
 /* eslint-disable camelcase */
-const { ActionRowBuilder, ApplicationCommandType, MessageFlags, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js')
+const {
+  ActionRowBuilder,
+  ApplicationCommandType,
+  MessageFlags,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle
+} = require('discord.js')
 const { green, orange, red } = require('../static/colors')
 const { deleteNudgeLink } = require('../util/services')
 
@@ -17,7 +24,7 @@ module.exports = {
     },
     type: ApplicationCommandType.User
   },
-  handleModalSubmit: async (i) => {
+  async handleModalSubmit(i) {
     try {
       await i.deferReply({ flags: MessageFlags.Ephemeral })
 
@@ -60,10 +67,10 @@ module.exports = {
       })
     }
   },
-  run: async (i) => {
+  async run(i) {
     const { targetUser } = i
 
-    const modal = new ModalBuilder().setCustomId(`unlink-player`).setTitle(`Unlink Player: ${targetUser.tag}`)
+    const modal = new ModalBuilder().setCustomId('unlink-player').setTitle(`Unlink Player: ${targetUser.tag}`)
 
     // Create input fields for the modal
     const input = new TextInputBuilder()

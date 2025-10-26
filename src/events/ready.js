@@ -9,7 +9,7 @@ const isDev = NODE_ENV === 'dev'
 
 module.exports = {
   name: Events.ClientReady,
-  run: async (client) => {
+  async run(client) {
     console.time('✅ Bot Ready Time')
 
     try {

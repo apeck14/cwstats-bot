@@ -5,8 +5,10 @@ const { logToSupportServer } = require('../util/logging')
 
 module.exports = {
   name: Events.GuildEmojiDelete,
-  run: async (client, emoji) => {
-    if (!ownerIds.includes(emoji.guild.ownerId)) return
+  async run(client, emoji) {
+    if (!ownerIds.includes(emoji.guild.ownerId)) {
+      return
+    }
 
     client.cwEmojis.delete(emoji.name)
 

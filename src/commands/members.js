@@ -54,28 +54,41 @@ module.exports = {
     ]
   },
 
-  run: async (i, client) => {
+  async run(i, client) {
     const { data: guild, error: guildError } = await getGuild(i.guildId, true)
-    if (guildError) return errorMsg(i, guildError)
+    if (guildError) {
+      return errorMsg(i, guildError)
+    }
 
     const { abbreviations, defaultClan } = guild
     let iTag = i.options.getString('tag')
 
     // Default clan fallback
     if (!iTag) {
-      if (defaultClan?.tag) iTag = defaultClan.tag
-      else return warningMsg(i, `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`)
+      if (defaultClan?.tag) {
+        iTag = defaultClan.tag
+      } else {
+        return warningMsg(
+          i,
+          `**No default clan set.** Set the server default clan [here](https://www.cwstats.com/me/servers/${i.guildId}).`
+        )
+      }
     } else {
       // Handle abbreviation
       const UPPERCASE_ABBR = iTag.toUpperCase()
       const abbr = abbreviations?.find((a) => a.abbr.toUpperCase() === UPPERCASE_ABBR)
-      if (abbr) iTag = abbr.tag
-      else if (iTag.length < 3) return warningMsg(i, '**Abbreviation does not exist.**')
+      if (abbr) {
+        iTag = abbr.tag
+      } else if (iTag.length < 3) {
+        return warningMsg(i, '**Abbreviation does not exist.**')
+      }
     }
 
     // Fetch clan
     const { data: clan, error: clanError } = await getClan(iTag)
-    if (clanError) return errorMsg(i, clanError)
+    if (clanError) {
+      return errorMsg(i, clanError)
+    }
 
     const { badge, memberList, name, tag } = clan
     const badgeEmoji = client.cwEmojis.get(badge)
@@ -93,7 +106,9 @@ module.exports = {
     }
 
     for (const m of memberList) {
-      if (roles[m.role]) roles[m.role].push(m)
+      if (roles[m.role]) {
+        roles[m.role].push(m)
+      }
     }
 
     const embed = {
@@ -110,7 +125,9 @@ module.exports = {
 
     for (const roleKey of roleOrder) {
       const group = roles[roleKey]
-      if (group.length === 0) continue
+      if (group.length === 0) {
+        continue
+      }
 
       const isLeader = roleKey === 'leader'
 

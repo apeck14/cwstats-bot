@@ -18,8 +18,11 @@ const sendCommandLog = (i, client) => {
     const hasFields = i?.fields?.fields?.size > 0
     let data = '*None*'
 
-    if (hasOptions) data = `${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join('\n')}`
-    else if (hasFields) data = `${i.fields.fields.map((o) => `• **${o.customId}**: ${o.value}`).join('\n')}`
+    if (hasOptions) {
+      data = `${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join('\n')}`
+    } else if (hasFields) {
+      data = `${i.fields.fields.map((o) => `• **${o.customId}**: ${o.value}`).join('\n')}`
+    }
 
     desc += `\n\n**Fields**: \n${data}`
 
@@ -66,8 +69,9 @@ async function handleCommand(i, client, guild) {
   }
 
   // if a user @'s themselves send reminder above embed response
-  if (i.options._hoistedOptions.find((o) => o.name === 'user')?.value === i.user.id)
+  if (i.options._hoistedOptions.find((o) => o.name === 'user')?.value === i.user.id) {
     await i.followUp(`:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`)
+  }
 
   await cmd.run(i, client)
   sendCommandLog(i, client)
@@ -104,13 +108,18 @@ async function handleModalSubmit(i) {
   const file = path.join(__dirname, '../context-commands', `${i.customId}.js`)
   if (fs.existsSync(file)) {
     const command = require(file)
-    if (command.handleModalSubmit) await command.handleModalSubmit(i)
+    if (command.handleModalSubmit) {
+      await command.handleModalSubmit(i)
+    }
   }
 }
 
 async function handleAutocomplete(i, client) {
   const cmd = i.client.commands.get(i.commandName)
-  if (!cmd?.search) return
+  if (!cmd?.search) {
+    return
+  }
+
   const results = await cmd.search(i)
   await i.respond(results?.length ? results : [{ name: '❌ No matches', value: 'no_match' }])
   sendCommandLog(i, client)
@@ -118,18 +127,27 @@ async function handleAutocomplete(i, client) {
 
 module.exports = {
   name: Events.InteractionCreate,
-  run: async (client, i) => {
+  async run(client, i) {
     try {
-      if (!i) return
-      if (i.createdTimestamp < client.readyTimestamp) return // stale interaction
-      if (Date.now() - i.createdTimestamp > 15 * 60 * 1000) return // expired interaction
+      if (!i) {
+        return
+      }
+
+      if (i.createdTimestamp < client.readyTimestamp) {
+        return
+      } // stale interaction
+
+      if (Date.now() - i.createdTimestamp > 15 * 60 * 1000) {
+        return
+      } // expired interaction
 
       // ignore DMs
-      if (!i.guild)
+      if (!i.guild) {
         return warningMsg(
           i,
-          `**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=2147797184&scope=bot+applications.commands) me to a server to use my commands!**`
+          '**[Invite](https://discord.com/api/oauth2/authorize?client_id=869761158763143218&permissions=2147797184&scope=bot+applications.commands) me to a server to use my commands!**'
         )
+      }
 
       const { data: guild } = await getGuild(i.guildId)
 
@@ -139,9 +157,18 @@ module.exports = {
         return errorMsg(i, '**Unexpected error.** Please try again.')
       }
 
-      if (i.isAutocomplete()) return handleAutocomplete(i, client)
-      if (i.isChatInputCommand()) return handleCommand(i, client, guild)
-      if (i.isModalSubmit()) return handleModalSubmit(i)
+      if (i.isAutocomplete()) {
+        return handleAutocomplete(i, client)
+      }
+
+      if (i.isChatInputCommand()) {
+        return handleCommand(i, client, guild)
+      }
+
+      if (i.isModalSubmit()) {
+        return handleModalSubmit(i)
+      }
+
       if (i.isUserContextMenuCommand() || i.isMessageContextMenuCommand()) {
         return handleContextCommand(i, client, guild)
       }
