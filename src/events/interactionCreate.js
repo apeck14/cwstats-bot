@@ -49,7 +49,7 @@ const getTimeDifference = (date1, date2) => {
 async function handleCommand(i, client, guild) {
   const { color, error, onlyShowToUser } = validate(i, guild, client, true)
 
-  await i.deferReply({ flags: onlyShowToUser ? MessageFlags.Ephemeral : 0 })
+  await i.deferReply({ flags: onlyShowToUser ? MessageFlags.Ephemeral : 0 }).catch(console.log)
 
   if (error) {
     return i.editReply({ embeds: [{ color, description: error }] })
@@ -71,7 +71,11 @@ async function handleCommand(i, client, guild) {
 
   // if a user @'s themselves send reminder above embed response
   if (i.options._hoistedOptions.find((o) => o.name === 'user')?.value === i.user.id) {
-    await i.followUp(`:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`)
+    try {
+      i.followUp(`:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`)
+    } catch (err) {
+      console.warn('Follow-up failed, likely expired:', err.message)
+    }
   }
 
   await cmd.run(i, client)
@@ -79,30 +83,26 @@ async function handleCommand(i, client, guild) {
 }
 
 async function handleContextCommand(i, client, guild) {
-  const { color, error } = validate(i, guild, client, true)
-
+  const { error } = validate(i, guild, client, true)
   const cmd = i.client.contextCommands.get(i.commandName)
 
-  if (cmd?.handleModalSubmit) {
-    if (error) {
-      return i.reply({
-        embeds: [{ color, description: error }],
-        ephemeral: true
-      })
+  try {
+    // Always defer early unless you are sure the command replies instantly
+    const shouldDefer = !cmd?.handleModalSubmit
+    if (shouldDefer) {
+      await i.deferReply({ flags: MessageFlags.Ephemeral }).catch(console.log)
     }
 
-    await cmd.run(i, client)
-  } else {
     if (error) {
-      return i.reply({ embeds: [{ color, description: error }], ephemeral: true })
+      return errorMsg(i, error)
     }
 
-    await i.deferReply()
+    await cmd.run(i, client).catch(console.error)
 
-    await cmd.run(i, client)
+    sendCommandLog(i, client)
+  } catch (err) {
+    console.error('handleContextCommand ERROR:', err)
   }
-
-  sendCommandLog(i, client)
 }
 
 async function handleModalSubmit(i) {
