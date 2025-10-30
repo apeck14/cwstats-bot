@@ -1,14 +1,15 @@
 /* eslint-disable no-console */
-const { ActivityType, Events, WebhookClient } = require('discord.js')
-const registerSlashCommands = require('../util/slash')
-const { BOT_WEBHOOK_URL, COMMANDS_WEBHOOK_URL, NODE_ENV } = require('../../config')
-const { initializeCommands, initializeEmojis } = require('../util/initialize')
-const { logToSupportServer } = require('../util/logging')
-const { orange } = require('../static/colors')
+import { ActivityType, Events, WebhookClient } from 'discord.js'
+
+import { BOT_WEBHOOK_URL, COMMANDS_WEBHOOK_URL, NODE_ENV } from '../../config.js'
+import { orange } from '../static/colors.js'
+import { initializeCommands, initializeEmojis } from '../util/initialize.js'
+import { logToSupportServer } from '../util/logging.js'
+import registerSlashCommands from '../util/slash.js'
 
 const isDev = NODE_ENV === 'dev'
 
-module.exports = {
+export default {
   name: Events.ClientReady,
   async run(client) {
     console.time('✅ Bot Ready Time')

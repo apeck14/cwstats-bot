@@ -1,9 +1,10 @@
-const { Events } = require('discord.js')
-const ownerIds = require('../static/ownerIds')
-const { red } = require('../static/colors')
-const { logToSupportServer } = require('../util/logging')
+import { Events } from 'discord.js'
 
-module.exports = {
+import { red } from '../static/colors.js'
+import ownerIds from '../static/ownerIds.js'
+import { logToSupportServer } from '../util/logging.js'
+
+export default {
   name: Events.GuildEmojiDelete,
   async run(client, emoji) {
     if (!ownerIds.includes(emoji.guild.ownerId)) {

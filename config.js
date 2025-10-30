@@ -7,10 +7,10 @@ const {
   NODE_ENV,
   TEST_CLIENT_TOKEN,
   TEST_GUILD_ID,
-  TOPGG_TOKEN,
+  TOPGG_TOKEN
 } = process.env
 
-module.exports = {
+export {
   BOT_WEBHOOK_URL,
   CLIENT_ID,
   CLIENT_TOKEN,
@@ -19,5 +19,5 @@ module.exports = {
   NODE_ENV,
   TEST_CLIENT_TOKEN,
   TEST_GUILD_ID,
-  TOPGG_TOKEN,
+  TOPGG_TOKEN
 }

@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-const { pink } = require('../static/colors')
+import { pink } from '../static/colors.js'
 
-module.exports = {
+export default {
   data: {
     description: 'Need help? Get started here.',
     description_localizations: {

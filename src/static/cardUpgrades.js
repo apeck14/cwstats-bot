@@ -1,9 +1,9 @@
-module.exports = {
+export default {
   championUpgrades: {
     12: 2,
     13: 8,
     14: 10,
-    total: 20,
+    total: 20
   },
   commonUpgrades: {
     10: 800,
@@ -19,7 +19,7 @@ module.exports = {
     7: 100,
     8: 200,
     9: 400,
-    total: 12086,
+    total: 12086
   },
   epicUpgrades: {
     10: 20,
@@ -30,7 +30,7 @@ module.exports = {
     7: 2,
     8: 4,
     9: 10,
-    total: 426,
+    total: 426
   },
   legendaryUpgrades: {
     10: 2,
@@ -38,7 +38,7 @@ module.exports = {
     12: 6,
     13: 10,
     14: 20,
-    total: 42,
+    total: 42
   },
   rareUpgrades: {
     10: 200,
@@ -52,6 +52,6 @@ module.exports = {
     7: 20,
     8: 50,
     9: 100,
-    total: 3286,
-  },
+    total: 3286
+  }
 }

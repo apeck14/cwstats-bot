@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
-const { pink } = require('../static/colors')
-const { formatStr } = require('../util/formatting')
-const { errorMsg } = require('../util/functions')
-const { getGuild } = require('../util/services')
+import { pink } from '../static/colors.js'
+import { formatStr } from '../util/formatting.js'
+import { errorMsg } from '../util/functions.js'
+import { getGuild } from '../util/services.js'
 
-module.exports = {
+export default {
   data: {
     description: 'View all abbreviations for this server.',
     description_localizations: {

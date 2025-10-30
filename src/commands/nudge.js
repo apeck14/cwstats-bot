@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
-const { getClan, getGuild, getRace } = require('../util/services')
-const { errorMsg, warningMsg } = require('../util/functions')
-const { formatStr } = require('../util/formatting')
+import { formatStr } from '../util/formatting.js'
+import { errorMsg, warningMsg } from '../util/functions.js'
+import { getClan, getGuild, getRace } from '../util/services.js'
 
-module.exports = {
+export default {
   data: {
     description: 'Ping all linked players with attacks remaining.',
     description_localizations: {

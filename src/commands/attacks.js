@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
-const { getClan, getGuild, getRace } = require('../util/services')
-const { pink } = require('../static/colors')
-const { errorMsg, warningMsg } = require('../util/functions')
-const { formatStr } = require('../util/formatting')
+import { pink } from '../static/colors.js'
+import { formatStr } from '../util/formatting.js'
+import { errorMsg, warningMsg } from '../util/functions.js'
+import { getClan, getGuild, getRace } from '../util/services.js'
 
-module.exports = {
+export default {
   data: {
     description: 'View players with remaining attacks.',
     description_localizations: {

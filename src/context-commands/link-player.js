@@ -1,17 +1,18 @@
 /* eslint-disable camelcase */
-const {
+import {
   ActionRowBuilder,
   ApplicationCommandType,
   MessageFlags,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle
-} = require('discord.js')
-const { formatStr, formatTag } = require('../util/formatting')
-const { green, orange, red } = require('../static/colors')
-const { addNudgeLink } = require('../util/services')
+} from 'discord.js'
 
-module.exports = {
+import { green, orange, red } from '../static/colors.js'
+import { formatStr, formatTag } from '../util/formatting.js'
+import { addNudgeLink } from '../util/services.js'
+
+export default {
   data: {
     name: 'Link Player (ADMIN)',
     name_localizations: {

@@ -12,6 +12,4 @@ const logToSupportServer = async (client, embed, isCommand = true) => {
   }
 }
 
-module.exports = {
-  logToSupportServer
-}
+export { logToSupportServer }

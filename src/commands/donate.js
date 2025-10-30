@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-const { pink } = require('../static/colors')
+import { pink } from '../static/colors.js'
 
-module.exports = {
+export default {
   data: {
     description: 'Donate to support CW2Stats.',
     description_localizations: {

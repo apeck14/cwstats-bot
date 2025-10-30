@@ -1,6 +1,7 @@
-const axios = require('axios')
-const { formatTag } = require('./formatting')
-const { INTERNAL_API_KEY, NODE_ENV } = require('../../config')
+import axios from 'axios'
+
+import { INTERNAL_API_KEY, NODE_ENV } from '../../config.js'
+import { formatTag } from './formatting.js'
 
 const isDev = NODE_ENV === 'dev'
 const BASE_URL = isDev ? 'http://localhost:5000' : 'https://api.cwstats.com'
@@ -59,7 +60,8 @@ const addPlayer = (tag) =>
     .then(handleAPISuccess)
     .catch(handleAPIFailure)
 
-const linkPlayer = (tag, userId) => api.put('/player/link', { tag, userId }).then(handleAPISuccess).catch(handleAPIFailure)
+const linkPlayer = (tag, userId) =>
+  api.put('/player/link', { tag, userId }).then(handleAPISuccess).catch(handleAPIFailure)
 
 const getClan = (tag, limited = false) =>
   api
@@ -74,9 +76,13 @@ const getRace = (tag, limited = false) =>
     .catch((e) => handleAPIFailure(e, '**Race not found.**'))
 
 const getDailyLeaderboard = ({ key, limit, maxTrophies, minTrophies }) =>
-  api.get('/leaderboard/daily', { params: { key, limit, maxTrophies, minTrophies } }).then(handleAPISuccess).catch(handleAPIFailure)
+  api
+    .get('/leaderboard/daily', { params: { key, limit, maxTrophies, minTrophies } })
+    .then(handleAPISuccess)
+    .catch(handleAPIFailure)
 
-const getAllPlusClans = (tagsOnly = false) => api.get('/plus/clans', { params: { tagsOnly } }).then(handleAPISuccess).catch(handleAPIFailure)
+const getAllPlusClans = (tagsOnly = false) =>
+  api.get('/plus/clans', { params: { tagsOnly } }).then(handleAPISuccess).catch(handleAPIFailure)
 
 const setCommandCooldown = (id, commandName, delay) =>
   api.patch(`/guild/${id}/command-cooldown`, { commandName, delay }).then(handleAPISuccess).catch(handleAPIFailure)
@@ -115,9 +121,10 @@ const deleteGuild = (id) =>
 
 const bulkAddEmojis = (emojis) => api.post('/emoji/bulk-add', { emojis }).then(handleAPISuccess).catch(handleAPIFailure)
 
-const getPlayerSearch = (name, limit = 10) => api.get('/player/search', { params: { limit, name } }).then(handleAPISuccess).catch(handleAPIFailure)
+const getPlayerSearch = (name, limit = 10) =>
+  api.get('/player/search', { params: { limit, name } }).then(handleAPISuccess).catch(handleAPIFailure)
 
-module.exports = {
+export {
   addNudgeLink,
   addPlayer,
   bulkAddEmojis,

@@ -3,6 +3,7 @@
   "version": "2.1.0",
   "description": "Discord bot to track everything CW related!",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run start\" \"npm --prefix \"../../APIs/cwstats-api\" run dev\"",
     "clean": "rm -rf node_modules package-lock.json",

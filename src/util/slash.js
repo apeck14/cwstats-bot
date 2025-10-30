@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
-const { REST, Routes } = require('discord.js')
-const { CLIENT_TOKEN, NODE_ENV, TEST_CLIENT_TOKEN, TEST_GUILD_ID } = require('../../config')
+import { REST, Routes } from 'discord.js'
+
+import { CLIENT_TOKEN, NODE_ENV, TEST_CLIENT_TOKEN, TEST_GUILD_ID } from '../../config.js'
 
 const isDev = NODE_ENV === 'dev'
 
@@ -90,4 +91,4 @@ const registerSlashCommands = async (CLIENT_ID, commands) => {
   }
 }
 
-module.exports = registerSlashCommands
+export default registerSlashCommands

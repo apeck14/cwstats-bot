@@ -1,6 +1,7 @@
-const { PermissionFlagsBits, PermissionsBitField } = require('discord.js')
-const startCase = require('lodash/startCase')
-const { orange, red } = require('../static/colors')
+import { PermissionFlagsBits, PermissionsBitField } from 'discord.js'
+import startCase from 'lodash/startCase.js'
+
+import { orange, red } from '../static/colors.js'
 
 const missingPermissionsToStr = (permissions, requiredFlags) => {
   const serializedPermissions = permissions.serialize()
@@ -96,7 +97,9 @@ const validate = (i, guild, client, validateChannel) => {
       }
     }
 
-    const formattedKeyword = commandChannelKeyword ? `- Any channel containing \`${commandChannelKeyword.toLowerCase()}\`\n` : ''
+    const formattedKeyword = commandChannelKeyword
+      ? `- Any channel containing \`${commandChannelKeyword.toLowerCase()}\`\n`
+      : ''
 
     let channelsToShow = commandChannelIDs
     let suffix = ''
@@ -136,4 +139,4 @@ const validate = (i, guild, client, validateChannel) => {
   return {}
 }
 
-module.exports = validate
+export default validate

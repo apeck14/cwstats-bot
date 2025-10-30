@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
-const { getLinkedAccount, getPlayerScores } = require('../util/services')
-const { errorMsg, warningMsg } = require('../util/functions')
-const { pink } = require('../static/colors')
-const { formatTag } = require('../util/formatting')
+import { pink } from '../static/colors.js'
+import { formatTag } from '../util/formatting.js'
+import { errorMsg, warningMsg } from '../util/functions.js'
+import { getLinkedAccount, getPlayerScores } from '../util/services.js'
 
-module.exports = {
+export default {
   data: {
     description: 'View player war scores.',
     description_localizations: {

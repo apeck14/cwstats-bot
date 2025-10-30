@@ -1,22 +1,24 @@
 /* eslint-disable no-console */
-const fs = require('fs')
-const { Client, Collection, GatewayIntentBits } = require('discord.js')
-const path = require('path')
-const { CLIENT_TOKEN, NODE_ENV, TEST_CLIENT_TOKEN } = require('../../config')
-const { bulkAddEmojis } = require('./services')
-const ownerIds = require('../static/ownerIds')
+import { Client, Collection, GatewayIntentBits } from 'discord.js'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+import { CLIENT_TOKEN, NODE_ENV, TEST_CLIENT_TOKEN } from '../../config.js'
+import ownerIds from '../static/ownerIds.js'
+import { bulkAddEmojis } from './services.js'
 
 const isDev = NODE_ENV === 'dev'
 
 const events = fs.readdirSync('src/events')
 
-const initializeEvents = (client) => {
+const initializeEvents = async (client) => {
   for (const event of events) {
-    const eventFile = require(`../events/${event}`)
-    client.on(eventFile.name, (...args) => eventFile.run(client, ...args))
+    const eventFile = await import(`../events/${event}`)
+    client.on(eventFile.default.name, (...args) => eventFile.default.run(client, ...args))
   }
 
-  console.log('✅ DiscordJS Events Initalized!')
+  console.log('✅ DiscordJS Events Initialized!')
 
   return client
 }
@@ -45,6 +47,9 @@ const initializeClient = async () => {
   return client
 }
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
 async function initializeCommands(client) {
   const commandsArray = []
 
@@ -55,15 +60,15 @@ async function initializeCommands(client) {
   const contextFiles = fs.readdirSync(contextDir).filter((f) => f.endsWith('.js'))
 
   for (const file of commandFiles) {
-    const command = require(`${commandDir}/${file}`)
-    client.commands.set(command.data.name, command)
-    commandsArray.push(command)
+    const command = await import(`file://${path.join(commandDir, file)}`)
+    client.commands.set(command.default.data.name, command.default)
+    commandsArray.push(command.default)
   }
 
   for (const file of contextFiles) {
-    const command = require(`${contextDir}/${file}`)
-    client.contextCommands.set(command.data.name, command)
-    commandsArray.push(command)
+    const command = await import(`file://${path.join(contextDir, file)}`)
+    client.contextCommands.set(command.default.data.name, command.default)
+    commandsArray.push(command.default)
   }
 
   console.log(`🔧 Loaded ${commandsArray.length} commands`)
@@ -89,9 +94,4 @@ function initializeEmojis(client) {
   console.timeEnd('🎨 Emoji Load Time')
 }
 
-module.exports = {
-  initializeClient,
-  initializeCommands,
-  initializeEmojis,
-  initializeEvents
-}
+export { initializeClient, initializeCommands, initializeEmojis, initializeEvents }

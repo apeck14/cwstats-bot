@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
-const { addPlayer, getClan, getLinkedAccount, getPlayer } = require('../util/services')
-const { createPlayerEmbed, errorMsg, warningMsg } = require('../util/functions')
+import { createPlayerEmbed, errorMsg, warningMsg } from '../util/functions.js'
+import { addPlayer, getClan, getLinkedAccount, getPlayer } from '../util/services.js'
 
-module.exports = {
+export default {
   data: {
     description: 'View player profile stats.',
     description_localizations: {

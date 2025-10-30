@@ -1,11 +1,11 @@
 /* eslint-disable camelcase */
-const { pink } = require('../static/colors')
-const { formatStr } = require('../util/formatting')
-const { errorMsg, getClanBadge, warningMsg } = require('../util/functions')
-const locations = require('../static/locations')
-const { getAllPlusClans, getDailyLeaderboard } = require('../util/services')
+import { pink } from '../static/colors.js'
+import locations from '../static/locations.js'
+import { formatStr } from '../util/formatting.js'
+import { errorMsg, getClanBadge, warningMsg } from '../util/functions.js'
+import { getAllPlusClans, getDailyLeaderboard } from '../util/services.js'
 
-module.exports = {
+export default {
   data: {
     description: 'View the current daily war leaderboard.',
     description_localizations: {

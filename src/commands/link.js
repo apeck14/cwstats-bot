@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
-const { addPlayer, linkPlayer } = require('../util/services')
-const { formatStr, formatTag } = require('../util/formatting')
-const { errorMsg, successMsg, warningMsg } = require('../util/functions')
+import { formatStr, formatTag } from '../util/formatting.js'
+import { errorMsg, successMsg, warningMsg } from '../util/functions.js'
+import { addPlayer, linkPlayer } from '../util/services.js'
 
-module.exports = {
+export default {
   data: {
     description: 'Link your Clash Royale account to Discord.',
     description_localizations: {

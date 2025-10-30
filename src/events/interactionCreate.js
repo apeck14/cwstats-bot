@@ -1,12 +1,17 @@
 /* eslint-disable no-console */
-const { Events, MessageFlags } = require('discord.js')
-const path = require('path')
-const fs = require('fs')
-const { pink } = require('../static/colors')
-const { logToSupportServer } = require('../util/logging')
-const { createGuild, getGuild } = require('../util/services')
-const { errorMsg, warningMsg } = require('../util/functions')
-const validate = require('../util/validate')
+import { Events, MessageFlags } from 'discord.js'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+import { pink } from '../static/colors.js'
+import { errorMsg, safeEdit, safeReply, warningMsg } from '../util/functions.js'
+import { logToSupportServer } from '../util/logging.js'
+import { createGuild, getGuild } from '../util/services.js'
+import validate from '../util/validate.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const sendCommandLog = (i, client) => {
   try {
@@ -49,10 +54,14 @@ const getTimeDifference = (date1, date2) => {
 async function handleCommand(i, client, guild) {
   const { color, error, onlyShowToUser } = validate(i, guild, client, true)
 
-  await i.deferReply({ flags: onlyShowToUser ? MessageFlags.Ephemeral : 0 }).catch(console.log)
+  try {
+    await i.deferReply({ flags: onlyShowToUser ? MessageFlags.Ephemeral : 0 })
+  } catch (deferErr) {
+    console.log('[handleCommand] ⚠️ deferReply failed:', deferErr.message)
+  }
 
   if (error) {
-    return i.editReply({ embeds: [{ color, description: error }] })
+    return safeEdit(i, { embeds: [{ color, description: error }] })
   }
 
   const cmd = i.client.commands.get(i.commandName)
@@ -71,15 +80,16 @@ async function handleCommand(i, client, guild) {
 
   // if a user @'s themselves send reminder above embed response
   if (i.options._hoistedOptions.find((o) => o.name === 'user')?.value === i.user.id) {
-    try {
-      i.followUp(`:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`)
-    } catch (err) {
-      console.warn('Follow-up failed, likely expired:', err.message)
-    }
+    await safeReply(i, `:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`)
   }
 
-  await cmd.run(i, client)
-  sendCommandLog(i, client)
+  try {
+    await cmd.run(i, client)
+    sendCommandLog(i, client)
+  } catch (err) {
+    console.log(`[handleCommand] ❌ Error executing ${i.commandName}:`, err)
+    return errorMsg('Something went wrong while executing this command.')
+  }
 }
 
 async function handleContextCommand(i, client, guild) {
@@ -105,10 +115,10 @@ async function handleContextCommand(i, client, guild) {
   }
 }
 
-async function handleModalSubmit(i) {
+export async function handleModalSubmit(i) {
   const file = path.join(__dirname, '../context-commands', `${i.customId}.js`)
   if (fs.existsSync(file)) {
-    const command = require(file)
+    const command = await import(`file://${file}`)
     if (command.handleModalSubmit) {
       await command.handleModalSubmit(i)
     }
@@ -126,7 +136,7 @@ async function handleAutocomplete(i, client) {
   sendCommandLog(i, client)
 }
 
-module.exports = {
+export default {
   name: Events.InteractionCreate,
   async run(client, i) {
     try {

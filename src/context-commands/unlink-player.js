@@ -1,17 +1,18 @@
 /* eslint-disable no-console */
 /* eslint-disable camelcase */
-const {
+import {
   ActionRowBuilder,
   ApplicationCommandType,
   MessageFlags,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle
-} = require('discord.js')
-const { green, orange, red } = require('../static/colors')
-const { deleteNudgeLink } = require('../util/services')
+} from 'discord.js'
 
-module.exports = {
+import { green, orange, red } from '../static/colors.js'
+import { deleteNudgeLink } from '../util/services.js'
+
+export default {
   data: {
     name: 'Unlink Player (ADMIN)',
     name_localizations: {

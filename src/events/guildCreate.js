@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
-const { Events } = require('discord.js')
-const { green, pink } = require('../static/colors')
-const { logToSupportServer } = require('../util/logging')
-const { createGuild } = require('../util/services')
+import { Events } from 'discord.js'
 
-module.exports = {
+import { green, pink } from '../static/colors.js'
+import { logToSupportServer } from '../util/logging.js'
+import { createGuild } from '../util/services.js'
+
+export default {
   name: Events.GuildCreate,
   async run(client, guild) {
     guild

@@ -1,17 +1,17 @@
 /* eslint-disable no-console */
 /* eslint-disable camelcase */
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js')
-const { formatStr } = require('../util/formatting')
-const { errorMsg, getClanBadge } = require('../util/functions')
-const { pink } = require('../static/colors')
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js'
 
-const {
+import { pink } from '../static/colors.js'
+import { formatStr } from '../util/formatting.js'
+import { errorMsg, getClanBadge } from '../util/functions.js'
+import {
   getAllPlusClans,
   getDailyLeaderboard,
   getGuildLinkedClans,
   getRace,
   setCommandCooldown
-} = require('../util/services')
+} from '../util/services.js'
 
 const ITEMS_PER_PAGE = 5
 
@@ -82,7 +82,7 @@ const generateButtons = ({ liveClanData, pageIndex }) =>
       .setDisabled(pageIndex >= Math.ceil(liveClanData.length / ITEMS_PER_PAGE) - 1)
   )
 
-module.exports = {
+export default {
   cooldown: true,
   data: {
     description: 'View real-time race data for all clans linked to your server.',

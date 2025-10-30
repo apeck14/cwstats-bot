@@ -1,9 +1,10 @@
 /* eslint-disable camelcase */
-const { ApplicationCommandType } = require('discord.js')
-const { addPlayer, getClan, getPlayer } = require('../util/services')
-const { createPlayerEmbed, errorMsg } = require('../util/functions')
+import { ApplicationCommandType } from 'discord.js'
 
-module.exports = {
+import { createPlayerEmbed, errorMsg } from '../util/functions.js'
+import { addPlayer, getClan, getPlayer } from '../util/services.js'
+
+export default {
   data: {
     name: 'Get Player',
     name_localizations: {

@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
-require('dotenv').config()
+import 'dotenv/config'
 
-const { AutoPoster } = require('topgg-autoposter')
-const { initializeClient, initializeEvents } = require('./src/util/initialize')
-const { NODE_ENV, TOPGG_TOKEN } = require('./config')
+import { AutoPoster } from 'topgg-autoposter'
+
+import { NODE_ENV, TOPGG_TOKEN } from './config.js'
+import { initializeClient, initializeEvents } from './src/util/initialize.js'
 
 const isDev = NODE_ENV === 'dev'
 

@@ -1,9 +1,10 @@
-const { Events } = require('discord.js')
-const { red } = require('../static/colors')
-const { logToSupportServer } = require('../util/logging')
-const { deleteGuild } = require('../util/services')
+import { Events } from 'discord.js'
 
-module.exports = {
+import { red } from '../static/colors.js'
+import { logToSupportServer } from '../util/logging.js'
+import { deleteGuild } from '../util/services.js'
+
+export default {
   name: Events.GuildDelete,
   async run(client, guild) {
     if (guild.available && client.isReady()) {

@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
-const { getClan, getGuild } = require('../util/services')
-const { pink } = require('../static/colors')
-const { errorMsg, warningMsg } = require('../util/functions')
-const { formatRole, formatStr } = require('../util/formatting')
+import { pink } from '../static/colors.js'
+import { formatRole, formatStr } from '../util/formatting.js'
+import { errorMsg, warningMsg } from '../util/functions.js'
+import { getClan, getGuild } from '../util/services.js'
 
-module.exports = {
+export default {
   data: {
     description: 'View all members in a clan.',
     description_localizations: {

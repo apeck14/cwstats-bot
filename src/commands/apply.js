@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
-const { addPlayer, getClan, getGuild, getPlayer } = require('../util/services')
-const { createPlayerEmbed, errorMsg, successMsg, warningMsg } = require('../util/functions')
-const { formatStr } = require('../util/formatting')
+import { formatStr } from '../util/formatting.js'
+import { createPlayerEmbed, errorMsg, successMsg, warningMsg } from '../util/functions.js'
+import { addPlayer, getClan, getGuild, getPlayer } from '../util/services.js'
 
-module.exports = {
+export default {
   data: {
     description: 'Apply to join the clan.',
     description_localizations: {

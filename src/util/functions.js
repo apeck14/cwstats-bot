@@ -1,6 +1,7 @@
-const badges = require('../static/badges')
-const { green, orange, pink, red } = require('../static/colors')
-const { formatRole, formatStr } = require('./formatting')
+/* eslint-disable no-console */
+import badges from '../static/badges.js'
+import { green, orange, pink, red } from '../static/colors.js'
+import { formatRole, formatStr } from './formatting.js'
 
 const getClanBadge = (badgeId, trophyCount, returnEmojiPath = true) => {
   if (badgeId === -1 || badgeId === null) return 'no_clan' // no clan
@@ -65,41 +66,97 @@ const getArenaEmoji = (pb) => {
 }
 
 const errorMsg = async (i, message) => {
-  const embed = {
-    color: red,
-    description: message
-  }
+  try {
+    const embed = {
+      color: red,
+      description: message
+    }
 
-  if (i.deferred || i.replied) {
-    await i.editReply({ embeds: [embed] })
-  } else {
-    await i.reply({ embeds: [embed] })
+    if (i.deferred || i.replied) {
+      await i.editReply({ embeds: [embed] })
+    } else {
+      await i.reply({ embeds: [embed] })
+    }
+  } catch (e) {
+    console.log('Failed to send error message:', e)
   }
 }
 
 const warningMsg = async (i, message) => {
-  const embed = {
-    color: orange,
-    description: message
-  }
+  try {
+    const embed = {
+      color: orange,
+      description: message
+    }
 
-  if (i.deferred || i.replied) {
-    await i.editReply({ embeds: [embed] })
-  } else {
-    await i.reply({ embeds: [embed] })
+    if (i.deferred || i.replied) {
+      await i.editReply({ embeds: [embed] })
+    } else {
+      await i.reply({ embeds: [embed] })
+    }
+  } catch (e) {
+    console.log('Failed to send warning message:', e)
   }
 }
 
 const successMsg = async (i, message) => {
-  const embed = {
-    color: green,
-    description: message
-  }
+  try {
+    const embed = {
+      color: green,
+      description: message
+    }
 
-  if (i.deferred || i.replied) {
-    await i.editReply({ embeds: [embed] })
-  } else {
-    await i.reply({ embeds: [embed] })
+    if (i.deferred || i.replied) {
+      await i.editReply({ embeds: [embed] })
+    } else {
+      await i.reply({ embeds: [embed] })
+    }
+  } catch (e) {
+    console.log('Failed to send success message:', e)
+  }
+}
+
+/**
+ * Safely replies to an interaction with full error handling and structured debug logs.
+ * @param {CommandInteraction | ContextMenuCommandInteraction | ModalSubmitInteraction} interaction
+ * @param {object} options - Message options or a string.
+ */
+export async function safeReply(interaction, options) {
+  try {
+    const replyContent = typeof options === 'string' ? { content: options } : options
+
+    if (interaction.replied || interaction.deferred) {
+      return await interaction.followUp(replyContent)
+    } else {
+      return await interaction.reply(replyContent)
+    }
+  } catch (error) {
+    console.error('[safeReply] ❌ Error sending reply:', error)
+
+    try {
+      if (!interaction.replied && !interaction.deferred) {
+        console.log('[safeReply] Sending fallback errorMsg reply...')
+        await interaction.reply(errorMsg('Something went wrong while sending this message.'))
+      } else {
+        console.log('[safeReply] Sending fallback errorMsg followUp...')
+        await interaction.followUp(errorMsg('Something went wrong while sending this message.'))
+      }
+    } catch (fallbackError) {
+      console.error('[safeReply] ⚠️ Fallback also failed:', fallbackError)
+    }
+  }
+}
+
+export async function safeEdit(interaction, options) {
+  try {
+    return await interaction.editReply(options)
+  } catch (error) {
+    console.error('[safeEdit] ❌ Error editing reply:', error)
+    try {
+      await interaction.followUp(errorMsg('❌ Something went wrong. Please try again later.'))
+    } catch (fallbackError) {
+      console.error('[safeEdit] ⚠️ Fallback also failed:', fallbackError)
+    }
   }
 }
 
@@ -199,12 +256,4 @@ const createPlayerEmbed = (client, player, clanBadge) => {
   }
 }
 
-module.exports = {
-  createPlayerEmbed,
-  errorMsg,
-  getArenaEmoji,
-  getClanBadge,
-  getPlayerCardData,
-  successMsg,
-  warningMsg
-}
+export { createPlayerEmbed, errorMsg, getArenaEmoji, getClanBadge, getPlayerCardData, successMsg, warningMsg }

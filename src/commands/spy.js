@@ -1,11 +1,11 @@
+/* eslint-disable complexity */
 /* eslint-disable no-console */
 /* eslint-disable camelcase */
-const { getClan, getPlayer, getPlayerBattleLog, getPlayerSearch } = require('../util/services')
-const { pink } = require('../static/colors')
-const { errorMsg } = require('../util/functions')
-const { formatStr, formatTag } = require('../util/formatting')
-
-const specialGamemodes = require('../static/specialGamemodes')
+import { pink } from '../static/colors.js'
+import specialGamemodes from '../static/specialGamemodes.js'
+import { formatStr, formatTag } from '../util/formatting.js'
+import { errorMsg } from '../util/functions.js'
+import { getClan, getPlayer, getPlayerBattleLog, getPlayerSearch } from '../util/services.js'
 
 function sharesCards(deck1, deck2) {
   const set2 = new Set(deck2)
@@ -42,7 +42,7 @@ function formatDeck(cards) {
   return cards.map((c) => `${c.name}${c.evolutionLevel ? ' Evo' : ''}`)
 }
 
-module.exports = {
+export default {
   data: {
     description: "View your opponent's war decks.",
     description_localizations: {
