@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { pink } from '../static/colors.js'
 const INVALID_WEBHOOK_CODES = new Set([10015, 50027]) // Unknown Webhook, Invalid Webhook Token
 
 const logToSupportServer = (client, embed, isCommand = true) => {
@@ -23,4 +24,35 @@ const logToSupportServer = (client, embed, isCommand = true) => {
   }
 }
 
-export { logToSupportServer }
+// Build and send a command interaction log to the support server webhook.
+// Safe, non-blocking, and resilient to invalid webhook tokens.
+const logCommand = (client, i, color = pink) => {
+  try {
+    const { discriminator, id, username } = i.user || {}
+    const guildObj = i.guild || i.member?.guild
+
+    let desc = `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guildObj?.name} (${guildObj?.id})`
+
+    const hasOptions = i?.options?._hoistedOptions?.length > 0
+    const hasFields = i?.fields?.fields?.size > 0
+    let data = '*None*'
+
+    if (hasOptions) {
+      data = `${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join('\n')}`
+    } else if (hasFields) {
+      data = `${i.fields.fields.map((o) => `• **${o.customId}**: ${o.value}`).join('\n')}`
+    }
+
+    desc += `\n\n**Fields**: \n${data}`
+
+    logToSupportServer(client, {
+      color,
+      description: desc,
+      title: `__/${i.commandName || i.customId}__`
+    })
+  } catch (e) {
+    console.log('Error building/sending command log:', e)
+  }
+}
+
+export { logCommand, logToSupportServer }

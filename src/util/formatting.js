@@ -23,3 +23,11 @@ export const formatPlace = (place) => {
   if (place === 5) return '5th'
   return 'N/A'
 }
+
+// Returns a human-readable difference like "Xm Ys" between two Date objects
+export const getTimeDifference = (date1, date2) => {
+  const diff = Math.abs(date2 - date1)
+  const minutes = Math.floor(diff / (1000 * 60))
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+  return `${minutes}m ${seconds}s`
+}

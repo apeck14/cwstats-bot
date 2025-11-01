@@ -4,51 +4,34 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { pink } from '../static/colors.js'
+import { REQUEST_TIMEOUT_MS } from '../../config.js'
+import { pink, red } from '../static/colors.js'
+import { getTimeDifference } from '../util/formatting.js'
 import { errorMsg, safeEdit, safeReply, warningMsg } from '../util/functions.js'
-import { logToSupportServer } from '../util/logging.js'
+import { logCommand } from '../util/logging.js'
 import { createGuild, getGuildCached } from '../util/services.js'
 import validate from '../util/validate.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const sendCommandLog = (i, client) => {
-  try {
-    const { discriminator, id, username } = i.user
-    const { guild } = i.member
+// Watchdog helper to avoid long "thinking..." and hard-timeout runaway handlers
+const createWatchdog = (i) => {
+  const TIMEOUT_BUFFER_MS = 2000
+  const TIMEOUT_MS = (Number(REQUEST_TIMEOUT_MS) || 10000) + TIMEOUT_BUFFER_MS
+  let completed = false
 
-    let desc = `**User**: ${username}#${discriminator} (${id})\n**Guild**: ${guild.name} (${guild.id})`
-
-    const hasOptions = i?.options?._hoistedOptions?.length > 0
-    const hasFields = i?.fields?.fields?.size > 0
-    let data = '*None*'
-
-    if (hasOptions) {
-      data = `${i.options._hoistedOptions.map((o) => `• **${o.name}**: ${o.value}`).join('\n')}`
-    } else if (hasFields) {
-      data = `${i.fields.fields.map((o) => `• **${o.customId}**: ${o.value}`).join('\n')}`
+  const watchdog = setTimeout(() => {
+    if (!completed) {
+      completed = true
+      safeEdit(i, { embeds: [{ color: red, description: '**Request took too long.** Please try again later.' }] })
     }
+  }, TIMEOUT_MS)
 
-    desc += `\n\n**Fields**: \n${data}`
-
-    logToSupportServer(client, {
-      color: pink,
-      description: desc,
-      title: `__/${i.commandName || i.customId}__`
-    })
-  } catch (e) {
-    console.log('Error sending command log:', e)
+  return () => {
+    completed = true
+    clearTimeout(watchdog)
   }
-}
-
-const getTimeDifference = (date1, date2) => {
-  const diff = Math.abs(date2 - date1) // Get the difference in milliseconds
-
-  const minutes = Math.floor(diff / (1000 * 60)) // Convert to minutes
-  const seconds = Math.floor((diff % (1000 * 60)) / 1000) // Get remaining seconds
-
-  return `${minutes}m ${seconds}s`
 }
 
 async function handleCommand(i, client, guild) {
@@ -83,6 +66,9 @@ async function handleCommand(i, client, guild) {
 
   const cmd = i.client.commands.get(i.commandName)
 
+  // Watchdog to prevent long "thinking..." and to stop wasting resources
+  const cleanupWatchdog = createWatchdog(i)
+
   if (cmd.cooldown && guild?.cooldowns) {
     const commandCooldown = guild?.cooldowns[i.commandName]
     if (commandCooldown) {
@@ -102,9 +88,11 @@ async function handleCommand(i, client, guild) {
 
   try {
     await cmd.run(i, client)
-    sendCommandLog(i, client)
+    cleanupWatchdog()
+    logCommand(client, i)
   } catch (err) {
     console.log(`[handleCommand] ❌ Error executing ${i.commandName}:`, err)
+    cleanupWatchdog()
     return errorMsg(i, 'Something went wrong while executing this command.')
   }
 }
@@ -124,9 +112,18 @@ async function handleContextCommand(i, client, guild) {
       return errorMsg(i, error)
     }
 
-    await cmd.run(i, client).catch(console.error)
+    // Watchdog for context commands as well
+    const cleanupWatchdog = createWatchdog(i)
 
-    sendCommandLog(i, client)
+    try {
+      await cmd.run(i, client)
+      cleanupWatchdog()
+    } catch (e) {
+      console.log('handleContextCommand run error:', e)
+      cleanupWatchdog()
+    }
+
+    logCommand(client, i)
   } catch (err) {
     console.log('handleContextCommand ERROR:', err)
   }
@@ -206,8 +203,6 @@ export default {
       } catch (fetchErr) {
         console.log('[InteractionCreate] ⚠️ getGuildCached failed:', fetchErr?.message)
       }
-
-      console.log(guild)
 
       if (!guild) {
         await createGuild(i.guildId)
