@@ -10,6 +10,7 @@ import {
 } from 'discord.js'
 
 import { green, orange, red } from '../static/colors.js'
+import { safeEdit } from '../util/functions.js'
 import { deleteNudgeLink } from '../util/services.js'
 
 export default {
@@ -36,7 +37,7 @@ export default {
       const { error, tag } = await deleteNudgeLink(i.guildId, inputTag)
 
       if (error) {
-        return i.editReply({
+        return safeEdit(i, {
           embeds: [
             {
               color: orange,
@@ -47,7 +48,7 @@ export default {
         })
       }
 
-      i.editReply({
+      safeEdit(i, {
         embeds: [
           {
             color: green,
@@ -58,7 +59,7 @@ export default {
       })
     } catch (e) {
       console.log('unlink-player', e)
-      return i.editReply({
+      return safeEdit(i, {
         embeds: [
           {
             color: red,

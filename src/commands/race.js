@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { pink } from '../static/colors.js'
 import { formatPlace, formatStr } from '../util/formatting.js'
-import { errorMsg, warningMsg } from '../util/functions.js'
+import { errorMsg, safeEdit, warningMsg } from '../util/functions.js'
 import { getGuild, getRace } from '../util/services.js'
 
 export default {
@@ -151,7 +151,7 @@ export default {
       }
     }
 
-    i.editReply({
+    safeEdit(i, {
       embeds: [embed]
     })
   }

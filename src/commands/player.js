@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { createPlayerEmbed, errorMsg, warningMsg } from '../util/functions.js'
+import { createPlayerEmbed, errorMsg, safeEdit, warningMsg } from '../util/functions.js'
 import { addPlayer, getClan, getLinkedAccount, getPlayer } from '../util/services.js'
 
 export default {
@@ -135,7 +135,6 @@ export default {
     }
 
     const playerEmbedData = createPlayerEmbed(client, player, clanBadge)
-
-    await i.editReply(playerEmbedData)
+    await safeEdit(i, playerEmbedData)
   }
 }

@@ -67,16 +67,8 @@ const getArenaEmoji = (pb) => {
 
 const errorMsg = async (i, message) => {
   try {
-    const embed = {
-      color: red,
-      description: message
-    }
-
-    if (i.deferred || i.replied) {
-      await i.editReply({ embeds: [embed] })
-    } else {
-      await i.reply({ embeds: [embed] })
-    }
+    const embed = { color: red, description: message }
+    await safeReply(i, { embeds: [embed] })
   } catch (e) {
     console.log('Failed to send error message:', e)
   }
@@ -84,16 +76,8 @@ const errorMsg = async (i, message) => {
 
 const warningMsg = async (i, message) => {
   try {
-    const embed = {
-      color: orange,
-      description: message
-    }
-
-    if (i.deferred || i.replied) {
-      await i.editReply({ embeds: [embed] })
-    } else {
-      await i.reply({ embeds: [embed] })
-    }
+    const embed = { color: orange, description: message }
+    await safeReply(i, { embeds: [embed] })
   } catch (e) {
     console.log('Failed to send warning message:', e)
   }
@@ -101,16 +85,8 @@ const warningMsg = async (i, message) => {
 
 const successMsg = async (i, message) => {
   try {
-    const embed = {
-      color: green,
-      description: message
-    }
-
-    if (i.deferred || i.replied) {
-      await i.editReply({ embeds: [embed] })
-    } else {
-      await i.reply({ embeds: [embed] })
-    }
+    const embed = { color: green, description: message }
+    await safeReply(i, { embeds: [embed] })
   } catch (e) {
     console.log('Failed to send success message:', e)
   }
@@ -123,12 +99,27 @@ const successMsg = async (i, message) => {
  */
 export async function safeReply(interaction, options) {
   try {
+    // If this interaction has timed out, only allow the watchdog's own edit
+    if (interaction?.__cwTimedOut && !interaction.__cwAllowTimeoutEdit) {
+      return null
+    }
+
     const replyContent = typeof options === 'string' ? { content: options } : options
 
     if (interaction.replied || interaction.deferred) {
-      return await interaction.followUp(replyContent)
+      const res = await interaction.followUp(replyContent)
+      if (interaction.__cwAllowTimeoutEdit) {
+        interaction.__cwAllowTimeoutEdit = false
+        interaction.__cwTimeoutSent = true
+      }
+      return res
     } else {
-      return await interaction.reply(replyContent)
+      const res = await interaction.reply(replyContent)
+      if (interaction.__cwAllowTimeoutEdit) {
+        interaction.__cwAllowTimeoutEdit = false
+        interaction.__cwTimeoutSent = true
+      }
+      return res
     }
   } catch (error) {
     console.log('[safeReply] ❌ Error sending reply:', error)
@@ -150,7 +141,23 @@ export async function safeReply(interaction, options) {
 
 export async function safeEdit(interaction, options) {
   try {
-    return await interaction.editReply(options)
+    // If timed out, only allow the watchdog's own timeout edit
+    if (interaction?.__cwTimedOut && !interaction.__cwAllowTimeoutEdit) {
+      return null
+    }
+
+    // If this is the timeout edit, ensure attachments are cleared
+    let editOptions = options || {}
+    if (interaction?.__cwAllowTimeoutEdit) {
+      editOptions = { attachments: [], ...editOptions }
+    }
+
+    const res = await interaction.editReply(editOptions)
+    if (interaction.__cwAllowTimeoutEdit) {
+      interaction.__cwAllowTimeoutEdit = false
+      interaction.__cwTimeoutSent = true
+    }
+    return res
   } catch (error) {
     console.log('[safeEdit] ❌ Error editing reply:', error)
     try {

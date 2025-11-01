@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { ApplicationCommandType } from 'discord.js'
 
-import { createPlayerEmbed, errorMsg } from '../util/functions.js'
+import { createPlayerEmbed, errorMsg, safeEdit } from '../util/functions.js'
 import { addPlayer, getClan, getPlayer } from '../util/services.js'
 
 export default {
@@ -50,6 +50,6 @@ export default {
 
     const playerEmbedData = createPlayerEmbed(client, player, clanBadge)
 
-    i.editReply(playerEmbedData)
+    safeEdit(i, playerEmbedData)
   }
 }

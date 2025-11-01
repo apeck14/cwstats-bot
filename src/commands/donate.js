@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { pink } from '../static/colors.js'
+import { safeEdit } from '../util/functions.js'
 
 export default {
   data: {
@@ -49,7 +50,7 @@ export default {
       type: 1
     }
 
-    return i.editReply({
+    return safeEdit(i, {
       components: [row],
       embeds: [
         {

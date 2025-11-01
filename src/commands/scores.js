@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { pink } from '../static/colors.js'
 import { formatTag } from '../util/formatting.js'
-import { errorMsg, warningMsg } from '../util/functions.js'
+import { errorMsg, safeEdit, warningMsg } from '../util/functions.js'
 import { getLinkedAccount, getPlayerScores } from '../util/services.js'
 
 export default {
@@ -189,6 +189,6 @@ export default {
       embed.description += `**${w}**: ${fame}/${attacks}\n`
     }
 
-    i.editReply({ embeds: [embed] })
+    safeEdit(i, { embeds: [embed] })
   }
 }

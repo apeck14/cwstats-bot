@@ -10,6 +10,7 @@ import {
 
 import { green, orange, red } from '../static/colors.js'
 import { formatStr, formatTag } from '../util/formatting.js'
+import { safeEdit } from '../util/functions.js'
 import { addNudgeLink } from '../util/services.js'
 
 export default {
@@ -38,7 +39,7 @@ export default {
       const { error, name } = await addNudgeLink(i.guildId, formattedTag, targetId)
 
       if (error) {
-        return i.editReply({
+        return safeEdit(i, {
           embeds: [
             {
               color: orange,
@@ -49,7 +50,7 @@ export default {
         })
       }
 
-      i.editReply({
+      safeEdit(i, {
         embeds: [
           {
             color: green,
@@ -59,7 +60,7 @@ export default {
         flags: MessageFlags.Ephemeral
       })
     } catch {
-      i.editReply({
+      safeEdit(i, {
         embeds: [
           {
             color: red,

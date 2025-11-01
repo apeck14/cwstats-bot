@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { formatStr } from '../util/formatting.js'
-import { errorMsg, warningMsg } from '../util/functions.js'
+import { errorMsg, safeEdit, warningMsg } from '../util/functions.js'
 import { getClan, getGuild, getRace } from '../util/services.js'
 
 export default {
@@ -183,6 +183,6 @@ export default {
 
     nudgeMessage += `\n\n${message || '**You have attacks remaining.** Please get them in before the deadline!'}`
 
-    i.editReply(nudgeMessage)
+    safeEdit(i, { content: nudgeMessage })
   }
 }

@@ -4,7 +4,7 @@
 import { pink } from '../static/colors.js'
 import specialGamemodes from '../static/specialGamemodes.js'
 import { formatStr, formatTag } from '../util/formatting.js'
-import { errorMsg } from '../util/functions.js'
+import { errorMsg, safeEdit } from '../util/functions.js'
 import { getClan, getPlayer, getPlayerBattleLog, getPlayerSearch } from '../util/services.js'
 
 function sharesCards(deck1, deck2) {
@@ -334,7 +334,7 @@ export default {
 
       embed.description = description
 
-      i.editReply({
+      safeEdit(i, {
         embeds: [embed]
       })
     } catch (err) {

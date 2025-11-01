@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { pink } from '../static/colors.js'
 import { formatStr } from '../util/formatting.js'
-import { errorMsg } from '../util/functions.js'
+import { errorMsg, safeEdit } from '../util/functions.js'
 import { getGuild } from '../util/services.js'
 
 export default {
@@ -57,7 +57,7 @@ export default {
       embed.description += '\n*None*'
     }
 
-    return i.editReply({
+    return safeEdit(i, {
       embeds: [embed]
     })
   }

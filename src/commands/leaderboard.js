@@ -2,7 +2,7 @@
 import { pink } from '../static/colors.js'
 import locations from '../static/locations.js'
 import { formatStr } from '../util/formatting.js'
-import { errorMsg, getClanBadge, warningMsg } from '../util/functions.js'
+import { errorMsg, getClanBadge, safeEdit, warningMsg } from '../util/functions.js'
 import { getAllPlusClans, getDailyLeaderboard } from '../util/services.js'
 
 export default {
@@ -178,7 +178,7 @@ export default {
       embed.footer.text += ' | NR = Not Ranked'
     }
 
-    return i.editReply({
+    return safeEdit(i, {
       embeds: [embed]
     })
   }

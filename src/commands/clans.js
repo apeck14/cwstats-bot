@@ -4,7 +4,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'disc
 
 import { pink } from '../static/colors.js'
 import { formatStr } from '../util/formatting.js'
-import { errorMsg, getClanBadge } from '../util/functions.js'
+import { errorMsg, getClanBadge, safeEdit } from '../util/functions.js'
 import {
   getAllPlusClans,
   getDailyLeaderboard,
@@ -212,7 +212,7 @@ export default {
 
     let page = 0
 
-    const message = await i.editReply({
+    const message = await safeEdit(i, {
       components: [generateButtons({ liveClanData, pageIndex: page })],
       embeds: [
         generateEmbed({

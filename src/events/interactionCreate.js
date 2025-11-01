@@ -20,10 +20,16 @@ const createWatchdog = (i) => {
   const TIMEOUT_BUFFER_MS = 2000
   const TIMEOUT_MS = (Number(REQUEST_TIMEOUT_MS) || 10000) + TIMEOUT_BUFFER_MS
   let completed = false
+  // mark as not timed out at start
+  i.__cwTimedOut = false
 
   const watchdog = setTimeout(() => {
     if (!completed) {
       completed = true
+      // mark interaction timed out so commands can avoid late edits/attachments
+      i.__cwTimedOut = true
+      // allow a single safeEdit to post the timeout message, which will also clear attachments
+      i.__cwAllowTimeoutEdit = true
       safeEdit(i, { embeds: [{ color: red, description: '**Request took too long.** Please try again later.' }] })
     }
   }, TIMEOUT_MS)
@@ -53,9 +59,9 @@ async function handleCommand(i, client, guild) {
       try {
         if (i.deferred || i.replied) {
           await i.deleteReply().catch(() => {})
-          return i.followUp({ embeds: [embed], flags: MessageFlags.Ephemeral })
+          return safeReply(i, { embeds: [embed], flags: MessageFlags.Ephemeral })
         }
-        return i.reply({ embeds: [embed], flags: MessageFlags.Ephemeral })
+        return safeReply(i, { embeds: [embed], flags: MessageFlags.Ephemeral })
       } catch (err) {
         console.log('[handleCommand] ❌ Failed to send ephemeral validation error:', err)
         return

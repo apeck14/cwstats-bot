@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { pink } from '../static/colors.js'
 import { formatRole, formatStr } from '../util/formatting.js'
-import { errorMsg, warningMsg } from '../util/functions.js'
+import { errorMsg, safeEdit, warningMsg } from '../util/functions.js'
 import { getClan, getGuild } from '../util/services.js'
 
 export default {
@@ -135,6 +135,6 @@ export default {
       embed.description += group.map((m) => `• ${formatStr(m.name)}`).join('\n')
     }
 
-    return i.editReply({ embeds: [embed] })
+    return safeEdit(i, { embeds: [embed] })
   }
 }
