@@ -38,7 +38,7 @@ const sendCommandLog = (i, client) => {
       title: `__/${i.commandName || i.customId}__`
     })
   } catch (e) {
-    console.error('Error sending command log:', e)
+    console.log('Error sending command log:', e)
   }
 }
 
@@ -74,7 +74,7 @@ async function handleCommand(i, client, guild) {
         }
         return i.reply({ embeds: [embed], flags: MessageFlags.Ephemeral })
       } catch (err) {
-        console.error('[handleCommand] ❌ Failed to send ephemeral validation error:', err)
+        console.log('[handleCommand] ❌ Failed to send ephemeral validation error:', err)
         return
       }
     }
@@ -128,7 +128,7 @@ async function handleContextCommand(i, client, guild) {
 
     sendCommandLog(i, client)
   } catch (err) {
-    console.error('handleContextCommand ERROR:', err)
+    console.log('handleContextCommand ERROR:', err)
   }
 }
 
@@ -228,7 +228,7 @@ export default {
         return handleContextCommand(i, client, guild)
       }
     } catch (e) {
-      console.error('INTERACTION CREATE ERROR', i?.commandName, e)
+      console.log('INTERACTION CREATE ERROR', i?.commandName, e)
     }
   }
 }

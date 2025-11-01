@@ -13,13 +13,13 @@ const logToSupportServer = (client, embed, isCommand = true) => {
       if (INVALID_WEBHOOK_CODES.has(code)) {
         // Disable the broken webhook to prevent repeated failures
         client[key] = null
-        console.error(`Support webhook disabled due to invalid token/code (${code}).`)
+        console.log(`Support webhook disabled due to invalid token/code (${code}).`)
       } else {
-        console.error('Error sending embed to Support Server:', e)
+        console.log('Error sending embed to Support Server:', e)
       }
     })
   } catch (e) {
-    console.error('Error scheduling embed to Support Server:', e)
+    console.log('Error scheduling embed to Support Server:', e)
   }
 }
 

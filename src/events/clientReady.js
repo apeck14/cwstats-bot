@@ -52,7 +52,7 @@ export default {
         false
       )
     } catch (e) {
-      console.error('❌ Error in ready event:', e)
+      console.log('❌ Error in ready event:', e)
     } finally {
       console.timeEnd('✅ Bot Ready Time')
     }

@@ -51,7 +51,7 @@ const getChangedSlashCommands = async (CLIENT_ID, localCommands) => {
 
     return changed
   } catch (error) {
-    console.error('❌ Failed to fetch remote commands:', error)
+    console.log('❌ Failed to fetch remote commands:', error)
     return localCommands // fallback: re-register everything
   }
 }
@@ -87,7 +87,7 @@ const registerSlashCommands = async (CLIENT_ID, commands) => {
       console.log(`✅ Commands updated: ${changed.length}`)
     }
   } catch (error) {
-    console.error(`❌ Could not register Commands: \n`, error)
+    console.log(`❌ Could not register Commands: \n`, error)
   }
 }
 

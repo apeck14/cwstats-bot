@@ -17,7 +17,7 @@ initializeClient()
   })
   .then((c) => !isDev && AutoPoster(TOPGG_TOKEN, c))
   .catch((err) => {
-    console.error('Initialization error:', err)
+    console.log('Initialization error:', err)
   })
 
 // Graceful shutdown for PM2 restarts / kills
@@ -28,7 +28,7 @@ const shutdown = async () => {
       await client.destroy()
       console.log('Discord client destroyed.')
     } catch (err) {
-      console.error('Error destroying Discord client:', err)
+      console.log('Error destroying Discord client:', err)
     }
   }
 
@@ -45,5 +45,5 @@ process.on('unhandledRejection', (reason) => {
 
 process.on('uncaughtException', (err) => {
   console.log('---UNCAUGHT EXCEPTION---')
-  console.error(err)
+  console.log(err)
 })
