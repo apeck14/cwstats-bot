@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Client, Collection, GatewayIntentBits } from 'discord.js'
+import { Client, Collection, GatewayIntentBits, Options } from 'discord.js'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -28,12 +28,24 @@ const initializeClient = async () => {
     intents: [
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMembers,
-      GatewayIntentBits.GuildMessages,
-      GatewayIntentBits.GuildMessageTyping,
       GatewayIntentBits.GuildMessageReactions,
       GatewayIntentBits.GuildExpressions
     ],
-    shards: 'auto'
+    // Limit caches for high-scale stability; we don't need to cache messages for slash commands
+    makeCache: Options.cacheWithLimits({
+      GuildInviteManager: 0,
+      MessageManager: 0,
+      PresenceManager: 0,
+      ReactionManager: 0
+    }),
+    // Periodically sweep old items; messages are already limited to 0, but keep as a safety net
+    shards: 'auto',
+    sweepers: {
+      messages: {
+        interval: 300, // run every 5 minutes
+        lifetime: 900 // remove messages older than 15 minutes
+      }
+    }
   })
 
   client.commands = new Collection()

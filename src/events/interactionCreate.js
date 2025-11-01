@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url'
 import { pink } from '../static/colors.js'
 import { errorMsg, safeEdit, safeReply, warningMsg } from '../util/functions.js'
 import { logToSupportServer } from '../util/logging.js'
-import { createGuild, getGuild } from '../util/services.js'
+import { createGuild, getGuildCached } from '../util/services.js'
 import validate from '../util/validate.js'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -54,14 +54,31 @@ const getTimeDifference = (date1, date2) => {
 async function handleCommand(i, client, guild) {
   const { color, error, onlyShowToUser } = validate(i, guild, client, true)
 
-  try {
-    await i.deferReply({ flags: onlyShowToUser ? MessageFlags.Ephemeral : 0 })
-  } catch (deferErr) {
-    console.log('[handleCommand] ⚠️ deferReply failed:', deferErr.message)
+  // If we haven't acknowledged yet (e.g., invoked directly), do it now
+  if (!i.deferred && !i.replied) {
+    try {
+      await i.deferReply({ flags: onlyShowToUser ? MessageFlags.Ephemeral : 0 })
+    } catch (deferErr) {
+      console.log('[handleCommand] ⚠️ deferReply failed:', deferErr.message)
+    }
   }
 
   if (error) {
-    return safeEdit(i, { embeds: [{ color, description: error }] })
+    const embed = { color, description: error }
+    if (onlyShowToUser) {
+      // Ensure the response is ephemeral when required
+      try {
+        if (i.deferred || i.replied) {
+          await i.deleteReply().catch(() => {})
+          return i.followUp({ embeds: [embed], flags: MessageFlags.Ephemeral })
+        }
+        return i.reply({ embeds: [embed], flags: MessageFlags.Ephemeral })
+      } catch (err) {
+        console.error('[handleCommand] ❌ Failed to send ephemeral validation error:', err)
+        return
+      }
+    }
+    return safeEdit(i, { embeds: [embed] })
   }
 
   const cmd = i.client.commands.get(i.commandName)
@@ -79,7 +96,7 @@ async function handleCommand(i, client, guild) {
   }
 
   // if a user @'s themselves send reminder above embed response
-  if (i.options._hoistedOptions.find((o) => o.name === 'user')?.value === i.user.id) {
+  if (i?.options?._hoistedOptions?.find?.((o) => o.name === 'user')?.value === i.user.id) {
     await safeReply(i, `:white_check_mark: **No need to @ yourself!** You can just use **/${i.commandName}** instead.`)
   }
 
@@ -88,7 +105,7 @@ async function handleCommand(i, client, guild) {
     sendCommandLog(i, client)
   } catch (err) {
     console.log(`[handleCommand] ❌ Error executing ${i.commandName}:`, err)
-    return errorMsg('Something went wrong while executing this command.')
+    return errorMsg(i, 'Something went wrong while executing this command.')
   }
 }
 
@@ -99,7 +116,7 @@ async function handleContextCommand(i, client, guild) {
   try {
     // Always defer early unless you are sure the command replies instantly
     const shouldDefer = !cmd?.handleModalSubmit
-    if (shouldDefer) {
+    if (shouldDefer && !i.deferred && !i.replied) {
       await i.deferReply({ flags: MessageFlags.Ephemeral }).catch(console.log)
     }
 
@@ -125,7 +142,7 @@ export async function handleModalSubmit(i) {
   }
 }
 
-async function handleAutocomplete(i, client) {
+async function handleAutocomplete(i, _client) {
   const cmd = i.client.commands.get(i.commandName)
   if (!cmd?.search) {
     return
@@ -133,26 +150,20 @@ async function handleAutocomplete(i, client) {
 
   const results = await cmd.search(i)
   await i.respond(results?.length ? results : [{ name: '❌ No matches', value: 'no_match' }])
-  sendCommandLog(i, client)
+  // intentionally skip logging autocomplete to reduce overhead
 }
 
 export default {
   name: Events.InteractionCreate,
   async run(client, i) {
     try {
-      if (!i) {
-        return
-      }
+      if (!i) return
 
-      if (i.createdTimestamp < client.readyTimestamp) {
-        return
-      } // stale interaction
+      // stale/expired interaction guards
+      if (i.createdTimestamp < client.readyTimestamp) return
+      if (Date.now() - i.createdTimestamp > 15 * 60 * 1000) return
 
-      if (Date.now() - i.createdTimestamp > 15 * 60 * 1000) {
-        return
-      } // expired interaction
-
-      // ignore DMs
+      // ignore DMs (reply with invite and exit fast)
       if (!i.guild) {
         return warningMsg(
           i,
@@ -160,19 +171,52 @@ export default {
         )
       }
 
-      const { data: guild } = await getGuild(i.guildId)
-
-      // guild not in database, create it
-      if (!guild) {
-        await createGuild(i.guildId)
-        return errorMsg(i, '**Unexpected error.** Please try again.')
-      }
-
+      // Autocomplete should be handled immediately and never blocked on external I/O
       if (i.isAutocomplete()) {
         return handleAutocomplete(i, client)
       }
 
+      // For slash and context interactions: acknowledge ASAP to avoid Unknown Interaction
+      let interactionType = null
       if (i.isChatInputCommand()) {
+        interactionType = 'chat'
+        try {
+          if (!i.deferred && !i.replied) {
+            await i.deferReply({ flags: 0 }) // public by default; we'll switch to ephemeral via delete+ephemeral reply if needed
+          }
+        } catch (deferErr) {
+          console.log('[InteractionCreate] ⚠️ Early defer (chat) failed:', deferErr.message)
+        }
+      } else if (i.isUserContextMenuCommand() || i.isMessageContextMenuCommand()) {
+        interactionType = 'context'
+        try {
+          if (!i.deferred && !i.replied) {
+            await i.deferReply({ flags: MessageFlags.Ephemeral }) // context replies are usually fine as ephemeral
+          }
+        } catch (deferErr) {
+          console.log('[InteractionCreate] ⚠️ Early defer (context) failed:', deferErr.message)
+        }
+      }
+
+      // Fetch guild config after acknowledging to prevent 3s timeouts
+      let guild
+      try {
+        const result = await getGuildCached(i.guildId)
+        guild = result?.data
+      } catch (fetchErr) {
+        console.log('[InteractionCreate] ⚠️ getGuildCached failed:', fetchErr?.message)
+      }
+
+      console.log(guild)
+
+      if (!guild) {
+        await createGuild(i.guildId)
+        return i.deferred || i.replied
+          ? safeEdit(i, { embeds: [{ color: pink, description: '**Unexpected error.** Please try again.' }] })
+          : errorMsg(i, '**Unexpected error.** Please try again.')
+      }
+
+      if (interactionType === 'chat') {
         return handleCommand(i, client, guild)
       }
 
@@ -180,7 +224,7 @@ export default {
         return handleModalSubmit(i)
       }
 
-      if (i.isUserContextMenuCommand() || i.isMessageContextMenuCommand()) {
+      if (interactionType === 'context') {
         return handleContextCommand(i, client, guild)
       }
     } catch (e) {

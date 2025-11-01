@@ -134,12 +134,13 @@ export async function safeReply(interaction, options) {
     console.error('[safeReply] ❌ Error sending reply:', error)
 
     try {
+      const fallback = { content: 'Something went wrong while sending this message.' }
       if (!interaction.replied && !interaction.deferred) {
-        console.log('[safeReply] Sending fallback errorMsg reply...')
-        await interaction.reply(errorMsg('Something went wrong while sending this message.'))
+        console.log('[safeReply] Sending fallback reply...')
+        await interaction.reply(fallback)
       } else {
-        console.log('[safeReply] Sending fallback errorMsg followUp...')
-        await interaction.followUp(errorMsg('Something went wrong while sending this message.'))
+        console.log('[safeReply] Sending fallback followUp...')
+        await interaction.followUp(fallback)
       }
     } catch (fallbackError) {
       console.error('[safeReply] ⚠️ Fallback also failed:', fallbackError)
@@ -153,7 +154,7 @@ export async function safeEdit(interaction, options) {
   } catch (error) {
     console.error('[safeEdit] ❌ Error editing reply:', error)
     try {
-      await interaction.followUp(errorMsg('❌ Something went wrong. Please try again later.'))
+      await interaction.followUp({ content: '❌ Something went wrong. Please try again later.' })
     } catch (fallbackError) {
       console.error('[safeEdit] ⚠️ Fallback also failed:', fallbackError)
     }

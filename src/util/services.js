@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { INTERNAL_API_KEY, NODE_ENV } from '../../config.js'
+import { INTERNAL_API_KEY, NODE_ENV, REQUEST_TIMEOUT_MS } from '../../config.js'
 import { formatTag } from './formatting.js'
 
 const isDev = NODE_ENV === 'dev'
@@ -9,7 +9,7 @@ const BASE_URL = isDev ? 'http://localhost:5000' : 'https://api.cwstats.com'
 const api = axios.create({
   baseURL: BASE_URL,
   headers: { Authorization: `Bearer ${INTERNAL_API_KEY}` },
-  timeout: 15000
+  timeout: REQUEST_TIMEOUT_MS
 })
 
 const handleAPISuccess = (e) => e?.data
@@ -35,6 +35,22 @@ const getGuild = (id, limited = false) =>
     .get(`/guild/${id}${limited ? '/limited' : ''}`)
     .then(handleAPISuccess)
     .catch((e) => handleAPIFailure(e, '**Guild not found.**'))
+
+// Lightweight TTL cache for guild lookups to reduce external latency under load
+const guildCache = new Map()
+const GUILD_TTL_MS = 5 * 60 * 1000 // 5 minutes
+
+const getGuildCached = async (id, limited = false) => {
+  const key = `${id}:${limited ? 1 : 0}`
+  const now = Date.now()
+  const cached = guildCache.get(key)
+  if (cached && cached.expiresAt > now) {
+    return cached.value
+  }
+  const value = await getGuild(id, limited)
+  guildCache.set(key, { expiresAt: now + GUILD_TTL_MS, value })
+  return value
+}
 
 const getGuildLinkedClans = (id) =>
   api
@@ -135,6 +151,7 @@ export {
   getClan,
   getDailyLeaderboard,
   getGuild,
+  getGuildCached,
   getGuildLinkedClans,
   getLinkedAccount,
   getPlayer,
