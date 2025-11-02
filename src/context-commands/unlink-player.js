@@ -43,8 +43,7 @@ export default {
               color: orange,
               description: `**${error}**`
             }
-          ],
-          flags: MessageFlags.Ephemeral
+          ]
         })
       }
 
@@ -54,8 +53,7 @@ export default {
             color: green,
             description: `:white_check_mark: **${tag}** was successfully unlinked!`
           }
-        ],
-        flags: MessageFlags.Ephemeral
+        ]
       })
     } catch (e) {
       console.log('unlink-player', e)
@@ -65,8 +63,7 @@ export default {
             color: red,
             description: '**Unexpected error.**'
           }
-        ],
-        flags: MessageFlags.Ephemeral
+        ]
       })
     }
   },

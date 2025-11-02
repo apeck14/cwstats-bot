@@ -139,8 +139,9 @@ export async function handleModalSubmit(i) {
   const file = path.join(__dirname, '../context-commands', `${i.customId}.js`)
   if (fs.existsSync(file)) {
     const command = await import(`file://${file}`)
-    if (command.handleModalSubmit) {
-      await command.handleModalSubmit(i)
+    const handler = command?.default?.handleModalSubmit || command?.handleModalSubmit
+    if (typeof handler === 'function') {
+      await handler(i)
     }
   }
 }
@@ -193,8 +194,12 @@ export default {
       } else if (i.isUserContextMenuCommand() || i.isMessageContextMenuCommand()) {
         interactionType = 'context'
         try {
-          if (!i.deferred && !i.replied) {
-            await i.deferReply({ flags: MessageFlags.Ephemeral }) // context replies are usually fine as ephemeral
+          // IMPORTANT: Do NOT defer if this context command opens a modal.
+          // Showing a modal requires the interaction to be unacknowledged.
+          const cmd = i.client.contextCommands?.get?.(i.commandName)
+          const opensModal = !!cmd?.handleModalSubmit
+          if (!i.deferred && !i.replied && !opensModal) {
+            await i.deferReply({ flags: MessageFlags.Ephemeral }) // safe default for non-modal context commands
           }
         } catch (deferErr) {
           console.log('[InteractionCreate] ⚠️ Early defer (context) failed:', deferErr.message)

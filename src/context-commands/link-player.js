@@ -45,8 +45,7 @@ export default {
               color: orange,
               description: `**${error}**`
             }
-          ],
-          flags: MessageFlags.Ephemeral
+          ]
         })
       }
 
@@ -56,8 +55,7 @@ export default {
             color: green,
             description: `:white_check_mark: **${formatStr(name)}** successfully linked to user!`
           }
-        ],
-        flags: MessageFlags.Ephemeral
+        ]
       })
     } catch {
       safeEdit(i, {
@@ -66,8 +64,7 @@ export default {
             color: red,
             description: '**Unexpected error.** Please try again.'
           }
-        ],
-        flags: MessageFlags.Ephemeral
+        ]
       })
     }
   },
