@@ -171,17 +171,17 @@ export async function safeEdit(interaction, options) {
 const getPlayerCardData = (cards) => {
   const cardData = {
     evolutions: 0,
-    lvl13: 0,
     lvl14: 0,
-    lvl15: 0
+    lvl15: 0,
+    lvl16: 0
   }
 
   for (const c of cards) {
     const levelDiff = c.maxLevel - c.level
 
-    if (levelDiff === -1) cardData.lvl15++
-    else if (levelDiff === 0) cardData.lvl14++
-    else if (levelDiff === 1) cardData.lvl13++
+    if (levelDiff === 0) cardData.lvl16++
+    else if (levelDiff === 1) cardData.lvl15++
+    else if (levelDiff === 2) cardData.lvl14++
 
     if (c.evolutionLevel) cardData.evolutions++
   }
@@ -197,16 +197,16 @@ const createPlayerEmbed = (client, player, clanBadge) => {
   const polMedalsEmoji = client.cwEmojis.get('polmedals')
   const ladderEmoji = client.cwEmojis.get(arenaEmoji)
   const pbEmoji = client.cwEmojis.get(getArenaEmoji(player.bestTrophies))
+  const level16 = client.cwEmojis.get('level16')
   const level15 = client.cwEmojis.get('level15')
   const level14 = client.cwEmojis.get('level14')
-  const level13 = client.cwEmojis.get('level13')
   const wildShardEmoji = client.cwEmojis.get('wildshard')
 
   const ccWins = player.badges.find((b) => b.name === 'Classic12Wins')?.progress || 0
   const gcWins = player.badges.find((b) => b.name === 'Grand12Wins')?.progress || 0
   const cw2Wins = player.badges.find((b) => b.name === 'ClanWarWins')?.progress || 0
 
-  const { evolutions, lvl13, lvl14, lvl15 } = getPlayerCardData(player.cards)
+  const { evolutions, lvl14, lvl15, lvl16 } = getPlayerCardData(player.cards)
 
   const embed = {
     color: pink,
@@ -251,7 +251,7 @@ const createPlayerEmbed = (client, player, clanBadge) => {
   }\n**CW1 Wins**: ${player.warDayWins}\n**CW2 Wins**: ${cw2Wins}\n**Most Chall. Wins**: ${
     player.challengeMaxWins
   }\n**CC Wins**: ${ccWins}\n**GC Wins**: ${gcWins}\n\n`
-  embed.description += `**__Cards__**\n${wildShardEmoji}: ${evolutions}\n${level15}: ${lvl15}\n${level14}: ${lvl14}\n${level13}: ${lvl13}`
+  embed.description += `**__Cards__**\n${wildShardEmoji}: ${evolutions}\n${level16}: ${lvl16}\n${level15}: ${lvl15}\n${level14}: ${lvl14}`
 
   return {
     embeds: [embed],
