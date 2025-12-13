@@ -38,8 +38,26 @@ function getCardEmoji(cardName, emojis) {
   return emojis.get(normalized) || emojis.get('unknown')
 }
 
+const getCardFileName = (card, index) => {
+  let formattedName = card.name.replace(/\./g, '').replace(/\s+/g, '-').toLowerCase()
+
+  console.log({ formattedName })
+
+  const isEvoSlot = index === 0 || index === 1
+  const isHeroSlot = index === 2 || index === 3
+
+  // evo = +1, hero = +2 (max is 3)
+  if (isEvoSlot && (card.evolutionLevel === 1 || card.evolutionLevel === 3)) {
+    formattedName += ' Evo'
+  } else if (isHeroSlot && card.evolutionLevel >= 2) {
+    formattedName += ' Hero'
+  }
+
+  return formattedName
+}
+
 function formatDeck(cards) {
-  return cards.map((c) => `${c.name}${c.evolutionLevel ? ' Evo' : ''}`)
+  return cards.map(getCardFileName)
 }
 
 export default {
