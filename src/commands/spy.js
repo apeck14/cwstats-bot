@@ -41,8 +41,6 @@ function getCardEmoji(cardName, emojis) {
 const getCardFileName = (card, index) => {
   let formattedName = card.name.replace(/\./g, '').replace(/\s+/g, '-').toLowerCase()
 
-  console.log({ formattedName })
-
   const isEvoSlot = index === 0 || index === 1
   const isHeroSlot = index === 2 || index === 3
 
