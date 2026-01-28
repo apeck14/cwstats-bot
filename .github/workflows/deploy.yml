@@ -5,39 +5,56 @@ on:
     branches:
       - master
 
+# Prevent concurrent deploys
+concurrency:
+  group: deploy-bot
+  cancel-in-progress: false
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
+      # 1️⃣ Checkout code
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
+      # 2️⃣ Set up Node.js with caching
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
-
+      # 3️⃣ Set up SSH key
       - name: Set up SSH key
-        uses: webfactory/ssh-agent@v0.7.0
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Sync files via rsync
+      # 4️⃣ Deploy and reload PM2
+      - name: Deploy and Reload PM2
         env:
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_PATH: ${{ secrets.VPS_PATH }}
         run: |
-          echo ".env" >> rsync_exclude.txt
-          rsync -avz --delete --exclude-from=rsync_exclude.txt -e "ssh -o StrictHostKeyChecking=no" ./ $VPS_USER@$VPS_HOST:$VPS_PATH
+          set -e
+          set -o pipefail
 
-      - name: Reload PM2
-        env:
-          VPS_USER: ${{ secrets.VPS_USER }}
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-        run: |
-          ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST 'pm2 reload cwstats-bot'
+          # Exclude sensitive/unnecessary files
+          echo ".env" > rsync_exclude.txt
+          echo "node_modules" >> rsync_exclude.txt
+          echo ".git" >> rsync_exclude.txt
+          echo "*.log" >> rsync_exclude.txt
+
+          # Rsync to VPS using custom SSH port and robust options
+          rsync -avz --delete \
+            --exclude-from=rsync_exclude.txt \
+            -e "ssh -p 22022 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ConnectTimeout=30 -o BatchMode=yes" \
+            ./ $VPS_USER@$VPS_HOST:$VPS_PATH
+
+          # Install dependencies and reload PM2
+          ssh -p 22022 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ConnectTimeout=15 -o BatchMode=yes \
+            $VPS_USER@$VPS_HOST "cd $VPS_PATH && npm ci && pm2 reload cwstats-bot || pm2 start cwstats-bot"
