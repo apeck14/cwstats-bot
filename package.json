@@ -17,16 +17,16 @@
   "author": "Apehk",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.13.1",
-    "discord.js": "^14.24.2",
+    "axios": "^1.13.4",
+    "discord.js": "^14.25.1",
     "dotenv": "^16.6.1",
     "fast-dice-coefficient": "^1.0.3",
     "ioredis": "^5.9.2",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "topgg-autoposter": "^2.0.2"
   },
   "devDependencies": {
-    "concurrently": "^9.2.0",
+    "concurrently": "^9.2.1",
     "xo-wrapper": "3.7.1"
   }
 }
