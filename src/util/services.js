@@ -70,12 +70,6 @@ const getPlayerScores = (tag) =>
     .then(handleAPISuccess)
     .catch(handleAPIFailure)
 
-const addPlayer = (tag) =>
-  api
-    .put('/player', { tag: formatTag(tag, false) })
-    .then(handleAPISuccess)
-    .catch(handleAPIFailure)
-
 const linkPlayer = (tag, userId) =>
   api.put('/player/link', { tag, userId }).then(handleAPISuccess).catch(handleAPIFailure)
 
@@ -137,12 +131,8 @@ const deleteGuild = (id) =>
 
 const bulkAddEmojis = (emojis) => api.post('/emoji/bulk-add', { emojis }).then(handleAPISuccess).catch(handleAPIFailure)
 
-const getPlayerSearch = (name, limit = 10) =>
-  api.get('/player/search', { params: { limit, name } }).then(handleAPISuccess).catch(handleAPIFailure)
-
 export {
   addNudgeLink,
-  addPlayer,
   bulkAddEmojis,
   createGuild,
   deleteGuild,
@@ -157,7 +147,6 @@ export {
   getPlayer,
   getPlayerBattleLog,
   getPlayerScores,
-  getPlayerSearch,
   getRace,
   linkPlayer,
   setCommandCooldown

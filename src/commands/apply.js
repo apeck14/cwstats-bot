@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { formatStr } from '../util/formatting.js'
 import { createPlayerEmbed, errorMsg, successMsg, warningMsg } from '../util/functions.js'
-import { addPlayer, getClan, getGuild, getPlayer } from '../util/services.js'
+import { getClan, getGuild, getPlayer } from '../util/services.js'
 
 export default {
   data: {
@@ -75,9 +75,6 @@ export default {
     if (playerError) {
       return errorMsg(i, playerError)
     }
-
-    // add player for website searching
-    addPlayer(player.tag)
 
     const inClan = !!player.clan
 

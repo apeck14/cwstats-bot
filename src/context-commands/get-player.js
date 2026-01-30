@@ -2,7 +2,7 @@
 import { ApplicationCommandType } from 'discord.js'
 
 import { createPlayerEmbed, errorMsg, safeEdit } from '../util/functions.js'
-import { addPlayer, getClan, getPlayer } from '../util/services.js'
+import { getClan, getPlayer } from '../util/services.js'
 
 export default {
   data: {
@@ -30,9 +30,6 @@ export default {
     if (playerError) {
       return errorMsg(i, playerError)
     }
-
-    // add player for website searching
-    addPlayer(iTag)
 
     const inClan = !!player.clan
 

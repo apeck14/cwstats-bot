@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { createPlayerEmbed, errorMsg, safeEdit, warningMsg } from '../util/functions.js'
-import { addPlayer, getClan, getLinkedAccount, getPlayer } from '../util/services.js'
+import { getClan, getLinkedAccount, getPlayer } from '../util/services.js'
 
 export default {
   data: {
@@ -116,9 +116,6 @@ export default {
     if (playerError || !player) {
       return errorMsg(i, playerError || '**Player not found.**')
     }
-
-    // add player for website searching
-    addPlayer(player.tag)
 
     const inClan = !!player.clan
 

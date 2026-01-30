@@ -21,6 +21,7 @@
     "discord.js": "^14.24.2",
     "dotenv": "^16.6.1",
     "fast-dice-coefficient": "^1.0.3",
+    "ioredis": "^5.9.2",
     "lodash": "^4.17.21",
     "topgg-autoposter": "^2.0.2"
   },

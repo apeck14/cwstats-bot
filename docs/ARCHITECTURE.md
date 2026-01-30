@@ -128,3 +128,36 @@ Commands support multiple languages via Discord's localization system:
 
 - Command names and descriptions have `_localizations` variants
 - Supported: German, Spanish, French, Italian, Dutch, Portuguese, Turkish
+
+---
+
+## Redis Integration
+
+Redis 8.x (with RediSearch) provides fast player autocomplete for `/spy -search`.
+
+### Connection
+
+- **Location:** VPS localhost:6379 (direct connection, same host)
+- **Client:** ioredis with lazy connection
+- **Config:** `src/util/redis.js`
+
+### Autocomplete Flow
+
+```
+User types in /spy -search option
+     ↓
+Discord sends autocomplete interaction
+     ↓
+searchPlayers() → Redis FT.SEARCH
+     ↓
+Results formatted for Discord (max 25)
+     ↓
+Autocomplete choices returned in <100ms
+```
+
+### Search Features
+
+- **Word tokenization:** "(ReKt) Mider8" matches "rekt", "mider", etc.
+- **Prefix matching:** Typing "mid" matches "mider8"
+- **Case insensitive:** All queries normalized to lowercase
+- **2 char minimum:** Prevents overly broad searches

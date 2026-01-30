@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { formatStr, formatTag } from '../util/formatting.js'
 import { errorMsg, successMsg, warningMsg } from '../util/functions.js'
-import { addPlayer, linkPlayer } from '../util/services.js'
+import { linkPlayer } from '../util/services.js'
 
 export default {
   data: {
@@ -55,9 +55,6 @@ export default {
   async run(i) {
     const iTag = i.options.getString('tag')
     const formattedTag = formatTag(iTag, false)
-
-    // add player for website searching
-    addPlayer(formattedTag)
 
     const { error, name, result, success } = await linkPlayer(formattedTag, i.user.id)
 

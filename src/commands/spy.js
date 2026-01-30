@@ -5,7 +5,8 @@ import { pink } from '../static/colors.js'
 import specialGamemodes from '../static/specialGamemodes.js'
 import { formatStr, formatTag } from '../util/formatting.js'
 import { errorMsg, safeEdit } from '../util/functions.js'
-import { getClan, getPlayer, getPlayerBattleLog, getPlayerSearch } from '../util/services.js'
+import { searchPlayers } from '../util/redis.js'
+import { getClan, getPlayer, getPlayerBattleLog } from '../util/services.js'
 
 function sharesCards(deck1, deck2) {
   const set2 = new Set(deck2)
@@ -362,17 +363,14 @@ export default {
     const query = i.options.getFocused()
 
     if (!query || query.length < 2) {
-      i.respond([{ name: '🔎 Search by player name', value: 'no_match' }])
-      return
+      return [{ name: '🔎 Type at least 2 characters to search', value: 'no_match' }]
     }
 
-    const { data: players } = await getPlayerSearch(query, 25)
+    const players = await searchPlayers(query, 25)
 
-    const mappedPlayers = players.map((p) => ({
-      name: `${p.name} ${p.clanName ? `(${p.clanName})` : ''}`,
+    return players.map((p) => ({
+      name: `${p.name} ${p.clanName ? `(${p.clanName})` : ''}`.substring(0, 100),
       value: p.tag
     }))
-
-    return mappedPlayers
   }
 }
